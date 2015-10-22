@@ -1,0 +1,35 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.8'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+jar {
+    baseName = 'ome-smuggler'
+    version =  '0.1.0'
+}
