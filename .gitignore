@@ -1,0 +1,16 @@
+# Build Files #
+
+bin
+target
+build
+.gradle
+
+# Eclipse Project Files #
+
+.classpath
+.project
+.settings
+
+# Log files
+
+*.log
