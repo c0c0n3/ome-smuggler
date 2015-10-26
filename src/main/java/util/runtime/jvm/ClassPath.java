@@ -2,6 +2,7 @@ package util.runtime.jvm;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static util.string.Strings.isNullOrEmpty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -80,7 +81,7 @@ public class ClassPath {
         
         cpEntries.map(p -> requireNonNull(p))
                  .map(Path::normalize)
-                 .filter(p -> p.toString() != "")
+                 .filter(p -> !isNullOrEmpty(p.toString()))
                  .forEachOrdered(entries::add);
         
         return this;
