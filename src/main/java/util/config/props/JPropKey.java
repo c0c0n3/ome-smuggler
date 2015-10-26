@@ -2,8 +2,7 @@ package util.config.props;
 
 import static util.Strings.requireString;
 import static util.Strings.requireStrings;
-
-import util.Wrapper;
+import util.object.Wrapper;
 
 
 /**

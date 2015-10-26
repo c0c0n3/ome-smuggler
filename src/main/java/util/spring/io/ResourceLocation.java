@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import org.springframework.core.io.ResourceLoader;
 
-import util.AbstractWrapper;
+import util.object.AbstractWrapper;
 
 /**
  * A Spring resource location. 

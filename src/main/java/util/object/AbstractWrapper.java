@@ -1,4 +1,4 @@
-package util;
+package util.object;
 
 import java.util.function.Supplier;
 
