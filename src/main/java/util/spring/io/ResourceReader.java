@@ -1,7 +1,7 @@
 package util.spring.io;
 
 import static java.util.Objects.requireNonNull;
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 
 import java.io.InputStream;
 import java.util.Optional;

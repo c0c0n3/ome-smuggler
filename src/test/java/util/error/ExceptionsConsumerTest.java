@@ -1,31 +1,31 @@
-package util;
+package util.error;
 
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 
 import java.io.IOException;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
-import util.lambda.FunctionE;
+import util.lambda.ConsumerE;
 
-public class ExceptionsFunctionTest {
-    
-    private String consumeWithCheckedException(int k) throws IOException {
+public class ExceptionsConsumerTest {
+
+    private void consumeWithCheckedException(int k) throws IOException {
         throw new IOException();
     }
     
-    private String consumeWithUncheckedException(int k) {
+    private void consumeWithUncheckedException(int k) {
         throw new NullPointerException();
     }
     
-    private String feed(int k, Function<Integer, String> f) {
-        return f.apply(k);
+    private void feed(int k, Consumer<Integer> f) {
+        f.accept(k);
     }
     
     @Test(expected = IOException.class)
     public void checkedExceptionBubblesUpAsIs() {
-        FunctionE<Integer, String> fe = this::consumeWithCheckedException;
+        ConsumerE<Integer> fe = this::consumeWithCheckedException;
         feed(1, fe);
     }
     
@@ -36,7 +36,7 @@ public class ExceptionsFunctionTest {
     
     @Test(expected = NullPointerException.class)
     public void uncheckedExceptionBubblesUpAsIs() {
-        FunctionE<Integer, String> fe = this::consumeWithUncheckedException;
+        ConsumerE<Integer> fe = this::consumeWithUncheckedException;
         feed(1, fe);
     }
     
@@ -44,5 +44,5 @@ public class ExceptionsFunctionTest {
     public void uncheckedExceptionBubblesUpAsIsUsingUnchecked() {
         feed(1, unchecked(this::consumeWithUncheckedException));
     }
-
+    
 }

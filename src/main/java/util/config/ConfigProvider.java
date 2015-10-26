@@ -1,6 +1,6 @@
 package util.config;
 
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 
 import java.util.stream.Stream;
 

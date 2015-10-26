@@ -1,7 +1,7 @@
 package util.config;
 
 import static java.util.Objects.requireNonNull;
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 
 import java.net.URI;
 import java.util.function.Function;

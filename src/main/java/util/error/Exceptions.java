@@ -1,4 +1,4 @@
-package util;
+package util.error;
 
 import static java.util.Objects.requireNonNull;
 

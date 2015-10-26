@@ -1,8 +1,8 @@
-package util;
+package util.error;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static util.Exceptions.throwAsIfUnchecked;
+import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
 

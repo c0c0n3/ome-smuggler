@@ -1,6 +1,6 @@
-package util;
+package util.error;
 
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 
 import java.io.IOException;
 import java.util.function.Supplier;

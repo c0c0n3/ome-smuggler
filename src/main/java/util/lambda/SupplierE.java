@@ -1,6 +1,6 @@
 package util.lambda;
 
-import static util.Exceptions.throwAsIfUnchecked;
+import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.util.function.Supplier;
 

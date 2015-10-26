@@ -1,7 +1,7 @@
 package util.servlet;
 
 import static java.util.Objects.requireNonNull;
-import static util.Exceptions.unchecked;
+import static util.error.Exceptions.unchecked;
 import static util.string.Strings.isNullOrEmpty;
 
 import java.nio.charset.Charset;
