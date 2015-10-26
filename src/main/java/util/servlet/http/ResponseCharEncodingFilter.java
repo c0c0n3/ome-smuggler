@@ -5,7 +5,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import util.Pair;
+import util.object.Pair;
 import util.servlet.ServletCharEncoding;
 
 /**

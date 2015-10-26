@@ -1,10 +1,11 @@
-package util;
+package util.object;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.Either.*;
+import static util.object.Either.*;
 
 import org.junit.Test;
+
 
 public class EitherTest {
 

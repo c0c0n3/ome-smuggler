@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import util.Pair;
+import util.object.Pair;
 
 /**
  * Convenience methods, mainly useful for testing {@link Streams} methods.

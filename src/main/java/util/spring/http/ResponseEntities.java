@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import util.Either;
+import util.object.Either;
 
 /**
  * Helper methods for {@link ResponseEntity}'s.

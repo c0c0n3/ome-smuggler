@@ -12,7 +12,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import util.Pair;
+import util.object.Pair;
 import util.sequence.Arrayz;
 
 @RunWith(Theories.class)

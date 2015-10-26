@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import util.Pair;
+import util.object.Pair;
 import util.sequence.Arrayz;
 import util.string.Strings;
 

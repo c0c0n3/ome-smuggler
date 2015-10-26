@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import util.Pair;
+import util.object.Pair;
 
 /**
  * Utility methods to use with {@link Stream}'s.
