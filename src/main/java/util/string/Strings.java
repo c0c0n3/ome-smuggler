@@ -1,4 +1,4 @@
-package util;
+package util.string;
 
 import static java.util.Objects.requireNonNull;
 import static util.sequence.Arrayz.isNullOrZeroLength;

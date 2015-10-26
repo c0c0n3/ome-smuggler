@@ -1,7 +1,7 @@
 package util.config.props;
 
-import static util.Strings.requireString;
-import static util.Strings.requireStrings;
+import static util.string.Strings.requireString;
+import static util.string.Strings.requireStrings;
 import util.object.Wrapper;
 
 

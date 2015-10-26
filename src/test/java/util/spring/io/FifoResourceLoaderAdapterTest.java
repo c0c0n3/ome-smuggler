@@ -3,8 +3,8 @@ package util.spring.io;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
-import static util.Strings.isNullOrEmpty;
 import static util.sequence.Arrayz.array;
+import static util.string.Strings.isNullOrEmpty;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +24,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import util.Pair;
-import util.Strings;
 import util.sequence.Arrayz;
+import util.string.Strings;
 
 @RunWith(Theories.class)
 public class FifoResourceLoaderAdapterTest {

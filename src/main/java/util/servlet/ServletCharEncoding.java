@@ -2,7 +2,7 @@ package util.servlet;
 
 import static java.util.Objects.requireNonNull;
 import static util.Exceptions.unchecked;
-import static util.Strings.isNullOrEmpty;
+import static util.string.Strings.isNullOrEmpty;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
