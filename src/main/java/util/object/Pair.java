@@ -36,13 +36,17 @@ public class Pair<A, B> {
 
     @Override 
     public boolean equals(Object x) {
-        if (x instanceof Pair) {
-            Pair<?, ?> other = (Pair<?, ?>) x;
-            return Objects.equals(fst, other.fst) 
-                && Objects.equals(snd, other.snd);
+        if (this == x) return true;               // avoid unnecessary work
+        if (x instanceof Pair) {                  // false if x == null or type differs
+            Pair<?, ?> other = (Pair<?, ?>) x;    // best we can do, courtesy of type erasure
+            return Objects.equals(fst, other.fst) // crossing fingers their equals methods check
+                && Objects.equals(snd, other.snd);// the type is the same
          }
          return false;
     }
+    /* NOTE. See also:
+     * - http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ501
+     */
     
     @Override 
     public int hashCode() {
