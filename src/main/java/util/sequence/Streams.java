@@ -1,4 +1,4 @@
-package util;
+package util.sequence;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -17,6 +17,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+
+import util.Pair;
 
 /**
  * Utility methods to use with {@link Stream}'s.

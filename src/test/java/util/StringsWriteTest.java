@@ -2,8 +2,8 @@ package util;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
 import static util.Strings.write;
+import static util.sequence.Arrayz.array;
 
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;

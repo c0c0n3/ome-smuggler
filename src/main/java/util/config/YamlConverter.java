@@ -1,7 +1,7 @@
 package util.config;
 
 import static java.util.Objects.requireNonNull;
-import static util.Streams.asStream;
+import static util.sequence.Streams.asStream;
 
 import java.io.InputStream;
 import java.io.Writer;

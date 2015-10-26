@@ -1,8 +1,8 @@
 package util;
 
-import static util.Arrayz.array;
 import static util.Strings.requireString;
 import static util.Strings.requireStrings;
+import static util.sequence.Arrayz.array;
 
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package util.spring.http;
 
 import static java.util.Objects.requireNonNull;
-import static util.Arrayz.isNullOrZeroLength;
+import static util.sequence.Arrayz.isNullOrZeroLength;
 
 import java.util.function.Supplier;
 

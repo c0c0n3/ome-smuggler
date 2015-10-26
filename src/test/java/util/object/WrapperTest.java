@@ -3,7 +3,7 @@ package util.object;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
-import static util.Arrayz.array;
+import static util.sequence.Arrayz.array;
 
 import java.util.stream.Stream;
 

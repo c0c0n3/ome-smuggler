@@ -1,8 +1,8 @@
-package util;
+package util.sequence;
 
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
-import static util.Streams.cycle;
+import static util.sequence.Arrayz.array;
+import static util.sequence.Streams.cycle;
 
 import java.util.stream.Stream;
 
@@ -11,6 +11,8 @@ import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+
+import util.sequence.Arrayz;
 
 @RunWith(Theories.class)
 public class StreamsCycleTest {

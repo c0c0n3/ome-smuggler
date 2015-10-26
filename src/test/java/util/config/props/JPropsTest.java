@@ -2,11 +2,11 @@ package util.config.props;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
 import static util.config.props.JPropKey.key;
 import static util.config.props.JPropAccessorFactory.makeBool;
 import static util.config.props.JPropAccessorFactory.makeString;
 import static util.config.props.JPropAccessorFactory.makeURI;
+import static util.sequence.Arrayz.array;
 
 import java.net.URI;
 import java.net.URISyntaxException;

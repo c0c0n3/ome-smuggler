@@ -1,9 +1,9 @@
-package util;
+package util.sequence;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static java.util.stream.Collectors.*;
-import static util.Streams.inits;
+import static util.sequence.Streams.inits;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -13,6 +13,8 @@ import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+
+import util.sequence.Arrayz;
 
 @RunWith(Theories.class)
 public class StreamsInitsTest {

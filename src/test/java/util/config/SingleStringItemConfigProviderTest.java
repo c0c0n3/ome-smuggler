@@ -2,7 +2,7 @@ package util.config;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
+import static util.sequence.Arrayz.array;
 
 import java.util.Optional;
 import java.util.stream.Stream;

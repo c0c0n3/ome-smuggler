@@ -1,7 +1,7 @@
 package util;
 
 import static java.util.Objects.requireNonNull;
-import static util.Arrayz.isNullOrZeroLength;
+import static util.sequence.Arrayz.isNullOrZeroLength;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

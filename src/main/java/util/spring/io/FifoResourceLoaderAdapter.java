@@ -1,7 +1,7 @@
 package util.spring.io;
 
 import static java.util.Objects.requireNonNull;
-import static util.Streams.pruneNull;
+import static util.sequence.Streams.pruneNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;

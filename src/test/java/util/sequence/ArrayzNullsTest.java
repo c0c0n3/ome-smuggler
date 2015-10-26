@@ -1,4 +1,4 @@
-package util;
+package util.sequence;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.junit.Test;
+
+import util.sequence.Arrayz;
 
 public class ArrayzNullsTest {
 

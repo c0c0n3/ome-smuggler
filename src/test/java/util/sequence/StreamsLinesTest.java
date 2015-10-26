@@ -1,9 +1,9 @@
-package util;
+package util.sequence;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
-import static util.Streams.lines;
+import static util.sequence.Arrayz.array;
+import static util.sequence.Streams.lines;
 
 import org.junit.Test;
 

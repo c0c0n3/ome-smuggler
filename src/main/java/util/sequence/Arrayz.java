@@ -1,4 +1,4 @@
-package util;
+package util.sequence;
 
 import static java.util.Objects.*;
 
@@ -11,6 +11,8 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import util.Pair;
 
 /**
  * Convenience methods, mainly useful for testing {@link Streams} methods.

@@ -1,7 +1,7 @@
-package util;
+package util.sequence;
 
 import static org.junit.Assert.*;
-import static util.Streams.map;
+import static util.sequence.Streams.map;
 
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -11,6 +11,9 @@ import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+
+import util.Pair;
+import util.sequence.Arrayz;
 
 @RunWith(Theories.class)
 public class StreamsMapTest {

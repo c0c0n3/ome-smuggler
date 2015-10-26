@@ -1,8 +1,8 @@
 package util.spring.io;
 
 import static java.util.stream.Collectors.joining;
-import static util.Arrayz.hasNulls;
-import static util.Arrayz.isNullOrZeroLength;
+import static util.sequence.Arrayz.hasNulls;
+import static util.sequence.Arrayz.isNullOrZeroLength;
 
 import java.net.URI;
 import java.net.URISyntaxException;

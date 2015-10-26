@@ -1,9 +1,9 @@
-package util;
+package util.sequence;
 
 import static org.junit.Assert.*;
-import static util.Arrayz.array;
-import static util.Arrayz.op;
-import static util.Streams.intersperse;
+import static util.sequence.Arrayz.array;
+import static util.sequence.Arrayz.op;
+import static util.sequence.Streams.intersperse;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
