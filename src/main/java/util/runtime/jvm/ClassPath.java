@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.joining;
 import static util.string.Strings.isNullOrEmpty;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.stream.Stream;
 
@@ -16,18 +15,9 @@ import java.util.stream.Stream;
 public class ClassPath {
     
     /**
-     * Parses the given string as a JVM class path.
-     * @param cp a string of paths separated by a ':'. It may be empty.
-     * @return the parsed class path entries.
-     * @throws NullPointerException if the argument is {@code null}.
+     * The string to use for separating class path entries.
      */
-    public static ClassPath fromString(String cp) {
-        requireNonNull(cp, "cp");
-        
-        String[] cpEntries = cp.split(":");
-        Stream<Path> ps = Stream.of(cpEntries).map(Paths::get);
-        return new ClassPath().add(ps);
-    }
+    public static final String Separator = ":";
     
     
     private LinkedHashSet<Path> entries;
@@ -116,16 +106,16 @@ public class ClassPath {
     
     /**
      * Turns this class path into its JVM string representation where path 
-     * entries are separated by a ':'. 
+     * entries are separated by a {@link ClassPath#Separator}. 
      * Entries will be output in the same order in which they were {@link 
      * #add(Path...) added}.
      * If this class path only has one entry, that path is returned as a string 
-     * without any added ':'. If this class path is {@link #isEmpty() empty}, 
-     * then the empty string is returned.
+     * without any added {@link #Separator separator}. If this class path is 
+     * {@link #isEmpty() empty}, then the empty string is returned.
      */
     @Override
     public String toString() {
-        return toStream().map(Path::toString).collect(joining(":"));
+        return toStream().map(Path::toString).collect(joining(Separator));
     }
     
     @Override

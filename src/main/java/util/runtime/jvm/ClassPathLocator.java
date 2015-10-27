@@ -1,5 +1,7 @@
 package util.runtime.jvm;
 
+import static java.util.Objects.requireNonNull;
+
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
@@ -22,7 +24,6 @@ public class ClassPathLocator {
      * given class.
      * This may fail for any of the reasons below:
      * <ul>
-     *  <li>{@code clazz} is {@code null}.</li>
      *  <li>This JVM doesn't have the "getProtectionDomain" permission.</li>
      *  <li>{@code clazz} is not in a jar file or directory on the host.</li>
      * </ul>
@@ -30,10 +31,13 @@ public class ClassPathLocator {
      * @return an absolute path pointing to the class base location if the 
      * class could be determined to be in a local directory or jar file; 
      * an empty optional otherwise.
+     * @throws NullPointerException if the argument is {@code null}.
      * @throws SecurityException if a security manager exists and its 
      * the application doesn't have the "getProtectionDomain" permission.
      */
     public static Optional<Path> findBase(Class<?> clazz) {
+        requireNonNull(clazz, "clazz");
+        
         Function<URL, URI> fromURL = (FunctionE<URL, URI>) URL::toURI;
         return Optional.ofNullable(clazz)
                        .map(Class::getProtectionDomain)

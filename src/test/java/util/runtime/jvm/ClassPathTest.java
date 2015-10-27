@@ -31,7 +31,7 @@ public class ClassPathTest {
     public void fromStringYieldsSameClassPathAsThatBuiltByAppendingPaths(
             Path p1, Path p2, Path p3) {
         String cp = p1 + ":" + p2 + ":" + p3;
-        ClassPath parsed = ClassPath.fromString(cp);
+        ClassPath parsed = ClassPathFactory.fromString(cp);
         ClassPath built = new ClassPath().add(p1, p2, p3);
         
         assertNotNull(parsed);
@@ -70,7 +70,7 @@ public class ClassPathTest {
     
     @Theory
     public void fromStringToStringIsIdentity(String classpath) {
-        String actual = ClassPath.fromString(classpath).toString();
+        String actual = ClassPathFactory.fromString(classpath).toString();
         assertThat(actual, is(classpath));
     }
     

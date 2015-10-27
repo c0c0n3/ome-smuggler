@@ -11,12 +11,9 @@ import org.junit.Test;
 
 public class ClassPathLocatorTest {
 
-    @Test
-    public void findBaseAcceptsNull() {
-        Optional<Path> actual = ClassPathLocator.findBase(null);
-        
-        assertNotNull(actual);
-        assertFalse(actual.isPresent());
+    @Test (expected = NullPointerException.class)
+    public void findBaseThrowsIfNullArg() {
+        ClassPathLocator.findBase(null);
     }
     
     @Test
