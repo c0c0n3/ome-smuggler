@@ -1,0 +1,74 @@
+package util.runtime.jvm;
+
+import static java.util.Objects.requireNonNull;
+import static util.object.Either.left;
+import static util.object.Either.right;
+import static util.string.Strings.isNullOrEmpty;
+
+import java.util.Map;
+import java.util.stream.Stream;
+
+import util.object.Either;
+import util.object.Pair;
+
+/**
+ * A Java system property argument to pass to the JVM.
+ */
+public class SysPropJvmArg extends BaseJvmArg<Pair<String, String>> {
+
+    /**
+     * Converts the given properties into a stream of system property arguments,
+     * filtering out properties having a {@code null} or empty key or having a
+     * {@code null} value.
+     * @param props the key-value pairs to convert.
+     * @return the converted props.
+     */
+    public static Stream<JvmArgument<?>> toJvmArguments(Map<Object, Object> props) {
+        requireNonNull(props, "props");
+        return props.entrySet()
+                    .stream()
+                    .filter(e -> e.getKey() != null &&
+                                 !isNullOrEmpty(e.getKey().toString()) &&
+                                 e.getValue() != null)
+                    .map(e -> new SysPropJvmArg(e.getKey().toString(), 
+                                                e.getValue().toString()));
+    }
+    
+    /**
+     * Sets the payload of this argument to be the specified key-value pair.
+     * @param key the property key.
+     * @param value the property value.
+     * @throws IllegalArgumentException if the key is {@code null} or empty or
+     * if the value is {@code null}.
+     */
+    public SysPropJvmArg(String key, String value) {
+        set(key, value);
+    }
+    
+    @Override
+    protected Either<String, Pair<String, String>> validate(
+            Pair<String, String> p) {
+        if (isNullOrEmpty(p.fst())) return left("missing key");
+        if (p.snd() == null) return left("null value");
+        return right(p);
+    }
+    
+    @Override
+    protected String toString(Pair<String, String> arg) {
+        return String.format("-D%s=%s", 
+                             escape(arg.fst()), 
+                             escape(arg.snd()));
+    }
+    
+    /**
+     * Sets the payload of this argument to be the specified key-value pair.
+     * @param key the property key.
+     * @param value the property value.
+     * @throws IllegalArgumentException if the key is {@code null} or empty or
+     * if the value is {@code null}.
+     */
+    public void set(String key, String value) {
+        set(new Pair<>(key, value));
+    }
+    
+}
