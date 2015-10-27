@@ -35,11 +35,6 @@ public class ClassPathFactoryTest {
         assertTrue(Files.exists(base[0]));
     }
     
-    @Test (expected = NullPointerException.class)
-    public void fromBasePathThrowsIfNullArg() {
-        ClassPathFactory.fromBasePath(null);
-    }
-    
     @Test
     public void fromLibDirReturnsEmptyClassPathIfNoJarsFound() throws IOException {
         Path base = ClassPathLocator.findBase(getClass()).get();
@@ -51,9 +46,37 @@ public class ClassPathFactoryTest {
         assertTrue(actual.isEmpty());
     }
     
+    @Test
+    public void fromDir() throws IOException {
+        Path base = ClassPathLocator.findBase(getClass()).get();
+        String relPathToThisClass = getClass().getName().replace('.', '/');
+        Path pathToParentDir = base.resolve(Paths.get(relPathToThisClass))
+                                   .getParent();
+        String actual = ClassPathFactory
+                       .fromDir(pathToParentDir, 
+                                file -> file.toString().endsWith(".class"))
+                       .toString();
+        assertThat(actual, containsString(relPathToThisClass));
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void fromBasePathThrowsIfNullArg() {
+        ClassPathFactory.fromBasePath(null);
+    }
+    
     @Test (expected = NullPointerException.class)
     public void fromLibDirThrowsIfNullArg() throws IOException {
         ClassPathFactory.fromLibDir(null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void fromDirThrowsIfNullFirstArg() throws IOException {
+        ClassPathFactory.fromDir(null, x -> true);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void fromDirThrowsIfNullSecondArg() throws IOException {
+        ClassPathFactory.fromDir(Paths.get(""), null);
     }
     
 }

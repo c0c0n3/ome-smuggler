@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -75,7 +76,23 @@ public class ClassPathFactory {
      * @throws IOException if an I/O error occurs while trawling the directory.
      */
     public static ClassPath fromLibDir(Path dir) throws IOException {
+        return fromDir(dir, file -> file.toString().endsWith(".jar"));
+    }
+    
+    /**
+     * Builds a class path with all the files selected by the given predicate 
+     * in the specified base directory and, recursively, in all of its 
+     * sub-directories.
+     * @param dir the directory in which to find the (jar) files.
+     * @param select tests whether or not to include a regular file.
+     * @return the class path.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IOException if an I/O error occurs while trawling the directory.
+     */
+    public static ClassPath fromDir(Path dir, Predicate<Path> select) 
+            throws IOException {
         requireNonNull(dir, "dir");
+        requireNonNull(select, "select");
         
         ClassPath cp = new ClassPath();
         
@@ -83,7 +100,7 @@ public class ClassPathFactory {
             @Override
             public FileVisitResult visitFile(Path file,
                     BasicFileAttributes attrs) throws IOException {
-                if (attrs.isRegularFile() && file.toString().endsWith(".jar")) {
+                if (attrs.isRegularFile() && select.test(file)) {
                     cp.add(file);
                 }
                 return FileVisitResult.CONTINUE;
