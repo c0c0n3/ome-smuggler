@@ -44,13 +44,13 @@ public class SysPropJvmArgTest {
         assertThat(actual[0], is(expected));
     }
     
-    private static String[] tokensArray(Stream<JvmArgument<?>> args) {
+    private static String[] tokensArray(Stream<SysPropJvmArg> args) {
         return args.map(JvmArgument::tokens)
                    .flatMap(x -> x)
                    .toArray(String[]::new);
     }
     
-    private static String[] tokensArray(JvmArgument<?>...args) {
+    private static String[] tokensArray(SysPropJvmArg...args) {
         return tokensArray(Stream.of(args));
     }
     

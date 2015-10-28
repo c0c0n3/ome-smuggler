@@ -23,7 +23,7 @@ public class SysPropJvmArg extends BaseJvmArg<Pair<String, String>> {
      * @param props the key-value pairs to convert.
      * @return the converted props.
      */
-    public static <K, V> Stream<JvmArgument<?>> toJvmArguments(Map<K, V> props) {
+    public static <K, V> Stream<SysPropJvmArg> toJvmArguments(Map<K, V> props) {
         requireNonNull(props, "props");
         return props.entrySet()
                     .stream()
