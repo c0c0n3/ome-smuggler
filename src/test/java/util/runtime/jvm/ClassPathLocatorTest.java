@@ -42,8 +42,6 @@ public class ClassPathLocatorTest {
         Path basePath = actual.get();
         assertTrue(basePath.isAbsolute());
         
-        System.out.println("JAR: " + basePath);
-        
         String junitJar = basePath.getFileName().toString().toLowerCase();
         
         assertThat(junitJar, endsWith(".jar"));

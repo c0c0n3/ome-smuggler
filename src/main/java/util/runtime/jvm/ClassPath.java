@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static util.string.Strings.isNullOrEmpty;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.stream.Stream;
@@ -17,7 +18,7 @@ public class ClassPath {
     /**
      * The string to use for separating class path entries.
      */
-    public static final String Separator = ":";
+    public static final String Separator = File.pathSeparator;
     
     
     private LinkedHashSet<Path> entries;

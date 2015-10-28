@@ -2,6 +2,7 @@ package util.runtime.jvm;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static util.runtime.jvm.ClassPath.Separator;
 import static util.sequence.Arrayz.array;
 
 import java.nio.file.Path;
@@ -25,12 +26,15 @@ public class ClassPathTest {
                                        .toArray(Path[]::new);
     
     @DataPoints
-    public static String[] classpaths = array("x1/x2", "x.jar:y.jar", "x:y1/y2:z");
+    public static String[] classpaths = array(
+            "x1/x2", 
+            "x.jar" + Separator + "y.jar", 
+            "x" + Separator + "y1/y2" + Separator + "z");
     
     @Theory
     public void fromStringYieldsSameClassPathAsThatBuiltByAppendingPaths(
             Path p1, Path p2, Path p3) {
-        String cp = p1 + ":" + p2 + ":" + p3;
+        String cp = p1 + Separator + p2 + Separator + p3;
         ClassPath parsed = ClassPathFactory.fromString(cp);
         ClassPath built = new ClassPath().add(p1, p2, p3);
         
