@@ -1,6 +1,5 @@
 package util.runtime.jvm;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static util.sequence.Arrayz.array;
 
@@ -18,9 +17,11 @@ public class BaseJvmArgTest {
     public static String[] values = array("", "x", " x y");
     
     @Theory
-    public void stringSetIsReturnedAsIsByBuild(String arg) {
+    public void stringSetIsReturnedAsIsByTokens(String arg) {
         target.set(arg);
-        assertThat(target.build(), is(arg));
+        String[] actual = target.tokens().toArray(String[]::new);
+        
+        assertArrayEquals(array(arg), actual);
     }
     
     private BaseJvmArg<String> target;
@@ -36,8 +37,8 @@ public class BaseJvmArgTest {
     }
     
     @Test (expected = IllegalStateException.class)
-    public void buildThrowsIfArgNotSetYet() {
-        target.build();
+    public void tokensThrowsIfArgNotSetYet() {
+        target.tokens();
     }
     
 }

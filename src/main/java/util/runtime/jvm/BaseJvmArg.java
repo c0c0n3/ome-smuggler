@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static util.object.Either.right;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import util.object.Either;
 
@@ -20,9 +21,10 @@ public class BaseJvmArg<T> implements JvmArgument<T> {
     }
 
     @Override
-    public void set(T arg) {
+    public JvmArgument<T> set(T arg) {
         requireNonNull(arg);
-        maybeArg = validate(arg).either(this::throwIfNotValid, Optional::of); 
+        maybeArg = validate(arg).either(this::throwIfNotValid, Optional::of);
+        return this;
     }
     
     private Optional<T> throwIfNotValid(String errorMessage) {
@@ -40,39 +42,23 @@ public class BaseJvmArg<T> implements JvmArgument<T> {
     }
 
     @Override
-    public String build() {
+    public Stream<String> tokens() {
         if (!maybeArg.isPresent()) {
             throw new IllegalStateException("argument not set yet");
         }
-        return toString(maybeArg.get());
+        return tokenize(maybeArg.get());
     }
     
     /**
-     * Override this method to convert the argument into a JVM string argument
-     * if the default of calling the argument's {@code toString} method and
-     * escaping spaces is not suitable.
-     * @param arg the argument to convert to string.
-     * @return the string representation of the argument as required by the
-     * {@link #build() build} method.
+     * Override this method to convert the argument into token components if
+     * the default of calling the argument's {@code toString} method is not
+     * suitable.
+     * @param arg the argument to convert to tokens.
+     * @return the tokenized representation of the argument as required by the
+     * {@link #tokens() tokens} method.
      */
-    protected String toString(T arg) {
-        return escape(arg.toString());
+    protected Stream<String> tokenize(T arg) {
+        return Stream.of(arg.toString());
     }
-    
-    protected String escape(String convertedArg) {
-        return convertedArg.replace(' ', '\u0020');
-        // or
-        // String.format("\\\"%s\\\"", convertedArg); ???
-    }
-    /* TODO figure out what is the *right* thing to do here, taking into account
-     * that the stringified args will have to be digested by ProcessBuilder.
-     * See:
-     * - http://stackoverflow.com/questions/12124935/processbuilder-adds-extra-quotes-to-command-line
-     * - http://stackoverflow.com/questions/18099499/how-to-start-a-process-from-java-with-arguments-which-contain-double-quotes 
-     * - http://stackoverflow.com/questions/2108103/can-the-key-in-a-java-property-include-a-blank-character
-     * 
-     * NB escaping spaces means we don't need to quote, which avoids trouble 
-     * with ProcessBuilder; but then what should we do with other whitespace
-     * chars, e.g. tabs, new lines? And double quotes themselves?! Ouch!
-     */
+
 }

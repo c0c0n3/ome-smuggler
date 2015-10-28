@@ -23,7 +23,7 @@ public class SysPropJvmArg extends BaseJvmArg<Pair<String, String>> {
      * @param props the key-value pairs to convert.
      * @return the converted props.
      */
-    public static Stream<JvmArgument<?>> toJvmArguments(Map<Object, Object> props) {
+    public static <K, V> Stream<JvmArgument<?>> toJvmArguments(Map<K, V> props) {
         requireNonNull(props, "props");
         return props.entrySet()
                     .stream()
@@ -54,10 +54,10 @@ public class SysPropJvmArg extends BaseJvmArg<Pair<String, String>> {
     }
     
     @Override
-    protected String toString(Pair<String, String> arg) {
-        return String.format("-D%s=%s", 
-                             escape(arg.fst()), 
-                             escape(arg.snd()));
+    protected Stream<String> tokenize(Pair<String, String> arg) {
+        String token = String
+                      .format("-D%s=%s", quote(arg.fst()), quote(arg.snd()));
+        return Stream.of(token);
     }
     
     /**
