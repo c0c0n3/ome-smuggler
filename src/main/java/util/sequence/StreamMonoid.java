@@ -2,29 +2,19 @@ package util.sequence;
 
 import java.util.stream.Stream;
 
-import util.alg.Monoid;
-import util.object.Wrapper;
+import util.alg.MonoidProvider;
 
-public class StreamMonoid<T> 
-    extends Wrapper<Stream<T>> implements Monoid<Stream<T>> {
+/**
+ * A monoid whose values are streams carrying {@code T}-values; the product is
+ * {@link Stream#concat(Stream, Stream) concatenation} and the unit is the
+ * {@link Stream#empty() empty} stream.
+ * Conceptually, this is the <a href="https://en.wikipedia.org/wiki/Free_monoid">
+ * free monoid</a> on {@code T}-values.
+ */
+public class StreamMonoid<T> extends MonoidProvider<Stream<T>> {
 
     public StreamMonoid() {
-        super(Stream.empty());
+        super(Stream::concat, Stream::empty);
     }
     
-    public StreamMonoid(Stream<T> wrappedValue) {
-        super(wrappedValue);
-    }
-
-    @Override
-    public Monoid<Stream<T>> unit() {
-        return new StreamMonoid<>();
-    }
-
-    @Override
-    public Monoid<Stream<T>> _x_(Monoid<Stream<T>> t) {
-        Stream<T> joined = Stream.concat(get(), t.get());
-        return new StreamMonoid<>(joined);
-    }
-
 }
