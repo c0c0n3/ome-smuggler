@@ -16,8 +16,20 @@ public class BaseProgramArgument<T> implements ProgramArgument<T> {
 
     private Optional<T> maybeArg;
     
-    protected BaseProgramArgument() {
+    /**
+     * Creates a new instance.
+     */
+    public BaseProgramArgument() {
         maybeArg = Optional.empty();
+    }
+    
+    /**
+     * Creates a new instance to hold the specified argument.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public BaseProgramArgument(T arg) {
+        this();
+        set(arg);
     }
 
     @Override
