@@ -6,6 +6,7 @@ import static util.sequence.Arrayz.asStream;
 import static util.sequence.Arrayz.hasNulls;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -41,5 +42,18 @@ public class JvmCmdBuilder {
                                       JvmArgument<?>...appArgs) {
         return java(jrePath, appToRun, Stream.empty(), appArgs);
     }
-  
+
+    public static Stream<String> thisJava(JarJvmArg appToRun, 
+                                          Stream<SysPropJvmArg> props,
+                                          JvmArgument<?>...appArgs) {
+        Optional<JarJvmArg> thisJre = JvmLocator
+                                     .findCurrentJvmExecutable()
+                                     .map(path -> { 
+                                         JarJvmArg arg = new JarJvmArg();
+                                         arg.set(path);
+                                         return arg;
+                                     });
+        return java(thisJre.get(), appToRun, props, appArgs);
+    }
+    
 }
