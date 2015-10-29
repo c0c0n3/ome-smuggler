@@ -1,4 +1,4 @@
-package util.runtime.jvm;
+package util.runtime;
 
 import static org.junit.Assert.*;
 import static util.sequence.Arrayz.array;
@@ -11,8 +11,8 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 @RunWith(Theories.class)
-public class BaseJvmArgTest {
-
+public class BaseProgramArgumentTest {
+    
     @DataPoints
     public static String[] values = array("", "x", " x y");
     
@@ -24,11 +24,11 @@ public class BaseJvmArgTest {
         assertArrayEquals(array(arg), actual);
     }
     
-    private BaseJvmArg<String> target;
+    private BaseProgramArgument<String> target;
     
     @Before
     public void setup() {
-        target = new BaseJvmArg<>();
+        target = new BaseProgramArgument<>();
     }
     
     @Test (expected = NullPointerException.class)

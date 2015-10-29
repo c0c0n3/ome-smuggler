@@ -1,4 +1,4 @@
-package util.runtime.jvm;
+package util.runtime;
 
 import static java.util.Objects.requireNonNull;
 import static util.object.Either.right;
@@ -10,18 +10,18 @@ import util.object.Either;
 
 /**
  * Base class to enforce the set/build protocol required by the {@link 
- * JvmArgument} interface.
+ * ProgramArgument} interface.
  */
-public class BaseJvmArg<T> implements JvmArgument<T> {
+public class BaseProgramArgument<T> implements ProgramArgument<T> {
 
     private Optional<T> maybeArg;
     
-    protected BaseJvmArg() {
+    protected BaseProgramArgument() {
         maybeArg = Optional.empty();
     }
 
     @Override
-    public JvmArgument<T> set(T arg) {
+    public ProgramArgument<T> set(T arg) {
         requireNonNull(arg);
         maybeArg = validate(arg).either(this::throwIfNotValid, Optional::of);
         return this;

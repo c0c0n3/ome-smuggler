@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import util.runtime.CommandBuilder;
+
 public class SysPropJvmArgTest {
 
     @Test (expected = IllegalArgumentException.class)
@@ -45,7 +47,7 @@ public class SysPropJvmArgTest {
     }
     
     private static String[] tokensArray(Stream<SysPropJvmArg> args) {
-        return args.map(JvmArgument::tokens)
+        return args.map(CommandBuilder::tokens)
                    .flatMap(x -> x)
                    .toArray(String[]::new);
     }

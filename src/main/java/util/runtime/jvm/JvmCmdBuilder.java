@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import util.runtime.ProgramArgument;
+
 /**
  * Factory methods to build a command to launch a JVM.
  */
@@ -16,15 +18,15 @@ public class JvmCmdBuilder {
 
     private static Stream<String> build(Stream<Stream<Object>> xs) {
         return xs.flatMap(identity())
-                 .map(x -> (JvmArgument<?>) x)
-                 .map(JvmArgument::tokens)
+                 .map(x -> (ProgramArgument<?>) x)
+                 .map(ProgramArgument::tokens)
                  .flatMap(identity());
     }
     
-    public static Stream<String> java(JvmArgument<Path> jrePath,
+    public static Stream<String> java(ProgramArgument<Path> jrePath,
                                       JarJvmArg appToRun, 
                                       Stream<SysPropJvmArg> props,
-                                      JvmArgument<?>...appArgs) {
+                                      ProgramArgument<?>...appArgs) {
         requireNonNull(jrePath, "jrePath");
         requireNonNull(appToRun, "appToRun");
         requireNonNull(props, "props");
@@ -37,15 +39,15 @@ public class JvmCmdBuilder {
         return build(xs);
     }
     
-    public static Stream<String> java(JvmArgument<Path> jrePath,
+    public static Stream<String> java(ProgramArgument<Path> jrePath,
                                       JarJvmArg appToRun, 
-                                      JvmArgument<?>...appArgs) {
+                                      ProgramArgument<?>...appArgs) {
         return java(jrePath, appToRun, Stream.empty(), appArgs);
     }
 
     public static Stream<String> thisJava(JarJvmArg appToRun, 
                                           Stream<SysPropJvmArg> props,
-                                          JvmArgument<?>...appArgs) {
+                                          ProgramArgument<?>...appArgs) {
         Optional<JarJvmArg> thisJre = JvmLocator
                                      .findCurrentJvmExecutable()
                                      .map(path -> { 

@@ -10,11 +10,12 @@ import java.util.stream.Stream;
 
 import util.object.Either;
 import util.object.Pair;
+import util.runtime.BaseProgramArgument;
 
 /**
  * A Java system property argument to pass to the JVM.
  */
-public class SysPropJvmArg extends BaseJvmArg<Pair<String, String>> {
+public class SysPropJvmArg extends BaseProgramArgument<Pair<String, String>> {
 
     /**
      * Converts the given properties into a stream of system property arguments,

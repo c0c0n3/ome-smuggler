@@ -1,24 +1,17 @@
-package util.runtime.jvm;
+package util.runtime;
 
 import java.util.stream.Stream;
 
 /**
- * A typed JVM argument.
+ * Builds the sequence of tokens that make up the string representation of a
+ * command to run an external program.
  */
-public interface JvmArgument<T> {
-    
-    /**
-     * Sets this argument's payload.
-     * @param arg the value to set.
-     * @return itself for use in a fluent API style.
-     * @throws NullPointerException if the argument is {@code null}.
-     * @throws IllegalArgumentException if the argument is not suitable.
-     */
-    JvmArgument<T> set(T arg);
+public interface CommandBuilder {
     
     /**
      * Builds the sequence of tokens that make up the string representation of 
-     * this JVM argument, e.g. (pseudo code) {@code [-cp, my.jar:your.jar]}.
+     * this command, e.g. (pseudo code) {@code [java, -cp, my.jar:ur.jar, 
+     * app.Main]}.
      * @return the list of tokens that make up this argument string.
      * @throws IllegalStateException if the argument hasn't been set yet.
      */
