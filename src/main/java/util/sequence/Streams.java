@@ -1,8 +1,8 @@
 package util.sequence;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.iterate;
 
@@ -280,6 +280,20 @@ public class Streams {
      */
     public static <T> Stream<T> emptyIfNull(Stream<T> xs) {
         return xs == null ? Stream.empty() : xs;
+    }
+    
+    /**
+     * Joins the given streams in encounter order.
+     * For example (pseudo code): {@code concat([1, 2], null, [3, 4]) = [1, 2, 
+     * 3, 4]}. Any {@code null} stream is replaced with empty.
+     * @param xs the streams to join.
+     * @return the joined stream.
+     * @throws NullPointerException if the argument array is {@code null}.
+     */
+    @SafeVarargs
+    public static <T> Stream<T> concat(Stream<T>...xs) {
+        requireNonNull(xs, "xs");
+        return Stream.of(xs).flatMap(identity());
     }
     
 }

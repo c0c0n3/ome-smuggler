@@ -267,6 +267,33 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         return filter(x -> x != null, list);
     }
     
+    /**
+     * Same as {@link Streams#concat(Stream...) Streams.concat} but operating 
+     * on arrays.
+     */
+    @SafeVarargs
+    public final A[] concat(A[]...lists) {
+        requireNonNull(lists, "lists");
+        
+        ArrayList<A[]> pruned = new ArrayList<>();
+        int sz = 0;
+        for (A[] xs : lists) {
+            if (xs != null) {
+                pruned.add(xs);
+                sz += xs.length;
+            }
+        }
+        
+        A[] joined = generator.apply(sz);
+        int startPos = 0;
+        for (A[] xs : pruned) {
+            System.arraycopy(xs, 0, joined, startPos, xs.length);
+            startPos += xs.length;
+        }
+        
+        return joined;
+    }
+    
 }
 /* So here's a riddle:
  * 
