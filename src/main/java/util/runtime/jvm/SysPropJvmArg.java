@@ -23,6 +23,7 @@ public class SysPropJvmArg extends BaseProgramArgument<Pair<String, String>> {
      * {@code null} value.
      * @param props the key-value pairs to convert.
      * @return the converted props.
+     * @throws NullPointerException if the argument is {@code null}.
      */
     public static <K, V> Stream<SysPropJvmArg> toJvmArguments(Map<K, V> props) {
         requireNonNull(props, "props");
