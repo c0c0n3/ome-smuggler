@@ -10,6 +10,21 @@ import util.runtime.BaseProgramArgument;
  */
 public class JarJvmArg extends BaseProgramArgument<Path> {
 
+    /**
+     * Creates a new instance.
+     */
+    public JarJvmArg() {
+        super();
+    }
+    
+    /**
+     * Creates a new instance to hold the specified argument.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public JarJvmArg(Path appJarPath) {
+        super(appJarPath);
+    }
+    
     @Override
     protected Stream<String> tokenize(Path arg) {
         return Stream.of("-jar", arg.toString());
