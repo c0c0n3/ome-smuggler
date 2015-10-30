@@ -9,6 +9,21 @@ import java.util.stream.Stream;
  */
 public class Monoids<T> {
 
+    /**
+     * Syntactic sugar to use in place of the {@link #Monoids(Monoid) 
+     * constructor}  if you like, e.g.
+     * <pre>
+     *   Monoids.with(someMonoid)
+     *          .fold(streamOfStream)
+     * </pre>
+     * @param monoid the monoid to use.
+     * @return a new {@code Monoids} instance.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <T> Monoids<T> with(Monoid<T> monoid) {
+        return new Monoids<>(monoid);
+    }
+    
     private final Monoid<T> monoid;
     
     /**
