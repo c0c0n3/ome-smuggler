@@ -3,8 +3,13 @@ package util.string;
 import static java.util.Objects.requireNonNull;
 import static util.sequence.Arrayz.isNullOrZeroLength;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 import java.util.function.Consumer;
 
 /**
@@ -79,5 +84,50 @@ public class Strings {
             requireString(xs[k], "null or empty at " + k);
         }
     }
+    
+    /**
+     * Reads the whole input into a UTF-8 string.
+     * @param source the data to read; the stream will be closed when this 
+     * method returns, even if an exception is thrown.
+     * @return the whole content of the stream as a string.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IOException if an error occurs while reading the stream.
+     */
+    public static String readAsString(InputStream source) throws IOException {
+        requireNonNull(source, "source");
+        
+        InputStreamReader in = new InputStreamReader(source, 
+                                                     StandardCharsets.UTF_8);
+        return readAsString(in);
+    }
+    
+    /**
+     * Reads the whole input into a UTF-8 string.
+     * @param source the data to read; the source will be closed when this 
+     * method returns, even if an exception is thrown.
+     * @return the whole input data provided by the source as a string.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IOException if an error occurs while reading from the source.
+     */
+    public static String readAsString(Readable source) throws IOException {
+        requireNonNull(source, "source");
+        
+        Scanner reader = new Scanner(source);
+        try {
+            reader.useDelimiter("\\A");
+            String input = reader.hasNext() ? reader.next() : "";
+            IOException maybeError = reader.ioException();
+            if (maybeError != null) {
+                throw maybeError;
+            }
+            return input;
+        }
+        finally {
+            reader.close();
+        }
+    }
+    /* Adapted from:
+     * - https://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
+     */
     
 }
