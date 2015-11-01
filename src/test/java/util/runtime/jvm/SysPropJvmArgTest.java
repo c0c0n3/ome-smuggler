@@ -31,12 +31,7 @@ public class SysPropJvmArgTest {
     @Test
     public void checkFormat() {
         String key = "a key ", value = " a value ";
-        char qq = '"';
-        String expected = new StringBuffer().append("-D")
-                         .append(qq).append(key).append(qq)
-                         .append('=')
-                         .append(qq).append(value).append(qq)
-                         .toString();
+        String expected = "-D" + key + "=" + value; 
                 
         String[] actual = new SysPropJvmArg(key, value)
                          .tokens()

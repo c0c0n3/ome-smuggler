@@ -17,19 +17,6 @@ public interface CommandBuilder {
      */
     Stream<String> tokens();  // see note at bottom of file
     
-    /**
-     * Utility function to quote a string that is part of a token.
-     * This is useful for e.g. system properties as each of them would be a
-     * single token but key and value parts need to be quoted if spaces are
-     * present.
-     * @param x the string to quote.
-     * @return the quoted string.
-     */
-    default String quote(String x) {  // see note at bottom of file
-        return String.format("\"%s\"", x);
-        // or String.format("\\\"%s\\\"", x); ???
-    }
-    
 }
 /* NOTE. Quoting & escaping.
  * When and how should token be quoted and what characters should be escaped?
@@ -50,31 +37,30 @@ public interface CommandBuilder {
  * escaping as well? Didn't have time to test this but it seems to work for 
  * simple cases which is all we need for now...
  * 
- * In the case of a system property containing spaces, we need to do some extra
- * quoting ourselves though. In fact, consider the token "-Da key = a value ";
- * even though ProcessBuilder will pass it as a single argument to the JVM, the
- * Java lib is not going to parse it the way we intended---i.e. key = "a key ",
- * value = " a value ". This is our fault as both key and value needed to be 
- * quoted as in the example JVM invocation below:
- * 
- *      java -D"a key "=" a value " Main
+ * In the case of a system property containing spaces, luckily this still works 
+ * so we don't need to do any extra quoting ourselves. 
+ * In fact, consider the token "-Da key = a value ". ProcessBuilder will pass it
+ * as a single argument to the JVM which will parse it as key = "a key " and
+ * value = " a value ". This is the same as what you'd get from a straight JVM
+ * invocation on the CLI as shown below:
+ *      
+ *      java "-Da key = a value " Main
  *  
  * If Main contains this code:
  * 
  *      String value = System.getProperty("a key ");
  *      System.out.println(">>>" + value + "<<<");
  * 
- * The output would be: 
+ * The output will be: 
  * 
  *      >>> a value <<<
  *      
- * Whereas quoting the *whole* token as in
+ * Also note that quoting each token as in
  * 
- *      java "-Da key = a value " Main
+ *      java -D"a key "=" a value " Main
  *      
- * would output:
+ * has the exact same effect, the output still is:
  * 
- *      >>>null<<<
+ *      >>> a value <<<
  *      
- * which is correct as there would be no property with a key of "a key ".
  */

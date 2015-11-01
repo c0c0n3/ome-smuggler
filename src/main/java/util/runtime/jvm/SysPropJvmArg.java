@@ -37,6 +37,23 @@ public class SysPropJvmArg extends BaseProgramArgument<Pair<String, String>> {
     }
     
     /**
+     * Creates a new instance.
+     */
+    public SysPropJvmArg() {
+        super();
+    }
+    
+    /**
+     * Sets the payload of this argument to be the specified key-value pair.
+     * @param arg the key-value pair.
+     * @throws IllegalArgumentException if the key is {@code null} or empty or
+     * if the value is {@code null}.
+     */
+    public SysPropJvmArg(Pair<String, String> arg) {
+        super(arg);
+    }
+    
+    /**
      * Sets the payload of this argument to be the specified key-value pair.
      * @param key the property key.
      * @param value the property value.
@@ -58,7 +75,7 @@ public class SysPropJvmArg extends BaseProgramArgument<Pair<String, String>> {
     @Override
     protected Stream<String> tokenize(Pair<String, String> arg) {
         String token = String
-                      .format("-D%s=%s", quote(arg.fst()), quote(arg.snd()));
+                      .format("-D%s=%s", arg.fst(), arg.snd());
         return Stream.of(token);
     }
     

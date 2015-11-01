@@ -46,7 +46,7 @@ public class JvmCmdBuilderTest {
                 .toArray(String[]::new);
         
         String[] expected = array("-jar", "my.jar", 
-                                  "-D\"k1\"=\"v1\"", "-D\"k2\"=\"v2\"", 
+                                  "-Dk1=v1", "-Dk2=v2", 
                                   "a1", "a2");
         
         assertArrayEquals(expected, actual);
@@ -68,7 +68,7 @@ public class JvmCmdBuilderTest {
                 .toArray(String[]::new);
         
         String[] expected = array("-cp", "my.jar", 
-                                  "-D\"k1\"=\"v1\"", "-D\"k2\"=\"v2\"",
+                                  "-Dk1=v1", "-Dk2=v2",
                                   "Main",
                                   "a1", "a2");
         
