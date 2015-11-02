@@ -14,7 +14,7 @@ import ome.smuggler.config.items.LogLevel;
 
 
 /**
- * The data that goes into 'config/application-*.properties'.
+ * The data that goes into 'config/application*.properties'.
  */
 public class SpringBootAppPropsFile 
     implements ConfigProvider<Properties> {
@@ -27,7 +27,7 @@ public class SpringBootAppPropsFile
         cfg.set(appName().with(appName));
         
         cfg.set(logFilePathName().with("ome-smuggler.log"));
-        cfg.set(rootLogLevel().with(LogLevel.ERROR));
+        cfg.set(rootLogLevel().with(LogLevel.INFO));
         
         cfg.setAll(endpointsEnabled(), true);
         cfg.setAll(endpointsSensitive(), false);

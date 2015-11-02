@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.util.List;
 
 import util.error.Exceptions;
-import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.SpringBootAppPropsFile;
 
 
 /**
  * Run this class redirecting {@code stdout} to 
- * {@code config/application-prod.properties} to generate the file. 
- * (Note that 'prod' is the value of {@link Profiles#Prod}.)
+ * {@code config/application.properties} to generate the file. 
  * This way we can keep all config data in Java and avoid common issues.
  * <pre>
- * java -jar build/libs/ome-smuggler-0.1.0.jar ome.smuggler.run.SpringBootPropsGen > src/main/resources/config/application-prod.properties
+ * java -jar build/libs/ome-smuggler-0.1.0.jar ome.smuggler.run.SpringBootPropsGen > src/main/resources/config/application.properties
  *</pre>
  */
 public class SpringBootPropsGen implements RunnableApp {

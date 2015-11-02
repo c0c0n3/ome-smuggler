@@ -11,7 +11,7 @@ build
 .project
 .settings
 
-# Log and props files
+# Only ignore log and props files in the root directory
 
-*.log
-*.properties
+/*.log
+/*.properties
