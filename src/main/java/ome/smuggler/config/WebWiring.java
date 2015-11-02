@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Additional Spring bean wiring and configuration for the web app.
  */
 @Configuration
-//@EnableWebMvc
 public class WebWiring extends WebMvcConfigurerAdapter {
 
     private void setStringConverterMediaTypes(HttpMessageConverter<?> x) {

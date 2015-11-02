@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.springframework.boot.SpringApplication;
+
+import ome.smuggler.Main;
 import ome.smuggler.config.Profiles;
 
 /**
@@ -17,8 +20,10 @@ public class ImportServer implements RunnableApp {
 
     @Override
     public void run(List<String> appArgs) {
-        String[] p = getProfiles(appArgs);
-        for (String x : p) System.out.println(">>> " + x);
+        SpringApplication app = new SpringApplication(Main.class);
+        app.setAdditionalProfiles(getProfiles(appArgs));
+        
+        app.run();  // could pass in appArgs if needed
     }
 
     protected String[] getProfiles(List<String> appArgs) {

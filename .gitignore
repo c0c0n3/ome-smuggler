@@ -11,6 +11,7 @@ build
 .project
 .settings
 
-# Log files
+# Log and props files
 
 *.log
+*.properties
