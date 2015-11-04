@@ -3,12 +3,12 @@ package ome.smuggler.core.data;
 import static util.object.Either.left;
 import static util.object.Either.right;
 import util.object.Either;
-import util.object.ValueParser;
+import util.object.ObjectParser;
 
 /**
  * A parser for positive integers.
  */
-public class PositiveIntParser implements ValueParser<Integer> {
+public class PositiveIntParser implements ObjectParser<Integer> {
 
     @Override
     public Either<String, Integer> parseNonEmpty(String value) {

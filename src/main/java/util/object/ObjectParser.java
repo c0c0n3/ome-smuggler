@@ -7,7 +7,7 @@ import static util.string.Strings.isNullOrEmpty;
  * Turns a textual representation of a {@code T}-value into an instance of 
  * {@code T}.
  */
-public interface ValueParser<T> {
+public interface ObjectParser<T> {
 
     /**
      * Parses a textual representation of a {@code T}-value. 
@@ -30,7 +30,7 @@ public interface ValueParser<T> {
     }
     
 }
-/* NOTE. A poor man interface for parsing.
+/* NOTE. A poor man's interface for parsing.
  * Moderately useful for validation, but seriously hampered by the lack of 
  * composability. Use it if it fits your needs but be aware that there are 
  * way better options out there, most notably parser combinator libraries.
