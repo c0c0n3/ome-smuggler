@@ -1,5 +1,9 @@
 package ome.smuggler.config;
 
+import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.q.EnqueueTask;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -7,5 +11,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class Wiring {
-        
+
+    @Bean
+    public ImportRequestor importRequestor() {
+        return new EnqueueTask();
+    }
+    
 }

@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.web;
 
 /**
  * Web clients use instances of this class to request an import.
@@ -18,6 +18,14 @@ public class ImportRequest {
         public String text;
         public String link;
     }
+    
+    /**
+     * The email address to send an outcome notification to.
+     * This should normally be the email address of the user who requested the
+     * import so that on completion the system can send them an email indicating
+     * success or failure to import the data.
+     */
+    public String experimenterEmail;
     
     /**
      * The URI of the file or directory containing the data to import.

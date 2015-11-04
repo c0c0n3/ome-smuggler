@@ -1,14 +1,22 @@
 package ome.smuggler.web;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import ome.smuggler.core.data.ImportRequest;
 
+import javax.servlet.http.HttpServletRequest;
+
+import ome.smuggler.core.data.ImportId;
+import ome.smuggler.core.service.ImportRequestor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Enqueues a message to request an OMERO import.
@@ -18,10 +26,44 @@ import org.springframework.web.context.WebApplicationContext;
 @Scope(WebApplicationContext.SCOPE_REQUEST)
 public class ImportController {
 
-    @RequestMapping(method = POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void enqueue(@RequestBody ImportRequest request) { 
-        System.out.println(">>> host: " + request.omeroHost);
-        System.out.println(">>>  key: " + request.sessionKey);
+    @Autowired
+    private ImportRequestor service;
+    
+    
+    private ImportResponse responseBody(HttpServletRequest req, ImportId task) {
+        HttpRequest request = new ServletServerHttpRequest(req);
+        ImportResponse responseBody = new ImportResponse();
+        responseBody.statusUri = UriComponentsBuilder
+                                .fromHttpRequest(request)
+                                .path("/")
+                                .path(task.id())
+                                .toUriString();
+        return responseBody;
+    }
+    
+    /**
+     * Adds a request to the import queue.
+     * The requested import will be queued and will be processed as soon as 
+     * resources are available; this method returns immediately so that the 
+     * client doesn't have to wait for the import to complete. 
+     * An import outcome notification will be sent to the email address 
+     * specified in the request. 
+     * The request must contain a valid OMERO session key that the client has
+     * acquired before hand; the corresponding OMERO session will be used to
+     * import the data. However, the client can close its session as soon as
+     * this web method returns.
+     * @param request details what image data to import.
+     */
+    @RequestMapping(method = POST, 
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ImportResponse enqueue(HttpServletRequest request,
+                                  @RequestBody ImportRequest data) { 
+        System.out.println(">>> host: " + data.omeroHost);
+        System.out.println(">>>  key: " + data.sessionKey);
+        
+        ImportId task = service.enqueue(null);
+        return responseBody(request, task);
     }
     // curl -H 'Content-Type: application/json'  -X POST -d '' http://localhost:8080/ome/import
     // curl -H 'Content-Type: application/json'  -X POST -d '{}' http://localhost:8080/ome/import
@@ -29,4 +71,5 @@ public class ImportController {
     // curl -H 'Content-Type: application/json'  -X POST -d '{"omeroHost":"gauss", "sessionKey":""}' http://localhost:8080/ome/import
     // NB first request above is silently discarded by spring booty so enqueue
     // is not called!
+    
 }
