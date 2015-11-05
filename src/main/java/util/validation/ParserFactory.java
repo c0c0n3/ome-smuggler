@@ -7,6 +7,7 @@ import static util.object.Either.right;
 import java.util.stream.Stream;
 
 import util.object.Either;
+import util.object.Pair;
 
 /**
  * Common parsers.
@@ -67,6 +68,19 @@ public class ParserFactory {
      */
     public static ObjectParser<Long> positiveLongParser() {
         return longParser().withValidation(checkPositive());
+    }
+    
+    /**
+     * Combines two parsers into one that applies the fist parser to the first
+     * token and the second parser to the second token to produce a parsed pair.
+     * @param fst parses the first token.
+     * @param snd parses the second token.
+     * @return the parser.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <X, Y> ObjectParser<Pair<X, Y>> pairParser(
+            ObjectParser<X> fst, ObjectParser<Y> snd) {
+        return new TwoTokenParser<>(fst, snd);
     }
     
 }
