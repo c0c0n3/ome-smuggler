@@ -1,8 +1,8 @@
 package ome.smuggler.core.data;
 
-public class DatasetId extends PositiveInt {
+public class DatasetId extends PositiveN {
 
-    protected DatasetId(Integer wrappedValue) {
+    protected DatasetId(Long wrappedValue) {
         super(wrappedValue);
     }
 

@@ -1,8 +1,8 @@
 package ome.smuggler.core.data;
 
-public class ScreenId extends PositiveInt {
+public class ScreenId extends PositiveN {
 
-    protected ScreenId(Integer wrappedValue) {
+    protected ScreenId(Long wrappedValue) {
         super(wrappedValue);
     }
 

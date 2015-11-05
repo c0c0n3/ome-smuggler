@@ -18,7 +18,7 @@ public class ImportInput {
     private final String sessionKey;
     private Optional<String> name;
     private Optional<String> description;    
-    private Optional<PositiveInt> datasetOrScreenId;
+    private Optional<PositiveN> datasetOrScreenId;
 
     public ImportInput(Email experimenterEmail, URI target, URI omero, 
                        String sessionKey) {
@@ -70,17 +70,17 @@ public class ImportInput {
         return this;
     }
     
-    public Optional<PositiveInt> getDatasetOrScreenId() {
+    public Optional<PositiveN> getDatasetOrScreenId() {
         return datasetOrScreenId;
     }
     
-    public ImportInput setDatasetId(PositiveInt id) {
+    public ImportInput setDatasetId(PositiveN id) {
         requireNonNull(id, "id");
         datasetOrScreenId = Optional.of(new DatasetId(id.get()));
         return this;
     }
     
-    public ImportInput setScreenId(PositiveInt id) {
+    public ImportInput setScreenId(PositiveN id) {
         requireNonNull(id, "id");
         datasetOrScreenId = Optional.of(new ScreenId(id.get()));
         return this;
