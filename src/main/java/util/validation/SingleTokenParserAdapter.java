@@ -49,8 +49,7 @@ public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
     }
     
     @Override
-    public Either<String, T> parse(Stream<String> tokens) {
-        requireNonNull(tokens, "tokens");
+    public Either<String, T> parseNonNull(Stream<String> tokens) {
         String value = tokens.findFirst().orElse(null);
         return parse(value);
     }
