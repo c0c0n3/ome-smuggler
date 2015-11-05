@@ -1,6 +1,5 @@
 package util.validation;
 
-import static java.util.function.Function.identity;
 import static java.util.Objects.requireNonNull;
 import static util.object.Either.right;
 import static util.object.Either.left;
@@ -16,15 +15,6 @@ import util.object.Either;
  * Makes a function {@code String → T} works as an {@link ObjectParser}.  
  */
 public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
-
-    /**
-     * @return a parser that accepts a string of length at least one and rejects
-     * {@code null} and empty strings.
-     */
-    public static SingleTokenParserAdapter<String> string() {
-        return new SingleTokenParserAdapter<>(identity());
-    }
-    
     
     private final Function<String, T> parser;
     
@@ -51,7 +41,7 @@ public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
     @Override
     public Either<String, T> parseNonNull(Stream<String> tokens) {
         String value = tokens.findFirst().orElse(null);
-        return parse(value);
+        return doParse(value);
     }
 
     /**
@@ -59,7 +49,7 @@ public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
      * @param value the input to parse, may be {@code null} or empty.
      * @return either the parsed value (right) or a parse error message (left).
      */
-    public Either<String, T> parse(String value) {
+    private Either<String, T> doParse(String value) {
         if (isNullOrEmpty(value)) {
             return left("no input");
         }

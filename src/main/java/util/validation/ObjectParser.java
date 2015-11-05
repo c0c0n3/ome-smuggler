@@ -11,16 +11,7 @@ import util.object.Either;
  * {@code T}.
  */
 public interface ObjectParser<T> {
-    
-    /**
-     * Builds a parser that returns the input stream as is, provided it is not
-     * {@code null}, in which case a {@link NullPointerException} is thrown.
-     * @return a no-op parser.
-     */
-    static ObjectParser<Stream<String>> identityParser() { 
-        return Either::right;
-    }
-    
+        
     /**
      * Same as {@link #parse(Stream)} but doesn't check if the argument is
      * {@code null}. This is the only method you need to implement as you can
@@ -42,6 +33,14 @@ public interface ObjectParser<T> {
     default Either<String, T> parse(Stream<String> tokens) {
         requireNonNull(tokens, "tokens");
         return parseNonNull(tokens);
+    }
+    
+    /**
+     * Convenience method, same as {@link #parse(Stream)}.
+     */
+    default Either<String, T> parse(String...tokens) {
+        requireNonNull(tokens, "tokens");
+        return parseNonNull(Stream.of(tokens));
     }
     
     /**
@@ -70,7 +69,7 @@ public interface ObjectParser<T> {
  *
  * To see why this approach to parsing is lame think of how you could combine
  * two parsers into a third, e.g. an integer parser with one that checks if
- * the integer is positive. Well, we needed to make a special case for that 
+ * the integer is positive. Well, I needed to make a special case for that 
  * (withValidation method) even though, in principle, it's not really a very
  * a different concept: 
  * 
@@ -78,7 +77,7 @@ public interface ObjectParser<T> {
  *  + validation = transforming an input into itself or an error
  *  
  * Surely these guys must be siblings? (In fact they belong to the same family
- * of functions = you can come up with a polymorphic function to represent the
+ * of functions; you can come up with a polymorphic function to represent the
  * whole family.)  
  * I'm kicking myself. Nuff said. 
  */

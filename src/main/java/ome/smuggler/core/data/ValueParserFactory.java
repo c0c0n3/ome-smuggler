@@ -1,48 +1,36 @@
 package ome.smuggler.core.data;
 
-import static util.object.Either.left;
-import static util.object.Either.right;
-import static util.validation.SingleTokenParserAdapter.string;
+import static util.validation.ParserFactory.positiveIntParser;
+import static util.validation.ParserFactory.stringParser;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import util.object.Either;
-import util.validation.SingleTokenParserAdapter;
 
 public class ValueParserFactory {
 
     private static <T extends PositiveInt>
-    Either<String, T> parseId(String value, Function<Integer, T> mapper) {
-        return parsePositiveInt(value).map(mapper);
+    Either<String, T> parsePosInt(String value, Function<Integer, T> mapper) {
+        return positiveIntParser().parse(value).map(mapper);
     }
     
     public static Either<String, DatasetId> datasetId(String value) {
-        return parseId(value, DatasetId::new);
+        return parsePosInt(value, DatasetId::new);
     }
     
     public static Either<String, ScreenId> screenId(String value) {
-        return parseId(value, ScreenId::new);
+        return parsePosInt(value, ScreenId::new);
     }
     
     public static Either<String, Email> email(String value) {
-        return string()
+        return stringParser()
               .withValidation(Email.validator())
-              .parse(Stream.of(value))
+              .parse(value)
               .map(Email::new);
     }
     
-    public static Either<String, Integer> parsePositiveInt(String value) {
-        return new SingleTokenParserAdapter<>(Integer::parseInt)
-                    .withValidation(parsed -> 
-                        parsed > 0 ? right(parsed) 
-                                   : left("not a positive integer: " + parsed)
-                        )
-                    .parse(Stream.of(value));
-    }
-    
     public static Either<String, PositiveInt> positiveInt(String value) {
-        return parsePositiveInt(value).map(PositiveInt::new);
+        return parsePosInt(value, PositiveInt::new);
     }
 
 }
