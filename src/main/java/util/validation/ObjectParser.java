@@ -49,7 +49,7 @@ public interface ObjectParser<T> {
      * @return a parser that uses this object to do the parsing and then applies
      * the given validator to the parsed result.
      */
-    default ObjectParser<T> withValidation(Validator<T> validator) {
+    default ObjectParser<T> withValidation(Validator<String, T> validator) {
         return new ValidatingObjectParser<>(this, validator);
     }
     

@@ -1,8 +1,6 @@
 package util.validation;
 
 import static java.util.Objects.requireNonNull;
-import static util.object.Either.left;
-import static util.object.Either.right;
 
 import java.util.stream.Stream;
 
@@ -14,7 +12,7 @@ import util.object.Either;
 public class ValidatingObjectParser<T> implements ObjectParser<T> {
 
     private final ObjectParser<T> parser;
-    private final Validator<T> validator;
+    private final Validator<String, T> validator;
     
     /**
      * Creates a new instance.
@@ -23,20 +21,12 @@ public class ValidatingObjectParser<T> implements ObjectParser<T> {
      * @throws NullPointerException if any argument is {@code null}.
      */
     public ValidatingObjectParser(ObjectParser<T> parser, 
-                                  Validator<T> validator) {
+                                  Validator<String, T> validator) {
         requireNonNull(parser, "parser");
         requireNonNull(validator, "validator");
         
         this.parser = parser;
         this.validator = validator;
-    }
-
-    private Either<String, T> doValidation(T parsed) {
-        ValidationOutcome outcome = validator.validate(parsed);
-        if (outcome == null || outcome.succeeded()) {
-            return right(parsed);
-        }
-        return left(outcome.toString());
     }
     
     /**
@@ -49,7 +39,7 @@ public class ValidatingObjectParser<T> implements ObjectParser<T> {
      */
     @Override
     public Either<String, T> parse(Stream<String> tokens) {
-        return parser.parse(tokens).bind(this::doValidation);
+        return parser.parse(tokens).bind(validator::validate);
     }
     
 }
