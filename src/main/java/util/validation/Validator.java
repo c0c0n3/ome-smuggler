@@ -1,4 +1,4 @@
-package util.object;
+package util.validation;
 
 /**
  * A function that validates {@code T}-values.

@@ -1,14 +1,14 @@
 package ome.smuggler.core.data;
 
-import static util.object.SingleTokenParserAdapter.string;
-import static util.object.ValidationOutcome.error;
-import static util.object.ValidationOutcome.success;
+import static util.validation.SingleTokenParserAdapter.string;
+import static util.validation.ValidationOutcome.error;
+import static util.validation.ValidationOutcome.success;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import util.object.Either;
-import util.object.SingleTokenParserAdapter;
+import util.validation.SingleTokenParserAdapter;
 
 public class ValueParserFactory {
 

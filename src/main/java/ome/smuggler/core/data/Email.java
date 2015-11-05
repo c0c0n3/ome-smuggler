@@ -1,13 +1,13 @@
 package ome.smuggler.core.data;
 
-import static util.object.ValidationOutcome.error;
-import static util.object.ValidationOutcome.success;
+import static util.validation.ValidationOutcome.error;
+import static util.validation.ValidationOutcome.success;
 
 import java.util.regex.Pattern;
 
-import util.object.ValidationOutcome;
-import util.object.Validator;
 import util.object.Wrapper;
+import util.validation.ValidationOutcome;
+import util.validation.Validator;
 
 /**
  * An email address.

@@ -1,10 +1,12 @@
-package util.object;
+package util.validation;
 
 import static java.util.Objects.requireNonNull;
 import static util.object.Either.left;
 import static util.object.Either.right;
 
 import java.util.stream.Stream;
+
+import util.object.Either;
 
 /**
  * Combines parsing and validation of {@code T}-values.

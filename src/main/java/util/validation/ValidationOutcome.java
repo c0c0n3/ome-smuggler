@@ -1,4 +1,4 @@
-package util.object;
+package util.validation;
 
 /**
  * Enumerates success and failure, with an error message attached to failure.

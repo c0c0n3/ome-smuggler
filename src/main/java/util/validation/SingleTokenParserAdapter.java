@@ -1,4 +1,4 @@
-package util.object;
+package util.validation;
 
 import static java.util.function.Function.identity;
 import static java.util.Objects.requireNonNull;
@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import util.lambda.FunctionE;
+import util.object.Either;
 
 /**
  * Makes a function {@code String → T} works as an {@link ObjectParser}.  
