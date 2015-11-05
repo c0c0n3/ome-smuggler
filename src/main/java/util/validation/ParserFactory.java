@@ -12,7 +12,13 @@ import util.object.Either;
  * Common parsers.
  */
 public class ParserFactory {
-
+    
+    private static <T extends Number> Validator<String, T> checkPositive() {
+        return parsed -> parsed.longValue() > 0 ? 
+                                right(parsed) 
+                              : left("not a positive integer: " + parsed);
+    }
+    
     /**
      * Builds a parser that returns the input stream as is, provided it is not
      * {@code null}, in which case a {@link NullPointerException} is thrown.
@@ -44,11 +50,23 @@ public class ParserFactory {
      * @return the parser.
      */
     public static ObjectParser<Integer> positiveIntParser() {
-        return intParser()
-              .withValidation(parsed -> 
-                  parsed > 0 ? right(parsed) 
-                             : left("not a positive integer: " + parsed)
-              );
+        return intParser().withValidation(checkPositive());
+    }
+    
+    /**
+     * Builds a parser that accepts longs.
+     * @return the parser.
+     */
+    public static ObjectParser<Long> longParser() {
+        return new SingleTokenParserAdapter<>(Long::parseLong);
+    }
+    
+    /**
+     * Builds a parser that only accepts positive longs.
+     * @return the parser.
+     */
+    public static ObjectParser<Long> positiveLongParser() {
+        return longParser().withValidation(checkPositive());
     }
     
 }
