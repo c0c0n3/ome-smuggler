@@ -40,9 +40,14 @@ public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
     
     @Override
     public Either<String, T> parseNonNull(Stream<String> tokens) {
-        String value = tokens.findFirst().orElse(null);
+        String[] ts = tokens.toArray(String[]::new);
+        String value = ts.length > 0 ? ts[0] : null;
         return doParse(value);
     }
+    /* (*) Ideally this would be: 
+     *     String value = tokens.findFirst().orElse(null);
+     * but findFirst throws if the stream value is null.
+     */
 
     /**
      * Parses a textual representation of a {@code T}-value. 
