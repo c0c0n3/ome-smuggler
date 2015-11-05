@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.core.types;
 
 import static util.object.Either.left;
 import static util.object.Either.right;
