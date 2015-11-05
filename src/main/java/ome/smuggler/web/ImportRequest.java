@@ -6,18 +6,6 @@ package ome.smuggler.web;
  * transfer of information from the client to the server.
  */
 public class ImportRequest {
-
-    /**
-     * An OME image annotation.
-     */
-    public static class Annotation {
-        
-        public Annotation() { }
-        
-        public String namespace;
-        public String text;
-        public String link;
-    }
     
     /**
      * The email address to send an outcome notification to.
@@ -81,11 +69,16 @@ public class ImportRequest {
      * field specifies its ID; leave out otherwise.
      */
     public String screenId;
-    
+
     /**
      * Any optional image annotations to attach to the image being imported.
      */
-    public Annotation[] annotations;
+    public String[][] textAnnotations;
+    
+    /**
+     * Any optional id annotations to attach to the image being imported.
+     */
+    public String[] annotationIds;
     
     public ImportRequest() { }
 

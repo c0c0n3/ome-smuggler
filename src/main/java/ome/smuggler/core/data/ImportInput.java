@@ -1,10 +1,15 @@
 package ome.smuggler.core.data;
 
 import static java.util.Objects.requireNonNull;
+import static util.sequence.Arrayz.hasNulls;
 import static util.string.Strings.requireString;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 /**
@@ -19,6 +24,8 @@ public class ImportInput {
     private Optional<String> name;
     private Optional<String> description;    
     private Optional<PositiveN> datasetOrScreenId;
+    private List<TextAnnotation> textAnnotations;
+    private List<PositiveN> annotationIds;
 
     public ImportInput(Email experimenterEmail, URI target, URI omero, 
                        String sessionKey) {
@@ -34,6 +41,8 @@ public class ImportInput {
         name = Optional.empty();
         description = Optional.empty();
         datasetOrScreenId = Optional.empty();
+        textAnnotations = new ArrayList<>();
+        annotationIds = new ArrayList<>();
     }
 
     public Email getExperimenterEmail() {
@@ -86,6 +95,30 @@ public class ImportInput {
         return this;
     }
 
-    // TODO annotations!
-    // should it be 2 classes? AnnoRef and AnnoText??
+    public ImportInput addTextAnnotation(TextAnnotation...xs) {
+        if (xs == null || hasNulls(xs)) {  // zero len is okay tho
+            throw new NullPointerException();
+        }
+        textAnnotations.addAll(Arrays.asList(xs));
+        
+        return this;
+    }
+    
+    public ImportInput addAnnotationId(PositiveN...xs) {
+        if (xs == null || hasNulls(xs)) {  // zero len is okay tho
+            throw new NullPointerException();
+        }
+        annotationIds.addAll(Arrays.asList(xs));
+        
+        return this;
+    }
+    
+    public Stream<TextAnnotation> getTextAnnotations() {
+        return textAnnotations.stream();
+    }
+    
+    public Stream<PositiveN> getAnnotationIds() {
+        return annotationIds.stream();
+    }
+    
 }
