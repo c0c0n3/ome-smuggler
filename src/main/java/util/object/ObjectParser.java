@@ -1,5 +1,8 @@
 package util.object;
 
+import static java.util.Objects.requireNonNull;
+import static util.object.Either.right;
+
 import java.util.stream.Stream;
 
 /**
@@ -7,6 +10,18 @@ import java.util.stream.Stream;
  * {@code T}.
  */
 public interface ObjectParser<T> {
+    
+    /**
+     * Builds a parser that returns the input stream as is, provided it is not
+     * {@code null}, in which case a {@link NullPointerException} is thrown.
+     * @return a no-op parser.
+     */
+    static ObjectParser<Stream<String>> identityParser() { 
+        return tokens -> {
+            requireNonNull(tokens, "tokens");
+            return right(tokens);
+        };
+    }
     
     /**
      * Parses a textual representation of a {@code T}-value. 

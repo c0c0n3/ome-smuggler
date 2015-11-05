@@ -1,5 +1,6 @@
 package util.object;
 
+import static java.util.function.Function.identity;
 import static java.util.Objects.requireNonNull;
 import static util.object.Either.right;
 import static util.object.Either.left;
@@ -15,6 +16,15 @@ import util.lambda.FunctionE;
  */
 public class SingleTokenParserAdapter<T> implements ObjectParser<T> {
 
+    /**
+     * @return a parser that accepts a string of length at least one and rejects
+     * {@code null} and empty strings.
+     */
+    public static SingleTokenParserAdapter<String> string() {
+        return new SingleTokenParserAdapter<>(identity());
+    }
+    
+    
     private final Function<String, T> parser;
     
     /**

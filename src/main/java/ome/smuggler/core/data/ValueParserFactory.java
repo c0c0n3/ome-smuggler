@@ -1,14 +1,20 @@
 package ome.smuggler.core.data;
 
+import static util.object.SingleTokenParserAdapter.string;
+import static util.object.ValidationOutcome.error;
+import static util.object.ValidationOutcome.success;
+
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import util.object.Either;
+import util.object.SingleTokenParserAdapter;
 
 public class ValueParserFactory {
 
     private static <T extends PositiveInt>
     Either<String, T> parseId(String value, Function<Integer, T> mapper) {
-        return new PositiveIntParser().parse(value).map(mapper);
+        return parsePositiveInt(value).map(mapper);
     }
     
     public static Either<String, DatasetId> datasetId(String value) {
@@ -20,7 +26,23 @@ public class ValueParserFactory {
     }
     
     public static Either<String, Email> email(String value) {
-        return new EmailParser().parse(value).map(Email::new);
+        return string()
+              .withValidation(Email.validator())
+              .parse(Stream.of(value))
+              .map(Email::new);
     }
     
+    public static Either<String, Integer> parsePositiveInt(String value) {
+        return new SingleTokenParserAdapter<>(Integer::parseInt)
+                    .withValidation(parsed -> 
+                        parsed > 0 ? success() 
+                                   : error("not a positive integer: " + parsed)
+                        )
+                    .parse(Stream.of(value));
+    }
+    
+    public static Either<String, PositiveInt> positiveInt(String value) {
+        return parsePositiveInt(value).map(PositiveInt::new);
+    }
+        
 }
