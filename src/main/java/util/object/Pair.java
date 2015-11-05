@@ -7,6 +7,14 @@ import java.util.Objects;
  */
 public class Pair<A, B> {
 
+    /**
+     * Syntactic sugar to use in place of the constructor.
+     */
+    public static <A, B> Pair<A, B> pair(A x, B y) {
+        return new Pair<>(x, y);
+    }
+
+    
     private final A fst;
     private final B snd;
 
