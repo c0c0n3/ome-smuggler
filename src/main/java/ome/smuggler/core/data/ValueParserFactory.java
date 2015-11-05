@@ -1,5 +1,6 @@
 package ome.smuggler.core.data;
 
+import static util.validation.ParserFactory.pairParser;
 import static util.validation.ParserFactory.positiveLongParser;
 import static util.validation.ParserFactory.stringParser;
 
@@ -31,6 +32,12 @@ public class ValueParserFactory {
     
     public static Either<String, PositiveN> positiveInt(String value) {
         return parsePosInt(value, PositiveN::new);
+    }
+    
+    public static Either<String, TextAnnotation> textAnnotation(String...xs) {
+        return pairParser(stringParser(), stringParser())
+              .parse(xs)
+              .map(TextAnnotation::new);
     }
 
 }
