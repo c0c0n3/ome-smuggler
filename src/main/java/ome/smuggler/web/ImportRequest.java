@@ -35,7 +35,8 @@ public class ImportRequest {
     public String omeroHost;
     
     /**
-     * The port of the OMERO server. This is a mandatory field.
+     * The port of the OMERO server. This is a mandatory field and must parse
+     * to a non-negative integer.
      */
     public String omeroPort;
     
@@ -60,23 +61,36 @@ public class ImportRequest {
     
     /**
      * If the image is to be imported into an existing OMERO dataset, then this
-     * field specifies its ID; leave out otherwise.
+     * field specifies its ID; leave out otherwise. If this field is specified,
+     * then it must parse to a non-negative long. Also, this field and the 
+     * {@link #screenId} are mutually exclusive, it is only allowed to specify
+     * one.
+     * @see #screenId
      */
     public String datasetId;
     
     /**
      * If the image is to be imported into an existing OMERO screen, then this
-     * field specifies its ID; leave out otherwise.
+     * field specifies its ID; leave out otherwise. If this field is specified,
+     * then it must parse to a non-negative long. Also, this field and the 
+     * {@link #datasetId} are mutually exclusive, it is only allowed to specify
+     * one.
+     * @see #datasetId
      */
     public String screenId;
 
     /**
      * Any optional image annotations to attach to the image being imported.
+     * Each entry is an array-stored pair {@code [namespace, text]} with both
+     * strings having length at least one. Any entry not conforming to this
+     * format will cause a validation error.
      */
     public String[][] textAnnotations;
     
     /**
-     * Any optional id annotations to attach to the image being imported.
+     * Any optional annotation ID's to attach to the image being imported.
+     * If given, this array must contain a list of values that parse to a 
+     * non-negative long in order to pass validation. 
      */
     public String[] annotationIds;
     

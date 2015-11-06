@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.core.types;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package ome.smuggler.core.service;
 
-import ome.smuggler.core.data.ImportId;
-import ome.smuggler.core.data.ImportInput;
+import ome.smuggler.core.types.ImportId;
+import ome.smuggler.core.types.ImportInput;
 
 /**
  * Triggers an OMERO import.

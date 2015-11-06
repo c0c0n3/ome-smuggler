@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.core.types;
 
 import util.object.Pair;
 import util.object.Wrapper;

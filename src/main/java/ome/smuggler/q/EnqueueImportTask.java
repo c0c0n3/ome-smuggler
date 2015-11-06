@@ -1,13 +1,13 @@
 package ome.smuggler.q;
 
-import ome.smuggler.core.data.ImportId;
-import ome.smuggler.core.data.ImportInput;
 import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.types.ImportId;
+import ome.smuggler.core.types.ImportInput;
 
 /**
  * Triggers an OMERO import.
  */
-public class EnqueueTask implements ImportRequestor {
+public class EnqueueImportTask implements ImportRequestor {
 
     @Override
     public ImportId enqueue(ImportInput request) {

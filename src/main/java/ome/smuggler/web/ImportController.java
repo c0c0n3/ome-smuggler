@@ -4,8 +4,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.servlet.http.HttpServletRequest;
 
-import ome.smuggler.core.data.ImportId;
 import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.types.ImportId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

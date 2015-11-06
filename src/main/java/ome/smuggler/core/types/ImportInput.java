@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
 import static util.sequence.Arrayz.hasNulls;

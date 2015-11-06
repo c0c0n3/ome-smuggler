@@ -1,4 +1,4 @@
-package ome.smuggler.core.data;
+package ome.smuggler.core.types;
 
 import static util.validation.ParserFactory.pairParser;
 import static util.validation.ParserFactory.positiveLongParser;
