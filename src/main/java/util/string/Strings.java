@@ -1,6 +1,7 @@
 package util.string;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static util.sequence.Arrayz.isNullOrZeroLength;
 
 import java.io.IOException;
@@ -137,7 +138,7 @@ public class Strings {
      * Breaks up the given text into lines.
      * @param text the input text.
      * @return the sequence of lines making up text.
-     * @throws NullPointerException if {@code null} arguments.
+     * @throws NullPointerException if the argument is {@code null} .
      */
     public static Stream<String> lines(String text) {
         requireNonNull(text);
@@ -150,6 +151,20 @@ public class Strings {
         reader.close();
         
         return lines.stream();
+    }
+    
+    /**
+     * Appends a new line separator to each stream elements and then joins them
+     * into a single stream.
+     * Any {@code null} or empty stream element will result in an empty line.
+     * @param lines the lines to join.
+     * @return the lines separated by a new line character into a single string.
+     */
+    public static String unlines(Stream<String> lines) {
+        requireNonNull(lines);
+        return lines.map(x -> x == null ? "" : x)
+                    .map(x -> String.format("%s%n", x))
+                    .collect(joining());
     }
     
 }
