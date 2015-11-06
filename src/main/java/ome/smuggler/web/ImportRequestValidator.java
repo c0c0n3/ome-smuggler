@@ -7,6 +7,7 @@ import static util.object.Either.right;
 import static util.object.Eithers.collectLeft;
 import static util.sequence.Arrayz.isNullOrZeroLength;
 import static util.string.Strings.isNullOrEmpty;
+import static util.string.Strings.unlines;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -94,10 +95,6 @@ public class ImportRequestValidator implements Validator<String, ImportRequest> 
     private Optional<String> collectErrors() {
         String errors = unlines(collectLeft(parseResults.stream()));
         return isNullOrEmpty(errors) ? Optional.empty() : Optional.of(errors);
-    }
-    
-    private static String unlines(Stream<String> lines) {
-        return null;  // TODO move to util.string
     }
     
     @Override
