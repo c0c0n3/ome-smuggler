@@ -4,6 +4,7 @@ import static java.util.function.Function.identity;
 import static util.object.Either.left;
 import static util.object.Either.right;
 
+import java.net.URI;
 import java.util.stream.Stream;
 
 import util.object.Either;
@@ -81,6 +82,14 @@ public class ParserFactory {
     public static <X, Y> ObjectParser<Pair<X, Y>> pairParser(
             ObjectParser<X> fst, ObjectParser<Y> snd) {
         return new TwoTokenParser<>(fst, snd);
+    }
+    
+    /**
+     * Builds a parser that accepts {@link URI}'s.
+     * @return the parser.
+     */
+    public static ObjectParser<URI> uriParser() {
+        return new SingleTokenParserAdapter<>(URI::new);
     }
     
 }

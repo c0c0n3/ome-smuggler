@@ -106,6 +106,19 @@ public class Either<L, R> {
     }
     
     /**
+     * Same as {@link #map(Function) map} but on left values.
+     */
+    public <T> Either<T, R> mapLeft(Function<L, T> f) {
+        if (isLeft()) {
+            requireNonNull(f, "f");
+            
+            T mappedValue = f.apply(maybeLeft);
+            return left(mappedValue);
+        }
+        return right(maybeRight);
+    }
+    
+    /**
      * Applies the given transformation to the to the right value if this is a 
      * {@link #isRight() right} value holder to produce a new value holder.
      * Does nothing if this is a {@link #isLeft() left} value holder, just 
