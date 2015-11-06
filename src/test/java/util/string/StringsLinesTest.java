@@ -1,13 +1,13 @@
-package util.sequence;
+package util.string;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static util.sequence.Arrayz.array;
-import static util.sequence.Streams.lines;
+import static util.string.Strings.lines;
 
 import org.junit.Test;
 
-public class StreamsLinesTest {
+public class StringsLinesTest {
     
     private static String[] breakLines(String text) {
         return lines(text).toArray(String[]::new);

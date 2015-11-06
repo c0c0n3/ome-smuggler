@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -184,25 +183,6 @@ public class Streams {
         requireNonNull(xs, "xs");
         
         return xs.flatMap(x -> Stream.of(sep.get(), x)).skip(1);
-    }
-    
-    /**
-     * Breaks up the given text into lines.
-     * @param text the input text.
-     * @return the sequence of lines making up text.
-     * @throws NullPointerException if {@code null} arguments.
-     */
-    public static Stream<String> lines(String text) {
-        requireNonNull(text);
-        
-        Scanner reader = new Scanner(text);
-        List<String> lines = new ArrayList<>();
-        while (reader.hasNextLine()) {
-            lines.add(reader.nextLine());
-        }
-        reader.close();
-        
-        return lines.stream();
     }
     
     /**
