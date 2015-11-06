@@ -141,7 +141,7 @@ public class Strings {
      * @throws NullPointerException if the argument is {@code null} .
      */
     public static Stream<String> lines(String text) {
-        requireNonNull(text);
+        requireNonNull(text, "text");
         
         Scanner reader = new Scanner(text);
         List<String> lines = new ArrayList<>();
@@ -155,13 +155,14 @@ public class Strings {
     
     /**
      * Appends a new line separator to each stream elements and then joins them
-     * into a single stream.
+     * into a single string.
      * Any {@code null} or empty stream element will result in an empty line.
      * @param lines the lines to join.
      * @return the lines separated by a new line character into a single string.
+     * @throws NullPointerException if the argument is {@code null}.
      */
     public static String unlines(Stream<String> lines) {
-        requireNonNull(lines);
+        requireNonNull(lines, "lines");
         return lines.map(x -> x == null ? "" : x)
                     .map(x -> String.format("%s%n", x))
                     .collect(joining());
