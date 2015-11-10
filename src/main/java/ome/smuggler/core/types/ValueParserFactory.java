@@ -2,6 +2,7 @@ package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
 import static util.validation.ParserFactory.pairParser;
+import static util.validation.ParserFactory.positiveIntParser;
 import static util.validation.ParserFactory.positiveLongParser;
 import static util.validation.ParserFactory.stringParser;
 import static util.validation.ParserFactory.uriParser;
@@ -39,7 +40,7 @@ public class ValueParserFactory {
     
     public static Either<String, TextAnnotation> textAnnotation(String...xs) {
         return pairParser(stringParser(), stringParser())
-              .parse(xs)
+              .parse(xs == null ? new String[0] : xs)
               .map(TextAnnotation::new);
     }
     
@@ -48,7 +49,10 @@ public class ValueParserFactory {
     }
     
     public static Either<String, URI> uri(String host, String port) {
-        return uriParser().parse(String.format("%s:%s", host, port));
+        return pairParser(stringParser(), positiveIntParser())
+              .parse(host, port)
+              .map(p -> String.format("%s:%s", p.fst(), p.snd()))
+              .bind(s -> uri(s));
     }
     
     public static Either<String, String> string(String value) {

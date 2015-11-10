@@ -79,6 +79,8 @@ public class ImportRequestValidator implements Validator<String, ImportRequest> 
             textAnnotations = Stream.of(r.textAnnotations)
                              .map(p -> label("annotation", textAnnotation(p)))
                              .collect(toList());
+            
+            parseResults.addAll(textAnnotations);
         }
     }
     
@@ -89,6 +91,8 @@ public class ImportRequestValidator implements Validator<String, ImportRequest> 
             annotationIds = Stream.of(r.annotationIds)
                            .map(x -> label("annotation id", positiveInt(x)))
                            .collect(toList());
+            
+            parseResults.addAll(annotationIds);
         }
     }
     
