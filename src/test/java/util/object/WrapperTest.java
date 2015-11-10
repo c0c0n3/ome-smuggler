@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 import static util.sequence.Arrayz.array;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -27,6 +28,13 @@ public class WrapperTest {
                                                      .map(Wrapper<String>::new)
                                                      .skip(1)  // get rid of W(null)
                                                      .toArray(Wrapper[]::new);
+    
+    @Theory
+    public void equalityOfWrappersAgreesWithEqualityOfWrappedValues(String x, String y) {
+        Wrapper<String> wx = new Wrapper<>(x);
+        Wrapper<String> wy = new Wrapper<>(y);
+        assertThat(wx.equals(wy), is(Objects.equals(x, y)));
+    }
     
     @Theory
     public void equalsDelegatesToWrappedValue(Wrapper<String> w, String x) {
