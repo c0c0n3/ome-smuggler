@@ -24,6 +24,14 @@ import ome.smuggler.core.types.TextAnnotation;
 import util.object.Either;
 import util.validation.Validator;
 
+/**
+ * Validates an {@link ImportRequest}.
+ * Validation is carried out using field parsers to check whether it's possible
+ * to instantiate valid values from the provided input fields and if the {@code 
+ * #validate(ImportRequest) validate} method returns successfully (i.e. right
+ * value) the parsed values will be available through the various getters 
+ * provided by this class. 
+ */
 public class ImportRequestValidator implements Validator<String, ImportRequest> {
 
     private Either<String, Email> email;

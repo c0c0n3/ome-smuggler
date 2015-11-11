@@ -12,6 +12,10 @@ import java.util.function.Function;
 
 import util.object.Either;
 
+/**
+ * Methods to instantiate valid values of a certain type from their string
+ * representation.
+ */
 public class ValueParserFactory {
 
     private static <T extends PositiveN>
@@ -19,14 +23,33 @@ public class ValueParserFactory {
         return positiveLongParser().parse(value).map(mapper);
     }
     
+    /**
+     * Creates a dataset ID from a positive integer.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, DatasetId> datasetId(String value) {
         return parsePosInt(value, DatasetId::new);
     }
     
+    /**
+     * Creates a screen ID from a positive integer.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, ScreenId> screenId(String value) {
         return parsePosInt(value, ScreenId::new);
     }
     
+    /**
+     * Creates an email from its string representation.
+     * @param value string representation of an email address, e.g. {@code 
+     * x@y.edu}.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, Email> email(String value) {
         return stringParser()
               .withValidation(Email.validator())
@@ -34,20 +57,47 @@ public class ValueParserFactory {
               .map(Email::new);
     }
     
+    /**
+     * Creates a positive natural from its string representation.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, PositiveN> positiveInt(String value) {
         return parsePosInt(value, PositiveN::new);
     }
     
+    /**
+     * Creates a text annotation from its string representation.
+     * @param xs a pair of strings: a namespace followed by the annotation 
+     * content.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, TextAnnotation> textAnnotation(String...xs) {
         return pairParser(stringParser(), stringParser())
               .parse(xs == null ? new String[0] : xs)
               .map(TextAnnotation::new);
     }
     
+    /**
+     * Creates a URI from its string representation.
+     * @param value string representation of a URI, e.g. {@code /some/file}.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, URI> uri(String value) {
         return uriParser().parse(value);
     }
     
+    /**
+     * Creates a URI from host and port components: the returned URI will be of
+     * the form {@code host:port}. 
+     * @param host the host component of the URI.
+     * @param port the port component of the URI.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, URI> uri(String host, String port) {
         return pairParser(stringParser(), positiveIntParser())
               .parse(host, port)
@@ -55,10 +105,26 @@ public class ValueParserFactory {
               .bind(s -> uri(s));
     }
     
+    /**
+     * Parses a string of length at least one.
+     * @param value a string of length at least one.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
     public static Either<String, String> string(String value) {
         return stringParser().parse(value);
     }
     
+    /**
+     * Prefixes the error message (i.e. any left value) with the specified 
+     * label {@code p} so that if {@code e} is the original message, the new
+     * message will be of the form {@code p:e}.
+     * @param errorMsgPrefix the string to prefix to the error message.
+     * @param value the input to prefix in the case it's a left value.
+     * @return the prefixed error message if the input either is a left value; 
+     * otherwise the input's right value as is.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
     public static <T> Either<String, T> label(String errorMsgPrefix, 
                                               Either<String, T> value) {
         requireNonNull(errorMsgPrefix, "errorMsgPrefix");
