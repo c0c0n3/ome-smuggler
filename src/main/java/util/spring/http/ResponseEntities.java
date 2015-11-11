@@ -3,6 +3,7 @@ package util.spring.http;
 import static java.util.Objects.requireNonNull;
 import static util.sequence.Arrayz.isNullOrZeroLength;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,16 @@ public class ResponseEntities {
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 404.
      * @param body either the content of a 200 (right value) or an error to
-     * output in the body of a 404. If {@code body == null}, a 404 will be 
-     * returned too.
+     * output in the body of a 404.
      * @return the response entity.
+     * @throws NullPointerException if the argument is {@code null}.
      */
     public static <E, R> ResponseEntity<Object> okOr404(Either<E, R> body) {
-        if (body == null) return _404();
-        return body.either(error -> _404((Object) error), 
-                           result -> ResponseEntity.ok((Object) result));
+        //requireNonNull(body, "body");
+
+        //return body.either(error -> _404((Object) error), 
+        //                   result -> ResponseEntity.ok((Object) result));
+        return okOrError(body, ResponseEntities::_404);
     }
     
     /**
@@ -34,9 +37,10 @@ public class ResponseEntities {
      * value the response will be a 200, otherwise a 404.
      * @param errorOrResult the response body producer. The produced body can
      * either be the content of a 200 (right value) or an error to output in 
-     * the body of a 404. If the produced body is {@code null}, a 404 will be 
-     * returned too.
+     * the body of a 404.
      * @return the response entity.
+     * @throws NullPointerException if the supplier is {@code null} or the 
+     * {@link Either} value produced by the supplier is {@code null}.
      */
     public static <E, R> ResponseEntity<Object> okOr404(
             Supplier<Either<E, R>> errorOrResult) {
@@ -55,6 +59,34 @@ public class ResponseEntities {
     @SafeVarargs
     public static <T> ResponseEntity<T> _404(T...body) {
         return newError(HttpStatus.NOT_FOUND, body);
+    }
+    
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 406.
+     * @param body either the content of a 200 (right value) or an error to
+     * output in the body of a 406.
+     * @return the response entity.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <E, R> ResponseEntity<Object> okOr406(Either<E, R> body) {
+        return okOrError(body, ResponseEntities::_406);
+    }
+    
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 406.
+     * @param errorOrResult the response body producer. The produced body can
+     * either be the content of a 200 (right value) or an error to output in 
+     * the body of a 406.
+     * @return the response entity.
+     * @throws NullPointerException if the supplier is {@code null} or the 
+     * {@link Either} value produced by the supplier is {@code null}.
+     */
+    public static <E, R> ResponseEntity<Object> okOr406(
+            Supplier<Either<E, R>> errorOrResult) {
+        requireNonNull(errorOrResult, "errorOrResult");
+        return okOr406(errorOrResult.get());
     }
     
     /**
@@ -86,5 +118,14 @@ public class ResponseEntities {
      * 
      *     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Not Found")
      */
+    
+    private static <E, R> ResponseEntity<Object> okOrError(
+            Either<E, R> body,
+            Function<E, ResponseEntity<Object>> errorGenerator) {
+        requireNonNull(body, "body");
+
+        return body.either(error -> errorGenerator.apply(error), 
+                           result -> ResponseEntity.ok(result));
+    }
     
 }

@@ -113,6 +113,34 @@ public class ImportInputTest {
     }
     
     @Test
+    public void setEmptyDatasetId() {
+        assertEmptyOptional(makeNew().setDatasetId(Optional.empty())
+                                     .getDatasetOrScreenId());
+    }
+    
+    @Test
+    public void setNonEmptyDatasetId() {
+        DatasetId id = new DatasetId(1L);
+        Optional<PositiveN> actual = makeNew().setDatasetId(Optional.of(id))
+                                              .getDatasetOrScreenId(); 
+        assertOptionalValue(actual, id.get());
+    }
+    
+    @Test
+    public void setNonEmptyScreenId() {
+        ScreenId id = new ScreenId(1L);
+        Optional<PositiveN> actual = makeNew().setScreenId(Optional.of(id))
+                                              .getDatasetOrScreenId(); 
+        assertOptionalValue(actual, id.get());
+    }
+    
+    @Test
+    public void setEmptyScreenId() {
+        assertEmptyOptional(makeNew().setScreenId(Optional.empty())
+                                     .getDatasetOrScreenId());
+    }
+    
+    @Test
     public void settingDatasetOverridesScreen() {
         PositiveN one = posN("1"), two = posN("2");
         ImportInput x = makeNew();
@@ -132,18 +160,29 @@ public class ImportInputTest {
     
     @Test (expected = NullPointerException.class)
     public void setDatasetIdThrowsIfNullArg() {
-        makeNew().setDatasetId(null);
+        makeNew().setDatasetId((PositiveN)null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void setDatasetIdThrowsIfNullOptional() {
+        makeNew().setDatasetId((Optional<DatasetId>)null);
     }
     
     @Test (expected = NullPointerException.class)
     public void setScreenIdThrowsIfNullArg() {
-        makeNew().setScreenId(null);
+        makeNew().setScreenId((PositiveN)null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void setScreenIdThrowsIfNullOptional() {
+        makeNew().setScreenId((Optional<ScreenId>)null);
     }
     
     @Test
     public void textAnnotationsEmptyIfUnset() {
         assertStream(makeNew().getTextAnnotations(), array());
         assertStream(makeNew().addTextAnnotation().getTextAnnotations(), array());
+        assertStream(makeNew().addTextAnnotations(Stream.empty()).getTextAnnotations(), array());
     }
     
     @Test (expected = NullPointerException.class)
@@ -158,7 +197,17 @@ public class ImportInputTest {
     
     @Test (expected = NullPointerException.class)
     public void addTextAnnotationThrowsIfArrayHasNulls() {
-        makeNew().addTextAnnotation(anno("n", "v"), (TextAnnotation)null);
+        makeNew().addTextAnnotation(anno("n", "v"), null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void addTextAnnotationsThrowsIfNullStream() {
+        makeNew().addTextAnnotations(null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void addTextAnnotationsThrowsIfStreamHasNulls() {
+        makeNew().addTextAnnotations(Stream.of(anno("n", "v"), null));
     }
     
     @Test
@@ -173,6 +222,7 @@ public class ImportInputTest {
     public void annotationIdsEmptyIfUnset() {
         assertStream(makeNew().getAnnotationIds(), array());
         assertStream(makeNew().addAnnotationId().getAnnotationIds(), array());
+        assertStream(makeNew().addAnnotationIds(Stream.empty()).getAnnotationIds(), array());
     }
     
     @Test (expected = NullPointerException.class)
@@ -187,7 +237,17 @@ public class ImportInputTest {
     
     @Test (expected = NullPointerException.class)
     public void addAnnotationIdThrowsIfArrayHasNulls() {
-        makeNew().addAnnotationId(posN("1"), (PositiveN)null);
+        makeNew().addAnnotationId(posN("1"), null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void addAnnotationIdsThrowsIfNullStream() {
+        makeNew().addAnnotationIds(null);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void addAnnotationIdThrowsIfStreamHasNulls() {
+        makeNew().addAnnotationIds(Stream.of(posN("1"), null));
     }
     
     @Test

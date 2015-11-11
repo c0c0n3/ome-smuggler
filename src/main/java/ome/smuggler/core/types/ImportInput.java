@@ -89,17 +89,42 @@ public class ImportInput {
         return this;
     }
     
+    public ImportInput setDatasetId(Optional<DatasetId> id) {
+        requireNonNull(id, "id");
+        id.ifPresent(x -> setDatasetId(x));
+        return this;
+    }
+    
     public ImportInput setScreenId(PositiveN id) {
         requireNonNull(id, "id");
         datasetOrScreenId = Optional.of(new ScreenId(id.get()));
         return this;
     }
 
+    public ImportInput setScreenId(Optional<ScreenId> id) {
+        requireNonNull(id, "id");
+        id.ifPresent(x -> setScreenId(x));
+        
+        return this;
+    }
+    
     public ImportInput addTextAnnotation(TextAnnotation...xs) {
         if (xs == null || hasNulls(xs)) {  // zero len is okay tho
             throw new NullPointerException();
         }
-        textAnnotations.addAll(Arrays.asList(xs));
+        if (xs.length == 1) {
+            textAnnotations.add(xs[0]);
+        }
+        if (xs.length > 1) {
+            textAnnotations.addAll(Arrays.asList(xs));
+        }
+        
+        return this;
+    }
+    
+    public ImportInput addTextAnnotations(Stream<TextAnnotation> xs) {
+        requireNonNull(xs, "xs");
+        xs.forEach(x -> addTextAnnotation(x));
         
         return this;
     }
@@ -108,7 +133,19 @@ public class ImportInput {
         if (xs == null || hasNulls(xs)) {  // zero len is okay tho
             throw new NullPointerException();
         }
-        annotationIds.addAll(Arrays.asList(xs));
+        if (xs.length == 1) {
+            annotationIds.add(xs[0]);
+        }
+        if (xs.length > 1) {
+            annotationIds.addAll(Arrays.asList(xs));
+        }
+        
+        return this;
+    }
+    
+    public ImportInput addAnnotationIds(Stream<PositiveN> xs) {
+        requireNonNull(xs, "xs");
+        xs.forEach(x -> addAnnotationId(x));
         
         return this;
     }
