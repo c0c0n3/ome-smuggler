@@ -2,6 +2,7 @@ package ome.smuggler.web;
 
 import static java.util.stream.Collectors.toList;
 import static ome.smuggler.core.types.ValueParserFactory.*;
+import static ome.smuggler.web.Error.error;
 import static util.object.Either.left;
 import static util.object.Either.right;
 import static util.object.Eithers.collectLeft;
@@ -32,7 +33,7 @@ import util.validation.Validator;
  * value) the parsed values will be available through the various getters 
  * provided by this class. 
  */
-public class ImportRequestValidator implements Validator<String, ImportRequest> {
+public class ImportRequestValidator implements Validator<Error, ImportRequest> {
 
     private Either<String, Email> email;
     private Either<String, URI> target;
@@ -110,7 +111,7 @@ public class ImportRequestValidator implements Validator<String, ImportRequest> 
     }
     
     @Override
-    public Either<String, ImportRequest> validate(ImportRequest r) {
+    public Either<Error, ImportRequest> validate(ImportRequest r) {
         if (r != null) {
             parseResults = new ArrayList<>();
             
@@ -120,9 +121,9 @@ public class ImportRequestValidator implements Validator<String, ImportRequest> 
             checkAnnotationIds(r);
             
             Optional<String> errors = collectErrors();
-            return errors.isPresent() ? left(errors.get()) : right(r);
+            return errors.isPresent() ? error(errors.get()) : right(r);
         }
-        return left("no import request");
+        return error("no import request");
     }
 
     // util getters to use *only* in case validation succeeds

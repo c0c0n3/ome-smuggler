@@ -1,7 +1,7 @@
 package ome.smuggler.web;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static util.spring.http.ResponseEntities.okOr406;
+import static util.spring.http.ResponseEntities.okOr400;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import util.object.Either;
-
 
 /**
  * Enqueues a message to request an OMERO import.
  */
 @RestController  // includes @ResponseBody: return vals bound to response body.
-@RequestMapping("/ome/import")
+@RequestMapping(ImportController.ImportUrl)
 @Scope(WebApplicationContext.SCOPE_REQUEST)
 public class ImportController {
 
+    public static final String ImportUrl = "/ome/import";
+    
     @Autowired
     private ImportRequestor service;
     
@@ -80,13 +80,12 @@ public class ImportController {
     public ResponseEntity<Object> enqueue(HttpServletRequest request,
                                   @RequestBody ImportRequest data) { 
         ImportRequestValidator validator = new ImportRequestValidator();
-        return okOr406(validator
+        return okOr400(validator
                 .validate(data)
-                .map(importReq -> {
-                    ImportInput taskRequest = buildInput(data, validator);
-                    ImportId taskId = service.enqueue(taskRequest);
-                    return responseBody(request, taskId);
-                }));
+                .map(x -> buildInput(data, validator))
+                .map(service::enqueue)
+                .map(taskId -> responseBody(request, taskId))
+                );
     }
     // curl -H 'Content-Type: application/json'  -X POST -d '' http://localhost:8080/ome/import
     // curl -H 'Content-Type: application/json'  -X POST -d '{}' http://localhost:8080/ome/import

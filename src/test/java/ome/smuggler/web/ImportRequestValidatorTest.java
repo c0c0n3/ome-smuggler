@@ -15,15 +15,15 @@ public class ImportRequestValidatorTest {
     private ImportRequest minValidInput;
     
     private void assertFailure(ImportRequest input) {
-        Either<String, ImportRequest> outcome = validator.validate(input);
+        Either<Error, ImportRequest> outcome = validator.validate(input);
         assertNotNull(outcome);
         assertTrue(outcome.isLeft());
         assertNotNull(outcome.getLeft());
-        assertThat(outcome.getLeft(), is(not("")));
+        assertThat(outcome.getLeft().reason, is(not("")));
     }
     
     private void assertSuccess(ImportRequest input) {
-        Either<String, ImportRequest> outcome = validator.validate(input);
+        Either<Error, ImportRequest> outcome = validator.validate(input);
         assertNotNull(outcome);
         assertTrue(outcome.isRight());
         assertThat(outcome.getRight(), is(input));
