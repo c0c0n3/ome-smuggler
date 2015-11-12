@@ -87,11 +87,5 @@ public class ImportController {
                 .map(taskId -> responseBody(request, taskId))
                 );
     }
-    // curl -H 'Content-Type: application/json'  -X POST -d '' http://localhost:8080/ome/import
-    // curl -H 'Content-Type: application/json'  -X POST -d '{}' http://localhost:8080/ome/import
-    // curl -H 'Content-Type: application/json'  -X POST -d '{"omeroHost":"gauss"}' http://localhost:8080/ome/import
-    // curl -H 'Content-Type: application/json'  -X POST -d '{"omeroHost":"gauss", "sessionKey":""}' http://localhost:8080/ome/import
-    // NB first request above is silently discarded by spring booty so enqueue
-    // is not called!
     
 }
