@@ -18,6 +18,47 @@ public class ResponseEntities {
 
     /**
      * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 400.
+     * @param body either the content of a 200 (right value) or an error to
+     * output in the body of a 400.
+     * @return the response entity.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <E, R> ResponseEntity<Object> okOr400(Either<E, R> body) {
+        return okOrError(body, ResponseEntities::_400);
+    }
+    
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 400.
+     * @param errorOrResult the response body producer. The produced body can
+     * either be the content of a 200 (right value) or an error to output in 
+     * the body of a 400.
+     * @return the response entity.
+     * @throws NullPointerException if the supplier is {@code null} or the 
+     * {@link Either} value produced by the supplier is {@code null}.
+     */
+    public static <E, R> ResponseEntity<Object> okOr400(
+            Supplier<Either<E, R>> errorOrResult) {
+        requireNonNull(errorOrResult, "errorOrResult");
+        return okOr400(errorOrResult.get());
+    }
+    
+    /**
+     * Creates a new 400 response with an optional body.
+     * If called with no arguments as in {@code _400()}, the response will have
+     * an empty body; if a {@code body} argument is given, it will be written
+     * to the response body using the configured Spring MVC message converters.
+     * @param body optional response body.
+     * @return a new 400 response.
+     */
+    @SafeVarargs
+    public static <T> ResponseEntity<T> _400(T...body) {
+        return newError(HttpStatus.BAD_REQUEST, body);
+    }
+    
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 404.
      * @param body either the content of a 200 (right value) or an error to
      * output in the body of a 404.
@@ -25,10 +66,6 @@ public class ResponseEntities {
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static <E, R> ResponseEntity<Object> okOr404(Either<E, R> body) {
-        //requireNonNull(body, "body");
-
-        //return body.either(error -> _404((Object) error), 
-        //                   result -> ResponseEntity.ok((Object) result));
         return okOrError(body, ResponseEntities::_404);
     }
     
@@ -125,7 +162,7 @@ public class ResponseEntities {
         requireNonNull(body, "body");
 
         return body.either(error -> errorGenerator.apply(error), 
-                           result -> ResponseEntity.ok(result));
+                           result -> ResponseEntity.ok((Object)result));
     }
     
 }
