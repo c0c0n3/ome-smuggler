@@ -3,19 +3,15 @@ package integration.serialization;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Type;
 import java.util.Optional;
-
 import org.junit.Test;
-
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class OptionalIntegerTest extends JsonWriteReadTest<Optional<Integer>> {
+public class OptionalIntegerTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
-    public void deserializesDoubleDueToTypeErasure() throws Exception {
+    public void deserializesDoubleDueToTypeErasure() {
         Optional<Integer> initialValue = Optional.of(1);
         Class<Optional<Integer>> valueType = (Class<Optional<Integer>>) 
                                                 initialValue.getClass(); 
@@ -34,20 +30,15 @@ public class OptionalIntegerTest extends JsonWriteReadTest<Optional<Integer>> {
      *    it as Optional<Integer> makes no difference due to type erasure. 
      * 
      * What's not to like?
-     * Fortunately Gson has a workaround for this, see below.
+     * Fortunately Gson has a workaround for this (i.e. TypeToken), see below.
      */
     
     @Test
-    public void jsonSerializeAndDeserialize() throws Exception {
-        Gson mapper = new Gson();
-        
+    public void jsonSerializeAndDeserialize() {
         Optional<Integer> initialValue = Optional.of(1);
-        String serialized = mapper.toJson(initialValue);
+        TypeToken<Optional<Integer>> valueType = new TypeToken<Optional<Integer>>(){};
         
-        Type valueType = new TypeToken<Optional<Integer>>(){}.getType();
-        Optional<Integer> readValue = mapper.fromJson(serialized, valueType);
-        
-        assertThat(readValue, is(initialValue));
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
     }
     
 }

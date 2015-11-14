@@ -1,23 +1,23 @@
 package integration.serialization;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import java.util.Optional;
 
 import org.junit.Test;
 
-public class OptionalStringTest extends JsonWriteReadTest<Optional<String>> {
+import com.google.gson.reflect.TypeToken;
+
+public class OptionalStringTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
     public void jsonSerializeAndDeserialize() throws Exception {
         Optional<String> initialValue = Optional.of("xxx");
         Class<Optional<String>> valueType = (Class<Optional<String>>) 
-                                                initialValue.getClass(); 
-        Optional<String> readValue = writeThenRead(initialValue, valueType);
+                                                initialValue.getClass();
+        TypeToken<Optional<String>> typeToken = new TypeToken<Optional<String>>(){}; 
         
-        assertThat(readValue, is(initialValue));
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+        assertWriteThenReadGivesInitialValue(initialValue, typeToken);
     }
     
 }

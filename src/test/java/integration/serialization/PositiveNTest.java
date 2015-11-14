@@ -1,23 +1,23 @@
 package integration.serialization;
 
 import static ome.smuggler.core.types.ValueParserFactory.positiveInt;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import ome.smuggler.core.types.PositiveN;
 
 import org.junit.Test;
 
-public class PositiveNTest extends JsonWriteReadTest<PositiveN> {
+import com.google.gson.reflect.TypeToken;
+
+public class PositiveNTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
     public void jsonSerializeAndDeserialize() throws Exception {
         PositiveN initialValue = positiveInt("1").getRight();
-        Class<PositiveN> valueType = (Class<PositiveN>) initialValue.getClass(); 
-        PositiveN readValue = writeThenRead(initialValue, valueType);
+        Class<PositiveN> valueType = (Class<PositiveN>) initialValue.getClass();
+        TypeToken<PositiveN> typeToken = new TypeToken<PositiveN>(){}; 
         
-        assertThat(readValue, is(initialValue));
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+        assertWriteThenReadGivesInitialValue(initialValue, typeToken);
     }
     
 }

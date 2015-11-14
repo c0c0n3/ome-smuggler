@@ -1,33 +1,64 @@
 package integration.serialization;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.io.StringReader;
+import java.io.StringWriter;
+
+import com.google.gson.reflect.TypeToken;
 
 import ome.smuggler.core.convert.JsonSinkWriter;
 import ome.smuggler.core.convert.JsonSourceReader;
 import ome.smuggler.core.convert.SinkWriter;
 import ome.smuggler.core.convert.SourceReader;
 
-public class JsonWriteReadTest<T> implements Supplier<String>, Consumer<String> {
+public class JsonWriteReadTest {
 
     protected String serializedData;
 
-    protected T writeThenRead(T valueToWrite, Class<T> valueType) throws Exception {
-        SinkWriter<T> writer = new JsonSinkWriter<>(this);
-        SourceReader<T> reader = new JsonSourceReader<>(valueType, this);
+    protected <T> void write(T valueToWrite) {
+        StringWriter sink = new StringWriter();
+        SinkWriter<T> writer = new JsonSinkWriter<>(sink);
         
-        writer.write(valueToWrite);
-        return reader.read();
+        writer.uncheckedWrite(valueToWrite);
+        serializedData = sink.toString();
     }
     
-    @Override
-    public void accept(String t) {
-        serializedData = t;
+    protected <T> T read(Class<T> valueType) {
+        StringReader source = new StringReader(serializedData);
+        SourceReader<T> reader = new JsonSourceReader<>(valueType, source);
+        
+        return reader.uncheckedRead();
     }
-
-    @Override
-    public String get() {
-        return serializedData;
+    
+    protected <T> T read(TypeToken<T> valueType) {
+        StringReader source = new StringReader(serializedData);
+        SourceReader<T> reader = new JsonSourceReader<>(valueType, source);
+        
+        return reader.uncheckedRead();
+    }
+    
+    protected <T> T writeThenRead(T valueToWrite, Class<T> valueType) {
+        write(valueToWrite);
+        return read(valueType);
+    }
+    
+    protected <T> T writeThenRead(T valueToWrite, TypeToken<T> valueType) {
+        write(valueToWrite);
+        return read(valueType);
+    }
+    
+    protected <T> void assertWriteThenReadGivesInitialValue(
+            T initialValue, Class<T> valueType) {
+        T readValue = writeThenRead(initialValue, valueType);
+        assertThat(readValue, is(initialValue));
+    }
+    
+    protected <T> void assertWriteThenReadGivesInitialValue(
+            T initialValue, TypeToken<T> valueType) {
+        T readValue = writeThenRead(initialValue, valueType);
+        assertThat(readValue, is(initialValue));
     }
     
 }

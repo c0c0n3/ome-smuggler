@@ -4,22 +4,19 @@ import static ome.smuggler.core.types.ValueParserFactory.positiveInt;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Type;
 import java.util.Optional;
 
 import ome.smuggler.core.types.PositiveN;
 
 import org.junit.Test;
-
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
-public class OptionalPositiveNTest extends JsonWriteReadTest<Optional<PositiveN>> {
+public class OptionalPositiveNTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
-    public void deserializesMapDueToTypeErasure() throws Exception {
+    public void deserializesMapDueToTypeErasure() {
         PositiveN one = positiveInt("1").getRight();
         Optional<PositiveN> initialValue = Optional.of(one);
         Class<Optional<PositiveN>> valueType = (Class<Optional<PositiveN>>) 
@@ -44,21 +41,16 @@ public class OptionalPositiveNTest extends JsonWriteReadTest<Optional<PositiveN>
      *    due to type erasure. 
      * 
      * What's not to like?
-     * Fortunately Gson has a workaround for this, see below.
+     * Fortunately Gson has a workaround for this (i.e. TypeToken), see below.
      */
     
     @Test
-    public void jsonSerializeAndDeserialize() throws Exception {
-        Gson mapper = new Gson();
-        
+    public void jsonSerializeAndDeserialize() {
         PositiveN one = positiveInt("1").getRight();
         Optional<PositiveN> initialValue = Optional.of(one);
-        String serialized = mapper.toJson(initialValue);
+        TypeToken<Optional<PositiveN>> valueType = new TypeToken<Optional<PositiveN>>(){};
         
-        Type valueType = new TypeToken<Optional<PositiveN>>(){}.getType();
-        Optional<PositiveN> readValue = mapper.fromJson(serialized, valueType);
-        
-        assertThat(readValue, is(initialValue));
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
     }
     
 }

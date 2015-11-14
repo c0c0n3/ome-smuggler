@@ -1,20 +1,19 @@
 package integration.serialization;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import ome.smuggler.core.types.ImportId;
 
 import org.junit.Test;
 
-public class ImportIdTest extends JsonWriteReadTest<ImportId> {
+import com.google.gson.reflect.TypeToken;
+
+public class ImportIdTest extends JsonWriteReadTest {
     
     @Test
-    public void jsonSerializeAndDeserialize() throws Exception {
+    public void jsonSerializeAndDeserialize() {
         ImportId initialValue = new ImportId();
-        ImportId readValue = writeThenRead(initialValue, ImportId.class);
         
-        assertThat(readValue, is(initialValue));
+        assertWriteThenReadGivesInitialValue(initialValue, ImportId.class);
+        assertWriteThenReadGivesInitialValue(initialValue, new TypeToken<ImportId>(){});
     }
     
 }
