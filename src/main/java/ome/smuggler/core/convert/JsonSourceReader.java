@@ -71,5 +71,14 @@ public class JsonSourceReader<T> implements SourceReader<T> {
             return mapper.fromJson(source, valueType);
         }
     }
-    
+    /* NOTE.
+     * Looking at the code in:
+     *  
+     *  + Gson.fromJson(Reader, Type)
+     *  + Gson.fromJson(Reader, Class<T>)
+     * 
+     * it seems the two cases can be unified as we've done here, provided we
+     * can recover the class of the type parameter T even in the case T is
+     * a generic class which is why we need the TypeToken as well. 
+     */
 }
