@@ -7,14 +7,14 @@ import java.util.function.Supplier;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /**
  * Parses an object in JSON serialized form as found in a given data source.
  */
 public class JsonSourceReader<T> implements SourceReader<T> {
 
-    private final ObjectMapper mapper;
+    private final Gson mapper;
     private final Class<T> valueType;
     private final Supplier<String> rawData;
     
@@ -29,7 +29,7 @@ public class JsonSourceReader<T> implements SourceReader<T> {
         requireNonNull(valueType, "valueType");
         requireNonNull(rawData, "rawData");
         
-        this.mapper = new ObjectMapper();
+        this.mapper = new Gson();
         this.valueType = valueType;
         this.rawData = rawData;
     }
@@ -37,7 +37,7 @@ public class JsonSourceReader<T> implements SourceReader<T> {
     @Override
     public T read() throws JsonParseException, JsonMappingException, IOException {
         String content = rawData.get();
-        return mapper.readValue(content, valueType);
+        return mapper.fromJson(content, valueType);
     }
     
 }

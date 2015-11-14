@@ -5,14 +5,14 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 /**
  * Serializes an object into JSON and writes the serialized data to a sink.
  */
 public class JsonSinkWriter<T> implements SinkWriter<T> {
 
-    private final ObjectMapper mapper;
+    private final Gson mapper;
     private final Consumer<String> rawMsgBody;
     
     /**
@@ -23,13 +23,13 @@ public class JsonSinkWriter<T> implements SinkWriter<T> {
     public JsonSinkWriter(Consumer<String> rawData) {
         requireNonNull(rawData, "rawData");
         
-        this.mapper = new ObjectMapper();
+        this.mapper = new Gson();
         this.rawMsgBody = rawData;
     }
     
     @Override
     public void write(T body) throws JsonProcessingException {
-        String content = mapper.writeValueAsString(body);
+        String content = mapper.toJson(body);
         rawMsgBody.accept(content);
     }
 
