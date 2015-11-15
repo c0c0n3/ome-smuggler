@@ -9,6 +9,12 @@ import com.google.gson.reflect.TypeToken;
 
 public class OptionalIntegerTest extends JsonWriteReadTest {
     
+    private void assertSerializeAndDeserialize(Optional<Integer> initialValue) {
+        TypeToken<Optional<Integer>> valueType = 
+                new TypeToken<Optional<Integer>>(){};
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+    }
+    
     @Test
     @SuppressWarnings("unchecked")
     public void deserializesDoubleDueToTypeErasure() {
@@ -34,11 +40,13 @@ public class OptionalIntegerTest extends JsonWriteReadTest {
      */
     
     @Test
-    public void jsonSerializeAndDeserialize() {
-        Optional<Integer> initialValue = Optional.of(1);
-        TypeToken<Optional<Integer>> valueType = new TypeToken<Optional<Integer>>(){};
-        
-        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+    public void serializeAndDeserializeValue() {
+        assertSerializeAndDeserialize(Optional.of(1));
+    }
+    
+    @Test
+    public void serializeAndDeserializeEmpty() {
+        assertSerializeAndDeserialize(Optional.empty());
     }
     
 }

@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -156,6 +157,33 @@ public class ImportInput {
     
     public Stream<PositiveN> getAnnotationIds() {
         return annotationIds.stream();
+    }
+    
+    @Override
+    public boolean equals(Object x) {
+        if (this == x) {
+            return true;
+        }
+        if (x instanceof ImportInput) {
+            ImportInput other = (ImportInput) x;
+            return Objects.equals(experimenterEmail, other.experimenterEmail)
+                && Objects.equals(target, other.target)
+                && Objects.equals(omero, other.omero)
+                && Objects.equals(sessionKey, other.sessionKey)
+                && Objects.equals(name, other.name)
+                && Objects.equals(description, other.description)
+                && Objects.equals(datasetOrScreenId, other.datasetOrScreenId)
+                && Objects.equals(textAnnotations, other.textAnnotations)
+                && Objects.equals(annotationIds, other.annotationIds);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(experimenterEmail, target, omero, sessionKey,
+                            name, description, datasetOrScreenId, 
+                            textAnnotations, annotationIds);
     }
     
 }

@@ -9,10 +9,17 @@ import java.util.Optional;
 import ome.smuggler.core.types.PositiveN;
 
 import org.junit.Test;
+
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 public class OptionalPositiveNTest extends JsonWriteReadTest {
+    
+    private void assertSerializeAndDeserialize(Optional<PositiveN> initialValue) {
+        TypeToken<Optional<PositiveN>> valueType = 
+                new TypeToken<Optional<PositiveN>>(){};
+        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+    }
     
     @Test
     @SuppressWarnings("unchecked")
@@ -45,12 +52,14 @@ public class OptionalPositiveNTest extends JsonWriteReadTest {
      */
     
     @Test
-    public void jsonSerializeAndDeserialize() {
+    public void serializeAndDeserializeValue() {
         PositiveN one = positiveInt("1").getRight();
-        Optional<PositiveN> initialValue = Optional.of(one);
-        TypeToken<Optional<PositiveN>> valueType = new TypeToken<Optional<PositiveN>>(){};
-        
-        assertWriteThenReadGivesInitialValue(initialValue, valueType);
+        assertSerializeAndDeserialize(Optional.of(one));
+    }
+    
+    @Test
+    public void serializeAndDeserializeEmpty() {
+        assertSerializeAndDeserialize(Optional.empty());
     }
     
 }

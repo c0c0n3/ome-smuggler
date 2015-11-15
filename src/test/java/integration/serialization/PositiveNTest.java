@@ -11,7 +11,7 @@ public class PositiveNTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
-    public void jsonSerializeAndDeserialize() throws Exception {
+    public void serializeAndDeserialize() {
         PositiveN initialValue = positiveInt("1").getRight();
         Class<PositiveN> valueType = (Class<PositiveN>) initialValue.getClass();
         TypeToken<PositiveN> typeToken = new TypeToken<PositiveN>(){}; 
