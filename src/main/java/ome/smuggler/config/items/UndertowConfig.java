@@ -26,6 +26,9 @@ public class UndertowConfig {
     
     @Override
     public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
         if (other instanceof UndertowConfig) {
             return Objects.equals(other.toString(), this.toString());
         }
