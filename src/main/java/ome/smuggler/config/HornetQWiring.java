@@ -9,7 +9,6 @@ import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 
 /**
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Profile;
  * reused. 
  */
 @Configuration
-@Profile(Profiles.Prod)
 public class HornetQWiring {
     
     @Bean

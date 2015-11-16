@@ -6,7 +6,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import util.config.ConfigProvider;
-import ome.smuggler.Main;
 import ome.smuggler.config.data.UndertowYmlFile;
 import ome.smuggler.config.items.UndertowConfig;
 import ome.smuggler.config.providers.PriorityConfigProvider;
@@ -16,7 +15,7 @@ import ome.smuggler.run.UndertowYmlGen;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=Main.class)
+@ContextConfiguration(classes=UndertowConfigProvider.class)
 public class UndertowConfigFileTest extends ConfigFileTest<UndertowConfig> {
 
     @Autowired

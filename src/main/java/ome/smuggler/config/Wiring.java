@@ -11,7 +11,6 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import util.config.ConfigProvider;
 
@@ -19,7 +18,6 @@ import util.config.ConfigProvider;
  * Spring bean wiring configuration.
  */
 @Configuration
-@Profile(Profiles.Prod)
 public class Wiring {
 
     @Bean
