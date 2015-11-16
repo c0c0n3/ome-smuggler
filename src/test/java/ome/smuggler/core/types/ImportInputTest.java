@@ -12,18 +12,18 @@ import org.junit.Test;
 
 public class ImportInputTest {
 
-    private static PositiveN posN(String value) {
+    public static PositiveN posN(String value) {
         return positiveInt(value).getRight();
     }
     
-    private TextAnnotation anno(String ns, String value) {
+    public static TextAnnotation anno(String ns, String value) {
         return textAnnotation(ns, value).getRight();
     }
     
-    private static ImportInput makeNew() {
+    public static ImportInput makeNew() {
         return new ImportInput(email("user@micro.edu").getRight(), 
                                uri("target/file").getRight(), 
-                               uri("omero:1234").getRight(), 
+                               omeroUri("omero", "1234").getRight(), 
                                "sessionKey");
     }
     
@@ -109,35 +109,51 @@ public class ImportInputTest {
     
     @Test
     public void datatsetOrScreenEmptyIfUnset() {
-        assertEmptyOptional(makeNew().getDatasetOrScreenId());
+        ImportInput x = makeNew();
+        
+        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertFalse(x.hasDatasetId());
+        assertFalse(x.hasScreenId());
     }
     
     @Test
     public void setEmptyDatasetId() {
-        assertEmptyOptional(makeNew().setDatasetId(Optional.empty())
-                                     .getDatasetOrScreenId());
+        ImportInput x = makeNew().setDatasetId(Optional.empty());
+        
+        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertFalse(x.hasDatasetId());
+        assertFalse(x.hasScreenId());
     }
     
     @Test
     public void setNonEmptyDatasetId() {
         DatasetId id = new DatasetId(1L);
-        Optional<PositiveN> actual = makeNew().setDatasetId(Optional.of(id))
-                                              .getDatasetOrScreenId(); 
+        ImportInput x = makeNew().setDatasetId(Optional.of(id));
+        Optional<PositiveN> actual = x.getDatasetOrScreenId();
+        
         assertOptionalValue(actual, id.get());
+        assertTrue(x.hasDatasetId());
+        assertFalse(x.hasScreenId());
     }
     
     @Test
     public void setNonEmptyScreenId() {
         ScreenId id = new ScreenId(1L);
-        Optional<PositiveN> actual = makeNew().setScreenId(Optional.of(id))
-                                              .getDatasetOrScreenId(); 
+        ImportInput x = makeNew().setScreenId(Optional.of(id));
+        Optional<PositiveN> actual = x.getDatasetOrScreenId(); 
+        
         assertOptionalValue(actual, id.get());
+        assertFalse(x.hasDatasetId());
+        assertTrue(x.hasScreenId());
     }
     
     @Test
     public void setEmptyScreenId() {
-        assertEmptyOptional(makeNew().setScreenId(Optional.empty())
-                                     .getDatasetOrScreenId());
+        ImportInput x = makeNew().setScreenId(Optional.empty());
+        
+        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertFalse(x.hasDatasetId());
+        assertFalse(x.hasScreenId());
     }
     
     @Test

@@ -1,6 +1,6 @@
 package integration.serialization;
 
-import static ome.smuggler.core.types.ValueParserFactory.uri;
+import static ome.smuggler.core.types.ValueParserFactory.*;
 
 import java.net.URI;
 
@@ -26,7 +26,7 @@ public class UriTest  extends JsonWriteReadTest {
     
     @Test
     public void serializeAndDeserializeOmeroUri() throws Exception {
-        assertSerializeAndDeserialize(uri("omero", "1234").getRight());
+        assertSerializeAndDeserialize(omeroUri("omero", "1234").getRight());
     }
     
 }

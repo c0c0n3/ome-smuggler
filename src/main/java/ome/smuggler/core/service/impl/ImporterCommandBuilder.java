@@ -9,19 +9,17 @@ import static util.sequence.Arrayz.asList;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.types.ImportInput;
 import util.runtime.BaseProgramArgument;
 import util.runtime.CommandBuilder;
-import util.runtime.EmptyProgramArgument;
 import util.runtime.ListProgramArgument;
 import util.runtime.ProgramArgument;
 import util.runtime.jvm.ClassPath;
 import util.runtime.jvm.ClassPathJvmArg;
-import util.runtime.jvm.JvmCmdBuilder;
 
 
 public class ImporterCommandBuilder implements CommandBuilder {
@@ -32,26 +30,29 @@ public class ImporterCommandBuilder implements CommandBuilder {
     
     private static <T> ListProgramArgument<String> optionalArg(
             String argName, Optional<T> argValue) {
-        ListProgramArgument<String> empty = new ListProgramArgument<>(asList()); 
         return argValue.map(Object::toString)
-                       .map(n -> arg("-n", n))
-                       .orElse(empty);
+                       .map(n -> arg(argName, n))
+                       .orElse(arg());
     }
     
     private final ImportInput importArgs;
+    private final CliImporterConfig config;
     
-    public ImporterCommandBuilder(ImportInput importArgs) {
-        requireNonNull(importArgs, "importArgs");        
+    public ImporterCommandBuilder(CliImporterConfig config,
+                                  ImportInput importArgs) {
+        requireNonNull(config, "config");
+        requireNonNull(importArgs, "importArgs");
+        
+        this.config = config;
         this.importArgs = importArgs;
     }
     
     private ProgramArgument<String> mainClass() {  
-        String fqn = "ome.formats.importer.cli.CommandLineImporter";  // TODO move to config
-        return new BaseProgramArgument<>(fqn);  
+        return new BaseProgramArgument<>(config.getMainClassFqn());  
     }
     
     private ClassPathJvmArg classPath() {  
-        Path libDir = Paths.get("ome-lib");  // TODO move to config
+        Path libDir = Paths.get(config.getOmeLibDirPath());
         ClassPath cp = unchecked(() -> fromLibDir(libDir)).get();
         return new ClassPathJvmArg(cp);
     }
@@ -69,19 +70,43 @@ public class ImporterCommandBuilder implements CommandBuilder {
     }
     
     private ListProgramArgument<String> description() {
-        return optionalArg("-x", importArgs.getDescription());
-                         
+        return optionalArg("-x", importArgs.getDescription());                     
     }
     
-    /*
-     * -d DATASET_ID                            OMERO dataset ID to import image into
-  -r SCREEN_ID                          OMERO screen ID to import plate into
-     */
+    private ListProgramArgument<String> datasetId() {
+        return importArgs.hasDatasetId() ?
+                optionalArg("-d", importArgs.getDatasetOrScreenId()) :
+                arg();                     
+    }
+    
+    private ListProgramArgument<String> screenId() {
+        return importArgs.hasScreenId() ?
+                optionalArg("-r", importArgs.getDatasetOrScreenId()) :
+                arg();                     
+    }
+    
+    private CommandBuilder[] textAnnotations() {
+        return importArgs.getTextAnnotations()
+                         .map(a -> arg("--annotation-ns", a.namespace(), 
+                                       "--annotation-text", a.text()))
+                         .toArray(CommandBuilder[]::new);
+    }
+    
+    private CommandBuilder[] annotationIds() {
+        return importArgs.getAnnotationIds()
+                         .map(id -> arg("--annotation-link", id.toString()))
+                         .toArray(CommandBuilder[]::new);
+    }
     
     private CommandBuilder assembleCommand() {
-        JvmCmdBuilder cmd = java(classPath(), mainClass());
-        
-        return null;
+        return java(classPath(), mainClass())
+               .addApplicationArgument(server())
+               .addApplicationArgument(name())
+               .addApplicationArgument(description())
+               .addApplicationArgument(datasetId())
+               .addApplicationArgument(screenId())
+               .addApplicationArgument(textAnnotations())
+               .addApplicationArgument(annotationIds());
     }
     
     @Override

@@ -92,16 +92,16 @@ public class ValueParserFactory {
     
     /**
      * Creates a URI from host and port components: the returned URI will be of
-     * the form {@code host:port}. 
+     * the form {@code omero://host:port/}. 
      * @param host the host component of the URI.
      * @param port the port component of the URI.
      * @return either a (right) value or an error message (left) detailing why
      * the value could not being instantiated.
      */
-    public static Either<String, URI> uri(String host, String port) {
+    public static Either<String, URI> omeroUri(String host, String port) {
         return pairParser(stringParser(), positiveIntParser())
               .parse(host, port)
-              .map(p -> String.format("%s:%s", p.fst(), p.snd()))
+              .map(p -> String.format("omero://%s:%s/", p.fst(), p.snd()))
               .bind(s -> uri(s));
     }
     

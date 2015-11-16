@@ -50,7 +50,7 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     private void checkRequiredFields(ImportRequest r) {
         email = label("experimenterEmail", email(r.experimenterEmail));
         target = label("targetUri", uri(r.targetUri));
-        omero = label("omeroHost, omeroPort", uri(r.omeroHost, r.omeroPort));
+        omero = label("omeroHost, omeroPort", omeroUri(r.omeroHost, r.omeroPort));
         session = label("sessionKey", string(r.sessionKey));
         
         parseResults.addAll(Arrays.asList(email, target, omero, session));

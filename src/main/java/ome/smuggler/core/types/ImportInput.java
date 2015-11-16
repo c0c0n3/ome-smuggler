@@ -96,6 +96,10 @@ public class ImportInput {
         return this;
     }
     
+    public boolean hasDatasetId() {
+        return datasetOrScreenId.map(x -> x instanceof DatasetId).orElse(false);
+    }
+    
     public ImportInput setScreenId(PositiveN id) {
         requireNonNull(id, "id");
         datasetOrScreenId = Optional.of(new ScreenId(id.get()));
@@ -107,6 +111,10 @@ public class ImportInput {
         id.ifPresent(x -> setScreenId(x));
         
         return this;
+    }
+    
+    public boolean hasScreenId() {
+        return datasetOrScreenId.map(x -> x instanceof ScreenId).orElse(false);
     }
     
     public ImportInput addTextAnnotation(TextAnnotation...xs) {
