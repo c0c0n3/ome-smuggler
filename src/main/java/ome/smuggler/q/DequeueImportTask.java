@@ -2,6 +2,7 @@ package ome.smuggler.q;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.q.MessageBody.readBody;
+import static util.error.Exceptions.throwAsIfUnchecked;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientConsumer;
@@ -33,9 +34,18 @@ public class DequeueImportTask implements MessageHandler {
         this.consumer.setMessageHandler(this);
     }
     
+    private void removeFromQueue(ClientMessage msg) {
+        try {
+            msg.acknowledge();
+        } catch (HornetQException e) {
+            throwAsIfUnchecked(e);
+        }
+    }
+    
     @Override
     public void onMessage(ClientMessage msg) {
         QueuedImport request = readBody(msg, QueuedImport.class);
+        removeFromQueue(msg);
         processor.consume(request);
     }
     
