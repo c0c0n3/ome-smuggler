@@ -2,7 +2,7 @@ package ome.smuggler.config.providers;
 
 import org.springframework.stereotype.Component;
 
-import ome.smuggler.config.data.ImportQ;
+import ome.smuggler.config.data.DefaultImportQConfig;
 
 
 /**
@@ -11,6 +11,6 @@ import ome.smuggler.config.data.ImportQ;
  * import server.
  */
 @Component
-public class ImportQConfigProvider extends ImportQ {
+public class ImportQConfigProvider extends DefaultImportQConfig {
 
 }

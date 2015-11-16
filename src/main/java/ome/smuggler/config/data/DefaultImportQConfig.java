@@ -9,7 +9,7 @@ import util.config.ConfigProvider;
 /**
  * Hard-coded import queue configuration.
  */
-public class ImportQ implements ConfigProvider<ImportQConfig> {
+public class DefaultImportQConfig implements ConfigProvider<ImportQConfig> {
 
     @Override
     public Stream<ImportQConfig> readConfig() throws Exception {
