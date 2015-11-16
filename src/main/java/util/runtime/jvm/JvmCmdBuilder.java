@@ -78,7 +78,7 @@ public abstract class JvmCmdBuilder extends CommandLineBuilder {
      * @return itself for use in fluent API style.
      * @throws NullPointerException if any of the arguments is {@code null}.
      */
-    public JvmCmdBuilder addApplicationArgument(ProgramArgument<?>...ps) {
+    public JvmCmdBuilder addApplicationArgument(CommandBuilder...ps) {
         if (ps == null || hasNulls(ps)) {  // hasNull is false if ps is null or zero len
             throw new NullPointerException("null elements");
         }
