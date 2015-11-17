@@ -1,0 +1,1 @@
+!!ome.smuggler.config.items.ImportLogConfig {importLogDir: import-logs, retentionMinutes: 21600}

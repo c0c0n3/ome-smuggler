@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import util.config.YamlConverter;
 import util.spring.io.ResourceReader;
 import ome.smuggler.config.data.UndertowYmlFile;
 import ome.smuggler.config.items.UndertowConfig;
@@ -25,12 +24,7 @@ public class UndertowConfigProvider
     
     @Override
     protected ResourceReader<UndertowConfig> getConverter() {
-        return inputStream -> {
-            YamlConverter<UndertowConfig> converter = new YamlConverter<>(); 
-            UndertowConfig cfg = converter.fromYaml(inputStream, 
-                                                    UndertowConfig.class);
-            return Stream.of(cfg);
-        };
+        return new YmlResourceReader<>(UndertowConfig.class);
     }
     
     @Override 
