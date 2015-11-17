@@ -10,6 +10,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ome.smuggler.config.items.CliImporterConfig;
@@ -21,7 +22,9 @@ import util.runtime.ProgramArgument;
 import util.runtime.jvm.ClassPath;
 import util.runtime.jvm.ClassPathJvmArg;
 
-
+/**
+ * Build the command line to call the OMERO importer.
+ */
 public class ImporterCommandBuilder implements CommandBuilder {
 
     private static ListProgramArgument<String> arg(String...tokens) {
@@ -38,6 +41,12 @@ public class ImporterCommandBuilder implements CommandBuilder {
     private final ImportInput importArgs;
     private final CliImporterConfig config;
     
+    /**
+     * Creates a new instance to build a command line from the given data.
+     * @param config configuration applicable to all import runs.
+     * @param importArgs details what to import.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
     public ImporterCommandBuilder(CliImporterConfig config,
                                   ImportInput importArgs) {
         requireNonNull(config, "config");
@@ -98,6 +107,10 @@ public class ImporterCommandBuilder implements CommandBuilder {
                          .toArray(CommandBuilder[]::new);
     }
     
+    private ProgramArgument<String> importTarget() {
+        return new BaseProgramArgument<>(importArgs.getTarget().toString());
+    }
+    
     private CommandBuilder assembleCommand() {
         return java(classPath(), mainClass())
                .addApplicationArgument(server())
@@ -106,12 +119,18 @@ public class ImporterCommandBuilder implements CommandBuilder {
                .addApplicationArgument(datasetId())
                .addApplicationArgument(screenId())
                .addApplicationArgument(textAnnotations())
-               .addApplicationArgument(annotationIds());
+               .addApplicationArgument(annotationIds())
+               .addApplicationArgument(importTarget());
     }
     
     @Override
     public Stream<String> tokens() {
         return assembleCommand().tokens();
+    }
+    
+    @Override
+    public String toString() {
+        return tokens().collect(Collectors.joining(" "));
     }
 
 }

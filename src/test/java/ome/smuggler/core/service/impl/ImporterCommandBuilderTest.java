@@ -45,10 +45,11 @@ public class ImporterCommandBuilderTest {
     public void minimalCommandLine() {
         String[] xs = tokenPgmArgs(makeNew());
         
-        assertThat(xs.length, is(6));
+        assertThat(xs.length, is(7));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
+        assertThat(xs[6], is(makeNew().getTarget().toString()));
     }
     
     @Test
@@ -56,7 +57,7 @@ public class ImporterCommandBuilderTest {
         ImportInput args = makeNew().setName("name");
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(8));
+        assertThat(xs.length, is(9));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
@@ -68,7 +69,7 @@ public class ImporterCommandBuilderTest {
         ImportInput args = makeNew().setName("name").setDescription("desc");
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(10));
+        assertThat(xs.length, is(11));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
@@ -82,7 +83,7 @@ public class ImporterCommandBuilderTest {
                           .setDatasetId(posN("2"));
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(12));
+        assertThat(xs.length, is(13));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
@@ -97,7 +98,7 @@ public class ImporterCommandBuilderTest {
                           .setScreenId(posN("2"));
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(12));
+        assertThat(xs.length, is(13));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
@@ -113,7 +114,7 @@ public class ImporterCommandBuilderTest {
                           .addTextAnnotation(anno("n1", "a1"), anno("n2", "a2"));
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(20));
+        assertThat(xs.length, is(21));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
@@ -141,7 +142,7 @@ public class ImporterCommandBuilderTest {
                           .addAnnotationId(posN("3"));
         String[] xs = tokenPgmArgs(args);
         
-        assertThat(xs.length, is(22));
+        assertThat(xs.length, is(23));
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));

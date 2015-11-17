@@ -37,7 +37,9 @@ serious forehead banging needed to find the best solution.
 * Should we write our own import client along the lines of the CLI importer?
 This would give us finer control over the import which we're going to need
 if we want to provide better feedback to the users or explore architectures
-for large-scale imports---e.g. parallel/distributed, map/reduce, etc.
+for large-scale imports---e.g. parallel/distributed, map/reduce, etc. Also,
+we could recover from broken imports (e.g. retry if OMERO is down) or resume
+partial file transfers.
 * Should the import server become part of the OME software suite? A common
 import platform that could be used both by Insight and the Web Client? The
 queue could be used as a distributed event bus so that it'd become possible
@@ -58,3 +60,11 @@ Discuss plans to take over the world and build a spacecraft to go to Titan.
 I'm not at liberty to detail the plans here as I work for the FBI (French Bio
 Imaging!) and, being the FBI, we like to keep our secrets secret, you know.
 
+Technical Debt
+--------------
+Erm, uh well, this is going to spoil our plan for a weekend on Titan.
+But we *really* need to make the code more robust, add logging and proper
+exception handling. And as we're at it, why not
+
+* implement import log retention policy (e.g. schedule message to delete file);
+* ...[will add more as I go along]

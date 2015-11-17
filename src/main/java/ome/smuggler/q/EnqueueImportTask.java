@@ -4,13 +4,17 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.q.MessageBody.writeBody;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
+import java.io.IOException;
+
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.ClientProducer;
 import org.hornetq.api.core.client.ClientSession;
 
+import ome.smuggler.config.items.ImportLogConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.service.impl.ImportOutput;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
@@ -22,14 +26,18 @@ public class EnqueueImportTask implements ImportRequestor {
 
     private final ClientSession session;
     private final ClientProducer producer;
+    private final ImportLogConfig logConfig;
     
-    public EnqueueImportTask(ImportQConfig config, ClientSession session) 
+    public EnqueueImportTask(ImportQConfig qConfig, ImportLogConfig logConfig,
+                             ClientSession session) 
             throws HornetQException {
-        requireNonNull(config, "config");
+        requireNonNull(qConfig, "qConfig");
+        requireNonNull(logConfig, "logConfig");
         requireNonNull(session, "session");
         
         this.session = session;
-        this.producer = session.createProducer(config.getAddress());
+        this.producer = session.createProducer(qConfig.getAddress());
+        this.logConfig = logConfig;
     }
     
     private void sendMessage(QueuedImport task) {
@@ -42,12 +50,22 @@ public class EnqueueImportTask implements ImportRequestor {
         }
     }
     
+    private void notifyQueued(QueuedImport task) {
+        ImportOutput out = new ImportOutput(logConfig, task);
+        try {
+            out.writeQueued();
+        } catch (IOException e) {
+            throwAsIfUnchecked(e);
+        }
+    }
+    
     @Override
     public ImportId enqueue(ImportInput request) {
         ImportId taskId = new ImportId();
         QueuedImport task = new QueuedImport(taskId, request);
         sendMessage(task);
-
+        notifyQueued(task);
+        
         return taskId;
     }
 

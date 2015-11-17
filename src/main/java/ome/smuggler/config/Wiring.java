@@ -1,5 +1,7 @@
 package ome.smuggler.config;
 
+import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.ImportLogConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
@@ -20,20 +22,36 @@ import util.config.ConfigProvider;
 @Configuration
 public class Wiring {
 
-    @Bean
-    public ImportQConfig importQConfig(ConfigProvider<ImportQConfig> provider) {
+    private static <T> T config(ConfigProvider<T> provider) {
         return provider.defaultReadConfig().findFirst().get();
     }
     
     @Bean
-    public ImportRequestor importRequestor(ImportQConfig config, 
-            ClientSession session) throws HornetQException {
-        return new EnqueueImportTask(config, session);
+    public ImportQConfig importQConfig(ConfigProvider<ImportQConfig> src) {
+        return config(src);
     }
     
     @Bean
-    public ImportProcessor importProcessor() {
-        return new ImportRunner();
+    public CliImporterConfig cliImporterConfig(ConfigProvider<CliImporterConfig> src) {
+        return config(src);
+    }
+    
+    @Bean
+    public ImportLogConfig importLogConfig(ConfigProvider<ImportLogConfig> src) {
+        return config(src);
+    }
+    
+    @Bean
+    public ImportRequestor importRequestor(ImportQConfig qConfig, 
+            ImportLogConfig logConfig, ClientSession session) 
+                    throws HornetQException {
+        return new EnqueueImportTask(qConfig, logConfig, session);
+    }
+    
+    @Bean
+    public ImportProcessor importProcessor(CliImporterConfig cliCfg, 
+                                           ImportLogConfig logCfg) {
+        return new ImportRunner(cliCfg, logCfg);
     }
     
     @Bean
