@@ -1,14 +1,20 @@
 package ome.smuggler.config;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.web.ImportController;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 
@@ -18,6 +24,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebWiring extends WebMvcConfigurerAdapter {
 
+    @Autowired
+    private ImportLogConfig importLogCfg;
+    
     private void setStringConverterMediaTypes(HttpMessageConverter<?> x) {
         StringHttpMessageConverter converter = (StringHttpMessageConverter) x;
         List<MediaType> mediaTypes = Arrays.asList(
@@ -53,4 +62,18 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     /* (*) this way methods that return a string need to do nothing and the
      * client doesn't need to specify an accept header either.
      */
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String importStatusPattern = String
+                                   .format("%s/**", ImportController.ImportUrl);
+        String statusFilesLocation = Paths
+                                   .get(importLogCfg.getImportLogDir())
+                                   .toAbsolutePath()
+                                   .toUri()
+                                   .toString();
+        registry.addResourceHandler(importStatusPattern)
+                .addResourceLocations(statusFilesLocation);
+    }
+    
 }
