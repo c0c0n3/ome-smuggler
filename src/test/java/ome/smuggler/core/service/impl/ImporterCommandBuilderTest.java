@@ -164,4 +164,13 @@ public class ImporterCommandBuilderTest {
         assertThat(xs[21], is("3"));
     }
     
+    @Test
+    public void maskSessionKey() {
+        ImportInput args = makeNew();
+        String sessionKey = args.getSessionKey();
+        String cmd = new ImporterCommandBuilder(config(), args).toString();
+        
+        assertThat(cmd, not(containsString(sessionKey)));
+    }
+    
 }
