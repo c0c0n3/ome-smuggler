@@ -18,10 +18,6 @@ import ome.smuggler.core.types.QueuedImport;
 
 
 public class ImportOutput {
-
-    private static void ensureDirectories(Path outputFile) throws IOException {
-        Files.createDirectories(outputFile.getParent());
-    }
     
     private final ImportLogConfig logCfg;
     private final QueuedImport task;
@@ -42,7 +38,6 @@ public class ImportOutput {
     }
     
     private void output(String line) throws IOException {
-        ensureDirectories(outputFile);
         List<String> content = Arrays.asList(line);
         Files.write(outputFile, content, CREATE, WRITE, APPEND);
     }

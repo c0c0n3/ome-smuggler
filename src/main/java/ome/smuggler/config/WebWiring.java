@@ -1,6 +1,10 @@
 package ome.smuggler.config;
 
+import static util.error.Exceptions.unchecked;
+
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -65,15 +69,18 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        Path importLogDir = Paths.get(importLogCfg.getImportLogDir())
+                                 .toAbsolutePath();
+        unchecked(() -> Files.createDirectories(importLogDir)).get();  // (*)
+        
         String importStatusPattern = String
                                    .format("%s/**", ImportController.ImportUrl);
-        String statusFilesLocation = Paths
-                                   .get(importLogCfg.getImportLogDir())
-                                   .toAbsolutePath()
-                                   .toUri()
-                                   .toString();
+        String statusFilesLocation = importLogDir.toUri().toString();
         registry.addResourceHandler(importStatusPattern)
                 .addResourceLocations(statusFilesLocation);
     }
-    
+    /* (*) The directory must exist before we register the handler otherwise
+     * registration will silently fail and instead of our import logs we'd 
+     * get a fat 404 from Spring MVC...
+     */
 }
