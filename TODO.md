@@ -8,6 +8,12 @@ access to the disk, they can decode the journal file and grab the session
 key.
 * Actuator. End points access needs to be restricted; be strict about what
 info is published. Ditto for JMX.
+* Import Report. The import status URL lets you access the import run's log.
+Not a good idea as the CLI importer outputs sensitive information, most notably
+the session key!
+* Access Control. Non-existent; find out what users require.
+* Loopholes. Probably many. The code was written quickly, run a thorough
+security audit!
 
 Session Keep Alive
 ------------------
