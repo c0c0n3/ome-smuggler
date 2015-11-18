@@ -32,6 +32,7 @@ dependencies {
     compile("com.google.code.gson:gson:2.4")
     compile("org.springframework.boot:spring-boot-starter-hornetq")
     compile("org.hornetq:hornetq-jms-server")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
     
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
