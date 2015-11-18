@@ -63,8 +63,8 @@ public class EnqueueImportTask implements ImportRequestor {
     public ImportId enqueue(ImportInput request) {
         ImportId taskId = new ImportId();
         QueuedImport task = new QueuedImport(taskId, request);
-        sendMessage(task);
         notifyQueued(task);
+        sendMessage(task);
         
         return taskId;
     }

@@ -22,7 +22,7 @@ public class EnqueueImportTest extends BaseWebTest {
     private static ImportRequest buildMinValidRequest() {
         ImportRequest req = new ImportRequest();
         req.experimenterEmail = "x@y";
-        req.targetUri = "/";
+        req.targetUri = "my/file";
         req.omeroHost = "h";
         req.omeroPort = "1";
         req.sessionKey = "k";
@@ -33,7 +33,7 @@ public class EnqueueImportTest extends BaseWebTest {
     /* curl -v -H 'Accept: application/json' 
      *         -H 'Content-Type: application/json'  
      *         -X POST -d '{"experimenterEmail": "x@y", 
-     *                      "targetUri":"/", 
+     *                      "targetUri":"my/file", 
      *                      "omeroHost":"h", 
      *                      "omeroPort":"1", 
      *                      "sessionKey":"k"}' 

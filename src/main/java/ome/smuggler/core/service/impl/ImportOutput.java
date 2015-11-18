@@ -52,7 +52,9 @@ public class ImportOutput {
     
     public void writeHeader(ImporterCommandBuilder importCommand) 
             throws IOException {
-        Files.delete(outputFile);
+        if (Files.exists(outputFile)) {
+            Files.delete(outputFile);
+        }
         output(header(task, importCommand, outputFile));
     }
     

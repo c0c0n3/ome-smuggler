@@ -9,8 +9,11 @@ key.
 * Actuator. End points access needs to be restricted; be strict about what
 info is published. Ditto for JMX.
 * Import Report. The import status URL lets you access the import run's log.
-Not a good idea as the CLI importer outputs sensitive information, most notably
-the session key!
+Not a good idea as the CLI importer may output sensitive information, most
+notably the session key!
+* HTTPS. Needs to be enabled for production deployment; clients shouldn't be
+able to open a HTTP connection to POST an import request as it contains the
+session key, a yummy bite for eavesdroppers.
 * Access Control. Non-existent; find out what users require.
 * Loopholes. Probably many. The code was written quickly, run a thorough
 security audit!
