@@ -31,7 +31,8 @@ public class ExceptionsSupplierTest {
     
     @Test(expected = IOException.class)
     public void checkedExceptionBubblesUpAsIsUsingUnchecked() {
-        feed(unchecked(this::supplyWithCheckedException));
+        Supplier<String> f = unchecked(this::supplyWithCheckedException);
+        feed(f);
     }
     
     @Test(expected = NullPointerException.class)
@@ -42,7 +43,8 @@ public class ExceptionsSupplierTest {
     
     @Test(expected = NullPointerException.class)
     public void uncheckedExceptionBubblesUpAsIsUsingUnchecked() {
-        feed(unchecked(this::supplyWithUncheckedException));
+        Supplier<String> f = unchecked(this::supplyWithUncheckedException);
+        feed(f);
     }
 
 }
