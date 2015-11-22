@@ -34,7 +34,8 @@ public class EnqueueTaskTest {
         msgBody = mock(HornetQBuffer.class);
         when(msgToQueue.getBodyBuffer()).thenReturn(msgBody);
         
-        return new EnqueueTask<>(q, sesh);
+        QueueConnector connector = new QueueConnector(q, sesh);
+        return new EnqueueTask<>(connector);
     }
     
     @Test
@@ -47,12 +48,7 @@ public class EnqueueTaskTest {
     
     @Test (expected = NullPointerException.class)
     public void throwIfFirstArgNull() throws HornetQException {
-        new EnqueueTask<>(null, mock(ClientSession.class));
-    }
-    
-    @Test (expected = NullPointerException.class)
-    public void throwIfSecondArgNull() throws HornetQException {
-        new EnqueueTask<>(new ImportQConfig(), null);
+        new EnqueueTask<>(null);
     }
     
 }

@@ -7,9 +7,7 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.api.core.client.MessageHandler;
-import org.hornetq.core.config.CoreQueueConfiguration;
 
 import ome.smuggler.core.msg.ChannelSink;
 
@@ -25,8 +23,7 @@ public class DequeueTask<T> implements MessageHandler {
 
     /**
      * Creates a new instance.
-     * @param config the queue to receive messages from.
-     * @param session the session to use.
+     * @param queue provides access to the queue from which to fetch messages.
      * @param consumer consumes messages fetched from the queue.
      * @param messageType the class of the message the consumer accepts; needed
      * for deserialization.
@@ -34,17 +31,16 @@ public class DequeueTask<T> implements MessageHandler {
      * receive messages on the specified queue.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public DequeueTask(CoreQueueConfiguration config, ClientSession session,
+    public DequeueTask(QueueConnector queue,
                        ChannelSink<T> consumer, Class<T> messageType) 
                     throws HornetQException {
-        requireNonNull(config, "config");
-        requireNonNull(session, "session");
+        requireNonNull(queue, "queue");
         requireNonNull(consumer, "consumer");
         requireNonNull(messageType, "messageType");
         
         this.sink = consumer;
         this.messageType = messageType;
-        this.receiver = session.createConsumer(config.getName(), false);
+        this.receiver = queue.newConsumer();
         this.receiver.setMessageHandler(this);
     }
     

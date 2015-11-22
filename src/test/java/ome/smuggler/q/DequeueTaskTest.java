@@ -25,8 +25,9 @@ public class DequeueTaskTest implements ChannelSink<String> {
         ClientConsumer receiver = mock(ClientConsumer.class);
         when(sesh.createConsumer(q.getName(), false)).thenReturn(receiver);
         
+        QueueConnector connector = new QueueConnector(q, sesh);
         DequeueTask<String> task = 
-                new DequeueTask<>(q, sesh, this, String.class);
+                new DequeueTask<>(connector, this, String.class);
         verify(receiver).setMessageHandler(task);
         
         return task;
@@ -54,25 +55,17 @@ public class DequeueTaskTest implements ChannelSink<String> {
     
     @Test (expected = NullPointerException.class)
     public void throwIfFirstArgNull() throws HornetQException {
-        new DequeueTask<>(null, mock(ClientSession.class), s -> {}, 
-                String.class);
+        new DequeueTask<>(null, s -> {}, String.class);
     }
     
     @Test (expected = NullPointerException.class)
     public void throwIfSecondArgNull() throws HornetQException {
-        new DequeueTask<>(new ImportQConfig(), null, s -> {}, String.class);
+        new DequeueTask<>(mock(QueueConnector.class), null, String.class);
     }
     
     @Test (expected = NullPointerException.class)
     public void throwIfThirdArgNull() throws HornetQException {
-        new DequeueTask<>(new ImportQConfig(), mock(ClientSession.class), null, 
-                String.class);
-    }
-    
-    @Test (expected = NullPointerException.class)
-    public void throwIfFourthArgNull() throws HornetQException {
-        new DequeueTask<>(new ImportQConfig(), mock(ClientSession.class), 
-                s -> {}, null);
+        new DequeueTask<>(mock(QueueConnector.class), s -> {}, null);
     }
         
 }
