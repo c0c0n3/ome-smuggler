@@ -11,10 +11,8 @@ import ome.smuggler.core.types.ImportInput;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,11 +48,10 @@ public class ImportController {
             .addAnnotationIds(validator.getAnnotationIds().stream());
     }
     
-    private ImportResponse responseBody(HttpServletRequest req, ImportId task) {
-        HttpRequest request = new ServletServerHttpRequest(req);
+    private ImportResponse responseBody(ImportId task) {
         ImportResponse responseBody = new ImportResponse();
-        responseBody.statusUri = UriComponentsBuilder
-                                .fromHttpRequest(request)
+        responseBody.statusUri = UriComponentsBuilder.newInstance()
+                                .path(ImportUrl)
                                 .path("/")
                                 .path(task.id())
                                 .toUriString();
@@ -77,14 +74,13 @@ public class ImportController {
     @RequestMapping(method = POST, 
                     consumes = MediaType.APPLICATION_JSON_VALUE,
                     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> enqueue(HttpServletRequest request,
-                                  @RequestBody ImportRequest data) { 
+    public ResponseEntity<Object> enqueue(@RequestBody ImportRequest data) { 
         ImportRequestValidator validator = new ImportRequestValidator();
         return okOr400(validator
                 .validate(data)
                 .map(x -> buildInput(data, validator))
                 .map(service::enqueue)
-                .map(taskId -> responseBody(request, taskId))
+                .map(this::responseBody)
                 );
     }
     

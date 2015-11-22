@@ -50,7 +50,7 @@ public class EnqueueImportTest extends BaseWebTest {
         
         String statusUri = response.getBody().statusUri;
         assertThat(statusUri, is(not(isEmptyOrNullString())));
-        assertTrue(URI.create(statusUri).isAbsolute());
+        assertFalse(URI.create(statusUri).isAbsolute());
     }
     
     /* curl -v -H 'Accept: application/json' 
