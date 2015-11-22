@@ -8,9 +8,9 @@ import ome.smuggler.core.service.ImportRequestor;
 import ome.smuggler.core.service.impl.ImportRunner;
 import ome.smuggler.q.DequeueImportTask;
 import ome.smuggler.q.EnqueueImportTask;
+import ome.smuggler.q.ServerConnector;
 
 import org.hornetq.api.core.HornetQException;
-import org.hornetq.api.core.client.ClientSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,9 +43,9 @@ public class Wiring {
     
     @Bean
     public ImportRequestor importRequestor(ImportQConfig qConfig, 
-            ImportLogConfig logConfig, ClientSession session) 
+            ImportLogConfig logConfig, ServerConnector connector) 
                     throws HornetQException {
-        return new EnqueueImportTask(qConfig, logConfig, session);
+        return new EnqueueImportTask(qConfig, logConfig, connector.getSession());
     }
     
     @Bean
@@ -56,9 +56,9 @@ public class Wiring {
     
     @Bean
     public DequeueImportTask dequeueImportTask(ImportQConfig config, 
-            ClientSession session, ImportProcessor processor) 
+            ServerConnector connector, ImportProcessor processor) 
                     throws HornetQException {
-        return new DequeueImportTask(config, session, processor);
+        return new DequeueImportTask(config, connector.getSession(), processor);
     }
     
 }
