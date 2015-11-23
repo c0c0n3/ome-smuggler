@@ -1,7 +1,10 @@
 package ome.smuggler.config;
 
+import static ome.smuggler.config.Wiring.config;
 import static util.sequence.Arrayz.asMutableList;
+
 import ome.smuggler.config.items.HornetQPersistenceConfig;
+import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 
 import org.hornetq.core.config.Configuration;
@@ -20,16 +23,16 @@ import util.config.ConfigProvider;
 public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomizer {
 
     @Autowired
-    private ConfigProvider<HornetQPersistenceConfig> persistenceConfig;
+    private ConfigProvider<HornetQPersistenceConfig> persistenceConfigProvider;
     
     @Autowired
     private ConfigProvider<ImportQConfig> importQProvider;
     
+    @Autowired
+    private ConfigProvider<ImportGcQConfig> importGcQProvider;
+    
     private void configurePersistence(Configuration cfg) {
-        HornetQPersistenceConfig params = persistenceConfig
-                                         .defaultReadConfig()
-                                         .findFirst()
-                                         .get();
+        HornetQPersistenceConfig params = config(persistenceConfigProvider);
         
         cfg.setPersistenceEnabled(params.isPersistenceEnabled());
         cfg.setJournalType(JournalType.NIO);
@@ -40,11 +43,9 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
     }
     
     private void configureQueues(Configuration cfg) {
-        ImportQConfig importQ = importQProvider
-                .defaultReadConfig()
-                .findFirst()
-                .get();
-        cfg.setQueueConfigurations(asMutableList(importQ));
+        ImportQConfig importQ = config(importQProvider);
+        ImportGcQConfig importGcQ = config(importGcQProvider);
+        cfg.setQueueConfigurations(asMutableList(importQ, importGcQ));
     }
     
     @Override

@@ -10,7 +10,10 @@ import org.hornetq.api.core.client.ClientProducer;
 import ome.smuggler.core.msg.ChannelSource;
 
 /**
- * Puts messages on a queue, asynchronously. 
+ * Puts messages on a queue, asynchronously.
+ * Messages are durable by default but any other kind of message can be
+ * constructed by overriding the {@link #newMessage(QueueConnector) newMessage}
+ * method. 
  */
 public class EnqueueTask<T> implements ChannelSource<T> {
 
@@ -30,9 +33,13 @@ public class EnqueueTask<T> implements ChannelSource<T> {
         this.producer = queue.newProducer();
     }
     
+    protected ClientMessage newMessage(QueueConnector queue) {
+        return queue.newDurableMessage();
+    }
+    
     @Override
     public void send(T data) throws Exception {
-        ClientMessage msg = queue.newDurableMessage();
+        ClientMessage msg = newMessage(queue);
         writeBody(msg, data);
         producer.send(msg);
     }

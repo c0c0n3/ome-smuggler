@@ -21,7 +21,7 @@ public class ImportOutput {
     
     private final ImportLogConfig logCfg;
     private final QueuedImport task;
-    private final Path outputFile;
+    private final ImportLogPath outputFile;
     
     public ImportOutput(ImportLogConfig logCfg, QueuedImport task) {
         requireNonNull(logCfg, "logCfg");
@@ -32,17 +32,21 @@ public class ImportOutput {
         this.outputFile = outputFile(task);
     }
 
-    private Path outputFile(QueuedImport task) {
+    private ImportLogPath outputFile(QueuedImport task) {
         Path dir = Paths.get(logCfg.getImportLogDir());
-        return new ImportLogPath(dir, task.getTaskId()).get();
+        return new ImportLogPath(dir, task.getTaskId());
     }
     
     private void output(String line) throws IOException {
         List<String> content = Arrays.asList(line);
-        Files.write(outputFile, content, CREATE, WRITE, APPEND);
+        Files.write(outputPath(), content, CREATE, WRITE, APPEND);
     }
     
     public Path outputPath() {
+        return outputFile.get();
+    }
+    
+    public ImportLogPath importLogPath() {
         return outputFile;
     }
     
@@ -52,10 +56,10 @@ public class ImportOutput {
     
     public void writeHeader(ImporterCommandBuilder importCommand) 
             throws IOException {
-        if (Files.exists(outputFile)) {
-            Files.delete(outputFile);
+        if (Files.exists(outputPath())) {
+            Files.delete(outputPath());
         }
-        output(header(task, importCommand, outputFile));
+        output(header(task, importCommand, outputPath()));
     }
     
     public void writeFooter(boolean success, int exitStatus) throws IOException {
