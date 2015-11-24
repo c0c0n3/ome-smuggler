@@ -24,7 +24,10 @@ Session key expires after 10 mins. Ping server periodically until import
 request is fetched from the queue to make sure we have a valid session
 key at the time we process the request and run the import.
 Snag: OMERO is down for more than 10 mins, can't keep session alive, import
-fails, angry users, oh dear!
+fails permanently, angry users, oh dear!
+Ask the friendly OMElings if there's a simple way out, e.g. use a long-lived
+import token (only valid to import a specific file for a given user) instead
+of the session key?
 
 Import Target Resolution
 ------------------------
@@ -54,6 +57,25 @@ import platform that could be used both by Insight and the Web Client? The
 queue could be used as a distributed event bus so that it'd become possible
 to import from the Web client too.
 
+Insight Integration
+-------------------
+* Aim straight before pulling the import trigger! We POST the import request
+too early, we should wait for Bio-Formats to scan the import candidates and
+decide what is importable so that if the user accidentally selects the wrong
+file they can get an error message and change their selection. This avoids
+POSTing imports that are doomed to fail.
+* Import server option. Should it be an option? i.e. the user can choose at
+import time if the import should go straight to OMERO or it should be offloaded
+to the import server. Perhaps too confusing for most users, possibly useful to
+lab managers who import on behalf of other users?
+* Import server config. How is Insight supposed to find the import server's
+address if an import server is at all available? Options range from `zeroconf`
+to a plain old entry in the configuration file---a bit of a problem when some
+clients should use an import server while others another server though.
+(Note. This is not an issue at MRI as both the import server and Insight will
+be deployed on each acquisition workstation, with Insight preconfigured to
+to connect to the import server on `localhost`.)
+
 Task Queue
 ----------
 * Generalise the OMERO import so that the server can be used to run generic
@@ -73,7 +95,23 @@ Technical Debt
 --------------
 Erm, uh well, this is going to spoil our plan for a weekend on Titan.
 But we *really* need to make the code more robust, add logging and proper
-exception handling. And as we're at it, why not
+exception handling. And as we're at it, why not consider
 
-* implement import log retention policy (e.g. schedule message to delete file);
-* ...[will add more as I go along]
+* Bio-Formats scan. Insight does it, the CLI importer does it, we should do it
+too! The best place to implement it would be right before we put the import
+request on the queue: if the file is not importable, bail out and tell the
+client so they can change their selection. (Kinda what Insight does, but we
+move the functionality server-side so clients don't need to use Bio-Formats.)
+* Configuration. Review and consolidate. Start using profiles so we can run
+the server in `Dev` mode, see below.
+* `Dev` mode. Add sneaky beans to run the server with no HornetQ persistence
+and no-op mail client---perhaps it could write the mail message to `stdout` or
+put it on another queue. Only available when running with the `Dev` profile.
+* Spring Booty JMS auto-config. Only used out of convenience to create the
+embedded HornetQ instance, but it comes with the JMS baggage which we don't
+need as we're using HornetQ's core API. Look at what they do in this package:
+`org.springframework.boot.autoconfigure.jms.hornetq`; instead of setting up
+a `org.hornetq.jms.server.embedded.EmbeddedJMS`, we should rather instantiate
+its super-class `EmbeddedHornetQ` and get rid of the dependency on the HornetQ
+JMS server jar in our `build.gradle`.
+* ...[will add more to this list as I go along]
