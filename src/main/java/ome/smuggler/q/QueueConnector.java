@@ -67,4 +67,18 @@ public class QueueConnector {
         return session.createMessage(true);
     }
     
+    /**
+     * @return the session in use to access the queue.
+     */
+    public ClientSession getSession() {
+        return session;
+    }
+    
+    /**
+     * @return configuration of the queue to access.
+     */
+    public CoreQueueConfiguration getConfig() {
+        return config;
+    }
+    
 }

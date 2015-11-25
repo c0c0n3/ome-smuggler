@@ -18,8 +18,8 @@ import ome.smuggler.core.msg.ChannelSink;
 public class DequeueTask<T> implements MessageHandler {
     
     private final ClientConsumer receiver;
-    private final ChannelSink<T> sink;
-    private final Class<T> messageType;
+    protected final ChannelSink<T> sink;
+    protected final Class<T> messageType;
 
     /**
      * Creates a new instance.
@@ -44,7 +44,7 @@ public class DequeueTask<T> implements MessageHandler {
         this.receiver.setMessageHandler(this);
     }
     
-    private void removeFromQueue(ClientMessage msg) {
+    private static void removeFromQueue(ClientMessage msg) {
         try {
             msg.acknowledge();
         } catch (HornetQException e) {
