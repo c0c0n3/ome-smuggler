@@ -1,11 +1,12 @@
 package ome.smuggler.q;
 
-import static ome.smuggler.q.MessageBody.readBody;
+import static util.sequence.Arrayz.hasNulls;
+
+import java.time.Duration;
+import java.util.Optional;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientSession;
-import org.hornetq.api.core.client.ClientSessionFactory;
 
 import ome.smuggler.core.msg.ChannelSink;
 import ome.smuggler.core.msg.ChannelSource;
@@ -13,13 +14,32 @@ import ome.smuggler.core.msg.RetryLater;
 
 public class DequeueWithRetryTask<T> extends DequeueTask<T> {
 
+    public static final String RetryCount = "ome.smuggler.q.RetryCount";
+    
+    private final Duration[] delays;
     private final ChannelSource<T> loopback;
     
+    
     public DequeueWithRetryTask(QueueConnector queue, ChannelSink<T> consumer, 
-            Class<T> messageType)
+            Class<T> messageType, Duration[] delays)
             throws HornetQException {
         super(queue, consumer, messageType);
+        if (delays == null || hasNulls(delays)) {  // zero len is okay tho
+            throw new NullPointerException("array is null or contains nulls");
+        }
+        
+        this.delays = delays;
         loopback = new EnqueueTask<>(queue);
+    }
+    
+    private Optional<Integer> getRetryCount(ClientMessage msg) {
+        return msg.containsProperty(RetryCount) ?
+                Optional.of(msg.getIntProperty(RetryCount)) : Optional.empty();
+    }
+    
+    private Optional<Duration> nextDelay(int retryCount) {
+        return 0 <= retryCount && retryCount < delays.length ?
+                Optional.of(delays[retryCount]) : Optional.empty();
     }
     
     private void putBackOnQueue(ClientMessage msg) {
@@ -27,9 +47,8 @@ public class DequeueWithRetryTask<T> extends DequeueTask<T> {
     }
     
     private boolean attemptConsume(ClientMessage msg) {
-        T messageData = readBody(msg, messageType);
         try {
-            sink.consume(messageData);
+            super.onMessage(msg);
             return true;
         } catch (RetryLater e) {
             return false;
@@ -38,7 +57,10 @@ public class DequeueWithRetryTask<T> extends DequeueTask<T> {
     
     @Override
     public void onMessage(ClientMessage msg) {
-        
+        boolean consumed = attemptConsume(msg);
+        if (!consumed) {
+            putBackOnQueue(msg);
+        }
     }
     
 }
@@ -62,5 +84,11 @@ public class DequeueWithRetryTask<T> extends DequeueTask<T> {
  * 
  * + HQ212002: Timed out waiting for handler to complete processing
  * 
- * Okay, now it's my turn for the WTH... 
+ * Okay, now it's my turn for the WTH...
+ * 
+ * Another thing I didn't have time to test is what messages are rolled back.
+ * What happens if producers and consumers share the *same* session---i.e. our
+ * set up? Say messages m1 and m2 are on the queue, m1 is delivered to a 
+ * consumer which rolls back while m2 still sits on the queue. What is the fate
+ * of m2?
  */
