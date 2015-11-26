@@ -32,9 +32,9 @@ public class DequeueWithRetryTask<T> extends DequeueTask<T> {
         loopback = new EnqueueTask<>(queue);
     }
     
-    private Optional<Integer> getRetryCount(ClientMessage msg) {
-        return msg.containsProperty(RetryCount) ?
-                Optional.of(msg.getIntProperty(RetryCount)) : Optional.empty();
+    private int getRetryCount(ClientMessage msg) {
+        return msg.containsProperty(RetryCount) ? 
+                msg.getIntProperty(RetryCount) : 0;
     }
     
     private Optional<Duration> nextDelay(int retryCount) {
