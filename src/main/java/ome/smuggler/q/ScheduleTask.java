@@ -1,48 +1,63 @@
 package ome.smuggler.q;
 
-import static java.util.Objects.requireNonNull;
-
 import java.time.Duration;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.Message;
 import org.hornetq.api.core.client.ClientMessage;
 
+import ome.smuggler.core.msg.ConfigurableChannelSource;
+
 /**
  * Enqueues a message that will only be delivered to consumers at a specified
  * time in the future.
  */
-public class ScheduleTask<T> extends EnqueueTask<T> {
+public class ScheduleTask<T> 
+    implements ConfigurableChannelSource<Duration, T> {
 
-    private final Duration timeSpanFromNow;
+    private final EnqueueTask<T> channel;
     
     /**
      * Creates a new instance.
      * @param queue provides access to the queue on which to put messages. 
-     * @param timeSpanFromNow amount of time from now to specify when in the
-     * future the message should be delivered.
      * @throws HornetQException if a queue producer could not be created.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public ScheduleTask(QueueConnector queue, Duration timeSpanFromNow) 
-            throws HornetQException {
-        super(queue);
-        requireNonNull(timeSpanFromNow, "timeSpanFromNow");
-        
-        this.timeSpanFromNow = timeSpanFromNow;
+    public ScheduleTask(QueueConnector queue) throws HornetQException {
+        this.channel = new EnqueueTask<>(queue);
     }
     
-    private long millisFromNow() {
+    private long millisFromNow(Duration timeSpanFromNow) {
         long now = System.currentTimeMillis();
         return now + timeSpanFromNow.toMillis();
     }
     
-    @Override
-    protected ClientMessage newMessage(QueueConnector queue) {
+    protected ClientMessage newMessage(QueueConnector queue, 
+                                       Duration timeSpanFromNow) {
         ClientMessage msg = queue.newDurableMessage();
         msg.putLongProperty(Message.HDR_SCHEDULED_DELIVERY_TIME.toString(), 
-                            millisFromNow());
+                            millisFromNow(timeSpanFromNow));
         return msg;
+    }
+
+    /**
+     * Sends the message so that the channel will only deliver it to consumers
+     * at the specified time in the future.
+     * @param timeSpanFromNow amount of time from now to specify when in the
+     * future the message should be delivered.
+     */
+    @Override
+    public void send(Duration timeSpanFromNow, T data) throws Exception {
+        channel.send(queue -> newMessage(queue, timeSpanFromNow), data);
+    }
+
+    /**
+     * Sends the message data without scheduling, the message may be consumed
+     * any time from now.
+     */
+    @Override
+    public void send(T data) throws Exception {
+        channel.send(data);
     }
     
 }

@@ -4,10 +4,11 @@ import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportLogConfig;
-import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.msg.ConfigurableChannelSource;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
@@ -16,16 +17,22 @@ public class ImportRunner implements ImportProcessor {
 
     private final CliImporterConfig cliCfg;
     private final ImportLogConfig logCfg;
-    private final ChannelSource<ImportLogFile> gcQueue;
+    private final ConfigurableChannelSource<Duration, ImportLogFile> gcQueue;
+    
     
     public ImportRunner(CliImporterConfig cliCfg, ImportLogConfig logCfg,
-            ChannelSource<ImportLogFile> gcQueue) {
+            ConfigurableChannelSource<Duration, ImportLogFile> gcQueue) {
         requireNonNull(cliCfg, "cliCfg");
         requireNonNull(logCfg, "logCfg");
         
         this.cliCfg = cliCfg;
         this.logCfg = logCfg;
         this.gcQueue = gcQueue;
+    }
+    
+    private void scheduleDeletion(ImportLogFile logFile) {
+        long fromNow = logCfg.getRetentionMinutes();
+        gcQueue.uncheckedSend(Duration.ofMinutes(fromNow), logFile);
     }
     
     @Override
@@ -44,7 +51,7 @@ public class ImportRunner implements ImportProcessor {
             output.writeFooter(e);
             throwAsIfUnchecked(e);
         }
-        gcQueue.uncheckedSend(logFile);
+        scheduleDeletion(logFile);
     }
 
 }

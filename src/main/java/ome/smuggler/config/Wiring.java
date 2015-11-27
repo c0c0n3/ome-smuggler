@@ -5,6 +5,7 @@ import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportLogConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.msg.ConfigurableChannelSource;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
@@ -67,18 +68,17 @@ public class Wiring {
     }
     
     @Bean
-    public ChannelSource<ImportLogFile> importGcQCSourceChannel(
-            ImportGcQConfig qConfig, ServerConnector connector,
-            ImportLogConfig logCfg) 
+    public ConfigurableChannelSource<Duration, ImportLogFile> 
+        importGcQCSourceChannel(ImportGcQConfig qConfig, ServerConnector connector) 
                     throws HornetQException {
         QueueConnector q = new QueueConnector(qConfig, connector.getSession());
-        long span = logCfg.getRetentionMinutes();
-        return new ScheduleTask<>(q, Duration.ofMinutes(span));
+        return new ScheduleTask<>(q);
     }
     
     @Bean
     public ImportProcessor importProcessor(CliImporterConfig cliCfg, 
-            ImportLogConfig logCfg, ChannelSource<ImportLogFile> gcQueue) {
+            ImportLogConfig logCfg, 
+            ConfigurableChannelSource<Duration, ImportLogFile> gcQueue) {
         return new ImportRunner(cliCfg, logCfg, gcQueue);
     }
     

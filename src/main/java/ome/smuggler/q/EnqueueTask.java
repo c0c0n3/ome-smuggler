@@ -9,7 +9,7 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.ClientProducer;
 
-import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.msg.ConfigurableChannelSource;
 
 /**
  * Puts messages on a queue, asynchronously.
@@ -18,11 +18,11 @@ import ome.smuggler.core.msg.ChannelSource;
  * message builder} or by sub-classing and overriding the 
  * {@link #newMessage(QueueConnector) newMessage} method. 
  */
-public class EnqueueTask<T> implements ChannelSource<T> {
+public class EnqueueTask<T> 
+    implements ConfigurableChannelSource<Function<QueueConnector, ClientMessage>,T> {
 
     private final QueueConnector queue;
     private final ClientProducer producer;
-    private final Function<QueueConnector, ClientMessage> messageBuilder;
     
     /**
      * Creates a new instance.
@@ -35,34 +35,19 @@ public class EnqueueTask<T> implements ChannelSource<T> {
         
         this.queue = queue;
         this.producer = queue.newProducer();
-        this.messageBuilder = this::newMessage;
-    }
-    
-    /**
-     * Creates a new instance.
-     * @param queue provides access to the queue on which to put messages.
-     * @param messageBuilder called to create a new message to {@link 
-     * #send(Object) send} data; useful if you need to customize the HornetQ
-     * message to send. 
-     * @throws HornetQException if a queue producer could not be created.
-     * @throws NullPointerException if any argument is {@code null}.
-     */
-    public EnqueueTask(QueueConnector queue, 
-            Function<QueueConnector, ClientMessage> messageBuilder) 
-                    throws HornetQException {
-        requireNonNull(queue, "queue");
-        
-        this.queue = queue;
-        this.producer = queue.newProducer();
-        this.messageBuilder = this::newMessage;
-    }
-    
-    protected ClientMessage newMessage(QueueConnector queue) {
-        return queue.newDurableMessage();
     }
     
     @Override
     public void send(T data) throws Exception {
+        send(QueueConnector::newDurableMessage, data);
+    }
+
+    @Override
+    public void send(Function<QueueConnector, ClientMessage> messageBuilder, 
+                     T data) throws Exception {
+        requireNonNull(messageBuilder, "messageBuilder");
+        requireNonNull(data, "data");
+        
         ClientMessage msg = messageBuilder.apply(queue);
         writeBody(msg, data);
         producer.send(msg);

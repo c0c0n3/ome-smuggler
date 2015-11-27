@@ -2,39 +2,16 @@ package ome.smuggler.q;
 
 import static org.mockito.Mockito.*;
 
-import org.hornetq.api.core.HornetQBuffer;
 import org.hornetq.api.core.HornetQException;
-import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientProducer;
-import org.hornetq.api.core.client.ClientSession;
 import org.junit.Test;
 
-import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
 
 
-public class EnqueueTaskTest {
-
-    private ClientProducer producer;
-    private ClientMessage msgToQueue;
-    private HornetQBuffer msgBody;
+public class EnqueueTaskTest extends BaseSendTest {
     
     private ChannelSource<String> newTask() throws HornetQException {
-        ImportQConfig q = new ImportQConfig();
-        q.setName("q");
-        ClientSession sesh = mock(ClientSession.class);
-        
-        producer = mock(ClientProducer.class);
-        when(sesh.createProducer(q.getAddress())).thenReturn(producer);
-        
-        msgToQueue = mock(ClientMessage.class);
-        boolean durable = true;
-        when(sesh.createMessage(durable)).thenReturn(msgToQueue);
-        
-        msgBody = mock(HornetQBuffer.class);
-        when(msgToQueue.getBodyBuffer()).thenReturn(msgBody);
-        
-        QueueConnector connector = new QueueConnector(q, sesh);
+        initMocks();
         return new EnqueueTask<>(connector);
     }
     
@@ -47,7 +24,7 @@ public class EnqueueTaskTest {
     }
     
     @Test (expected = NullPointerException.class)
-    public void throwIfFirstArgNull() throws HornetQException {
+    public void throwIfCtorArgNull() throws HornetQException {
         new EnqueueTask<>(null);
     }
     
