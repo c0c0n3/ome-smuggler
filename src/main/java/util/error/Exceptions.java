@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import util.lambda.ActionE;
 import util.lambda.ConsumerE;
 import util.lambda.FunctionE;
 import util.lambda.SupplierE;
@@ -88,6 +89,19 @@ public class Exceptions {
      */
     public static <T, R> Function<T, R> unchecked(FunctionE<T, R> mayThrowChecked) {
         return mayThrowChecked;
+    }
+    
+    /**
+     * Runs the given action, re-throwing any exception without wrapping. 
+     * @param mayThrowChecked the action to run.
+     * @see #throwAsIfUnchecked(Throwable)
+     */
+    public static void unchecked(ActionE mayThrowChecked) {
+        try {
+            mayThrowChecked.run();
+        } catch (Exception e) {
+            throwAsIfUnchecked(e);
+        }
     }
     
 }
