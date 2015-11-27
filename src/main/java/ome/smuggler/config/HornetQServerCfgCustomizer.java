@@ -1,6 +1,6 @@
 package ome.smuggler.config;
 
-import static ome.smuggler.config.Wiring.config;
+import static ome.smuggler.config.ConfigItemsWiring.config;
 import static util.sequence.Arrayz.asMutableList;
 
 import ome.smuggler.config.items.HornetQPersistenceConfig;
