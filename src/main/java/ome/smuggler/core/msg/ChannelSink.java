@@ -3,6 +3,7 @@ package ome.smuggler.core.msg;
 /**
  * Encapsulates the consumption of an asynchronous message received from a 
  * channel.
+ * @see ChannelAwareSink
  */
 public interface ChannelSink<T> {
 
