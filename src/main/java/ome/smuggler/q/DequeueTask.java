@@ -9,6 +9,7 @@ import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.MessageHandler;
 
+import ome.smuggler.core.msg.ChannelAwareSink;
 import ome.smuggler.core.msg.ChannelSink;
 
 /**
@@ -18,15 +19,15 @@ import ome.smuggler.core.msg.ChannelSink;
 public class DequeueTask<T> implements MessageHandler {
     
     private final ClientConsumer receiver;
-    private final ChannelSink<T> sink;
+    private final ChannelAwareSink<ClientMessage, T> sink;
     private final Class<T> messageType;
 
     /**
      * Creates a new instance.
      * @param queue provides access to the queue from which to fetch messages.
-     * @param consumer consumes messages fetched from the queue.
-     * @param messageType the class of the message the consumer accepts; needed
-     * for deserialization.
+     * @param consumer consumes message data fetched from the queue.
+     * @param messageType the class of the message data the consumer accepts; 
+     * needed for deserialization.
      * @throws HornetQException if an error occurs while setting up HornetQ to
      * receive messages on the specified queue.
      * @throws NullPointerException if any argument is {@code null}.
@@ -34,6 +35,23 @@ public class DequeueTask<T> implements MessageHandler {
     public DequeueTask(QueueConnector queue,
                        ChannelSink<T> consumer, Class<T> messageType) 
                     throws HornetQException {
+        this(queue, (meta, data) -> consumer.consume(data), messageType);
+        requireNonNull(consumer, "consumer");
+    }
+    
+    /**
+     * Creates a new instance.
+     * @param queue provides access to the queue from which to fetch messages.
+     * @param consumer consumes message data and metadata fetched from the queue.
+     * @param messageType the class of the message data the consumer accepts; 
+     * needed for deserialization.
+     * @throws HornetQException if an error occurs while setting up HornetQ to
+     * receive messages on the specified queue.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public DequeueTask(QueueConnector queue,
+            ChannelAwareSink<ClientMessage, T> consumer, Class<T> messageType) 
+         throws HornetQException {
         requireNonNull(queue, "queue");
         requireNonNull(consumer, "consumer");
         requireNonNull(messageType, "messageType");
@@ -56,7 +74,7 @@ public class DequeueTask<T> implements MessageHandler {
     public void onMessage(ClientMessage msg) {
         T messageData = readBody(msg, messageType);
         removeFromQueue(msg);
-        sink.consume(messageData);
+        sink.consume(msg, messageData);
     }
     
 }

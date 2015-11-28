@@ -12,11 +12,13 @@ import org.hornetq.api.core.client.ClientSession;
 import org.junit.Test;
 
 import ome.smuggler.config.items.ImportQConfig;
+import ome.smuggler.core.msg.ChannelAwareSink;
 import ome.smuggler.core.msg.ChannelSink;
 
-public class DequeueTaskTest implements ChannelSink<String> {
+public class DequeueTaskTest implements ChannelAwareSink<ClientMessage, String> {
 
-    private String receivedMsg;
+    private ClientMessage receivedMsg;
+    private String receivedData;
     
     private DequeueTask<String> newTask() throws HornetQException {
         ImportQConfig q = new ImportQConfig();
@@ -34,38 +36,57 @@ public class DequeueTaskTest implements ChannelSink<String> {
     }
     
     @Override
-    public void consume(String msg) {
-        receivedMsg = msg;   
+    public void consume(ClientMessage metadata, String data) {
+        receivedMsg = metadata;
+        receivedData = data;
     }
 
     @Test
     public void receiveMessage() throws HornetQException {
         DequeueTask<String> task = newTask();
-        String msg = "msg";
+        String msgData = "msg";
         
         ClientMessage qMsg = mock(ClientMessage.class);
         HornetQBuffer buf = mock(HornetQBuffer.class);
         when(qMsg.getBodyBuffer()).thenReturn(buf);
-        when(buf.readUTF()).thenReturn(msg);
+        when(buf.readUTF()).thenReturn(msgData);
         
         task.onMessage(qMsg);
         
-        assertThat(receivedMsg, is(msg));
+        assertThat(receivedMsg, is(qMsg));
+        assertThat(receivedData, is(msgData));
     }
     
     @Test (expected = NullPointerException.class)
-    public void throwIfFirstArgNull() throws HornetQException {
-        new DequeueTask<>(null, s -> {}, String.class);
+    public void ctor1ThrowsIfArg1Null() throws HornetQException {
+        new DequeueTask<>(null, d -> {}, String.class);
     }
     
     @Test (expected = NullPointerException.class)
-    public void throwIfSecondArgNull() throws HornetQException {
-        new DequeueTask<>(mock(QueueConnector.class), null, String.class);
+    public void ctor1ThrowsIfArg2Null() throws HornetQException {
+        new DequeueTask<>(mock(QueueConnector.class), 
+                (ChannelSink<String>)null, String.class);
     }
     
     @Test (expected = NullPointerException.class)
-    public void throwIfThirdArgNull() throws HornetQException {
-        new DequeueTask<>(mock(QueueConnector.class), s -> {}, null);
+    public void ctor1ThrowsIfArg3Null() throws HornetQException {
+        new DequeueTask<>(mock(QueueConnector.class), d -> {}, null);
     }
-        
+    
+    @Test (expected = NullPointerException.class)
+    public void ctor2ThrowsIfArg1Null() throws HornetQException {
+        new DequeueTask<>(null, (m, d) -> {}, String.class);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void ctor2ThrowsIfArg2Null() throws HornetQException {
+        new DequeueTask<>(mock(QueueConnector.class), 
+                (ChannelAwareSink<ClientMessage, String>)null, String.class);
+    }
+    
+    @Test (expected = NullPointerException.class)
+    public void ctor2ThrowsIfArg3Null() throws HornetQException {
+        new DequeueTask<>(mock(QueueConnector.class), (m, d) -> {}, null);
+    }
+    
 }
