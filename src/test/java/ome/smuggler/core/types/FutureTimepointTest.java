@@ -1,0 +1,30 @@
+package ome.smuggler.core.types;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.time.Duration;
+
+import org.junit.Test;
+
+public class FutureTimepointTest {
+
+    @Test(expected = NullPointerException.class)
+    public void throwIfNullArg() {
+        new FutureTimepoint(null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void throwIfNegativeArg() {
+        new FutureTimepoint(Duration.ofMillis(-1));
+    }
+    
+    @Test
+    public void valueIsInTheFuture() {
+        Duration timepoint = new FutureTimepoint(Duration.ofMinutes(1)).get();
+        Duration now = Duration.ofMillis(System.currentTimeMillis());
+        
+        assertThat(timepoint.compareTo(now), greaterThan(0));
+    }
+    
+}
