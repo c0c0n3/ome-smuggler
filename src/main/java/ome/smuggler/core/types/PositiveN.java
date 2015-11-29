@@ -1,5 +1,7 @@
 package ome.smuggler.core.types;
 
+import static util.error.Exceptions.getOrThrow;
+
 import util.object.Wrapper;
 
 /**
@@ -9,6 +11,14 @@ import util.object.Wrapper;
  */
 public class PositiveN extends Wrapper<Long> {
 
+    public static PositiveN of(long positiveValue) {
+        return getOrThrow(
+                    ValueParserFactory
+                    .positiveInt(String.valueOf(positiveValue))
+                    .mapLeft(IllegalArgumentException::new)
+               );
+    }
+    
     protected PositiveN(Long wrappedValue) {
         super(wrappedValue);
     }
