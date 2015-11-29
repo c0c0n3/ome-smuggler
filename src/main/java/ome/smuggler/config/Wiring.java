@@ -5,7 +5,7 @@ import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportLogConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
-import ome.smuggler.core.msg.ConfigurableChannelSource;
+import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
@@ -19,8 +19,6 @@ import ome.smuggler.q.EnqueueTask;
 import ome.smuggler.q.QueueConnector;
 import ome.smuggler.q.ScheduleTask;
 import ome.smuggler.q.ServerConnector;
-
-import java.time.Duration;
 
 import org.hornetq.api.core.HornetQException;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +40,7 @@ public class Wiring {
     }
     
     @Bean
-    public ConfigurableChannelSource<Duration, ImportLogFile> 
+    public SchedulingSource<ImportLogFile> 
         importGcQCSourceChannel(ImportGcQConfig qConfig, ServerConnector connector) 
                     throws HornetQException {
         QueueConnector q = new QueueConnector(qConfig, connector.getSession());
@@ -52,7 +50,7 @@ public class Wiring {
     @Bean
     public ImportProcessor importProcessor(CliImporterConfig cliCfg, 
             ImportLogConfig logCfg, 
-            ConfigurableChannelSource<Duration, ImportLogFile> gcQueue) {
+            SchedulingSource<ImportLogFile> gcQueue) {
         return new ImportRunner(cliCfg, logCfg, gcQueue);
     }
     
