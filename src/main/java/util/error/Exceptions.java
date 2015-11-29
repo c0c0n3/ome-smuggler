@@ -10,6 +10,7 @@ import util.lambda.ActionE;
 import util.lambda.ConsumerE;
 import util.lambda.FunctionE;
 import util.lambda.SupplierE;
+import util.object.Either;
 
 /**
  * Helper methods to work with exceptions.
@@ -102,6 +103,20 @@ public class Exceptions {
         } catch (Exception e) {
             throwAsIfUnchecked(e);
         }
+    }
+    
+    /**
+     * Either gets the right value or throws the left exception.
+     * @param errorOrValue an error or a value.
+     * @return the value if the argument is a right; otherwise the given
+     * exception will be thrown.
+     */
+    public static <T> T getOrThrow(Either<? extends Exception, T> errorOrValue) {
+        requireNonNull(errorOrValue, "errorOrValue");
+        if (errorOrValue.isLeft()) {
+            throwAsIfUnchecked(errorOrValue.getLeft());
+        }
+        return errorOrValue.getRight();
     }
     
 }
