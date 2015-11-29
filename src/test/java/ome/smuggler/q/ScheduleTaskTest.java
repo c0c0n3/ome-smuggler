@@ -16,6 +16,9 @@ public class ScheduleTaskTest extends BaseSendTest {
     
     private ConfigurableChannelSource<Duration, String> newTask() throws HornetQException {
         initMocks();
+        when(msgToQueue.putLongProperty(anyString(), anyLong()))
+        .thenReturn(msgToQueue);
+        
         return new ScheduleTask<>(connector);
     }
     

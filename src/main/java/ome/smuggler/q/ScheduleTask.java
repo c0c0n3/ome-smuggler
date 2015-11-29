@@ -1,19 +1,20 @@
 package ome.smuggler.q;
 
+import static ome.smuggler.q.MessageProps.durableMessage;
+import static ome.smuggler.q.MessageProps.setScheduledDeliveryTime;
+
 import java.time.Duration;
 
 import org.hornetq.api.core.HornetQException;
-import org.hornetq.api.core.Message;
-import org.hornetq.api.core.client.ClientMessage;
 
 import ome.smuggler.core.msg.ConfigurableChannelSource;
+import ome.smuggler.core.msg.SchedulingSource;
 
 /**
  * Enqueues a message that will only be delivered to consumers at a specified
  * time in the future.
  */
-public class ScheduleTask<T> 
-    implements ConfigurableChannelSource<Duration, T> {
+public class ScheduleTask<T> implements SchedulingSource<T> {
 
     private final EnqueueTask<T> channel;
     
@@ -27,19 +28,6 @@ public class ScheduleTask<T>
         this.channel = new EnqueueTask<>(queue);
     }
     
-    private long millisFromNow(Duration timeSpanFromNow) {
-        long now = System.currentTimeMillis();
-        return now + timeSpanFromNow.toMillis();
-    }
-    
-    protected ClientMessage newMessage(QueueConnector queue, 
-                                       Duration timeSpanFromNow) {
-        ClientMessage msg = queue.newDurableMessage();
-        msg.putLongProperty(Message.HDR_SCHEDULED_DELIVERY_TIME.toString(), 
-                            millisFromNow(timeSpanFromNow));
-        return msg;
-    }
-
     /**
      * Sends the message so that the channel will only deliver it to consumers
      * at the specified time in the future.
@@ -48,7 +36,9 @@ public class ScheduleTask<T>
      */
     @Override
     public void send(Duration timeSpanFromNow, T data) throws Exception {
-        channel.send(queue -> newMessage(queue, timeSpanFromNow), data);
+        channel.send(durableMessage().andThen(
+                        setScheduledDeliveryTime(timeSpanFromNow)), 
+                     data);
     }
 
     /**
