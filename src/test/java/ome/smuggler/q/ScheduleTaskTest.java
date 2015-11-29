@@ -1,6 +1,5 @@
 package ome.smuggler.q;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.Duration;
@@ -9,12 +8,13 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.Message;
 import org.junit.Test;
 
-import ome.smuggler.core.msg.ConfigurableChannelSource;
+import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.types.FutureTimepoint;
 
 
 public class ScheduleTaskTest extends BaseSendTest {
     
-    private ConfigurableChannelSource<Duration, String> newTask() throws HornetQException {
+    private SchedulingSource<String> newTask() throws HornetQException {
         initMocks();
         when(msgToQueue.putLongProperty(anyString(), anyLong()))
         .thenReturn(msgToQueue);
@@ -32,14 +32,14 @@ public class ScheduleTaskTest extends BaseSendTest {
     
     @Test
     public void scheduleMessage() throws HornetQException {
-        Duration fromNow = Duration.ofMinutes(1);
-        long expectedSchedule = System.currentTimeMillis() + fromNow.toMillis();
+        FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(1));
+        long expectedSchedule = when.get().toMillis();
         
-        newTask().uncheckedSend(fromNow, "msg");
+        newTask().uncheckedSend(when, "msg");
         
         verify(msgToQueue).putLongProperty(
                 eq(Message.HDR_SCHEDULED_DELIVERY_TIME.toString()), 
-                longThat(greaterThanOrEqualTo(expectedSchedule)));
+                eq(expectedSchedule));
         verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);
     }

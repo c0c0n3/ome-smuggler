@@ -1,13 +1,15 @@
 package ome.smuggler.q;
 
-import static ome.smuggler.q.MessageProps.durableMessage;
-import static ome.smuggler.q.MessageProps.setScheduledDeliveryTime;
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.q.Messages.durableMessage;
+import static ome.smuggler.q.Messages.setScheduledDeliveryTime;
 
 import java.time.Duration;
 
 import org.hornetq.api.core.HornetQException;
 
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.types.FutureTimepoint;
 
 /**
  * Enqueues a message that will only be delivered to consumers at a specified
@@ -34,9 +36,10 @@ public class ScheduleTask<T> implements SchedulingSource<T> {
      * future the message should be delivered.
      */
     @Override
-    public void send(Duration timeSpanFromNow, T data) throws Exception {
+    public void send(FutureTimepoint when, T data) throws Exception {
+        requireNonNull(when, "when");
         channel.send(durableMessage().andThen(
-                        setScheduledDeliveryTime(timeSpanFromNow)), 
+                        setScheduledDeliveryTime(when)), 
                      data);
     }
     
