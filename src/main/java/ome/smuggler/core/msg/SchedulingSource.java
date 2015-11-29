@@ -22,6 +22,8 @@ public interface SchedulingSource<T>
      * any time from now.
      */
     @Override
-    void send(T data) throws Exception;
+    default void send(T data) throws Exception {
+        send(Duration.ZERO, data);
+    }
 
 }

@@ -7,7 +7,6 @@ import java.time.Duration;
 
 import org.hornetq.api.core.HornetQException;
 
-import ome.smuggler.core.msg.ConfigurableChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 
 /**
@@ -39,15 +38,6 @@ public class ScheduleTask<T> implements SchedulingSource<T> {
         channel.send(durableMessage().andThen(
                         setScheduledDeliveryTime(timeSpanFromNow)), 
                      data);
-    }
-
-    /**
-     * Sends the message data without scheduling, the message may be consumed
-     * any time from now.
-     */
-    @Override
-    public void send(T data) throws Exception {
-        channel.send(data);
     }
     
 }
