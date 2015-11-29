@@ -4,8 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.q.Messages.durableMessage;
 import static ome.smuggler.q.Messages.setScheduledDeliveryTime;
 
-import java.time.Duration;
-
 import org.hornetq.api.core.HornetQException;
 
 import ome.smuggler.core.msg.SchedulingSource;
