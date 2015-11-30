@@ -27,4 +27,12 @@ public class FutureTimepointTest {
         assertThat(timepoint.compareTo(now), greaterThan(0));
     }
     
+    @Test
+    public void nowWillBeInThePast() {
+        Duration earlier = FutureTimepoint.now().get();
+        Duration now = Duration.ofMillis(System.currentTimeMillis());
+        
+        assertThat(now.compareTo(earlier), greaterThanOrEqualTo(0));
+    }
+    
 }
