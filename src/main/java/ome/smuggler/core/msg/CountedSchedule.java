@@ -1,6 +1,7 @@
 package ome.smuggler.core.msg;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.types.FutureTimepoint.now;
 
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.PositiveN;
@@ -12,6 +13,14 @@ import ome.smuggler.core.types.PositiveN;
  */
 public class CountedSchedule {
 
+    /**
+     * @return an initial schedule for the current time point with a {@link 
+     * #count() counter} initialized to {@code 1}.
+     */
+    public static CountedSchedule first() {
+        return new CountedSchedule(now(), PositiveN.of(1));
+    }
+    
     private final FutureTimepoint when;
     private final PositiveN count;
     
@@ -41,6 +50,17 @@ public class CountedSchedule {
      */
     public PositiveN count() {
         return count;
+    }
+    
+    /**
+     * Creates a new schedule for the requested time with a counter increased
+     * by one with respect to the current {@link #count() counter}. 
+     * @param when at which future point in time deliver the message.
+     * @return the new schedule.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public CountedSchedule next(FutureTimepoint when) {
+        return new CountedSchedule(when, PositiveN.of(count().get() + 1));
     }
     
 }
