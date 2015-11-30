@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.hornetq.api.core.HornetQBuffer;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientConsumer;
@@ -36,8 +38,8 @@ public class DequeueTaskTest implements ChannelAwareSink<ClientMessage, String> 
     }
     
     @Override
-    public void consume(ClientMessage metadata, String data) {
-        receivedMsg = metadata;
+    public void consume(Optional<ClientMessage> metadata, String data) {
+        receivedMsg = metadata.get();
         receivedData = data;
     }
 

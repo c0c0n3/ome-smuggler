@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.q.MessageBody.readBody;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
+import java.util.Optional;
+
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
@@ -74,7 +76,7 @@ public class DequeueTask<T> implements MessageHandler {
     public void onMessage(ClientMessage msg) {
         T messageData = readBody(msg, messageType);
         removeFromQueue(msg);
-        sink.consume(msg, messageData);
+        sink.consume(Optional.of(msg), messageData);
     }
     
 }
