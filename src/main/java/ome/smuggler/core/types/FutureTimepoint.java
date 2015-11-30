@@ -27,6 +27,16 @@ public class FutureTimepoint extends Wrapper<Duration> {
     }
     
     /**
+     * Constructs the minimum value admissible for a {@code FutureTimepoint} 
+     * instance which is the current time point.
+     * of {@code FutureTimepoint}.
+     * @return the current time point.
+     */
+    public static FutureTimepoint now() {
+        return new FutureTimepoint(Duration.ZERO);
+    }
+    
+    /**
      * Creates a new instance.
      * @param timeSpanFromNow an amount of time to add to the current time to
      * get a time point in the future.

@@ -1,6 +1,6 @@
 package ome.smuggler.core.msg;
 
-import java.time.Duration;
+import static ome.smuggler.core.types.FutureTimepoint.now;
 
 import ome.smuggler.core.types.FutureTimepoint;
 
@@ -24,8 +24,7 @@ public interface SchedulingSource<T>
      */
     @Override
     default void send(T data) throws Exception {
-        FutureTimepoint now = new FutureTimepoint(Duration.ZERO);
-        send(now, data);
+        send(now(), data);
     }
 
 }
