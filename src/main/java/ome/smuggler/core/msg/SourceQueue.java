@@ -1,11 +1,13 @@
 package ome.smuggler.core.msg;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static util.object.Pair.pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Stream;
 
 import util.object.Pair;
 
@@ -62,17 +64,28 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
      * order.
      * @return the items in the queue or empty if the queue has no items.
      */
-    public Stream<Pair<Optional<M>, D>> dequeue() {
-        return sendBuffer.stream();
+    public List<Pair<Optional<M>, D>> dequeue() {
+        ArrayList<Pair<Optional<M>, D>> queued = new ArrayList<>();
+        while (!sendBuffer.isEmpty()) {
+            Pair<Optional<M>, D> head = sendBuffer.poll();
+            if (head != null) {   // (*)
+                queued.add(head);
+            } 
+        }
+        return queued;
     }
+    /* NOTE. Race conditions.
+     * Another thread may call head() and remove the last element, then we'd 
+     * poll() and get null, which we don't want to add to queued.
+     */
     
     /**
      * Same as {@link #dequeue()} but discards message metadata.
      * @return the data in each queued message or empty if the queue has no 
      * items.
      */
-    public Stream<D> dequeueData() {
-        return sendBuffer.stream().map(Pair::snd);
+    public List<D> dequeueData() {
+        return dequeue().stream().map(Pair::snd).collect(toList());
     }
     
 }

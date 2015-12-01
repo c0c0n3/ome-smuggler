@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static ome.smuggler.core.types.FutureTimepoint.now;
 import static util.object.Pair.pair;
+import static util.sequence.Arrayz.newPairs;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -62,9 +63,8 @@ public class ReschedulingSinkTest implements Reschedulable<Long> {
               .toArray(Pair[]::new);
     }
     
-    @SuppressWarnings("unchecked")
     private Pair<CountedSchedule, Long>[] actualMetadataAndDataSentOnChannel() {
-        return loopback.dequeue().toArray(Pair[]::new);
+        return loopback.dequeue().toArray(newPairs(0));
     }
     
     @Test

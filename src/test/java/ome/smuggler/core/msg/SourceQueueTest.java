@@ -3,8 +3,8 @@ package ome.smuggler.core.msg;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -106,10 +106,10 @@ public class SourceQueueTest {
     
     @Test
     public void dequeueAllReturnsEmptyIfQueueIsEmpty() {
-        Stream<Pair<Optional<String>, Integer>> actual = queue.dequeue();
+        List<Pair<Optional<String>, Integer>> actual = queue.dequeue();
         
         assertNotNull(actual);
-        assertThat(actual.count(), is(0L));
+        assertThat(actual.size(), is(0));
     }
     
     @Test
@@ -117,9 +117,10 @@ public class SourceQueueTest {
         Integer[] data = { 1,  2 };
         queue.send(data[0]);
         queue.send(data[1]);
-        Integer[] actual = queue.dequeueData().toArray(Integer[]::new);
+        Integer[] actual = queue.dequeueData().toArray(new Integer[0]);
         
         assertArrayEquals(data, actual);
+        assertFalse(queue.head().isPresent());
     }
     
 }
