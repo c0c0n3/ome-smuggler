@@ -41,4 +41,28 @@ public class CountedScheduleTest {
         assertThat(actual.when(), is(when));
     }
     
+    @Test
+    public void equalsReturnsFalseOnNullArg() {
+        assertFalse(CountedSchedule.first().equals(null));
+    }
+    
+    @Test
+    public void equalsReturnsFalseOnDifferentType() {
+        assertFalse(CountedSchedule.first().equals(""));
+    }
+    
+    @Test
+    public void equalsReturnsFalseOnDifferentValues() {
+        CountedSchedule second = new CountedSchedule(now(), PositiveN.of(2));
+        assertFalse(CountedSchedule.first().equals(second));
+    }
+    
+    @Test
+    public void equalsReturnsTrueOnEquivalentValues() {
+        FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(1));
+        CountedSchedule cs1 = new CountedSchedule(when, PositiveN.of(2));
+        CountedSchedule cs2 = new CountedSchedule(when, PositiveN.of(2));
+        assertTrue(cs1.equals(cs2));
+    }
+    
 }

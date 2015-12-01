@@ -3,6 +3,8 @@ package ome.smuggler.core.msg;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.types.FutureTimepoint.now;
 
+import java.util.Objects;
+
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.PositiveN;
 
@@ -61,6 +63,24 @@ public class CountedSchedule {
      */
     public CountedSchedule next(FutureTimepoint when) {
         return new CountedSchedule(when, PositiveN.of(count().get() + 1));
+    }
+    
+    @Override
+    public boolean equals(Object x) {
+        if (x == this) {
+            return true;
+        }
+        if (x instanceof CountedSchedule) {
+            CountedSchedule other = (CountedSchedule) x;
+            return Objects.equals(this.when, other.when)
+                && Objects.equals(this.count, other.count);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(when, count);
     }
     
 }
