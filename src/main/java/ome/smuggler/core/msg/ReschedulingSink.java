@@ -22,7 +22,7 @@ public class ReschedulingSink<T>
      * data to input into the channel with an indication of when the data 
      * should be delivered to channel's sinks.
      * @param loopback where to put data (if any) produced by the task; normally
-     * this would be the same channel on this sink is bound to, i.e. the same
+     * this would be the same channel this sink is bound to, i.e. the same
      * channel from which the data was received.
      * @throws NullPointerException if any argument is {@code null}.
      */
