@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -101,6 +102,24 @@ public class SourceQueueTest {
         assertThat(msg.snd(), is(d2));
         
         assertFalse(queue.head().isPresent());
+    }
+    
+    @Test
+    public void dequeueAllReturnsEmptyIfQueueIsEmpty() {
+        Stream<Pair<Optional<String>, Integer>> actual = queue.dequeue();
+        
+        assertNotNull(actual);
+        assertThat(actual.count(), is(0L));
+    }
+    
+    @Test
+    public void dequeueData() throws Exception {
+        Integer[] data = { 1,  2 };
+        queue.send(data[0]);
+        queue.send(data[1]);
+        Integer[] actual = queue.dequeueData().toArray(Integer[]::new);
+        
+        assertArrayEquals(data, actual);
     }
     
 }

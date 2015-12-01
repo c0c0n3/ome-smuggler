@@ -5,6 +5,7 @@ import static util.object.Pair.pair;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Stream;
 
 import util.object.Pair;
 
@@ -54,6 +55,24 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
      */
     public Optional<D> headData() {
         return head().map(Pair::snd);
+    }
+    
+    /**
+     * Removes all the items currently in the queue, returning them in FIFO
+     * order.
+     * @return the items in the queue or empty if the queue has no items.
+     */
+    public Stream<Pair<Optional<M>, D>> dequeue() {
+        return sendBuffer.stream();
+    }
+    
+    /**
+     * Same as {@link #dequeue()} but discards message metadata.
+     * @return the data in each queued message or empty if the queue has no 
+     * items.
+     */
+    public Stream<D> dequeueData() {
+        return sendBuffer.stream().map(Pair::snd);
     }
     
 }
