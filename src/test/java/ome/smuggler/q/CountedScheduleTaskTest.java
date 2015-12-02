@@ -10,15 +10,15 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.Message;
 import org.junit.Test;
 
-import ome.smuggler.core.msg.ConfigurableChannelSource;
 import ome.smuggler.core.msg.CountedSchedule;
+import ome.smuggler.core.msg.MessageSource;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.PositiveN;
 
 
 public class CountedScheduleTaskTest extends BaseSendTest {
     
-    private ConfigurableChannelSource<CountedSchedule, String> newTask() throws HornetQException {
+    private MessageSource<CountedSchedule, String> newTask() throws HornetQException {
         initMocks();
         when(msgToQueue.putLongProperty(anyString(), anyLong()))
         .thenReturn(msgToQueue);
@@ -28,7 +28,7 @@ public class CountedScheduleTaskTest extends BaseSendTest {
     
     @Test
     public void sendMessage() throws HornetQException {
-        newTask().uncheckedSend("msg");
+        newTask().uncheckedSendData("msg");
         
         verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);

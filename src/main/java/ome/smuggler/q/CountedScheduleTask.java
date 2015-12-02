@@ -7,16 +7,16 @@ import static ome.smuggler.q.Messages.setScheduledDeliveryTime;
 
 import org.hornetq.api.core.HornetQException;
 
-import ome.smuggler.core.msg.ConfigurableChannelSource;
+import ome.smuggler.core.msg.ChannelMessage;
 import ome.smuggler.core.msg.CountedSchedule;
+import ome.smuggler.core.msg.MessageSource;
 
 /**
  * Enqueues a message that will only be delivered to consumers at a specified
  * time in the future and makes a sender-specified delivery count available in
  * the metadata.
  */
-public class CountedScheduleTask<T> 
-    implements ConfigurableChannelSource<CountedSchedule, T> {
+public class CountedScheduleTask<T> implements MessageSource<CountedSchedule, T> {
 
     private final EnqueueTask<T> channel;
     
@@ -31,17 +31,15 @@ public class CountedScheduleTask<T>
     }
     
     @Override
-    public void send(T data) throws Exception {
-        channel.send(data);
-    }
-
-    @Override
-    public void send(CountedSchedule metadata, T data) throws Exception {
-        requireNonNull(metadata, "metadata");
+    public void send(ChannelMessage<CountedSchedule, T> msg) throws Exception {
+        requireNonNull(msg, "msg");
+        
+        CountedSchedule metadata = msg.metadata()
+                                      .orElse(CountedSchedule.first());
         channel.send(durableMessage().andThen(
                      setScheduledDeliveryTime(metadata.when())).andThen(
                      setScheduleCount(metadata.count().get())), 
-                     data);
+                     msg.data());
     }
 
 }

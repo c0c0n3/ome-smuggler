@@ -2,22 +2,21 @@ package ome.smuggler.core.msg;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static util.object.Pair.pair;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import util.object.Pair;
 
 /**
  * A channel source that queues messages in memory and allows to retrieve the
- * head of the queue to consume messages.
+ * head of the queue to consume messages or do a bulk retrieval of all queued
+ * messages.
  */
-public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
+public class SourceQueue<M, D> implements MessageSource<M, D> {
 
-    private final ConcurrentLinkedQueue<Pair<Optional<M>, D>> sendBuffer;
+    private final ConcurrentLinkedQueue<ChannelMessage<M, D>> sendBuffer;
     
     /**
      * Creates a new instance.
@@ -26,27 +25,17 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
         sendBuffer = new ConcurrentLinkedQueue<>();
     }
     
-    private void send(Optional<M> metadata, D data) {
-        requireNonNull(data, "data");
-        sendBuffer.offer(pair(metadata, data));
+    @Override
+    public void send(ChannelMessage<M, D> msg) throws Exception {
+        requireNonNull(msg, "msg");
+        sendBuffer.offer(msg);
     }
     
-    @Override
-    public void send(D data) throws Exception {
-        send(Optional.empty(), data);
-    }
-
-    @Override
-    public void send(M metadata, D data) throws Exception {
-        requireNonNull(metadata, "metadata");
-        send(Optional.of(metadata), data);
-    }
-
     /**
      * @return the oldest message item (metadata + data) on the queue or empty 
      * if the queue has no items.
      */
-    public Optional<Pair<Optional<M>, D>> head() {
+    public Optional<ChannelMessage<M, D>> head() {
         return Optional.ofNullable(sendBuffer.poll());
     }
     
@@ -56,7 +45,7 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
      * queue has no items.
      */
     public Optional<D> headData() {
-        return head().map(Pair::snd);
+        return head().map(ChannelMessage::data);
     }
     
     /**
@@ -64,10 +53,10 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
      * order.
      * @return the items in the queue or empty if the queue has no items.
      */
-    public List<Pair<Optional<M>, D>> dequeue() {
-        ArrayList<Pair<Optional<M>, D>> queued = new ArrayList<>();
+    public List<ChannelMessage<M, D>> dequeue() {
+        ArrayList<ChannelMessage<M, D>> queued = new ArrayList<>();
         while (!sendBuffer.isEmpty()) {
-            Pair<Optional<M>, D> head = sendBuffer.poll();
+            ChannelMessage<M, D> head = sendBuffer.poll();
             if (head != null) {   // (*)
                 queued.add(head);
             } 
@@ -85,7 +74,7 @@ public class SourceQueue<M, D> implements ConfigurableChannelSource<M, D> {
      * items.
      */
     public List<D> dequeueData() {
-        return dequeue().stream().map(Pair::snd).collect(toList());
+        return dequeue().stream().map(ChannelMessage::data).collect(toList());
     }
     
 }

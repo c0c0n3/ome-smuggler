@@ -24,7 +24,7 @@ public class ScheduleTaskTest extends BaseSendTest {
     
     @Test
     public void sendMessage() throws HornetQException {
-        newTask().uncheckedSend("msg");
+        newTask().uncheckedSendData("msg");
         
         verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);

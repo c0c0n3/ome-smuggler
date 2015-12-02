@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.object.Pair;
 
 public class SourceQueueTest {
 
@@ -37,7 +36,7 @@ public class SourceQueueTest {
     
     @Test
     public void headReturnsEmptyIfQueueIsEmpty() {
-        Optional<Pair<Optional<String>, Integer>> actual = queue.head();
+        Optional<ChannelMessage<String, Integer>> actual = queue.head();
         
         assertNotNull(actual);
         assertFalse(actual.isPresent());
@@ -54,18 +53,17 @@ public class SourceQueueTest {
     @Test
     public void headReturnsEmptyMetaIfNoMetaWasSent() throws Exception {
         Integer data = 1;
-        queue.send(data);
-        Optional<Pair<Optional<String>, Integer>> actual = queue.head();
+        queue.sendData(data);
+        Optional<ChannelMessage<String, Integer>> actual = queue.head();
         
         assertNotNull(actual);
         assertTrue(actual.isPresent());
         
-        Pair<Optional<String>, Integer> msg = actual.get();
-        Optional<String> metadata = msg.fst();
+        ChannelMessage<String, Integer> msg = actual.get();
         
-        assertNotNull(metadata);
-        assertFalse(metadata.isPresent());
-        assertThat(msg.snd(), is(data));
+        assertNotNull(msg.metadata());
+        assertFalse(msg.metadata().isPresent());
+        assertThat(msg.data(), is(data));
     }
     
     @Test
@@ -73,17 +71,17 @@ public class SourceQueueTest {
         String metadata = "m";
         Integer data = 1;
         queue.send(metadata, data);
-        Optional<Pair<Optional<String>, Integer>> actual = queue.head();
+        Optional<ChannelMessage<String, Integer>> actual = queue.head();
         
         assertNotNull(actual);
         assertTrue(actual.isPresent());
         
-        Pair<Optional<String>, Integer> msg = actual.get();
+        ChannelMessage<String, Integer> msg = actual.get();
         
-        assertNotNull(msg.fst());
-        assertTrue(msg.fst().isPresent());
-        assertThat(msg.fst().get(), is(metadata));
-        assertThat(msg.snd(), is(data));
+        assertNotNull(msg.metadata());
+        assertTrue(msg.metadata().isPresent());
+        assertThat(msg.metadata().get(), is(metadata));
+        assertThat(msg.data(), is(data));
     }
     
     @Test
@@ -93,20 +91,20 @@ public class SourceQueueTest {
         queue.send(m1, d1);
         queue.send(m2, d2);
         
-        Pair<Optional<String>, Integer> msg = queue.head().get();
-        assertThat(msg.fst().get(), is(m1));
-        assertThat(msg.snd(), is(d1));
+        ChannelMessage<String, Integer> msg = queue.head().get();
+        assertThat(msg.metadata().get(), is(m1));
+        assertThat(msg.data(), is(d1));
         
         msg = queue.head().get();
-        assertThat(msg.fst().get(), is(m2));
-        assertThat(msg.snd(), is(d2));
+        assertThat(msg.metadata().get(), is(m2));
+        assertThat(msg.data(), is(d2));
         
         assertFalse(queue.head().isPresent());
     }
     
     @Test
     public void dequeueAllReturnsEmptyIfQueueIsEmpty() {
-        List<Pair<Optional<String>, Integer>> actual = queue.dequeue();
+        List<ChannelMessage<String, Integer>> actual = queue.dequeue();
         
         assertNotNull(actual);
         assertThat(actual.size(), is(0));
@@ -115,8 +113,8 @@ public class SourceQueueTest {
     @Test
     public void dequeueData() throws Exception {
         Integer[] data = { 1,  2 };
-        queue.send(data[0]);
-        queue.send(data[1]);
+        queue.sendData(data[0]);
+        queue.sendData(data[1]);
         Integer[] actual = queue.dequeueData().toArray(new Integer[0]);
         
         assertArrayEquals(data, actual);

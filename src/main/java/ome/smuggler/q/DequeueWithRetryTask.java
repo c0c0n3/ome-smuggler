@@ -29,7 +29,7 @@ public class DequeueWithRetryTask<T> extends DequeueTask<T> {
         }
         
         this.delays = delays;
-        loopback = new EnqueueTask<>(queue);
+        loopback = null;//new EnqueueTask<>(queue);
     }
     
     private int getRetryCount(ClientMessage msg) {

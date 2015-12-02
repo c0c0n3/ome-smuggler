@@ -9,17 +9,16 @@ import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.ClientProducer;
 
-import ome.smuggler.core.msg.ConfigurableChannelSource;
+import ome.smuggler.core.msg.ChannelMessage;
+import ome.smuggler.core.msg.MessageSource;
 
 /**
  * Puts messages on a queue, asynchronously.
- * Messages are durable by default but any other kind of messages can be
- * constructed by providing a {@link #EnqueueTask(QueueConnector, Function)
- * message builder} or by sub-classing and overriding the 
- * {@link #newMessage(QueueConnector) newMessage} method. 
+ * Messages are durable by default but any other kind of message can be
+ * constructed by providing a message builder function as message metadata.
  */
 public class EnqueueTask<T> 
-    implements ConfigurableChannelSource<Function<QueueConnector, ClientMessage>,T> {
+    implements MessageSource<Function<QueueConnector, ClientMessage>, T> {
 
     private final QueueConnector queue;
     private final ClientProducer producer;
@@ -36,21 +35,18 @@ public class EnqueueTask<T>
         this.queue = queue;
         this.producer = queue.newProducer();
     }
-    
-    @Override
-    public void send(T data) throws Exception {
-        send(QueueConnector::newDurableMessage, data);
-    }
 
     @Override
-    public void send(Function<QueueConnector, ClientMessage> messageBuilder, 
-                     T data) throws Exception {
-        requireNonNull(messageBuilder, "messageBuilder");
-        requireNonNull(data, "data");
+    public void send(
+            ChannelMessage<Function<QueueConnector, ClientMessage>, T> msg) 
+                    throws Exception {
+        requireNonNull(msg, "msg");
         
-        ClientMessage msg = messageBuilder.apply(queue);
-        writeBody(msg, data);
-        producer.send(msg);
+        Function<QueueConnector, ClientMessage> messageBuilder = 
+                msg.metadata().orElse(QueueConnector::newDurableMessage);
+        ClientMessage qMsg = messageBuilder.apply(queue);
+        writeBody(qMsg, msg.data());
+        producer.send(qMsg);
     }
 
 }

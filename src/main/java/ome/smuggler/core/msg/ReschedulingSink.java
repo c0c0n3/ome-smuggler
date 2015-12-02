@@ -14,7 +14,7 @@ public class ReschedulingSink<T>
     implements ChannelAwareSink<CountedSchedule, T> {
 
     private final Reschedulable<T> task;
-    private final ConfigurableChannelSource<CountedSchedule, T> loopback;
+    private final MessageSource<CountedSchedule, T> loopback;
     
     /**
      * Creates a new instance.
@@ -27,7 +27,7 @@ public class ReschedulingSink<T>
      * @throws NullPointerException if any argument is {@code null}.
      */
     public ReschedulingSink(Reschedulable<T> task,
-            ConfigurableChannelSource<CountedSchedule, T> loopback) {
+                            MessageSource<CountedSchedule, T> loopback) {
         requireNonNull(loopback, "loopback");
         requireNonNull(task, "task");
         
