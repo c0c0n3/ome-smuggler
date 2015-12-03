@@ -6,14 +6,13 @@ import org.hornetq.api.core.HornetQException;
 import org.junit.Test;
 
 import ome.smuggler.core.msg.ChannelSource;
-import ome.smuggler.core.msg.MessageSourceAdapter;
 
 
 public class EnqueueTaskTest extends BaseSendTest {
     
     private ChannelSource<String> newTask() throws HornetQException {
         initMocks();
-        return new MessageSourceAdapter<>(new EnqueueTask<>(connector));
+        return new EnqueueTask<String>(connector).asDataSource();
     }
     
     @Test

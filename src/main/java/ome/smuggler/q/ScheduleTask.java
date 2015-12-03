@@ -1,6 +1,7 @@
 package ome.smuggler.q;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.types.FutureTimepoint.now;
 import static ome.smuggler.q.Messages.durableMessage;
 import static ome.smuggler.q.Messages.setScheduledDeliveryTime;
@@ -40,8 +41,10 @@ public class ScheduleTask<T> implements SchedulingSource<T> {
         requireNonNull(msg, "msg");
         
         FutureTimepoint when = msg.metadata().orElse(now());
-        channel.send(durableMessage().andThen(setScheduledDeliveryTime(when)), 
-                     msg.data());
+        channel.send(
+                message(durableMessage().andThen(
+                            setScheduledDeliveryTime(when)), 
+                        msg.data()));
     }
     
 }

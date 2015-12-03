@@ -2,6 +2,7 @@ package ome.smuggler.core.msg;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +27,12 @@ public class SourceQueueTest {
     
     @Test (expected = NullPointerException.class)
     public void sendThrowsIfNullMetadata() throws Exception {
-        queue.send(null, 0);
+        queue.send(message(null, 0));
     }
     
     @Test (expected = NullPointerException.class)
     public void sendThrowsIfHasMetadataButNullData() throws Exception {
-        queue.send("", null);
+        queue.send(message("", null));
     }
     
     @Test
@@ -53,7 +54,7 @@ public class SourceQueueTest {
     @Test
     public void headReturnsEmptyMetaIfNoMetaWasSent() throws Exception {
         Integer data = 1;
-        queue.sendData(data);
+        queue.asDataSource().send(data);
         Optional<ChannelMessage<String, Integer>> actual = queue.head();
         
         assertNotNull(actual);
@@ -70,7 +71,7 @@ public class SourceQueueTest {
     public void headReturnsMetaIfMetaWasSent() throws Exception {
         String metadata = "m";
         Integer data = 1;
-        queue.send(metadata, data);
+        queue.send(message(metadata, data));
         Optional<ChannelMessage<String, Integer>> actual = queue.head();
         
         assertNotNull(actual);
@@ -88,8 +89,8 @@ public class SourceQueueTest {
     public void queueMessages() throws Exception {
         String m1 = "m1", m2 = "m2";
         Integer d1 = 1, d2 = 2;
-        queue.send(m1, d1);
-        queue.send(m2, d2);
+        queue.send(message(m1, d1));
+        queue.send(message(m2, d2));
         
         ChannelMessage<String, Integer> msg = queue.head().get();
         assertThat(msg.metadata().get(), is(m1));
@@ -113,8 +114,8 @@ public class SourceQueueTest {
     @Test
     public void dequeueData() throws Exception {
         Integer[] data = { 1,  2 };
-        queue.sendData(data[0]);
-        queue.sendData(data[1]);
+        queue.asDataSource().send(data[0]);
+        queue.asDataSource().send(data[1]);
         Integer[] actual = queue.dequeueData().toArray(new Integer[0]);
         
         assertArrayEquals(data, actual);

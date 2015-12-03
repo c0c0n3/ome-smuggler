@@ -1,6 +1,7 @@
 package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class ImportRunner implements ImportProcessor {
     private void scheduleDeletion(ImportLogFile logFile) {
         long fromNow = logCfg.getRetentionMinutes();
         FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(fromNow));
-        gcQueue.uncheckedSend(when, logFile);
+        gcQueue.uncheckedSend(message(when, logFile));
     }
     
     @Override

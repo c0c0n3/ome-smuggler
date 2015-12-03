@@ -5,7 +5,6 @@ import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportLogConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
-import ome.smuggler.core.msg.MessageSourceAdapter;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
@@ -36,8 +35,8 @@ public class Wiring {
             ImportLogConfig logConfig, ServerConnector connector) 
                     throws HornetQException {
         QueueConnector q = new QueueConnector(qConfig, connector.getSession());
-        ChannelSource<QueuedImport> channel = 
-                new MessageSourceAdapter<>(new EnqueueTask<>(q));
+        ChannelSource<QueuedImport> channel = new EnqueueTask<QueuedImport>(q)
+                                             .asDataSource();
         return new ImportTrigger(channel, logConfig);
     }
     

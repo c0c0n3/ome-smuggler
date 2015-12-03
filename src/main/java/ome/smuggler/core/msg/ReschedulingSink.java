@@ -1,6 +1,7 @@
 package ome.smuggler.core.msg;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class ReschedulingSink<T>
     
     private Void reschedule(T data, FutureTimepoint when, CountedSchedule last) {
         CountedSchedule next = last.next(when);
-        loopback.uncheckedSend(next, data);
+        loopback.uncheckedSend(message(next, data));
         return null;
     }
 

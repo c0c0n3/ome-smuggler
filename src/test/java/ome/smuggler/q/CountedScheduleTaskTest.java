@@ -3,6 +3,7 @@ package ome.smuggler.q;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 
 import java.time.Duration;
 
@@ -28,7 +29,7 @@ public class CountedScheduleTaskTest extends BaseSendTest {
     
     @Test
     public void sendMessage() throws HornetQException {
-        newTask().uncheckedSendData("msg");
+        newTask().asDataSource().uncheckedSend("msg");
         
         verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);
@@ -42,7 +43,7 @@ public class CountedScheduleTaskTest extends BaseSendTest {
         PositiveN count = PositiveN.of(expectedCount);
         CountedSchedule metadata = new CountedSchedule(when, count);
         
-        newTask().uncheckedSend(metadata, "msg");
+        newTask().uncheckedSend(message(metadata, "msg"));
         
         verify(msgToQueue).putLongProperty(
                 eq(Message.HDR_SCHEDULED_DELIVERY_TIME.toString()), 

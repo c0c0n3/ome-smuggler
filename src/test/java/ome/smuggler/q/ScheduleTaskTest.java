@@ -1,6 +1,7 @@
 package ome.smuggler.q;
 
 import static org.mockito.Mockito.*;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 
 import java.time.Duration;
 
@@ -24,7 +25,7 @@ public class ScheduleTaskTest extends BaseSendTest {
     
     @Test
     public void sendMessage() throws HornetQException {
-        newTask().uncheckedSendData("msg");
+        newTask().asDataSource().uncheckedSend("msg");
         
         verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);
@@ -35,7 +36,7 @@ public class ScheduleTaskTest extends BaseSendTest {
         FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(1));
         long expectedSchedule = when.get().toMillis();
         
-        newTask().uncheckedSend(when, "msg");
+        newTask().uncheckedSend(message(when, "msg"));
         
         verify(msgToQueue).putLongProperty(
                 eq(Message.HDR_SCHEDULED_DELIVERY_TIME.toString()), 

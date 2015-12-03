@@ -1,6 +1,7 @@
 package ome.smuggler.q;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.q.Messages.durableMessage;
 import static ome.smuggler.q.Messages.setScheduleCount;
 import static ome.smuggler.q.Messages.setScheduledDeliveryTime;
@@ -36,10 +37,11 @@ public class CountedScheduleTask<T> implements MessageSource<CountedSchedule, T>
         
         CountedSchedule metadata = msg.metadata()
                                       .orElse(CountedSchedule.first());
-        channel.send(durableMessage().andThen(
-                     setScheduledDeliveryTime(metadata.when())).andThen(
-                     setScheduleCount(metadata.count().get())), 
-                     msg.data());
+        channel.send(
+                message(durableMessage().andThen(
+                             setScheduledDeliveryTime(metadata.when())).andThen(
+                             setScheduleCount(metadata.count().get())), 
+                        msg.data()));
     }
 
 }
