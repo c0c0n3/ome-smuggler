@@ -2,8 +2,7 @@ package ome.smuggler.core.msg;
 
 import java.util.Optional;
 
-import ome.smuggler.core.types.FutureTimepoint;
-import util.object.Pair;
+import ome.smuggler.core.types.Schedule;
 
 /**
  * A task that consumes a channel sink's output and optionally requests the 
@@ -19,6 +18,6 @@ public interface Reschedulable<T> {
      * @return when and what data to input again in the channel or empty if no
      * further action is required. Never return {@code null}.
      */
-    Optional<Pair<T, FutureTimepoint>> next(CountedSchedule current, T data);
+    Optional<Schedule<T>> consume(CountedSchedule current, T data);
    
 }

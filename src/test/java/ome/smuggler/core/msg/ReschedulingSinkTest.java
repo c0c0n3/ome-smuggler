@@ -4,11 +4,9 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.types.FutureTimepoint.now;
-import static util.object.Pair.pair;
-import static util.sequence.Arrayz.newPairs;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -16,64 +14,89 @@ import org.junit.Test;
 
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.PositiveN;
-import util.object.Pair;
+import ome.smuggler.core.types.Schedule;
 
-public class ReschedulingSinkTest implements Reschedulable<Long> {
 
-    private SourceQueue<CountedSchedule, Long> loopback;
-    private ReschedulingSink<Long> target;
-    private ArrayList<Pair<CountedSchedule, Long>> argumentsPassedToNext;
-    private ArrayList<Optional<Pair<Long, FutureTimepoint>>> valuesReturnedByNext;
+public class ReschedulingSinkTest implements Reschedulable<CountedSchedule> {
+
+    private SourceQueue<CountedSchedule, CountedSchedule> loopback;
+    private ReschedulingSink<CountedSchedule> target;
+    private int messageCap;
     
     @Before
     public void setup() {
         loopback = new SourceQueue<>();
         target = new ReschedulingSink<>(this, loopback);
-        argumentsPassedToNext = new ArrayList<>();
-        valuesReturnedByNext = new ArrayList<>();
     }
     
     @Override
-    public Optional<Pair<Long, FutureTimepoint>> next(
-            CountedSchedule current, Long daysToAdd) {
-        
-        argumentsPassedToNext.add(pair(current, daysToAdd));
-        
-        Optional<Pair<Long, FutureTimepoint>> returnValue;
-        if (daysToAdd == 0) {    
-            returnValue = Optional.empty();
-        }
-        else {
-            Duration newTimepoint = current.when().get().plusDays(daysToAdd);
-            FutureTimepoint when = new FutureTimepoint(newTimepoint);
-            Long expectedNextCount = current.count().get() + 1;
-            returnValue = Optional.of(pair(expectedNextCount, when));
-        }
-        valuesReturnedByNext.add(returnValue);
-        
-        return returnValue;
+    public Optional<Schedule<CountedSchedule>> consume(
+            CountedSchedule current, CountedSchedule data) {
+        Schedule<CountedSchedule> next = new Schedule<>(data.when(), data);
+        return current.count().get() < messageCap ? Optional.of(next)
+                                                  : Optional.empty();
+    }
+    /* NB
+     * current  data       next              loopback  
+     * (t1, 1) (t2, 2) -> (t2, (t2, 2)) ==>  <m:(t2, 2), d:(t2, 2)>
+     * (t2, 2) (t3, 3) -> (t3, (t3, 3)) ==>  <m:(t2, 2), d:(t2, 2)> <m:(t3, 3), d:(t3, 3)>
+     * (t3, 3) (t4, 4) -> empty         ***** messageCap = 3 *****
+     * ...
+     */
+    
+    private CountedSchedule schedule(int ix) {
+        FutureTimepoint when = new FutureTimepoint(Duration.ofDays(ix));
+        PositiveN count = PositiveN.of(ix);
+        return new CountedSchedule(when, count);
     }
     
-    @SuppressWarnings("unchecked")
-    private Pair<CountedSchedule, Long>[] expectedMetadataAndDataSentOnChannel() {
-        return valuesReturnedByNext
-              .stream()
-              .map(Optional::get)
-              .map(v -> pair(new CountedSchedule(v.snd(), PositiveN.of(v.fst())), 
-                             v.fst()))
-              .toArray(Pair[]::new);
+    private void deliver(int messageCap) {
+        this.messageCap = messageCap;
+        
+        if (messageCap > 1) {
+            target.consume(message(schedule(2)));
+            for (int k = 2; k <= messageCap; ++k) {
+                target.consume(message(schedule(k), schedule(k + 1)));
+            }
+        }
     }
     
-    private Pair<CountedSchedule, Long>[] actualMetadataAndDataSentOnChannel() {
-        return loopback.dequeue().toArray(newPairs(0));
+    private void assertEmptyLoopbackOrScheduledMsgMetaIsSameAsMsgData() {
+        List<ChannelMessage<CountedSchedule, CountedSchedule>>  
+        actualMessagesSentOnLoopback= loopback.dequeue();
+    
+        assertThat(actualMessagesSentOnLoopback.size(), is(messageCap - 1));
+        actualMessagesSentOnLoopback.forEach(msg -> {
+            assertThat(msg.metadata().get(), is(msg.data())); 
+        });
+    }
+    
+    private void verifyScheduling(int messageCap) {
+        deliver(messageCap);
+        assertEmptyLoopbackOrScheduledMsgMetaIsSameAsMsgData();
     }
     
     @Test
-    public void firstCallToConsume() {
-        target.consume(message(1L));
+    public void noReschedulingWhenReschedulableReturnsEmpty() {
+        verifyScheduling(1);
+    }
+    
+    @Test
+    public void evenWithScheduleNoReschedulingWhenReschedulableReturnsEmpty() {
+        messageCap = 1;
+        target.consume(message(schedule(1), schedule(1)));
         
-        assertArrayEquals(expectedMetadataAndDataSentOnChannel(), 
-                          actualMetadataAndDataSentOnChannel());
+        assertEmptyLoopbackOrScheduledMsgMetaIsSameAsMsgData();
+    }
+    
+    @Test
+    public void scheduleOne() {
+        verifyScheduling(2);
+    }
+    
+    @Test
+    public void scheduleMany() {
+        verifyScheduling(3);
     }
     
     @Test (expected = NullPointerException.class)
@@ -83,7 +106,9 @@ public class ReschedulingSinkTest implements Reschedulable<Long> {
     
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfArg2Null() {
-        new ReschedulingSink<>((s, d) -> Optional.of(pair("", now())), null);
+        new ReschedulingSink<>(
+                (cs, d) -> Optional.of(new Schedule<>(now(), "")), 
+                null);
     }
     
 }
