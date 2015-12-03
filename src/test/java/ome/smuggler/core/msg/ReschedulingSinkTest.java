@@ -2,6 +2,7 @@ package ome.smuggler.core.msg;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.types.FutureTimepoint.now;
 import static util.object.Pair.pair;
 import static util.sequence.Arrayz.newPairs;
@@ -69,7 +70,7 @@ public class ReschedulingSinkTest implements Reschedulable<Long> {
     
     @Test
     public void firstCallToConsume() {
-        target.consume(Optional.empty(), 1L);
+        target.consume(message(1L));
         
         assertArrayEquals(expectedMetadataAndDataSentOnChannel(), 
                           actualMetadataAndDataSentOnChannel());

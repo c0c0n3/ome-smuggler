@@ -1,18 +1,17 @@
 package ome.smuggler.q;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.q.MessageBody.readBody;
 import static util.error.Exceptions.throwAsIfUnchecked;
-
-import java.util.Optional;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientConsumer;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.MessageHandler;
 
-import ome.smuggler.core.msg.ChannelAwareSink;
 import ome.smuggler.core.msg.ChannelSink;
+import ome.smuggler.core.msg.MessageSink;
 
 /**
  * Receives messages asynchronously from a queue and dispatches them to a 
@@ -21,7 +20,7 @@ import ome.smuggler.core.msg.ChannelSink;
 public class DequeueTask<T> implements MessageHandler {
     
     private final ClientConsumer receiver;
-    private final ChannelAwareSink<ClientMessage, T> sink;
+    private final MessageSink<ClientMessage, T> sink;
     private final Class<T> messageType;
 
     /**
@@ -37,8 +36,7 @@ public class DequeueTask<T> implements MessageHandler {
     public DequeueTask(QueueConnector queue,
                        ChannelSink<T> consumer, Class<T> messageType) 
                     throws HornetQException {
-        this(queue, (meta, data) -> consumer.consume(data), messageType);
-        requireNonNull(consumer, "consumer");
+        this(queue, MessageSink.forwardDataTo(consumer), messageType);
     }
     
     /**
@@ -52,7 +50,7 @@ public class DequeueTask<T> implements MessageHandler {
      * @throws NullPointerException if any argument is {@code null}.
      */
     public DequeueTask(QueueConnector queue,
-            ChannelAwareSink<ClientMessage, T> consumer, Class<T> messageType) 
+            MessageSink<ClientMessage, T> consumer, Class<T> messageType) 
          throws HornetQException {
         requireNonNull(queue, "queue");
         requireNonNull(consumer, "consumer");
@@ -76,7 +74,7 @@ public class DequeueTask<T> implements MessageHandler {
     public void onMessage(ClientMessage msg) {
         T messageData = readBody(msg, messageType);
         removeFromQueue(msg);
-        sink.consume(Optional.of(msg), messageData);
+        sink.consume(message(msg, messageData));
     }
     
 }

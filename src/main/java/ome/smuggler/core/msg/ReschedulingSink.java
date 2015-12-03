@@ -3,16 +3,13 @@ package ome.smuggler.core.msg;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 
-import java.util.Optional;
-
 import ome.smuggler.core.types.FutureTimepoint;
 
 /**
  * A channel sink feeding the channel output to a task that may produce more 
  * input to be delivered on the channel at a later point in time.
  */
-public class ReschedulingSink<T> 
-    implements ChannelAwareSink<CountedSchedule, T> {
+public class ReschedulingSink<T> implements MessageSink<CountedSchedule, T> {
 
     private final Reschedulable<T> task;
     private final MessageSource<CountedSchedule, T> loopback;
@@ -43,9 +40,10 @@ public class ReschedulingSink<T>
     }
 
     @Override
-    public void consume(Optional<CountedSchedule> metadata, T data) {
-        CountedSchedule current = metadata.orElse(CountedSchedule.first());
-        task.next(current, data)
+    public void consume(ChannelMessage<CountedSchedule, T> msg) {
+        CountedSchedule current = msg.metadata()
+                                     .orElse(CountedSchedule.first());
+        task.next(current, msg.data())
             .map(p -> reschedule(p.fst(), p.snd(), current));
     }
     

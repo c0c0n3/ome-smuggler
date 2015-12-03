@@ -10,6 +10,7 @@ import static ome.smuggler.core.msg.ChannelMessage.message;
  * by the receiving end and optionally metadata, typically used to configure 
  * the sending of the message.
  * @see ChannelMessage
+ * @see MessageSink
  */
 public interface MessageSource<M, D> 
     extends ChannelSource<ChannelMessage<M, D>> {
