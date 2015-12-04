@@ -1,15 +1,15 @@
 package ome.smuggler.core.msg;
 
 /**
- * Indicates weather a message should be re-delivered after being consumed.
- * @see DeliveryRetry
+ * Indicates whether a message should be re-delivered after being consumed.
+ * @see MessageRepeater
  */
-public enum RetryAction {
+public enum RepeatAction {
 
     /**
      * A message consumer uses this flag to cause re-delivery of the message.
      */
-    Retry, 
+    Repeat, 
     
     /**
      * A message consumer uses this flag to indicate the message has been
