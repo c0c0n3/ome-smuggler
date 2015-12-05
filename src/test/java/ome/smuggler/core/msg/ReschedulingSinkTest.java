@@ -37,7 +37,7 @@ public class ReschedulingSinkTest implements Reschedulable<CountedSchedule> {
                                                   : Optional.empty();
     }
     /* NB
-     * current  data       next              loopback  
+     * current  data       next              loopback (expected if sink works correctly)  
      * (t1, 1) (t2, 2) -> (t2, (t2, 2)) ==>  <m:(t2, 2), d:(t2, 2)>
      * (t2, 2) (t3, 3) -> (t3, (t3, 3)) ==>  <m:(t2, 2), d:(t2, 2)> <m:(t3, 3), d:(t3, 3)>
      * (t3, 3) (t4, 4) -> empty         ***** messageCap = 3 *****
@@ -53,10 +53,15 @@ public class ReschedulingSinkTest implements Reschedulable<CountedSchedule> {
     private void deliver(int messageCap) {
         this.messageCap = messageCap;
         
-        if (messageCap > 1) {
-            target.consume(message(schedule(2)));
+        target.consume(message(schedule(2)));
+        // no metadata, so sink should call: consume(meta=s(1), data=s(2))
+        
+        if (messageCap > 1) {    
             for (int k = 2; k <= messageCap; ++k) {
-                target.consume(message(schedule(k), schedule(k + 1)));
+                CountedSchedule current = schedule(k);
+                CountedSchedule next = schedule(k + 1);
+                target.consume(message(current, next));
+                // sink should call: consume(meta=s(k), data=s(k + 1))
             }
         }
     }
