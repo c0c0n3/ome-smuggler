@@ -14,6 +14,15 @@ import java.util.Optional;
  */
 public class ChannelMessage<M, D> {
 
+
+    /**
+     * Syntactic sugar for the {@link #ChannelMessage(Object, Object)  
+     * two-argument constructor}.
+     */
+    public static <M, D> ChannelMessage<M, D> message(Optional<M> metadata, D data) { 
+        return new ChannelMessage<>(metadata, data);
+    }
+
     /**
      * Syntactic sugar for the {@link #ChannelMessage(Object, Object)  
      * two-argument constructor}.
@@ -33,6 +42,20 @@ public class ChannelMessage<M, D> {
     
     private final Optional<M> metadata;
     private final D data;
+
+    /**
+     * Creates a new instance.
+     * @param metadata any metadata accompanying the data to consume.
+     * @param data the data to consume.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public ChannelMessage(Optional<M> metadata, D data) {
+        requireNonNull(metadata, "metadata");
+        requireNonNull(data, "data");
+        
+        this.metadata = metadata;
+        this.data = data;
+    }
     
     /**
      * Creates a new instance.
@@ -54,10 +77,7 @@ public class ChannelMessage<M, D> {
      * @throws NullPointerException if the argument is {@code null}.
      */
     public ChannelMessage(D data) {
-        requireNonNull(data, "data");
-        
-        this.metadata = Optional.empty();
-        this.data = data;
+        this(Optional.empty(), data);
     }
     
     /**
