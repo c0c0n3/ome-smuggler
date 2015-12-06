@@ -2,13 +2,16 @@ package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
-import static util.error.Exceptions.throwAsIfUnchecked;
+import static ome.smuggler.core.msg.RepeatAction.Repeat;
+import static ome.smuggler.core.msg.RepeatAction.Stop;
+import static ome.smuggler.core.service.impl.Loggers.logTransientError;
 
 import java.io.IOException;
 import java.time.Duration;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.core.msg.RepeatAction;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.types.FutureTimepoint;
@@ -39,7 +42,7 @@ public class ImportRunner implements ImportProcessor {
     }
     
     @Override
-    public void consume(QueuedImport task) {
+    public RepeatAction consume(QueuedImport task) {
         ImporterCommandBuilder cliOmeroImporter = 
                 new ImporterCommandBuilder(cliCfg, task.getRequest());
         CommandRunner runner = new CommandRunner(cliOmeroImporter);
@@ -49,12 +52,17 @@ public class ImportRunner implements ImportProcessor {
         try {
             output.writeHeader(cliOmeroImporter);
             int status = runner.exec(output.outputPath());
-            output.writeFooter(status == 0, status);
+            boolean succeeded = status == 0;
+            
+            output.writeFooter(succeeded, status);
+            return succeeded ? Stop : Repeat;
         } catch (IOException | InterruptedException e) {
             output.writeFooter(e);
-            throwAsIfUnchecked(e);
+            logTransientError(this, e);
+            return Repeat;
+        } finally {
+            scheduleDeletion(logFile);
         }
-        scheduleDeletion(logFile);
     }
 
 }
