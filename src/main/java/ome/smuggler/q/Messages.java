@@ -3,6 +3,7 @@ package ome.smuggler.q;
 import static java.util.Objects.requireNonNull;
 import static util.string.Strings.requireString;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.hornetq.api.core.Message;
@@ -10,6 +11,7 @@ import org.hornetq.api.core.client.ClientMessage;
 
 import ome.smuggler.core.msg.CountedSchedule;
 import ome.smuggler.core.types.FutureTimepoint;
+import ome.smuggler.core.types.PositiveN;
 
 public class Messages {
 
@@ -32,13 +34,24 @@ public class Messages {
                        when.get().toMillis());
     }
     
-    public static Function<ClientMessage, ClientMessage> setScheduleCount(long count) {
-        return setProp(ScheduleCountKey, count);
+    public static Function<ClientMessage, ClientMessage> setScheduleCount(
+            PositiveN count) {
+        return setProp(ScheduleCountKey, count.get());
     }
     
-    public static long getScheduleCount(ClientMessage msg) {
+    private static <T> Optional<T> getProp(String key, ClientMessage msg,
+                                           Function<String, T> getter) {
+        requireNonNull(key, "key");
         requireNonNull(msg, "msg");
-        return msg.getLongProperty(ScheduleCountKey);
+        requireNonNull(getter, "getter");
+        
+        return msg.containsProperty(key) ? Optional.of(getter.apply(key))
+                                         : Optional.empty();
+    }
+    
+    public static Optional<PositiveN> getScheduleCount(ClientMessage msg) {
+        return getProp(ScheduleCountKey, msg, msg::getLongProperty)
+              .map(PositiveN::of);
     }
     
 }

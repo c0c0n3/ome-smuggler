@@ -40,7 +40,7 @@ public class CountedScheduleTask<T> implements MessageSource<CountedSchedule, T>
         channel.send(
                 message(durableMessage().andThen(
                              setScheduledDeliveryTime(metadata.when())).andThen(
-                             setScheduleCount(metadata.count().get())), 
+                             setScheduleCount(metadata.count())), 
                         msg.data()));
     }
 
