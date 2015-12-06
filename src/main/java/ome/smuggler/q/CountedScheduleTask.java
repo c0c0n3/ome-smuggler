@@ -16,6 +16,7 @@ import ome.smuggler.core.msg.MessageSource;
  * Enqueues a message that will only be delivered to consumers at a specified
  * time in the future and makes a sender-specified delivery count available in
  * the metadata.
+ * @see CountedScheduleSink
  */
 public class CountedScheduleTask<T> implements MessageSource<CountedSchedule, T> {
 
