@@ -14,9 +14,8 @@ import java.util.Optional;
  */
 public class ChannelMessage<M, D> {
 
-
     /**
-     * Syntactic sugar for the {@link #ChannelMessage(Object, Object)  
+     * Syntactic sugar for the {@link #ChannelMessage(Optional, Object)  
      * two-argument constructor}.
      */
     public static <M, D> ChannelMessage<M, D> message(Optional<M> metadata, D data) { 
