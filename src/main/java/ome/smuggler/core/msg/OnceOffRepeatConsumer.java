@@ -15,7 +15,7 @@ import java.util.function.Function;
  */
 public class OnceOffRepeatConsumer<T> implements Consumer<T> {
 
-    private final Function<T, RepeatAction> consumer;
+    private final RepeatConsumer<T> consumer;
     private final Consumer<T> exceededRedeliveryHandler;
 
     /**
@@ -26,7 +26,7 @@ public class OnceOffRepeatConsumer<T> implements Consumer<T> {
      * asks to re-deliver.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public OnceOffRepeatConsumer(Function<T, RepeatAction> consumer,
+    public OnceOffRepeatConsumer(RepeatConsumer<T> consumer,
                                  Consumer<T> exceededRedeliveryHandler) {
         requireNonNull(consumer, "consumer");
         requireNonNull(exceededRedeliveryHandler, "exceededRedeliveryHandler");
@@ -37,7 +37,7 @@ public class OnceOffRepeatConsumer<T> implements Consumer<T> {
 
     @Override
     public void accept(T data) {
-        RepeatAction outcome = consumer.apply(data);
+        RepeatAction outcome = consumer.consume(data);
         if (outcome == Repeat) {
             exceededRedeliveryHandler.accept(data);
         }
