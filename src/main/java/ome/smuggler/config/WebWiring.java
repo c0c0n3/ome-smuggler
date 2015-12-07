@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.web.ImportController;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class WebWiring extends WebMvcConfigurerAdapter {
 
     @Autowired
-    private ImportLogConfig importLogCfg;
+    private ImportConfig importCfg;
     
     private void setStringConverterMediaTypes(HttpMessageConverter<?> x) {
         StringHttpMessageConverter converter = (StringHttpMessageConverter) x;
@@ -69,7 +69,7 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path importLogDir = Paths.get(importLogCfg.getImportLogDir())
+        Path importLogDir = Paths.get(importCfg.getImportLogDir())
                                  .toAbsolutePath();
         unchecked(() -> Files.createDirectories(importLogDir)).get();  // (*)
         

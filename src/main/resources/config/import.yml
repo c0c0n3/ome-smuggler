@@ -1,0 +1,5 @@
+!!ome.smuggler.config.items.ImportConfig
+failedImportLogDir: import/failed-log
+importLogDir: import/log
+logRetentionMinutes: 21600
+retryIntervals: [10, 10, 120, 1440]

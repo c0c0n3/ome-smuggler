@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import util.config.ConfigProvider;
 
@@ -30,7 +30,7 @@ public class ConfigItemsWiring {
     }
     
     @Bean
-    public ImportLogConfig importLogConfig(ConfigProvider<ImportLogConfig> src) {
+    public ImportConfig importConfig(ConfigProvider<ImportConfig> src) {
         return config(src);
     }
     

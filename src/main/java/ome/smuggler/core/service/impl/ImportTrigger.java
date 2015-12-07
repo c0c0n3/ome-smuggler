@@ -5,7 +5,7 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
 
-import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.service.ImportRequestor;
 import ome.smuggler.core.types.ImportId;
@@ -15,10 +15,10 @@ import ome.smuggler.core.types.QueuedImport;
 public class ImportTrigger implements ImportRequestor {
 
     private final ChannelSource<QueuedImport> queue; 
-    private final ImportLogConfig logConfig;
+    private final ImportConfig logConfig;
     
     public ImportTrigger(ChannelSource<QueuedImport> queue, 
-                         ImportLogConfig logConfig) {
+                         ImportConfig logConfig) {
         requireNonNull(queue, "queue");
         requireNonNull(logConfig, "logConfig");
         

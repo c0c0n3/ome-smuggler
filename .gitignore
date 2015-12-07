@@ -19,5 +19,5 @@ build
 /*.yml
 hornetq-data
 ome-lib
-import-logs
+import
 

@@ -12,18 +12,18 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
 
 
 public class ImportOutput {
     
-    private final ImportLogConfig logCfg;
+    private final ImportConfig logCfg;
     private final QueuedImport task;
     private final ImportLogPath outputFile;
     
-    public ImportOutput(ImportLogConfig logCfg, QueuedImport task) {
+    public ImportOutput(ImportConfig logCfg, QueuedImport task) {
         requireNonNull(logCfg, "logCfg");
         requireNonNull(task, "task");
         

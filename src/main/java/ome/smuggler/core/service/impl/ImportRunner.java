@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 import ome.smuggler.config.items.CliImporterConfig;
-import ome.smuggler.config.items.ImportLogConfig;
+import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.msg.RepeatAction;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportProcessor;
@@ -21,11 +21,11 @@ import ome.smuggler.core.types.QueuedImport;
 public class ImportRunner implements ImportProcessor {
 
     private final CliImporterConfig cliCfg;
-    private final ImportLogConfig logCfg;
+    private final ImportConfig logCfg;
     private final SchedulingSource<ImportLogFile> gcQueue;
     
     
-    public ImportRunner(CliImporterConfig cliCfg, ImportLogConfig logCfg,
+    public ImportRunner(CliImporterConfig cliCfg, ImportConfig logCfg,
             SchedulingSource<ImportLogFile> gcQueue) {
         requireNonNull(cliCfg, "cliCfg");
         requireNonNull(logCfg, "logCfg");
@@ -36,7 +36,7 @@ public class ImportRunner implements ImportProcessor {
     }
     
     private void scheduleDeletion(ImportLogFile logFile) {
-        long fromNow = logCfg.getRetentionMinutes();
+        long fromNow = logCfg.getLogRetentionMinutes();
         FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(fromNow));
         gcQueue.uncheckedSend(message(when, logFile));
     }
