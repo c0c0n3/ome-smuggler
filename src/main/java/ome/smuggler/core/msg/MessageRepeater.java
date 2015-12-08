@@ -52,7 +52,7 @@ public class MessageRepeater<T> implements Reschedulable<T> {
         return intervals;
     }
     
-    private final Function<T, RepeatAction> consumer;
+    private final RepeatConsumer<T> consumer;
     private final Duration[] repeatIntervals;
     private final Consumer<T> exceededRedeliveryHandler;
 
@@ -67,7 +67,7 @@ public class MessageRepeater<T> implements Reschedulable<T> {
      * @throws IllegalArgumentException if the retry intervals stream is empty
      * or contains {@code null}.
      */
-    public MessageRepeater(Function<T, RepeatAction> consumer,
+    public MessageRepeater(RepeatConsumer<T> consumer,
                            Stream<Duration> repeatIntervals,
                            Consumer<T> exceededRedeliveryHandler) {
         requireNonNull(consumer, "consumer");
@@ -82,7 +82,7 @@ public class MessageRepeater<T> implements Reschedulable<T> {
     private Optional<Integer> deliver(CountedSchedule current, T data) {
         int retryCount = current.count().get().intValue() - 1;  // PositiveN is always > 0
         if (retryCount < repeatIntervals.length) {
-            RepeatAction outcome = consumer.apply(data);
+            RepeatAction outcome = consumer.consume(data);
             return outcome == Repeat ? Optional.of(retryCount) : 
                                        Optional.empty();
         } else {
