@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Makes message consumers returning {@link RepeatAction}s work well when used
