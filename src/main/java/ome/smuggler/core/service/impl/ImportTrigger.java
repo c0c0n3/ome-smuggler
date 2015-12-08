@@ -5,8 +5,6 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
 
-import ome.smuggler.config.items.ImportConfig;
-import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.service.ImportRequestor;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportInput;
@@ -14,20 +12,16 @@ import ome.smuggler.core.types.QueuedImport;
 
 public class ImportTrigger implements ImportRequestor {
 
-    private final ChannelSource<QueuedImport> queue; 
-    private final ImportConfig logConfig;
+    private final ImportEnv env;
     
-    public ImportTrigger(ChannelSource<QueuedImport> queue, 
-                         ImportConfig logConfig) {
-        requireNonNull(queue, "queue");
-        requireNonNull(logConfig, "logConfig");
-        
-        this.queue = queue;
-        this.logConfig = logConfig;
+    public ImportTrigger(ImportEnv env) {
+        requireNonNull(env, "env");
+        this.env = env;
     }
     
     private void notifyQueued(QueuedImport task) {
-        ImportOutput out = new ImportOutput(logConfig, task);
+        ImportOutput out = new ImportOutput(
+                env.importLogPathFor(task.getTaskId()), task);
         try {
             out.writeQueued();
         } catch (IOException e) {
@@ -40,7 +34,7 @@ public class ImportTrigger implements ImportRequestor {
         ImportId taskId = new ImportId();
         QueuedImport task = new QueuedImport(taskId, request);
         notifyQueued(task);
-        queue.uncheckedSend(task);
+        env.queue().uncheckedSend(task);
         
         return taskId;
     }

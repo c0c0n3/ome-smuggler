@@ -2,16 +2,17 @@ package ome.smuggler.config;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.service.impl.ImportEnv;
 import ome.smuggler.core.service.impl.ImportLogDeleteAction;
 import ome.smuggler.core.service.impl.ImportRunner;
 import ome.smuggler.core.service.impl.ImportTrigger;
+import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.q.DequeueTask;
@@ -30,29 +31,38 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Wiring {
     
-    @Bean
-    public ImportRequestor importRequestor(ImportQConfig qConfig, 
-            ImportConfig logConfig, ServerConnector connector) 
+    private ChannelSource<QueuedImport> importSourceChannel(
+            ServerConnector connector, ImportQConfig qConfig) 
                     throws HornetQException {
         QueueConnector q = new QueueConnector(qConfig, connector.getSession());
-        ChannelSource<QueuedImport> channel = new EnqueueTask<QueuedImport>(q)
-                                             .asDataSource();
-        return new ImportTrigger(channel, logConfig);
+        return new EnqueueTask<QueuedImport>(q).asDataSource();
     }
     
-    @Bean
-    public SchedulingSource<ImportLogFile> 
-        importGcQCSourceChannel(ImportGcQConfig qConfig, ServerConnector connector) 
+    private SchedulingSource<ImportLogFile> importGcSourceChannel(
+            ServerConnector connector, ImportGcQConfig qConfig) 
                     throws HornetQException {
         QueueConnector q = new QueueConnector(qConfig, connector.getSession());
         return new ScheduleTask<>(q);
     }
     
     @Bean
-    public ImportProcessor importProcessor(CliImporterConfig cliCfg, 
-            ImportConfig logCfg, 
-            SchedulingSource<ImportLogFile> gcQueue) {
-        return new ImportRunner(cliCfg, logCfg, gcQueue);
+    public ImportEnv importEnv(ServerConnector connector, ImportQConfig qConfig, 
+            ImportGcQConfig gcQConfig, ImportConfigSource config, 
+            CliImporterConfig cliConfig) throws HornetQException {
+        return new ImportEnv(config, 
+                             cliConfig, 
+                             importSourceChannel(connector, qConfig), 
+                             importGcSourceChannel(connector, gcQConfig));
+    }
+    
+    @Bean
+    public ImportRequestor importRequestor(ImportEnv env) {
+        return new ImportTrigger(env);
+    }
+    
+    @Bean
+    public ImportProcessor importProcessor(ImportEnv env) {
+        return new ImportRunner(env);
     }
     
     @Bean

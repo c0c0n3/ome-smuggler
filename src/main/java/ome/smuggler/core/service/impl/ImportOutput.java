@@ -8,58 +8,41 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
 
 
 public class ImportOutput {
     
-    private final ImportConfig logCfg;
     private final QueuedImport task;
-    private final ImportLogPath outputFile;
+    private final Path outputFile;
     
-    public ImportOutput(ImportConfig logCfg, QueuedImport task) {
-        requireNonNull(logCfg, "logCfg");
+    public ImportOutput(ImportLogPath outputFile, QueuedImport task) {
+        requireNonNull(outputFile, "outputFile");
         requireNonNull(task, "task");
         
-        this.logCfg = logCfg;
         this.task = task;
-        this.outputFile = outputFile(task);
+        this.outputFile = outputFile.get();
     }
 
-    private ImportLogPath outputFile(QueuedImport task) {
-        Path dir = Paths.get(logCfg.getImportLogDir());
-        return new ImportLogPath(dir, task.getTaskId());
-    }
-    
     private void output(String line) throws IOException {
         List<String> content = Arrays.asList(line);
-        Files.write(outputPath(), content, CREATE, WRITE, APPEND);
+        Files.write(outputFile, content, CREATE, WRITE, APPEND);
     }
-    
-    public Path outputPath() {
-        return outputFile.get();
-    }
-    
-    public ImportLogPath importLogPath() {
-        return outputFile;
-    }
-    
+        
     public void writeQueued() throws IOException {
         output(queued(task));
     }
     
     public void writeHeader(ImporterCommandBuilder importCommand) 
             throws IOException {
-        if (Files.exists(outputPath())) {
-            Files.delete(outputPath());
+        if (Files.exists(outputFile)) {
+            Files.delete(outputFile);
         }
-        output(header(task, importCommand, outputPath()));
+        output(header(task, importCommand, outputFile));
     }
     
     public void writeFooter(boolean success, int exitStatus) throws IOException {

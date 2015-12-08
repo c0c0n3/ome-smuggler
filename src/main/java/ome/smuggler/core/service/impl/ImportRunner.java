@@ -7,51 +7,47 @@ import static ome.smuggler.core.msg.RepeatAction.Stop;
 import static ome.smuggler.core.service.impl.Loggers.logTransientError;
 
 import java.io.IOException;
-import java.time.Duration;
+import java.nio.file.Path;
 
-import ome.smuggler.config.items.CliImporterConfig;
-import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.msg.RepeatAction;
-import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 
+
 public class ImportRunner implements ImportProcessor {
 
-    private final CliImporterConfig cliCfg;
-    private final ImportConfig logCfg;
-    private final SchedulingSource<ImportLogFile> gcQueue;
+    private final ImportEnv env;
     
-    
-    public ImportRunner(CliImporterConfig cliCfg, ImportConfig logCfg,
-            SchedulingSource<ImportLogFile> gcQueue) {
-        requireNonNull(cliCfg, "cliCfg");
-        requireNonNull(logCfg, "logCfg");
-        
-        this.cliCfg = cliCfg;
-        this.logCfg = logCfg;
-        this.gcQueue = gcQueue;
+    public ImportRunner(ImportEnv env) {
+        requireNonNull(env, "env");
+        this.env = env;
     }
     
-    private void scheduleDeletion(ImportLogFile logFile) {
-        long fromNow = logCfg.getLogRetentionMinutes();
-        FutureTimepoint when = new FutureTimepoint(Duration.ofMinutes(fromNow));
-        gcQueue.uncheckedSend(message(when, logFile));
+    private int run(ImporterCommandBuilder cliOmeroImporter, QueuedImport task) 
+            throws IOException, InterruptedException {
+        CommandRunner runner = new CommandRunner(cliOmeroImporter);
+        Path importTarget = env.importLogPathFor(task.getTaskId()).get(); 
+        return runner.exec(importTarget);
+    }
+    
+    private void scheduleDeletion(QueuedImport task) {
+        ImportLogFile logFile = env.importLogFileFor(task.getTaskId());
+        FutureTimepoint when = env.importLogRetentionFromNow();
+        env.gcQueue().uncheckedSend(message(when, logFile));
     }
     
     @Override
     public RepeatAction consume(QueuedImport task) {
         ImporterCommandBuilder cliOmeroImporter = 
-                new ImporterCommandBuilder(cliCfg, task.getRequest());
-        CommandRunner runner = new CommandRunner(cliOmeroImporter);
-        ImportOutput output = new ImportOutput(logCfg, task);
-        ImportLogFile logFile = new ImportLogFile(output.importLogPath());
+                new ImporterCommandBuilder(env.cliConfig(), task.getRequest());
+        ImportOutput output = new ImportOutput(
+                env.importLogPathFor(task.getTaskId()), task);
         
         try {
             output.writeHeader(cliOmeroImporter);
-            int status = runner.exec(output.outputPath());
+            int status = run(cliOmeroImporter, task); 
             boolean succeeded = status == 0;
             
             output.writeFooter(succeeded, status);
@@ -61,7 +57,7 @@ public class ImportRunner implements ImportProcessor {
             logTransientError(this, e);
             return Repeat;
         } finally {
-            scheduleDeletion(logFile);
+            scheduleDeletion(task);
         }
     }
 

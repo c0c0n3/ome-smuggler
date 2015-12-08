@@ -7,7 +7,10 @@ import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
+import ome.smuggler.core.types.ImportConfigReader;
+import ome.smuggler.core.types.ImportConfigSource;
 import util.config.ConfigProvider;
+import util.config.ConfigReader;
 
 /**
  * Spring bean wiring of configuration items.
@@ -30,8 +33,8 @@ public class ConfigItemsWiring {
     }
     
     @Bean
-    public ImportConfig importConfig(ConfigProvider<ImportConfig> src) {
-        return config(src);
+    public ImportConfigSource importConfig(ConfigProvider<ImportConfig> src) {
+        return config(ConfigReader.newReader(src, ImportConfigReader::new));
     }
     
     @Bean

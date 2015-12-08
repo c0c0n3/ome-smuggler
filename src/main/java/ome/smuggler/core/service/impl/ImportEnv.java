@@ -1,10 +1,15 @@
 package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
+import static util.error.Exceptions.unchecked;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogFile;
@@ -16,6 +21,11 @@ import ome.smuggler.core.types.QueuedImport;
  */
 public class ImportEnv {
 
+    private static void ensureDirectory(Path p) {
+        Path dir = p.toAbsolutePath();
+        unchecked(() -> Files.createDirectories(dir)).get();
+    }
+    
     private final ImportConfigSource config;
     private final CliImporterConfig cliConfig;
     private final ChannelSource<QueuedImport> queue;
@@ -57,6 +67,15 @@ public class ImportEnv {
     
     public ImportLogFile importLogFileFor(ImportId taskId) {
         return new ImportLogFile(importLogPathFor(taskId));
+    }
+    
+    public FutureTimepoint importLogRetentionFromNow() {
+        return new FutureTimepoint(config().logRetentionPeriod());
+    }
+    
+    public void ensureDirectories() {
+        ensureDirectory(config().importLogDir());
+        ensureDirectory(config().failedImportLogDir());
     }
     
 }

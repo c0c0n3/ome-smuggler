@@ -1,15 +1,10 @@
 package ome.smuggler.config;
 
-import static util.error.Exceptions.unchecked;
-
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import ome.smuggler.config.items.ImportConfig;
+import ome.smuggler.core.service.impl.ImportEnv;
 import ome.smuggler.web.ImportController;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +24,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class WebWiring extends WebMvcConfigurerAdapter {
 
     @Autowired
-    private ImportConfig importCfg;
+    private ImportEnv importEnv;
     
     private void setStringConverterMediaTypes(HttpMessageConverter<?> x) {
         StringHttpMessageConverter converter = (StringHttpMessageConverter) x;
@@ -69,13 +64,12 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path importLogDir = Paths.get(importCfg.getImportLogDir())
-                                 .toAbsolutePath();
-        unchecked(() -> Files.createDirectories(importLogDir)).get();  // (*)
+        importEnv.ensureDirectories();  // (*)
         
         String importStatusPattern = String
                                    .format("%s/**", ImportController.ImportUrl);
-        String statusFilesLocation = importLogDir.toUri().toString();
+        String statusFilesLocation = importEnv.config().importLogDir()
+                                    .toAbsolutePath().toUri().toString();
         registry.addResourceHandler(importStatusPattern)
                 .addResourceLocations(statusFilesLocation);
     }
