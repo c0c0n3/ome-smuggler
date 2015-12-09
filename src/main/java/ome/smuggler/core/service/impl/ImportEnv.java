@@ -1,7 +1,7 @@
 package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
-import static util.error.Exceptions.unchecked;
+import static util.error.Exceptions.runUnchecked;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +23,7 @@ public class ImportEnv {
 
     private static void ensureDirectory(Path p) {
         Path dir = p.toAbsolutePath();
-        unchecked(() -> Files.createDirectories(dir)).get();
+        runUnchecked(() -> Files.createDirectories(dir));
     }
     
     private final ImportConfigSource config;

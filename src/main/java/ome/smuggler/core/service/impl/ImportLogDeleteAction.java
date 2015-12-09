@@ -1,8 +1,7 @@
 package ome.smuggler.core.service.impl;
 
-import static util.error.Exceptions.throwAsIfUnchecked;
+import static util.error.Exceptions.runUnchecked;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -15,11 +14,7 @@ public class ImportLogDeleteAction implements ImportLogDisposer {
     public void dispose(ImportLogFile expiredFile) {
         Path p = expiredFile.get().toPath();
         if (Files.exists(p)) {
-            try {
-                Files.delete(p);
-            } catch (IOException e) {
-                throwAsIfUnchecked(e);
-            }
+            runUnchecked(() -> Files.delete(p));
         }
     }
 
