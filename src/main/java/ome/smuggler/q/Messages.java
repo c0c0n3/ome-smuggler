@@ -45,7 +45,10 @@ public class Messages {
         requireNonNull(msg, "msg");
         requireNonNull(getter, "getter");
         
-        return Optional.ofNullable(getter.apply(key));
+        if (msg.containsProperty(key)) {
+            return Optional.ofNullable(getter.apply(key));
+        }
+        return Optional.empty();
     }
     
     public static Optional<PositiveN> getScheduleCount(ClientMessage msg) {
