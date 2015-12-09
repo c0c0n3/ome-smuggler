@@ -8,7 +8,6 @@ import static util.sequence.Arrayz.isNullOrZeroLength;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.types.FutureTimepoint;
