@@ -33,7 +33,7 @@ public class ImportRunner implements ImportProcessor {
     }
     
     private void scheduleDeletion(QueuedImport task) {
-        ImportLogFile logFile = env.importLogFileFor(task.getTaskId());
+        ImportLogFile logFile = env.importLogPathFor(task.getTaskId()).file();
         FutureTimepoint when = env.importLogRetentionFromNow();
         env.gcQueue().uncheckedSend(message(when, logFile));
     }

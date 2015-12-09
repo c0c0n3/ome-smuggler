@@ -70,10 +70,6 @@ public class ImportEnv {
         return config.failedImportLogDir().resolve(importLog.getFileName());
     }
     
-    public ImportLogFile importLogFileFor(ImportId taskId) {
-        return new ImportLogFile(importLogPathFor(taskId));
-    }
-    
     public FutureTimepoint importLogRetentionFromNow() {
         return new FutureTimepoint(config().logRetentionPeriod());
     }

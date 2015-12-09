@@ -30,4 +30,8 @@ public class ImportLogPath extends Wrapper<Path> {
         super(logPath(importLogDir, taskId));
     }
 
+    public ImportLogFile file() {
+        return new ImportLogFile(this);
+    }
+    
 }
