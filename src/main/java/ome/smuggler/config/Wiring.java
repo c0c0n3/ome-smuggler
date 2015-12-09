@@ -3,10 +3,12 @@ package ome.smuggler.config;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.FailedImportHandler;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
 import ome.smuggler.core.service.impl.ImportEnv;
+import ome.smuggler.core.service.impl.ImportFailureHandler;
 import ome.smuggler.core.service.impl.ImportLogDeleteAction;
 import ome.smuggler.core.service.impl.ImportRunner;
 import ome.smuggler.core.service.impl.ImportTrigger;
@@ -46,6 +48,11 @@ public class Wiring {
     @Bean
     public ImportLogDisposer importLogDisposer() {
         return new ImportLogDeleteAction();
+    }
+    
+    @Bean
+    public FailedImportHandler failedImportHandler(ImportEnv env) {
+        return new ImportFailureHandler(env);
     }
     
 }

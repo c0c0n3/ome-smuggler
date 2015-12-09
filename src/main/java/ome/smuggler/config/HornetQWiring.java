@@ -11,9 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.msg.Reschedulable;
+import ome.smuggler.core.msg.ReschedulableFactory;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.FailedImportHandler;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
+import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.q.DequeueTask;
@@ -64,9 +68,14 @@ public class HornetQWiring {
 
     @Bean
     public DequeueTask<QueuedImport> dequeueImportTask(
-            QChannelFactory<QueuedImport> factory, ImportProcessor processor) 
-                    throws HornetQException {
-        return factory.buildSink(processor::consume, QueuedImport.class);
+            QChannelFactory<QueuedImport> factory,
+            ImportConfigSource importConfig,
+            ImportProcessor processor,
+            FailedImportHandler failureHandler) throws HornetQException {
+        Reschedulable<QueuedImport> consumer = 
+                ReschedulableFactory.buildForRepeatConsumer(processor, 
+                        importConfig.retryIntervals(), failureHandler);
+        return factory.buildReschedulableSink(consumer, QueuedImport.class);
     }
     
     @Bean

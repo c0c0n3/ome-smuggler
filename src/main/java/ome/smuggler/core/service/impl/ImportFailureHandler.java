@@ -29,8 +29,8 @@ public class ImportFailureHandler implements FailedImportHandler {
         Path importLog = env.importLogPathFor(taskId).get();
         if (Files.exists(importLog)) {
             Path target = env.failedImportLogPathFor(taskId);
-            unchecked(() -> Files.copy(importLog, target, 
-                                       StandardCopyOption.REPLACE_EXISTING));
+            unchecked(() -> { Files.copy(importLog, target, 
+                                       StandardCopyOption.REPLACE_EXISTING); });
         }
     }
 

@@ -13,7 +13,10 @@ import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.CountedSchedule;
 import ome.smuggler.core.msg.MessageSink;
 import ome.smuggler.core.msg.MessageSource;
+import ome.smuggler.core.msg.Reschedulable;
+import ome.smuggler.core.msg.ReschedulingSink;
 import ome.smuggler.core.msg.SchedulingSource;
+
 
 public class QChannelFactory<T> {
 
@@ -76,6 +79,14 @@ public class QChannelFactory<T> {
                     throws HornetQException {
         return new DequeueTask<>(queue(), new CountedScheduleSink<>(consumer),
                                  messageType);
+    }
+    
+    public DequeueTask<T> buildReschedulableSink(Reschedulable<T> consumer, 
+            Class<T> messageType) throws HornetQException {
+        MessageSource<CountedSchedule, T> loopback = 
+                buildCountedScheduleSource();
+        ReschedulingSink<T> sink = new ReschedulingSink<>(consumer, loopback);
+        return buildCountedScheduleSink(sink, messageType);
     }
     
 }
