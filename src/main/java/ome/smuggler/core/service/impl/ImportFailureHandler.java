@@ -1,7 +1,7 @@
 package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
-import static util.error.Exceptions.unchecked;
+import static util.error.Exceptions.runUnchecked;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,8 +29,8 @@ public class ImportFailureHandler implements FailedImportHandler {
         Path importLog = env.importLogPathFor(taskId).get();
         if (Files.exists(importLog)) {
             Path target = env.failedImportLogPathFor(taskId);
-            unchecked(() -> { Files.copy(importLog, target, 
-                                       StandardCopyOption.REPLACE_EXISTING); });
+            runUnchecked(() -> Files.copy(importLog, target, 
+                                          StandardCopyOption.REPLACE_EXISTING));
         }
     }
 

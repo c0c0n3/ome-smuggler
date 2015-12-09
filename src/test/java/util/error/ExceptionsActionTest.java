@@ -1,6 +1,6 @@
 package util.error;
 
-import static util.error.Exceptions.unchecked;
+import static util.error.Exceptions.runUnchecked;
 
 import java.io.IOException;
 
@@ -17,12 +17,12 @@ public class ExceptionsActionTest {
     
     @Test(expected = NullPointerException.class)
     public void npeIfNullAction() {
-        unchecked((ActionE) null);
+        runUnchecked((ActionE) null);
     }
     
     @Test(expected = IOException.class)
     public void exceptionBubblesUpAsIs() {
-        unchecked(this::actionWithException);
+        runUnchecked(this::actionWithException);
     }
     
 }

@@ -97,7 +97,7 @@ public class Exceptions {
      * @param mayThrowChecked the action to run.
      * @see #throwAsIfUnchecked(Throwable)
      */
-    public static void unchecked(ActionE mayThrowChecked) {
+    public static void runUnchecked(ActionE mayThrowChecked) {
         try {
             mayThrowChecked.run();
         } catch (Exception e) {
