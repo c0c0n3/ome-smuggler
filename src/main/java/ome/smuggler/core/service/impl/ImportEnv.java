@@ -65,6 +65,11 @@ public class ImportEnv {
         return new ImportLogPath(config().importLogDir(), taskId);
     }
     
+    public Path failedImportLogPathFor(ImportId taskId) {
+        Path importLog = importLogPathFor(taskId).get();
+        return config.failedImportLogDir().resolve(importLog.getFileName());
+    }
+    
     public ImportLogFile importLogFileFor(ImportId taskId) {
         return new ImportLogFile(importLogPathFor(taskId));
     }
