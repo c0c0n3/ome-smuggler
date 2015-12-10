@@ -2,6 +2,19 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.8'
 }
 
+task test1(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests only.'
+    exclude '**/end2end/**'
+    exclude '**/integration/**'
+}
+
+task test2(type: Test) {
+    group 'verification'
+    description 'Runs the unit and integration tests but leaves end to end tests out.'
+    exclude '**/end2end/**'
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
@@ -44,4 +57,8 @@ configurations {
 jar {
     baseName = 'ome-smuggler'
     version =  '0.1.0'
+}
+
+test {  // added by java plugin, but says 'Runs the unit tests.'
+    description 'Runs all available tests.'
 }
