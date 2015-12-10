@@ -19,7 +19,7 @@ public class ImporterCommandBuilderTest {
                                .defaultReadConfig()
                                .findFirst()
                                .get();
-        cfg.setOmeLibDirPath("build/libs");
+        cfg.setOmeLibDirPath("gradle");
         
         return cfg;
     }
