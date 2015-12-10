@@ -29,12 +29,9 @@ public class MessageRepeaterTest {
 
     @DataPoints
     public static Duration[][] intervalsSupply = new Duration[][] {
-        array(Duration.ZERO), array(Duration.ofDays(1), Duration.ZERO),
+        array(), array(Duration.ZERO), array(Duration.ofDays(1), Duration.ZERO),
         array(Duration.ofDays(1), Duration.ZERO, Duration.ofDays(3))
     };
-    
-    @DataPoints
-    public static RepeatAction[] actionsSupply = array(Repeat, Stop);
     
     @DataPoints
     public static Integer[] deliveryCountsSupply = array(1, 2, 3, 4);
@@ -110,18 +107,36 @@ public class MessageRepeaterTest {
     }
     
     @Theory
-    public void onlyHanlderGetsExceededRedelivery(Duration[] intervals, 
-            Integer deliveryCount, RepeatAction stopOrRepeat) {
+    public void hanlderNeverCalledOnLastDeliveryIfConsumerStops(
+            Duration[] intervals, Integer deliveryCount) {
         assumeThat(deliveryCount, greaterThan(intervals.length));
         
         Integer sentData = 3;
-        MessageRepeater<Integer> target = newRepeater(intervals, stopOrRepeat);
+        MessageRepeater<Integer> target = newRepeater(intervals, Stop);
         Optional<Schedule<Integer>> schedule = 
                 target.consume(newCountedSchedule(deliveryCount), sentData);
         
         assertFalse(schedule.isPresent());
         
-        assertFalse(consumedData.isPresent());
+        assertTrue(consumedData.isPresent());
+        assertThat(consumedData.get(), is(sentData));
+        assertFalse(exceededRedeliveryData.isPresent());
+    }
+    
+    @Theory
+    public void bothConsumerAndHanlderCalledOnLastDeliveryIfConsumerRepeats(
+            Duration[] intervals, Integer deliveryCount) {
+        assumeThat(deliveryCount, greaterThan(intervals.length));
+        
+        Integer sentData = 4;
+        MessageRepeater<Integer> target = newRepeater(intervals, Repeat);
+        Optional<Schedule<Integer>> schedule = 
+                target.consume(newCountedSchedule(deliveryCount), sentData);
+        
+        assertFalse(schedule.isPresent());
+        
+        assertTrue(consumedData.isPresent());
+        assertThat(consumedData.get(), is(sentData));
         assertTrue(exceededRedeliveryData.isPresent());
         assertThat(exceededRedeliveryData.get(), is(sentData));
     }
@@ -141,8 +156,8 @@ public class MessageRepeaterTest {
         new MessageRepeater<>(x -> Stop, Stream.of(now().get()), null);
     }
     
-    @Test (expected = IllegalArgumentException.class)
-    public void ctorThrowsIfEmptyDurations() {
+    @Test
+    public void ctorAcceptsEmptyDurations() {
         new MessageRepeater<>(x -> Stop, Stream.empty(), x -> {});
     }
     

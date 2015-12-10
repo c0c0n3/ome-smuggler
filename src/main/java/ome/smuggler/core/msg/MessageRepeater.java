@@ -3,7 +3,6 @@ package ome.smuggler.core.msg;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static util.sequence.Arrayz.hasNulls;
-import static util.sequence.Arrayz.isNullOrZeroLength;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -42,9 +41,6 @@ public class MessageRepeater<T> implements Reschedulable<T> {
 
     private static Duration[] collectIntervals(Stream<Duration> xs) {
         Duration[] intervals = xs.toArray(Duration[]::new);
-        if (isNullOrZeroLength(intervals)) {
-            throw new IllegalArgumentException("empty repeat intervals");
-        }
         if (hasNulls(intervals)) {
             throw new IllegalArgumentException("repeat intervals has nulls");
         }
@@ -53,7 +49,7 @@ public class MessageRepeater<T> implements Reschedulable<T> {
     
     private final RepeatConsumer<T> consumer;
     private final Duration[] repeatIntervals;
-    private final Consumer<T> exceededRedeliveryHandler;
+    private final Reschedulable<T> lastDeliveryHandler;
 
     /**
      * Creates a new instance.
@@ -75,7 +71,8 @@ public class MessageRepeater<T> implements Reschedulable<T> {
         
         this.consumer = consumer;
         this.repeatIntervals = collectIntervals(repeatIntervals);
-        this.exceededRedeliveryHandler = exceededRedeliveryHandler;
+        this.lastDeliveryHandler = ReschedulableFactory.buildOnceOffSchedule(
+                                        consumer, exceededRedeliveryHandler);
     }
     
     private Optional<Integer> deliver(CountedSchedule current, T data) {
@@ -85,7 +82,7 @@ public class MessageRepeater<T> implements Reschedulable<T> {
             return outcome == Repeat ? Optional.of(retryCount) : 
                                        Optional.empty();
         } else {
-            exceededRedeliveryHandler.accept(data);
+            lastDeliveryHandler.consume(current, data);
             return Optional.empty();
         }
     }
