@@ -1,6 +1,7 @@
 package ome.smuggler.core.service.impl;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.service.impl.Loggers.logImportPermanentFailure;
 import static util.error.Exceptions.runUnchecked;
 
 import java.nio.file.Files;
@@ -21,10 +22,7 @@ public class ImportFailureHandler implements FailedImportHandler {
         this.env = env;
     }
     
-    @Override
-    public void accept(QueuedImport task) {
-        requireNonNull(task, "task");
-        
+    private void storeAsFailedImport(QueuedImport task) {
         ImportId taskId = task.getTaskId();
         Path importLog = env.importLogPathFor(taskId).get();
         if (Files.exists(importLog)) {
@@ -32,6 +30,14 @@ public class ImportFailureHandler implements FailedImportHandler {
             runUnchecked(() -> Files.copy(importLog, target, 
                                           StandardCopyOption.REPLACE_EXISTING));
         }
+    }
+    
+    @Override
+    public void accept(QueuedImport task) {
+        requireNonNull(task, "task");
+        
+        logImportPermanentFailure(task);
+        storeAsFailedImport(task);
     }
 
 }
