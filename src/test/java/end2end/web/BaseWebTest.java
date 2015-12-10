@@ -27,11 +27,18 @@ public class BaseWebTest {
         return builder.build().toUri();
     }
     
+    private static boolean serverStarted = false;
+    
     @BeforeClass
     public static void startImportServer() {
-        Main.main(null);
+        if (!serverStarted) {   // (*)
+            serverStarted = true;
+            Main.main(null);
+        }
     }
-    
+    /* NB will work as long as JUnit runs all tests sequentially in a single
+     * thread which I think it does by default?
+     */
     
     protected RestTemplate httpClient;
     
