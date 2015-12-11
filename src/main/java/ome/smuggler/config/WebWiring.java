@@ -71,7 +71,8 @@ public class WebWiring extends WebMvcConfigurerAdapter {
         String statusFilesLocation = importEnv.config().importLogDir()
                                     .toAbsolutePath().toUri().toString();
         registry.addResourceHandler(importStatusPattern)
-                .addResourceLocations(statusFilesLocation);
+                .addResourceLocations(statusFilesLocation)
+                .setCachePeriod(0);
     }
     /* (*) The directory must exist before we register the handler otherwise
      * registration will silently fail and instead of our import logs we'd 
