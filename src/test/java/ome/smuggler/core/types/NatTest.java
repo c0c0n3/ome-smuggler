@@ -2,6 +2,8 @@ package ome.smuggler.core.types;
 
 import static util.sequence.Arrayz.array;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
@@ -33,6 +35,14 @@ public class NatTest {
     public void buildIfNonNegativeValue(Long expected) {
         assumeThat(expected, greaterThanOrEqualTo(0L));
         Nat actual = Nat.of(expected);
+        assertThat(actual, is(expected));
+    }
+    
+    @Theory
+    public void maybeBuild(Long value) {
+        Optional<Nat> expected = Nat.isValid.test(value) ? 
+                Optional.of(Nat.of(value)) : Optional.empty();
+        Optional<Nat> actual = Nat.from(value);
         assertThat(actual, is(expected));
     }
     
