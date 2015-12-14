@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import ome.smuggler.core.io.FileOps;
 import ome.smuggler.core.types.Nat;
+import util.servlet.http.Caches;
+import util.spring.http.ResponseEntities;
 
 @RestController  // includes @ResponseBody: return vals bound to response body.
 @RequestMapping(ImportController.ImportUrl)
@@ -28,13 +32,22 @@ public class ImportStatusController {
     private static final String ImportIdPathVar = "importId";
     
     @RequestMapping(method = GET,
-                    value = "{" + ImportIdPathVar + "}",
-                    produces = MediaType.TEXT_PLAIN_VALUE)  // has no effect, no content type set
-    public void getStatusUpdate(
+                    value = "{" + ImportIdPathVar + "}") //, 
+                    //consumes = MediaType.ALL_VALUE) //) //,
+                    //produces = MediaType.TEXT_PLAIN_VALUE)  // has no effect, no content type set
+    public ResponseEntity<String> getStatusUpdate(
             @PathVariable(value=ImportIdPathVar) String importId, 
             HttpServletResponse response) throws IOException {
-        
-        stream(importId, response);
+        Path importLog = Paths.get("import/log/" + importId);
+        FileStreamer streamer = new FileStreamer(importLog, 
+                                                 MediaType.TEXT_PLAIN, 
+                                                 Caches::doNotCache);
+        //streamer.streamOr404(response);
+        if (Files.exists(importLog)) {
+            streamer.streamOr404(response);
+            return null;
+        }
+        return ResponseEntities._404();
     }
     
     private void stream(String importId, HttpServletResponse response) throws IOException {
@@ -44,7 +57,8 @@ public class ImportStatusController {
         if (importLogSize.get() <= 100) { // <= Integer.MAX_VALUE) {
             response.setContentLength(importLogSize.get().intValue());
         } // else can't set; will result in chunked transfer encoding.
-          // (to see this, use a 200M file and don't set the content-length)
+          // to see this, use a 200M file and don't set the content-length;
+          // the content is then split in 16KiB chunks (HEX size = 4000).
         
         ServletOutputStream out = response.getOutputStream();
         FileOps.transfer(importLog, importLogSize, out);
@@ -56,7 +70,7 @@ public class ImportStatusController {
     private void streamLargeFile(HttpServletResponse response) throws IOException {
         Path f200 = Paths.get("/home/andrea/f200.mib");
         Nat len = FileOps.byteLength(f200);
-        response.setContentLength(len.get().intValue());  // if not set => chunked enc
+        //response.setContentLength(len.get().intValue());  // if not set => chunked enc
         ServletOutputStream out = response.getOutputStream();
         //out.flush();  // makes no difference; file's never sucked into mem anyhoo
         FileOps.transfer(f200, len, out);
