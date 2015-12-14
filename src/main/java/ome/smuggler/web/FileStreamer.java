@@ -1,6 +1,7 @@
 package ome.smuggler.web;
 
 import static java.util.Objects.requireNonNull;
+import static util.spring.http.ResponseEntities._404;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,8 +11,8 @@ import java.util.function.Consumer;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 import ome.smuggler.core.io.FileOps;
 import ome.smuggler.core.types.Nat;
@@ -26,6 +27,13 @@ public class FileStreamer {
     private final MediaType contentType;
     private final Consumer<HttpServletResponse> cacheStrategy;
     
+    /**
+     * Creates a new instance to stream the specified file.
+     * @param content path to the file to stream.
+     * @param contentType the content type to set in the response.
+     * @param cacheStrategy sets cache directives in the response.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
     public FileStreamer(Path content, MediaType contentType, 
                         Consumer<HttpServletResponse> cacheStrategy) {
         requireNonNull(content, "content");
@@ -65,14 +73,15 @@ public class FileStreamer {
      * @throws IOException if an I/O error occurs.
      * @throws NullPointerException if the argument is {@code null}.
      */
-    public void streamOr404(HttpServletResponse response) throws IOException {
+    public ResponseEntity<String> streamOr404(HttpServletResponse response) 
+            throws IOException {
         requireNonNull(response, "response");
         
         if(Files.exists(content)) {
             stream(response);
+            return null;
         } else {
-            response.sendError(HttpStatus.NOT_FOUND.value(), 
-                               HttpStatus.NOT_FOUND.getReasonPhrase());
+            return _404();
         }
     }
     

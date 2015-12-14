@@ -31,8 +31,10 @@ public class Wiring {
             CliImporterConfig cliConfig, 
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel) {
-        return new ImportEnv(config, cliConfig, importSourceChannel, 
-                             importGcSourceChannel);
+        ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
+                                      importGcSourceChannel);
+        env.ensureDirectories();
+        return env;
     }
     
     @Bean

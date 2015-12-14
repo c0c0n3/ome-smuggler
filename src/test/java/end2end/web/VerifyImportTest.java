@@ -2,10 +2,11 @@ package end2end.web;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static java.util.stream.Collectors.joining;
+import static util.error.Exceptions.runUnchecked;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
@@ -34,13 +35,19 @@ public class VerifyImportTest extends BaseWebTest {
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
     
+    private static void assert404(ResponseEntity<?> response) {
+        assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
+    }
+    
     private static void assertNoCaching(ResponseEntity<?> response) {
         HttpHeaders hs = response.getHeaders();
-        String cache = hs.get(HttpHeaders.CACHE_CONTROL).stream().collect(Collectors.joining());
+        String cache = hs.get(HttpHeaders.CACHE_CONTROL)
+                         .stream()
+                         .collect(joining());
         assertThat(cache, containsString("no-cache"));
         assertThat(cache, containsString("no-store"));
         assertThat(hs.getPragma(), containsString("no-cache"));
-        assertThat(hs.getExpires(), is(0L));
+        assertThat(hs.getFirst("Expires"), is("0"));
     }
     // http://stackoverflow.com/questions/49547/making-sure-a-web-page-is-not-cached-across-all-browsers
     // https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=en
@@ -51,7 +58,8 @@ public class VerifyImportTest extends BaseWebTest {
         assertThat(hs.getContentType(), is(expected));
     }
     
-    private static void assertExpected(ResponseEntity<String> response, ImportRequest expected) {
+    private static void assertExpected(ResponseEntity<String> response, 
+                                       ImportRequest expected) {
         assertStatusOk(response);
         assertNoCaching(response);
         assertPlainText(response);
@@ -65,21 +73,25 @@ public class VerifyImportTest extends BaseWebTest {
     public void postImportThatWillFail() {
         ImportRequest requestData = buildValidRequestThatWillFail(); 
         ResponseEntity<ImportResponse> postImportResponse = 
-                post(url(ImportController.ImportUrl), requestData, ImportResponse.class);
+                post(url(ImportController.ImportUrl), requestData, 
+                        ImportResponse.class);
 
         assertStatusOk(postImportResponse);
         
         URI statusUri = url(postImportResponse.getBody().statusUri);
-        
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println(postImportResponse.getBody().statusUri);
-        System.out.println(statusUri);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        
         ResponseEntity<String> statusUpdateResponse = 
-                httpClient.getForEntity(statusUri, String.class);
+                httpClient.getForEntity(statusUri, String.class); 
         
         assertExpected(statusUpdateResponse, requestData);
+        
+        runUnchecked(() -> Thread.sleep(80 * 1000));  // (!)
+        statusUpdateResponse = httpClient.getForEntity(statusUri, String.class);
+        
+        assert404(statusUpdateResponse);  // ==> log was garbage collected
     }
-    
+    /* (!) For what follows to work, there must be an import.yml in the pwd with
+     * > logRetentionMinutes: 1
+     * > retryIntervals: []
+     * TODO: come up with a decent way of running this test!
+     */
 }

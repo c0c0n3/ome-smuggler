@@ -4,16 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import ome.smuggler.core.service.impl.ImportEnv;
-import ome.smuggler.web.ImportController;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 
@@ -22,9 +17,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 public class WebWiring extends WebMvcConfigurerAdapter {
-
-    @Autowired
-    private ImportEnv importEnv;
     
     private void setStringConverterMediaTypes(HttpMessageConverter<?> x) {
         StringHttpMessageConverter converter = (StringHttpMessageConverter) x;
@@ -60,22 +52,5 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     }
     /* (*) this way methods that return a string need to do nothing and the
      * client doesn't need to specify an accept header either.
-     */
-    
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        importEnv.ensureDirectories();  // (*)
-        
-        String importStatusPattern = String
-                                   .format("%s/**", ImportController.ImportUrl);
-        String statusFilesLocation = importEnv.config().importLogDir()
-                                    .toAbsolutePath().toUri().toString();
-        //registry.addResourceHandler(importStatusPattern)
-        //        .addResourceLocations(statusFilesLocation)
-        //        .setCachePeriod(0);
-    }
-    /* (*) The directory must exist before we register the handler otherwise
-     * registration will silently fail and instead of our import logs we'd 
-     * get a fat 404 from Spring MVC...
      */
 }
