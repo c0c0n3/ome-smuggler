@@ -39,9 +39,6 @@ public class ImportOutput {
     
     public void writeHeader(ImporterCommandBuilder importCommand) 
             throws IOException {
-        if (Files.exists(outputFile)) {
-            Files.delete(outputFile);
-        }
         output(header(task, importCommand, outputFile));
     }
     
