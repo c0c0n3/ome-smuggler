@@ -1,5 +1,8 @@
 package ome.smuggler.config.data;
 
+import static java.util.Objects.requireNonNull;
+
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
@@ -13,17 +16,25 @@ public class DefaultHornetQPersistenceConfig
     implements ConfigProvider<HornetQPersistenceConfig> {
 
     public static final String RootDir = "hornetq-data";
+
+    public static HornetQPersistenceConfig build(Path baseDir) {
+        requireNonNull(baseDir, "baseDir");
+        
+        Path d = baseDir.resolve(RootDir);
+        HornetQPersistenceConfig cfg = new HornetQPersistenceConfig();
+        
+        cfg.setPersistenceEnabled(true);
+        cfg.setBindingsDirPath(d.resolve("bindings").toString());
+        cfg.setJournalDirPath(d.resolve("journal").toString());
+        cfg.setLargeMessagesDirPath(d.resolve("largemessages").toString());
+        cfg.setPagingDirPath(d.resolve("paging").toString());
+        
+        return cfg;
+    }
     
     @Override
-    public Stream<HornetQPersistenceConfig> readConfig() throws Exception {
-        HornetQPersistenceConfig cfg = new HornetQPersistenceConfig();
-        cfg.setPersistenceEnabled(true);
-        cfg.setBindingsDirPath(Paths.get(RootDir, "bindings").toString());
-        cfg.setJournalDirPath(Paths.get(RootDir, "journal").toString());
-        cfg.setLargeMessagesDirPath(Paths.get(RootDir, "largemessages").toString());
-        cfg.setPagingDirPath(Paths.get(RootDir, "paging").toString());
-        
-        return Stream.of(cfg);
+    public Stream<HornetQPersistenceConfig> readConfig() {
+        return Stream.of(build(Paths.get("")));
     }
 
 }

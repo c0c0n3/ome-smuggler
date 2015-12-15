@@ -1,8 +1,12 @@
 package ome.smuggler.config.providers;
 
+import java.util.stream.Stream;
+
 import org.springframework.stereotype.Component;
 
 import ome.smuggler.config.data.DefaultHornetQPersistenceConfig;
+import ome.smuggler.config.items.HornetQPersistenceConfig;
+import util.spring.io.ResourceReader;
 
 
 /**
@@ -12,6 +16,23 @@ import ome.smuggler.config.data.DefaultHornetQPersistenceConfig;
  */
 @Component
 public class HornetQPersistenceConfigProvider 
-    extends DefaultHornetQPersistenceConfig {
+    extends PriorityConfigProvider<HornetQPersistenceConfig> {
 
+    public static final String FileName = "hornetq-persistence.yml";
+    
+    @Override
+    protected ResourceReader<HornetQPersistenceConfig> getConverter() {
+        return new YmlResourceReader<>(HornetQPersistenceConfig.class);
+    }
+    
+    @Override 
+    public Stream<HornetQPersistenceConfig> getFallback() {
+        return new DefaultHornetQPersistenceConfig().readConfig();
+    }
+
+    @Override
+    public String getConfigFileName() {
+        return FileName;
+    }
+    
 }
