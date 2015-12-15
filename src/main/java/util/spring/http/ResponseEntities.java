@@ -17,6 +17,15 @@ import util.object.Either;
 public class ResponseEntities {
 
     /**
+     * Creates a new response with a 204 status and no body, as required for a
+     * 204.
+     * @return a new 204 response.
+     */
+    public static ResponseEntity<?> _204() {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    
+    /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 400.
      * @param body either the content of a 200 (right value) or an error to

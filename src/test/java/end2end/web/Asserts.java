@@ -1,9 +1,8 @@
 package end2end.web;
 
 import static java.util.stream.Collectors.joining;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.nio.charset.StandardCharsets;
 
@@ -21,8 +20,14 @@ public class Asserts {
                                     .collect(joining());
     }
     
-    public static void assertStatusOk(ResponseEntity<?> response) {
+    public static void assert200(ResponseEntity<?> response) {
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+    
+    public static void assert204(ResponseEntity<?> response) {
+        assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
+        assertThat(response.getHeaders().getContentLength(), is(0L));
+        assertNull(response.getBody());
     }
     
     public static void assert404(ResponseEntity<?> response) {

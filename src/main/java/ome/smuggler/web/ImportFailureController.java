@@ -1,6 +1,8 @@
 package ome.smuggler.web;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static util.spring.http.ResponseEntities._204;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -57,6 +59,14 @@ public class ImportFailureController {
                                                  MediaType.TEXT_PLAIN, 
                                                  Caches::cacheForAsLongAsPossible);
         return streamer.streamOr404(response);
+    }
+    
+    @RequestMapping(method = DELETE, value = "{" + ImportIdPathVar + "}") 
+    public ResponseEntity<?> deleteFailedImportLog(
+            @PathVariable(value=ImportIdPathVar) String failedImportId) {
+        ImportId taskId = new ImportId(failedImportId);
+        service.stopTrackingFailedImport(taskId); 
+        return _204();
     }
     
 }

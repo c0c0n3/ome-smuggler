@@ -46,4 +46,9 @@ public class ImportMonitor implements ImportTracker {
                       .map(ImportId::new);
     }
 
+    @Override
+    public void stopTrackingFailedImport(ImportId taskId) {
+        FileOps.delete(failedImportLogPathFor(taskId));
+    }
+
 }
