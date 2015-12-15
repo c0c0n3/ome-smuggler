@@ -79,10 +79,24 @@ public class FileStreamer {
         
         if(Files.exists(content)) {
             stream(response);
-            return null;
+            return null;   // (*)
         } else {
-            return _404();
+            return _404(); // (*)
         }
     }
-    
+    /* (*) What? Needed if we want to return a 404.
+     * Initially this method returned void and if the file was not found I'd use
+     * 
+     *  response.sendError(HttpStatus.NOT_FOUND.value(), 
+     *                     HttpStatus.NOT_FOUND.getReasonPhrase());
+     * 
+     * If the file was found, then its content would be streamed as expected,
+     * but if the file wasn't there, sendError would have no effect and Spring
+     * MVC would override it with a 406 response, possibly caused by the fact
+     * a HTTP Converter was selected to handle the response body conversion.
+     * So I changed the controller annotation from @RestController to plain
+     * @Controller (i.e. no @ResponseBody) and tried to send different accept
+     * headers in the request ('* / *', 'text / plain', '* / *, text / plain')
+     * but would still get a fat 406! 
+     */
 }
