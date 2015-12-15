@@ -7,9 +7,11 @@ import ome.smuggler.core.service.FailedImportHandler;
 import ome.smuggler.core.service.ImportLogDisposer;
 import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.service.ImportTracker;
 import ome.smuggler.core.service.impl.ImportEnv;
 import ome.smuggler.core.service.impl.ImportFailureHandler;
 import ome.smuggler.core.service.impl.ImportLogDeleteAction;
+import ome.smuggler.core.service.impl.ImportMonitor;
 import ome.smuggler.core.service.impl.ImportRunner;
 import ome.smuggler.core.service.impl.ImportTrigger;
 import ome.smuggler.core.types.ImportConfigSource;
@@ -55,6 +57,11 @@ public class Wiring {
     @Bean
     public FailedImportHandler failedImportHandler(ImportEnv env) {
         return new ImportFailureHandler(env);
+    }
+    
+    @Bean
+    public ImportTracker importTracker(ImportEnv env) {
+        return new ImportMonitor(env);
     }
     
 }
