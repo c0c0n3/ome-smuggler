@@ -2,12 +2,9 @@ package end2end.web;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.error.Exceptions.unchecked;
 import static util.error.Exceptions.runUnchecked;
 import static end2end.web.Asserts.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,21 +17,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.io.FileOps;
 import ome.smuggler.web.ImportController;
 import ome.smuggler.web.ImportFailureController;
 import ome.smuggler.web.ImportRequest;
 import ome.smuggler.web.ImportResponse;
-import util.config.YamlConverter;
+
 
 public class VerifyImportTest extends BaseWebTest {
-
-    private static ImportConfig readImportConfigFromPwd() throws IOException {
-        YamlConverter<ImportConfig> reader = new YamlConverter<>();
-        FileInputStream importYml = new FileInputStream("import.yml");
-        return reader.fromYaml(importYml, ImportConfig.class);
-    }
     
     private static ImportRequest buildValidRequestThatWillFail() {
         ImportRequest req = new ImportRequest();
@@ -139,12 +129,10 @@ public class VerifyImportTest extends BaseWebTest {
         assert204(response);
     }
     
-    private ImportConfig config;
-    
-    @Override
-    protected void additionalSetup() {
-        config = unchecked(() -> readImportConfigFromPwd()).get();
-        Path failedImportLogDir = Paths.get(config.getFailedImportLogDir());
+    @Before
+    public void setup() {
+        Path failedImportLogDir = Paths.get(config.importConfig
+                                                  .getFailedImportLogDir());
         FileOps.listChildFiles(failedImportLogDir)
                .forEach(log -> FileOps.delete(log));
     }
@@ -167,9 +155,16 @@ public class VerifyImportTest extends BaseWebTest {
     /* (!) For what follows to work, there must be an import.yml in the pwd with
      * > logRetentionMinutes: 1
      * > retryIntervals: []
+     * the Config helper class takes care of that.
      * (*) this test will fail if there were failed log files before this method
      * ran which is why we delete any of them in the setup phase.
      * 
-     * TODO: come up with a decent way of running this test!
+     * TODO: come up with a better way of running this test; profiles spring to
+     * mind. In that case we can also change the retryIntervals to be a few
+     * seconds. (This can't be done using a config file as the duration has to
+     * be in minutes, but it's possible if we instantiate the config object 
+     * ourselves via a profile.) 
+     * And we can also get rid of the Config helper class and simplify these
+     * end to end tests.
      */
 }

@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 import ome.smuggler.Main;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -28,11 +27,16 @@ public class BaseWebTest {
     }
     
     private static boolean serverStarted = false;
+    protected static Config config;
     
     @BeforeClass
-    public static void startImportServer() {
+    public static void startImportServer() throws Exception {
         if (!serverStarted) {   // (*)
             serverStarted = true;
+            
+            config = new Config();
+            config.writeConfigFilesInPwd();
+            
             Main.main(null);
         }
     }
@@ -42,14 +46,9 @@ public class BaseWebTest {
     
     protected RestTemplate httpClient;
     
-    @Before
-    public void setup() {
+    public BaseWebTest() {
         httpClient = new TestRestTemplate();
-        
-        additionalSetup();
     }
-    
-    protected void additionalSetup() { }
     
     protected <X, Y> ResponseEntity<Y> post(URI url, X body, 
             Class<Y> responseType, Consumer<HttpHeaders> setHeaders) {
