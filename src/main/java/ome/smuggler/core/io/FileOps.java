@@ -12,6 +12,7 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 import ome.smuggler.core.types.Nat;
 
@@ -106,4 +107,20 @@ public class FileOps {
     /* (*) returned file size should always be non-negative, I'm just being
      * paranoid here I guess...
      */
+    
+    /**
+     * Collects all the regular files directly under the specified directory.
+     * Sub-directories are not recursed.
+     * @param dir the target directory.
+     * @return a list of the files found in the directory.
+     * @throws IOException if an I/O error occurs; the exception is masked as
+     * unchecked.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static Stream<Path> listChildFiles(Path dir) {
+        requireNonNull(dir, "dir");
+        return unchecked(() -> Files.walk(dir, 1).filter(Files::isRegularFile))
+                .get();
+    }
+    
 }

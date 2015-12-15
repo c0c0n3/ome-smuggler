@@ -1,6 +1,7 @@
 package ome.smuggler.core.service;
 
 import java.nio.file.Path;
+import java.util.stream.Stream;
 
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogPath;
@@ -23,5 +24,11 @@ public interface ImportTracker {
      * @return the path to the failed import log file.
      */
     Path failedImportLogPathFor(ImportId taskId);
+    
+    /**
+     * @return a list of the imports that failed permanently, i.e. after having
+     * being retried.
+     */
+    Stream<ImportId> listFailedImports();
     
 }
