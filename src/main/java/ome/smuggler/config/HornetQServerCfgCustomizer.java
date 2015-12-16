@@ -1,6 +1,5 @@
 package ome.smuggler.config;
 
-import static ome.smuggler.config.ConfigItemsWiring.config;
 import static util.sequence.Arrayz.asMutableList;
 
 import ome.smuggler.config.items.HornetQPersistenceConfig;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.hornetq.HornetQConfigurationCustomizer;
 import org.springframework.stereotype.Component;
 
-import util.config.ConfigProvider;
 
 /**
  * Implements the Spring Boot auto-configuration hook to customize the HornetQ
@@ -23,17 +21,15 @@ import util.config.ConfigProvider;
 public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomizer {
 
     @Autowired
-    private ConfigProvider<HornetQPersistenceConfig> persistenceConfigProvider;
+    private HornetQPersistenceConfig params;
     
     @Autowired
-    private ConfigProvider<ImportQConfig> importQProvider;
+    private ImportQConfig importQ;
     
     @Autowired
-    private ConfigProvider<ImportGcQConfig> importGcQProvider;
+    private ImportGcQConfig importGcQ;
     
     private void configurePersistence(Configuration cfg) {
-        HornetQPersistenceConfig params = config(persistenceConfigProvider);
-        
         cfg.setPersistenceEnabled(params.isPersistenceEnabled());
         cfg.setJournalType(JournalType.NIO);
         cfg.setJournalDirectory(params.getJournalDirPath());
@@ -43,8 +39,6 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
     }
     
     private void configureQueues(Configuration cfg) {
-        ImportQConfig importQ = config(importQProvider);
-        ImportGcQConfig importGcQ = config(importGcQProvider);
         cfg.setQueueConfigurations(asMutableList(importQ, importGcQ));
     }
     

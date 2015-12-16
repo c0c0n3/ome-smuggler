@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
@@ -39,6 +40,12 @@ public class ConfigItemsWiring {
     
     @Bean
     public ImportGcQConfig importGcQConfig(ConfigProvider<ImportGcQConfig> src) {
+        return config(src);
+    }
+    
+    @Bean
+    public HornetQPersistenceConfig hornetQPersistenceConfig(
+            ConfigProvider<HornetQPersistenceConfig> src) {
         return config(src);
     }
     
