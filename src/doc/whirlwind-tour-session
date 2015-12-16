@@ -173,14 +173,3 @@ $ ./list-failed-imports
 * Connection #0 to host localhost left intact
 []$
 
-
-============================================================
-$ su omero
-Password: 
-[omero]$ omero login
-Previously logged in to localhost:4064 as root
-Server: [localhost:4064]
-Username: [root]
-Password:
-Created session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064). Idle timeout: 10 min. Current group: system
-[omero]$ 
