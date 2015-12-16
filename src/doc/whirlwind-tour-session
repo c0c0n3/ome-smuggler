@@ -1,0 +1,186 @@
+
+$ cd ome-smuggler/
+$ ./gradlew clean build
+:clean
+:compileJava
+[...]
+:test
+[...]
+BUILD SUCCESSFUL
+
+Total time: 24.687 secs
+
+$ cp src/main/resources/config/import.yml ./
+$ emacs import.yml 
+[...]
+logRetentionMinutes: 1
+retryIntervals: [] 
+
+$ mkdir -p ome-lib
+$ cp /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar ome-lib/
+$ [java -jar build/libs/ome-smuggler-0.1.0.jar]
+
+$ cd src/test/scripts/http-import/
+$ ls
+delete  get  list-failed-imports  min-import.json  request-import
+$ chmod +x delete get list-failed-imports request-import 
+
+$ ./request-import min-import.json 
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> POST /ome/import HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: application/json
+> Content-Type: application/json
+> Content-Length: 119
+> 
+* upload completely sent off: 119 out of 119 bytes
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Transfer-Encoding: chunked
+< Content-Type: application/json;charset=UTF-8
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:25:53 GMT
+< 
+* Connection #0 to host localhost left intact
+{"statusUri":"/ome/import/740f848c-7099-461e-a988-563eecaeccba"}$ 
+
+$ ./get /ome/import/740f848c-7099-461e-a988-563eecaeccba
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> GET /ome/import/740f848c-7099-461e-a988-563eecaeccba HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Expires: 0
+< Connection: keep-alive
+< Cache-Control: no-store, no-cache, must-revalidate
+< Pragma: no-cache
+< Content-Length: 8615
+< Content-Type: text/plain;charset=UTF-8
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:26:07 GMT
+< 
+====================> Queued OMERO Import:
+Timestamp: Dec 16, 2015 4:25:53 PM
+Import ID: 740f848c-7099-461e-a988-563eecaeccba
+Import Target: my/file
+OMERO Server: omero://h:1/
+Experimenter's Email: x@y
+============================================
+[...]
+=================> OMERO Import Run Report:
+Timestamp: Dec 16, 2015 4:25:54 PM
+Succeeded: false
+Exit Status: 2
+============================================
+
+* Connection #0 to host localhost left intact
+
+[wait 1 min]
+
+$ ./get /ome/import/740f848c-7099-461e-a988-563eecaeccba
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> GET /ome/import/740f848c-7099-461e-a988-563eecaeccba HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: */*
+> 
+< HTTP/1.1 404 Not Found
+< Connection: keep-alive
+< Content-Length: 0
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:28:41 GMT
+< 
+* Connection #0 to host localhost left intact
+
+$ ./list-failed-imports 
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> GET /ome/failed/import HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: application/json
+> 
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Transfer-Encoding: chunked
+< Content-Type: application/json;charset=UTF-8
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:29:20 GMT
+< 
+* Connection #0 to host localhost left intact
+["/ome/failed/import/740f848c-7099-461e-a988-563eecaeccba"]$
+
+ 
+$ ./get /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> GET /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Cache-Control: max-age=31536000
+< Content-Length: 8615
+< Content-Type: text/plain;charset=UTF-8
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:29:53 GMT
+< 
+====================> Queued OMERO Import:
+
+[same as /ome/import/740f848c-7099-461e-a988-563eecaeccba]
+
+* Connection #0 to host localhost left intact
+$
+$ ./delete /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> DELETE /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: */*
+> 
+< HTTP/1.1 204 No Content
+< Connection: keep-alive
+< Content-Length: 0
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:31:29 GMT
+< 
+* Connection #0 to host localhost left intact
+
+$ ./list-failed-imports 
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+> GET /ome/failed/import HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.45.0
+> Accept: application/json
+> 
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Transfer-Encoding: chunked
+< Content-Type: application/json;charset=UTF-8
+< X-Application-Context: application:prod
+< Date: Wed, 16 Dec 2015 15:31:50 GMT
+< 
+* Connection #0 to host localhost left intact
+[]$
+
+
+============================================================
+$ su omero
+Password: 
+[omero]$ omero login
+Previously logged in to localhost:4064 as root
+Server: [localhost:4064]
+Username: [root]
+Password:
+Created session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064). Idle timeout: 10 min. Current group: system
+[omero]$ 
