@@ -119,6 +119,9 @@ public class FileOps {
      */
     public static Stream<Path> listChildFiles(Path dir) {
         requireNonNull(dir, "dir");
+        if (!Files.exists(dir)) {
+            return Stream.empty();
+        }
         return unchecked(() -> Files.walk(dir, 1).filter(Files::isRegularFile))
                 .get();
     }
