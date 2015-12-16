@@ -1,0 +1,4 @@
+#!/bin/bash
+
+absPath=$1
+curl -v -X DELETE http://localhost:8080$absPath
