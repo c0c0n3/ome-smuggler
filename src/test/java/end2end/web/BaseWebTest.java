@@ -1,11 +1,14 @@
 package end2end.web;
 
+import static util.sequence.Arrayz.array;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 import ome.smuggler.Main;
+import ome.smuggler.config.Profiles;
+import ome.smuggler.run.ImportServer;
 
 import org.junit.BeforeClass;
 import org.springframework.boot.test.TestRestTemplate;
@@ -33,11 +36,8 @@ public class BaseWebTest {
     public static void startImportServer() throws Exception {
         if (!serverStarted) {   // (*)
             serverStarted = true;
-            
             config = new Config();
-            config.writeConfigFilesInPwd();
-            
-            Main.main(null);
+            Main.main(array(ImportServer.class.getName(), Profiles.Dev));
         }
     }
     /* NB will work as long as JUnit runs all tests sequentially in a single

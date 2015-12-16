@@ -6,7 +6,6 @@ import static util.error.Exceptions.runUnchecked;
 import static end2end.web.Asserts.*;
 
 import java.net.URI;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -129,11 +128,15 @@ public class VerifyImportTest extends BaseWebTest {
         assert204(response);
     }
     
+    private void waitUntilPastLogRetentionPeriod() {
+        long millis = config.importConfig.logRetentionPeriod()
+                     .plusSeconds(5).toMillis();
+        runUnchecked(() -> Thread.sleep(millis));
+    }
+    
     @Before
     public void setup() {
-        Path failedImportLogDir = Paths.get(config.importConfig
-                                                  .getFailedImportLogDir());
-        FileOps.listChildFiles(failedImportLogDir)
+        FileOps.listChildFiles(config.importConfig.failedImportLogDir())
                .forEach(log -> FileOps.delete(log));
     }
     
@@ -143,28 +146,24 @@ public class VerifyImportTest extends BaseWebTest {
         URI statusUri = requestImport(doomedImportRequest);
         canGetStatusUpdate(statusUri, doomedImportRequest);
         
-        runUnchecked(() -> Thread.sleep(80 * 1000));  // (!)
-        
+        waitUntilPastLogRetentionPeriod();  // (1)
         noMoreImportStatusUpdatesAfterLogRetentionPeriod(statusUri);
-        URI failedLog = canGetFailedImportLog(statusUri);
+        
+        URI failedLog = canGetFailedImportLog(statusUri);  // (2)
         canDownloadFailedLog(failedLog, doomedImportRequest);
         canStopTrackingFailedLog(failedLog);
         cannotDownloadFailedLog(failedLog);
-        noFailedLogsAvailable();  // (*)
+        noFailedLogsAvailable();  // (3)
     }
-    /* (!) For what follows to work, there must be an import.yml in the pwd with
-     * > logRetentionMinutes: 1
-     * > retryIntervals: []
-     * the Config helper class takes care of that.
-     * (*) this test will fail if there were failed log files before this method
-     * ran which is why we delete any of them in the setup phase.
-     * 
-     * TODO: come up with a better way of running this test; profiles spring to
-     * mind. In that case we can also change the retryIntervals to be a few
-     * seconds. (This can't be done using a config file as the duration has to
-     * be in minutes, but it's possible if we instantiate the config object 
-     * ourselves via a profile.) 
-     * And we can also get rid of the Config helper class and simplify these
-     * end to end tests.
+    /* NOTES.
+     * 1. Assumes the duration in config.importConfig is the same as that used 
+     * by Spring; Config class takes care of that. 
+     * 2. Assumes the import config used by Spring has no retry intervals so 
+     * that the failed log is immediately available after the first failure;
+     * this is why the BaseWebTest sets the Dev profile. 
+     * 3. This test will fail if there were failed log files before this method
+     * ran which is why we delete any of them in the setup phase. For this to
+     * work, the failed log dir in config.importConfig is the same as that used 
+     * by Spring; Config class takes care of that.
      */
 }
