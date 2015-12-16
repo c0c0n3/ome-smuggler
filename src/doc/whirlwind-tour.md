@@ -67,7 +67,7 @@ The absolute path above specifies where to get status updates for the import
 you've just requested. Status updates will be available for at least a minute
 after the import has been executed---this is the import log retention period
 we configured earlier. Copy and paste the returned path and run the `get`
-script to get status updates
+script to fetch status updates
 
     $ ./get /ome/import/740f848c-7099-461e-a988-563eecaeccba
 
@@ -79,7 +79,7 @@ You should get a fat 404 as we went past the retention period.
 Imports are retried at the intervals specified in the import configuration;
 but we specified no intervals so no retries will be attempted. As already
 mentioned this import should have failed. Smuggler keeps track of failed
-imports and can list them:
+imports and can list them,
 
     $ ./list-failed-imports 
 
@@ -107,15 +107,36 @@ tracked, so all you should see in the response body is
 
     []
 
-TODO
-====
-$ su omero
-Password: 
-[omero]$ omero login
-Previously logged in to localhost:4064 as root
-Server: [localhost:4064]
-Username: [root]
-Password:
-Created session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064). Idle timeout: 10 min. Current group: system
-[omero]$ 
+###### Note
+On failure, Smuggler sends a notification email to both the user who requested
+the import (see contents of `min-import.json`) and the system administrator.
+Email notifications are disabled until we sort out the mail server issue. (Let
+me know if you want to try using Gmail, in which case I can merge the code in
+to enable the feature.)
+
+
+Success scenario
+----------------
+All you need to make an image trek into OMERO is to POST a request for existing
+data to an existing OMERO server. Create a new file `my-import.json` taking
+`min-import.json` as an example and referring to [this specification](https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/ImportRequest.java).
+You will need a valid session key to go in the file; to obtain one, use the
+OMERO CLI as shown below:
+
+    $ omero login
+    Server: [localhost:4064]
+    Username: [root] your-user
+    Password: your-pass
+    Created session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064). Idle timeout: 10 min. Current group: system
+ 
+Copy and paste the session key into `my-import.json`, then
+
+    $ ./request-import my-import.json
+
+###### Note
+Your OMERO session will expire in 10 minutes. Smuggler needs an active session
+to run the import; if no other imports are queued, then this is not a problem
+as your request will be serviced shortly after being put on the queue. I have
+some experimental code to keep the session alive while the import sits on the
+queue, but haven't merged the code in.
 
