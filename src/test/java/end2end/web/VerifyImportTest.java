@@ -2,14 +2,10 @@ package end2end.web;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.error.Exceptions.unchecked;
 import static util.error.Exceptions.runUnchecked;
 import static end2end.web.Asserts.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,21 +16,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.core.io.FileOps;
 import ome.smuggler.web.ImportController;
 import ome.smuggler.web.ImportFailureController;
 import ome.smuggler.web.ImportRequest;
 import ome.smuggler.web.ImportResponse;
-import util.config.YamlConverter;
+
 
 public class VerifyImportTest extends BaseWebTest {
-
-    private static ImportConfig readImportConfigFromPwd() throws IOException {
-        YamlConverter<ImportConfig> reader = new YamlConverter<>();
-        FileInputStream importYml = new FileInputStream("import.yml");
-        return reader.fromYaml(importYml, ImportConfig.class);
-    }
     
     private static ImportRequest buildValidRequestThatWillFail() {
         ImportRequest req = new ImportRequest();
@@ -139,13 +128,15 @@ public class VerifyImportTest extends BaseWebTest {
         assert204(response);
     }
     
-    private ImportConfig config;
+    private void waitUntilPastLogRetentionPeriod() {
+        long millis = config.importConfig.logRetentionPeriod()
+                     .plusSeconds(5).toMillis();
+        runUnchecked(() -> Thread.sleep(millis));
+    }
     
-    @Override
-    protected void additionalSetup() {
-        config = unchecked(() -> readImportConfigFromPwd()).get();
-        Path failedImportLogDir = Paths.get(config.getFailedImportLogDir());
-        FileOps.listChildFiles(failedImportLogDir)
+    @Before
+    public void setup() {
+        FileOps.listChildFiles(config.importConfig.failedImportLogDir())
                .forEach(log -> FileOps.delete(log));
     }
     
@@ -155,21 +146,24 @@ public class VerifyImportTest extends BaseWebTest {
         URI statusUri = requestImport(doomedImportRequest);
         canGetStatusUpdate(statusUri, doomedImportRequest);
         
-        runUnchecked(() -> Thread.sleep(80 * 1000));  // (!)
-        
+        waitUntilPastLogRetentionPeriod();  // (1)
         noMoreImportStatusUpdatesAfterLogRetentionPeriod(statusUri);
-        URI failedLog = canGetFailedImportLog(statusUri);
+        
+        URI failedLog = canGetFailedImportLog(statusUri);  // (2)
         canDownloadFailedLog(failedLog, doomedImportRequest);
         canStopTrackingFailedLog(failedLog);
         cannotDownloadFailedLog(failedLog);
-        noFailedLogsAvailable();  // (*)
+        noFailedLogsAvailable();  // (3)
     }
-    /* (!) For what follows to work, there must be an import.yml in the pwd with
-     * > logRetentionMinutes: 1
-     * > retryIntervals: []
-     * (*) this test will fail if there were failed log files before this method
-     * ran which is why we delete any of them in the setup phase.
-     * 
-     * TODO: come up with a decent way of running this test!
+    /* NOTES.
+     * 1. Assumes the duration in config.importConfig is the same as that used 
+     * by Spring; Config class takes care of that. 
+     * 2. Assumes the import config used by Spring has no retry intervals so 
+     * that the failed log is immediately available after the first failure;
+     * this is why the BaseWebTest sets the Dev profile. 
+     * 3. This test will fail if there were failed log files before this method
+     * ran which is why we delete any of them in the setup phase. For this to
+     * work, the failed log dir in config.importConfig is the same as that used 
+     * by Spring; Config class takes care of that.
      */
 }

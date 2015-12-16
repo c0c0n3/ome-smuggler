@@ -13,11 +13,14 @@ import util.config.ConfigProvider;
  */
 public class ImportYmlFile implements ConfigProvider<ImportConfig> {
 
+    public static String RelImportLogDirPath = "import/log";
+    public static String RelFailedImportLogDirPath = "import/failed-log";
+    
     @Override
     public Stream<ImportConfig> readConfig() {
         ImportConfig cfg = new ImportConfig();
-        cfg.setImportLogDir("import/log");
-        cfg.setFailedImportLogDir("import/failed-log");
+        cfg.setImportLogDir(RelImportLogDirPath);
+        cfg.setFailedImportLogDir(RelFailedImportLogDirPath);
         cfg.setLogRetentionMinutes(Duration.ofDays(15).toMinutes());
         cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L });
         

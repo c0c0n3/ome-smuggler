@@ -1,13 +1,15 @@
 package end2end.web;
 
+import static util.sequence.Arrayz.array;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 import ome.smuggler.Main;
+import ome.smuggler.config.Profiles;
+import ome.smuggler.run.ImportServer;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -28,12 +30,14 @@ public class BaseWebTest {
     }
     
     private static boolean serverStarted = false;
+    protected static Config config;
     
     @BeforeClass
-    public static void startImportServer() {
+    public static void startImportServer() throws Exception {
         if (!serverStarted) {   // (*)
             serverStarted = true;
-            Main.main(null);
+            config = new Config();
+            Main.main(array(ImportServer.class.getName(), Profiles.Dev));
         }
     }
     /* NB will work as long as JUnit runs all tests sequentially in a single
@@ -42,14 +46,9 @@ public class BaseWebTest {
     
     protected RestTemplate httpClient;
     
-    @Before
-    public void setup() {
+    public BaseWebTest() {
         httpClient = new TestRestTemplate();
-        
-        additionalSetup();
     }
-    
-    protected void additionalSetup() { }
     
     protected <X, Y> ResponseEntity<Y> post(URI url, X body, 
             Class<Y> responseType, Consumer<HttpHeaders> setHeaders) {

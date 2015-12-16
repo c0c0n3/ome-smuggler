@@ -1,0 +1,4 @@
+#!/bin/bash
+
+absPath=$1
+curl -v http://localhost:8080${absPath}
