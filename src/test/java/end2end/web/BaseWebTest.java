@@ -4,6 +4,7 @@ import static util.sequence.Arrayz.array;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import ome.smuggler.Main;
@@ -29,19 +30,22 @@ public class BaseWebTest {
         return builder.build().toUri();
     }
     
-    private static boolean serverStarted = false;
+    private static AtomicBoolean serverStarted = new AtomicBoolean(false);
     protected static Config config;
     
     @BeforeClass
     public static void startImportServer() throws Exception {
-        if (!serverStarted) {   // (*)
-            serverStarted = true;
-            config = new Config();
-            Main.main(array(ImportServer.class.getName(), Profiles.Dev));
+        if (!serverStarted.get()) {   // (*)
+            synchronized (serverStarted) {
+                if (!serverStarted.get()) {
+                    serverStarted.set(true);
+                    config = new Config();
+                    Main.main(array(ImportServer.class.getName(), Profiles.Dev));
+                }
+            }
         }
     }
-    /* NB will work as long as JUnit runs all tests sequentially in a single
-     * thread which I think it does by default?
+    /* NB JUnit may run tests concurrently.
      */
     
     protected RestTemplate httpClient;
