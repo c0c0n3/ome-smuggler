@@ -10,13 +10,11 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import ome.smuggler.core.io.FileOps;
 import ome.smuggler.web.ImportController;
 import ome.smuggler.web.ImportFailureController;
 import ome.smuggler.web.ImportRequest;
@@ -90,22 +88,21 @@ public class VerifyImportTest extends BaseWebTest {
         return logs;
     }
     
-    private URI canGetFailedImportLog(URI statusUri) {
-        String importId = Paths.get(statusUri.getPath())
-                               .getFileName().toString();
+    private Optional<URI> findFailedLog(URI logUri) {
+        String importId = Paths.get(logUri.getPath())
+                               .getFileName()
+                               .toString();
         String[] logs = getFailedLogUrls();
-        Optional<URI> failedLogUri = Stream.of(logs)
-                                           .filter(x -> x.endsWith(importId))
-                                           .map(x -> url(x))
-                                           .findFirst();
-        assertTrue(failedLogUri.isPresent());
-        
-        return failedLogUri.get();
+        return Stream.of(logs)
+                     .filter(x -> x.endsWith(importId))
+                     .map(x -> url(x))
+                     .findFirst();
     }
     
-    private void noFailedLogsAvailable() {
-        String[] logs = getFailedLogUrls();
-        assertThat(logs.length, is(0));
+    private URI canGetFailedImportLog(URI statusUri) {
+        Optional<URI> failedLogUri = findFailedLog(statusUri);
+        assertTrue(failedLogUri.isPresent());
+        return failedLogUri.get();
     }
     
     private void canDownloadFailedLog(URI logUri, ImportRequest requested) {
@@ -128,16 +125,15 @@ public class VerifyImportTest extends BaseWebTest {
         assert204(response);
     }
     
-    private void waitUntilPastLogRetentionPeriod() {
-        long millis = config.importConfig.logRetentionPeriod()
-                     .plusSeconds(5).toMillis();
-        runUnchecked(() -> Thread.sleep(millis));
+    private void failedLogNoLongerTracked(URI logUri) {
+        Optional<URI> failedLogUri = findFailedLog(logUri);
+        assertFalse(failedLogUri.isPresent());
     }
     
-    @Before
-    public void setup() {
-        FileOps.listChildFiles(config.importConfig.failedImportLogDir())
-               .forEach(log -> FileOps.delete(log));
+    private void waitUntilPastLogRetentionPeriod() {
+        long millis = config.importConfig.logRetentionPeriod()
+                     .plusSeconds(15).toMillis();
+        runUnchecked(() -> Thread.sleep(millis));
     }
     
     @Test
@@ -153,17 +149,17 @@ public class VerifyImportTest extends BaseWebTest {
         canDownloadFailedLog(failedLog, doomedImportRequest);
         canStopTrackingFailedLog(failedLog);
         cannotDownloadFailedLog(failedLog);
-        noFailedLogsAvailable();  // (3)
+        failedLogNoLongerTracked(failedLog);  // (3)
     }
     /* NOTES.
      * 1. Assumes the duration in config.importConfig is the same as that used 
      * by Spring; Config class takes care of that. 
      * 2. Assumes the import config used by Spring has no retry intervals so 
      * that the failed log is immediately available after the first failure;
-     * this is why the BaseWebTest sets the Dev profile. 
-     * 3. This test will fail if there were failed log files before this method
-     * ran which is why we delete any of them in the setup phase. For this to
-     * work, the failed log dir in config.importConfig is the same as that used 
-     * by Spring; Config class takes care of that.
+     * this is why the BaseWebTest sets the Dev profile.
+     * 3. Note that there may be more than one failed log. In fact, tests are
+     * run concurrently and so EnqueueImportTest::postValidRequest may result
+     * in a failed log being produced just before we ask Smuggler to list all
+     * failed logs. So we can't just assume and check the returned list is [].
      */
 }
