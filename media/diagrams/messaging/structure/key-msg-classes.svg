@@ -12,7 +12,7 @@
    viewBox="0 0 1024 768"
    id="svg8509"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.91+devel+osxmenu r12898"
    sodipodi:docname="key-msg-classes.svg">
   <sodipodi:namedview
      pagecolor="#3c4747"
@@ -23,17 +23,17 @@
      inkscape:zoom="1"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-maximized="1"
+     showgrid="true"
+     inkscape:window-maximized="0"
      inkscape:showpageshadow="false"
      borderlayer="true"
      id="namedview8511"
-     inkscape:cx="457.83266"
+     inkscape:cx="440.33266"
      inkscape:cy="342.86004"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
+     inkscape:window-width="1440"
+     inkscape:window-height="851"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="23"
      inkscape:snap-global="true">
     <inkscape:grid
        type="xygrid"
@@ -620,60 +620,60 @@
     <circle
        r="15"
        cy="615"
-       cx="267"
+       cx="335"
        id="circle13768"
        style="opacity:1;fill:none;fill-opacity:1;stroke:#f5f3f2;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:15px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#f5f3f2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-       x="117"
+       x="185"
        y="620"
        id="text13770"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan13772"
-         x="117"
+         x="185"
          y="620">RepeatConsumer</tspan></text>
     <text
        xml:space="preserve"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:15px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#90969b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-       x="348"
+       x="398"
        y="635"
        id="text13774"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan13776"
-         x="348"
-         y="635">dispatches same message at</tspan><tspan
+         x="398"
+         y="635">dispatches same message</tspan><tspan
          sodipodi:role="line"
-         x="348"
+         x="398"
          y="653.75"
-         id="tspan13780">set intervals til consumer</tspan><tspan
+         id="tspan13780">at set intervals until </tspan><tspan
          id="tspan13778"
          sodipodi:role="line"
-         x="348"
-         y="672.5">says to stop</tspan></text>
+         x="398"
+         y="672.5">consumer says to stop</tspan></text>
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path13786"
-       d="M 631,616 289,615"
+       d="M 631,616 357,615"
        style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 299,603.81993 C 287.81993,615 287.81993,615 287.81993,615 L 299,626.18007"
+       d="M 367,603.81993 C 355.81993,615 355.81993,615 355.81993,615 L 367,626.18007"
        id="path13788"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:15px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#90969b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-       x="308"
+       x="376"
        y="605"
        id="text13790"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan13792"
-         x="308"
+         x="376"
          y="605">1</tspan></text>
     <text
        xml:space="preserve"
