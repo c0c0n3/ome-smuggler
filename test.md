@@ -1,3 +1,7 @@
+---
+title: needed to trigger Jekyll compilation?
+---
+
 SVG Test
 ========
 
