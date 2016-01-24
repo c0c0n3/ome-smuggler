@@ -1,0 +1,6 @@
+# Hakyll build artifacts go in here.
+docs.build/hakyll
+
+# If Cabal is used to build the docs generation program, then there will be
+# a dist directory which you don't want in git.
+docs.build/dist
