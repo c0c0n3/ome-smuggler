@@ -142,7 +142,7 @@ p, span, a, figcaption {
 figcaption {
     font-style: italic;
     text-align: center;
-    padding: 0 2em 0 0em;
+    padding: 0 2em 0 2em;
 }
 
 h2 {
