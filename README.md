@@ -10,13 +10,17 @@ About GitHub Pages
 So this is going to be what GitHub calls a "project" site. Whatever we stick
 in this branch (`gh-pages`; the name is important!), GitHub makes available
 on the web. We have disabled Jekyll (see `.nojekyll` file) so GitHub Pages
-does no further processing of the content beyond what we do.
+does no further processing of the content beyond what we do. The docs URL
+is
+
+* [http://c0c0n3.github.io/ome-smuggler/docs/](http://c0c0n3.github.io/ome-smuggler/docs/)
 
 Directories Layout
 ------------------
 The docs sources (markdown, SVG, CSS, templates) go in `docs.src`; the app
 to generate the docs is in `docs.build`; the `docs` directory is where the
-generated output goes.
+generated output goes. The hierarchy of the output files mirrors that of
+the input sources.
 
 Bootstrap
 ---------
