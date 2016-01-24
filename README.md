@@ -13,7 +13,7 @@ on the web. We have disabled Jekyll (see `.nojekyll` file) so GitHub Pages
 does no further processing of the content beyond what we do. The docs URL
 is
 
-* [http://c0c0n3.github.io/ome-smuggler/docs/](http://c0c0n3.github.io/ome-smuggler/docs/)
+* [http://c0c0n3.github.io/ome-smuggler/docs/content/](http://c0c0n3.github.io/ome-smuggler/docs/content/)
 
 Directories Layout
 ------------------
