@@ -14,4 +14,4 @@ buildDir = "."
 binDir   = baseDir </> "docs"
 -- NB output goes directly into deployment dir so that all is left to do to
 -- publish is commit and push to GitHub.
-hakyllDir = buildDir </> "hakyll"
+hakyllDir = buildDir </> ".hakyll"
