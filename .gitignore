@@ -1,3 +1,6 @@
+# stack build artifacts go in here.
+docs.build/.stack-work
+
 # Hakyll build artifacts go in here.
 docs.build/hakyll
 

@@ -42,12 +42,12 @@ Workflow
 Author; build; publish. In detail:
 
 1. Check out the `gh-pages` branch.
-2. Remove the existing `docs` directory: `cd docs.build; stack exec clean`
+2. Remove the existing `docs` directory: `cd docs.build; stack exec docs-gen clean`
 3. Edit, add, remove content in `docs.src`.
-4. Generate the docs: `cd docs.build; stack exec build`
+4. Generate the docs: `cd docs.build; stack exec docs-gen build`
 5. Check out generated content in `docs`.
 6. Go back to (3) until you're done authoring.
-7. Make sure there are no broken links: `cd docs.build; stack exec check`
+7. Make sure there are no broken links: `cd docs.build; stack exec docs-gen check`
 8. If there are any, fix them! i.e. go back to (3)...
 9. Commit and push to GitHub.
 
