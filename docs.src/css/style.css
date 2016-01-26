@@ -210,6 +210,16 @@ header section:first-child {
     padding-top: 2.5em;
 }
 
+header section:first-child::before {
+    content: "";
+    position: absolute;
+    top: 1.46em;
+    background: url(../images/logo.svg) no-repeat;
+    background-size: 22.662em 7em; /* keep original aspect ratio */
+    width: 22.662em;
+    height: 7em;
+}
+
 main {
     padding-bottom: 3em;
 }
