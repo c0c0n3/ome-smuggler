@@ -249,4 +249,10 @@ footer section {
     header section:first-child {
         padding-top: 1.7045455em;
     }
+    header section:first-child::before {
+        top: 1.59em;
+        background-size: 12.95em 4em; /* keep original aspect ratio */
+        width: 12.95em;
+        height: 4em;
+    }
 }
