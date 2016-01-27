@@ -132,6 +132,10 @@ h1 {
     margin: 0 0 1.421em 0;
 }
 
+pre {
+    margin: 0 0 1.421em 0;
+}
+
 p, span, a, figcaption {
     font-size: 0.95em;
     line-height: 1.421em;
@@ -152,9 +156,17 @@ h2 {
     font-variant: small-caps;
 }
 
+h6 {
+    font-variant: small-caps;
+}
+
 code {
     font-family: monospace, monospace;
     font-size: 0.9em;
+}
+
+em {
+    font-style: italic;
 }
 
 figure img {
