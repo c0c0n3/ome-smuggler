@@ -31,7 +31,9 @@ run = hakyllWith config $ do
 toHtml = pandocCompilerWith readerOptions writerOptions
     where
     readerOptions = def
-    writerOptions = def { writerHtml5 = True }
+    writerOptions = def { writerHtml5 = True
+                        , writerHighlight = True
+                        }
     
 config :: Configuration
 config = defaultConfiguration

@@ -4,8 +4,8 @@ slogan: hold tight!
 ---
 
 <p class="intro">
-Meet <em>Smuggler</em> on the run! Starting from scratch, build and run the
-server, then import images. There's going to be some <em>Smuggler</em>
+Meet <em>Smuggler</em> on the run! Build from scratch and then run the server
+to smuggle some images into OMERO. There's going to be some <em>Smuggler</em>
 action coming your way, so buckle up and take a deep breath. Off we go!
 </p>
 
