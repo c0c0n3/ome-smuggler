@@ -17,7 +17,7 @@ run = hakyllWith config $ do
         route idRoute
         compile compressCssCompiler
 
-    match ("content/**.svg" .||. "images/**") $ do
+    match ("content/**.svg" .||. "images/**" .||. "pdfs/**") $ do
         route idRoute
         compile copyFileCompiler
 
