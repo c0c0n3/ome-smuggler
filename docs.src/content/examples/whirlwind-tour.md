@@ -9,7 +9,7 @@ to smuggle some images into OMERO. There's going to be some <em>Smuggler</em>
 action coming your way, so buckle up and take a deep breath. Off we go!
 </p>
 
-Setting the stage
+Setting the Stage
 -----------------
 Download or clone from [GitHub](https://github.com/c0c0n3/ome-smuggler).
 Then build it (requires Java 8):
@@ -45,7 +45,7 @@ $ mkdir -p ome-lib
 $ cp /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar ome-lib/
 ~~~
 
-Running the server
+Running the Server
 ------------------
 We're ready to run the server. (Java 8 required.) In the `ome-smuggler` root
 directory
@@ -58,7 +58,7 @@ Keep it running in the foreground so you can see what's going on. In any case,
 terminal output is also saved in `ome-smuggler.log` in the current directory.
 
 
-Making an import fail
+Making an Import fail
 ---------------------
 Why? Because this workflow touches most of the available functionality. First
 
@@ -154,7 +154,7 @@ me know if you want to try using Gmail, in which case I can merge the code in
 to enable the feature.)
 
 
-Success scenario
+Success Scenario
 ----------------
 All you need to make an image trek into OMERO is to POST a request for existing
 data to an existing OMERO server. Create a new file `my-import.json` taking
