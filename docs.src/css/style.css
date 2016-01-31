@@ -274,3 +274,28 @@ footer section {
         height: 4em;
     }
 }
+
+
+#main-nav {
+    top: 2em;
+    left: 40em;
+    position: absolute;
+}
+
+#main-nav-panel, #main-nav-hide {
+    display: none;
+}
+
+#main-nav-show:target, #main-nav-hide:target {
+    display: none;
+}
+
+#main-nav-show:target ~ #main-nav-panel,
+#main-nav-show:target ~ #main-nav-hide {
+    display: block;  /* make inline for a.hide */
+}
+
+#main-nav-hide:target ~ #main-nav-panel,
+#main-nav-hide:target ~ #main-nav-show {
+    display: none;
+}
