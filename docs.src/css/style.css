@@ -141,7 +141,7 @@ pre {
     margin: 0 0 1.421em 0;
 }
 
-p, span, a, figcaption {
+p, span, a, figcaption, ul, ol {
     font-size: 0.95em;
     line-height: 1.421em;
     color: #5b5b5b;  /* rgba(51, 51, 51, 0.80); */
