@@ -183,6 +183,18 @@ figure object {
     width: 100%;
 }
 
+figure div {
+    position: relative;
+    margin-top: 1.8em;
+    font-size: 0.8em;
+}
+
+figure div a {
+    position: absolute;
+    right: 0em;
+    top: -1.421em;
+}
+
 a {
     text-decoration: none;
     color: #2d2d2d;

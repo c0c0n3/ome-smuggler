@@ -18,12 +18,13 @@ eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
 in culpa qui officia deserunt mollit anim id est laborum.
 
 <figure id="pic-1">
+  <div><a href="messaging/ideas/1.channel.svg">view full screen</a></div>
   <object type="image/svg+xml" data="messaging/ideas/1.channel.svg">
   alt text + fallback image?
   </object>
   <figcaption>
 Grumpy Wizards make toxic brew for the Evil Queen and Jack. Grumpy Wizards
-make toxic brew for the Evil Queen and Jack. Grumpy Wizards...
+make toxic brew for the Evil Queen and Jack. Grumpy Wizards...<br/>
   </figcaption>
 </figure>
 
