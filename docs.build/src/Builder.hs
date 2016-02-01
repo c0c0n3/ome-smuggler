@@ -4,7 +4,8 @@ module Builder (run) where
 import Hakyll
 import System.FilePath
 import Text.Pandoc.Options
-       
+
+import BlackboardDiagram
 import Paths
 
 
@@ -17,10 +18,14 @@ run = hakyllWith config $ do
         route idRoute
         compile compressCssCompiler
 
-    match ("content/**.svg" .||. "images/**" .||. "pdfs/**") $ do
+    match ("images/**" .||. "pdfs/**") $ do
         route idRoute
         compile copyFileCompiler
 
+    match "content/**.svg" $ do
+        route idRoute
+        compile (getResourceString >>= return . fmap makeFitBrowserWindow)
+                
     match "content/**.md" $ do
         route   $ setExtension ".html"
         compile $ toHtml

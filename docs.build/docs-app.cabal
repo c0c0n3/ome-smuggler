@@ -9,10 +9,14 @@ library
   hs-source-dirs:      src
   exposed-modules:     Builder
   other-modules:       Paths
+                     , BlackboardDiagram
   build-depends:       base >= 4.7 && < 5
+                     , containers
                      , filepath
-                     , pandoc
                      , hakyll
+                     , pandoc
+                     , text
+                     , xml-conduit
   default-language:    Haskell2010
 
 executable docs-gen
