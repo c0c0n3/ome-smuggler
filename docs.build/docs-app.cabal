@@ -8,13 +8,16 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Builder
-  other-modules:       Paths
-                     , BlackboardDiagram
+  other-modules:       BlackboardDiagram
+                     , DiagramMarkdownExtension
+                     , Paths
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , filepath
                      , hakyll
+                     , here
                      , pandoc
+                     , pandoc-types
                      , text
                      , xml-conduit
   default-language:    Haskell2010
