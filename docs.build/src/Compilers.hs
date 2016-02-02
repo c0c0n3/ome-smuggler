@@ -12,14 +12,12 @@ import DiagramMarkdownExtension
 
 
 markdownToHtml5 :: Compiler (Item String)
-markdownToHtml5 = pandocCompilerWithTransform r w renderDiagramsAsHtml5
+markdownToHtml5 = pandocCompilerWithTransform rOpt wOpt renderDiagramsAsHtml5
     where
-    r = def
-    w = def { writerHtml5 = True
-            , writerHighlight = True
-            }
---    r = defaultHakyllReaderOptions
---    w = defaultHakyllWriterOptions { writerHtml5 = True } 
+    rOpt = def { readerSmart = True }
+    wOpt = def { writerHtml5 = True
+               , writerHighlight = True
+               }
 
 svgToFullScreenSvg :: Compiler (Item String)
 svgToFullScreenSvg =   getResourceString
