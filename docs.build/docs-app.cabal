@@ -9,6 +9,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Builder
   other-modules:       BlackboardDiagram
+                     , Compilers
                      , DiagramMarkdownExtension
                      , Paths
   build-depends:       base >= 4.7 && < 5

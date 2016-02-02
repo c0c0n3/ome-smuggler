@@ -3,9 +3,8 @@ module Builder (run) where
 
 import Hakyll
 import System.FilePath
-import Text.Pandoc.Options
 
-import BlackboardDiagram
+import Compilers
 import Paths
 
 
@@ -24,21 +23,14 @@ run = hakyllWith config $ do
 
     match "content/**.svg" $ do
         route idRoute
-        compile (getResourceString >>= return . fmap makeFitBrowserWindow)
+        compile svgToFullScreenSvg
                 
     match "content/**.md" $ do
         route   $ setExtension ".html"
-        compile $ toHtml
+        compile $ markdownToHtml5
                 >>= loadAndApplyTemplate "templates/page.html" defaultContext
                 >>= relativizeUrls
 
-
-toHtml = pandocCompilerWith readerOptions writerOptions
-    where
-    readerOptions = def
-    writerOptions = def { writerHtml5 = True
-                        , writerHighlight = True
-                        }
     
 config :: Configuration
 config = defaultConfiguration
