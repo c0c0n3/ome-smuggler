@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+ * Adapted from: https://github.com/c0c0n3/c0c0n3.github.io/blob/master/index.html
+ * (commit: https://github.com/c0c0n3/c0c0n3.github.io/commit/7bc099eb27309ee19b9bff5b8fcd0fc2985f3623) 
+-->
+<html lang="en">
+<head>
+  <title>High-level View</title>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" type="text/css" href="http://necolas.github.io/normalize.css/latest/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Alegreya" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Kaushan+Script" />
+  <link rel="stylesheet" type="text/css" href="../../../css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../../../css/zenburn-highlighter.css" />
+  
+</head>
+
+<body>
+
+<header>
+  <section id="header">
+    <h1 id="title">High-level View</h1>
+
+    <p id="slogan">as seen from the moon</p>
+
+  </section>
+</header>
+
+<main>
+  <section id="content">
+  <p class="intro">
+The basic idea: a Web-based work queue to run tasks on behalf of OMERO clients.
+</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+<figure id="components">
+  <div><a href="components.svg">view full screen</a></div>
+  <object type="image/svg+xml" data="components.svg">
+  your browser doesn't support embedded SVG; 
+  click on the link above to see the image.
+  </object>
+  <figcaption>
+    Wiring of Smuggler’s components and third-party software.<br /> UML component diagram.
+  </figcaption>
+</figure>
+
+<p>The note at the bottom of the diagram tells you how the conceptual components map to Java packages. You can find a lot more about source code breakdown and dependencies in the next section. Before diving deep in the source… [ TODO mention not easy to follow what’s going on in the code if you’re not familiar with the various techs: Java 8, Spring, Messaging, etc. So you could use Spring D’Oh to get to grips with all this madness; it helped me, it may help you too…]</p>
+<h2 id="codebase-essentials">Codebase Essentials</h2>
+<p>The source base is split into two root packages: <code>ome.smuggler</code>, containing the app itself, and <code>util</code>, a general-purpose library with code that is totally independent of Smuggler and reusable across projects. In fact, <code>util</code> is the dowry we got when we forked from <a href="https://github.com/c0c0n3/spring-doh" title="Spring D'oh Project on GitHub">Spring D’oh</a>. We then added a few more classes but we can potentially ditch the whole lot the if there is a better alternative. In any case, if you realise some of the code you’re writing for Smuggler can be generalised to make it reusable in other projects, then you know where to put it :-)</p>
+<p>With that out of the way, let’s have a closer look at what’s in <code>ome.smuggler</code>. As noted in the diagram above, this is how Smuggler’s components map to actual Java code:</p>
+<ul>
+<li>the <em>REST controllers</em> are in the <code>web</code> package;</li>
+<li>the <em>services</em> are in <code>core.service</code>;</li>
+<li>the <em>messaging</em> functionality is split between <code>q</code> and <code>core.mgs</code>;</li>
+<li>whereas we keep all <em>config</em> in, well you guessed it, <code>config</code>.</li>
+</ul>
+<p>A few more words about messaging. The split mentioned above is between the abstract definition of the messaging functionality we need (what goes in <code>core.msg</code>) and the actual implementation in terms of a specific message oriented middleware, HornetQ at the moment, that sits in <code>q</code>. The idea is that Smuggler should only play the messaging game as defined in <code>core.msg</code> without caring about the actual implementation in <code>q</code>. Accordingly, the only code that depends on <code>q</code> is that in <code>config</code> as it needs to tie the interfaces in <code>core.msg</code> to the actual implementations in <code>q</code> and make them available through Spring. To keep our sanity, we decided to do away with both JMS and Spring’s own flavour of it: the code in <code>q</code> piggybacks directly on the HornetQ core API to implement the various interfaces defined in <code>core.msg</code>. Besides these interfaces, <code>core.msg</code></p>
+
+<figure id="package-dependencies">
+  <div><a href="package-dependencies.svg">view full screen</a></div>
+  <object type="image/svg+xml" data="package-dependencies.svg">
+  your browser doesn't support embedded SVG; 
+  click on the link above to see the image.
+  </object>
+  <figcaption>
+    Top level Java packages and their dependencies.<br /> UML package diagram.
+  </figcaption>
+</figure>
+
+  </section>
+</main>  
+
+<footer>
+  <section id="footer">
+    <p>generated with <a href="https://jaspervdj.be/hakyll/">Hakyll</a></p>
+    <p><a href="https://github.com/c0c0n3/ome-smuggler/tree/gh-pages">source code</a></p>
+    <!-- TODO fonts; legal? -->
+  </section>
+</footer>
+  
+</body>
+</html>
