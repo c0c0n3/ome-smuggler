@@ -9,8 +9,8 @@ clients.
 </p>
 
 A task is queued, then run and as it runs a URL is available from which to
-get status updates. If the task fails, it may be retried. On completion, a
-report email is sent to the interested parties. This is Smuggler's life
+get status updates. If the task fails, it may be retried. On completion, an
+email report is sent to the interested parties. This is Smuggler's life
 purpose---at least for now. And for now, the only task Smuggler knows how
 to run is an OMERO import. If you haven't done it yet, now it'd be a good
 time to take Smuggler for a spin as explained [here][whirlwind-tour] so you
@@ -27,29 +27,29 @@ patterns are those of REST. Smuggler is a [Spring Boot][booty] app with an
 embedded [Undertow][undertow] Web server engine that propels external
 interaction with HTTP clients. Internally, HTTP requests and responses are
 managed by the [Spring][spring] MVC framework that runs the request handlers
-in Smuggler's Web front-end component, named "REST Controllers". These
+in Smuggler's Web front-end component, named *REST Controllers*. These
 handlers turn Web requests into calls to an internal service API and massage
 the results back into Web responses. This internal service API is provided by
-the Smuggler component named "services"; this component is where the actual
+the Smuggler component named *services*; this component is where the actual
 app logic sits.
 
-The "services" component splits work into tasks and sends them as messages
+The *services* component splits work into tasks and sends them as messages
 on an asynchronous messaging channel; the channel then delivers these
-messages (asynchronously) back to the "services" task handlers that carry
+messages (asynchronously) back to the *services* task handlers that carry
 out the work; in turn, a task handler may put more messages on the channel
-to ask another handler to so some other work.
+to ask another handler to do some other work.
 This mechanism is akin to continuations in functional programming, where you
 can save your task's state at any point, then get back to it later to do some
 more work, and so on until you're done with the task.
 
 The asynchronous messaging channel is a service provided by yet another of
-Smuggler's components: "messaging". This channel abstraction is loosely (very
+Smuggler's components: *messaging*. This channel abstraction is loosely (very
 loosely!) based on Communicating Sequential Processes and is implemented using
-message queues, courtesy of [HornetQ][hornetq]. Though the implementation in
-terms of message-oriented middleware is transparent to the "services" component
-that uses the channel, it brings into Smuggler a lot of added functionality
-for free. For starters, queues are persistent and so, after a crash, Smuggler
-can pick up task from where he left it when he was so rudely interrupted.
+message queues, courtesy of [HornetQ][hornetq] and its neat Core API. 
+Though the implementation is transparent to the *services* component, using
+message-oriented middleware brings a lot of added value into Smuggler as a
+whole. For starters, queues are persistent and so, after a crash, Smuggler
+can pick up a task from where he left it when he was so rudely interrupted.
 Also a queue can act as an effective back-pressure mechanism when OMERO is
 overloaded; work can be split across queues on different machines to cope
 with increased workloads; and so on. In short, we can use message queues as
@@ -64,8 +64,8 @@ Java, having become the bastion of [abject-orientation]
 be the sanctuary of dysfunctional programming. 
 ]
 
-We can condense this whole explanation of what Smuggler looks like under the
-hood in a pretty diagram:
+Why not condense this lengthy explanation of what Smuggler looks like under
+the hood in a pretty diagram? 
 
 <div class="diagram" id="components" src="components.svg">
 Wiring of Smuggler's components and third-party software.<br/>
@@ -80,7 +80,7 @@ all the various techs we use. (It proved definitely too much for me, I tell
 you my tummy wasn't a happy camper for days afterwards!)
 In that case, it's probably best to take it slowly and skill up a bit before
 hand (as I did myself!), especially on Java 8 (dys-)functional programming
-and streams API.
+and Streams API.
 
 <div class="side-note">
 ###### Spring...D'oh!
@@ -132,7 +132,7 @@ Accordingly, the only code that depends on `q` is that in `config` as it
 needs to tie the interfaces in `core.msg` to the actual implementations in
 `q` and make them available through Spring.
 To keep our sanity, we decided to do away with both JMS and Spring's own
-flavour of it: the code in `q` piggybacks directly on the HornetQ core API
+flavour of it: the code in `q` piggybacks directly on the HornetQ Core API
 to implement the various interfaces defined in `core.msg`. Besides these
 interfaces, `core.msg` is home to classes that carry out generic messaging
 tasks that only depend on the `core.msg` interfaces.
