@@ -8,22 +8,64 @@ The basic idea: a Web-based work queue to run tasks on behalf of OMERO
 clients.
 </p>
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-in culpa qui officia deserunt mollit anim id est laborum.
+A task is queued, then run and as it runs a URL is available from which to
+get status updates. If the task fails, it may be retried. On completion, a
+report email is sent to the interested parties. This is Smuggler's life
+purpose---at least for now. And for now, the only task Smuggler knows how
+to run is an OMERO import. If you haven't done it yet, now it'd be a good
+time to take Smuggler for a spin as explained [here][whirlwind-tour] so you
+have a good idea of how Smuggler's REST API works before we look at what
+happens under the bonnet.
+
 
 Conceptual Overview
 -------------------
-You can think of Smuggler as...[wada, wada, wada]
+Smuggler is a server that makes available two main service points: the one
+to run an OMERO import and the other to monitor and manage failed imports.
+In both instances, service access is over HTTP and client-server interaction
+patterns are those of REST. Smuggler is a [Spring Boot][booty] app with an
+embedded [Undertow][undertow] Web server engine that propels external
+interaction with HTTP clients. Internally, HTTP requests and responses are
+managed by the [Spring][spring] MVC framework that runs the request handlers
+in Smuggler's Web front-end component, named "REST Controllers". These
+handlers turn Web requests into calls to an internal service API and massage
+the results back into Web responses. This internal service API is provided by
+the Smuggler component named "services"; this component is where the actual
+app logic sits.
+
+The "services" component splits work into tasks and sends them as messages
+on an asynchronous messaging channel; the channel then delivers these
+messages (asynchronously) back to the "services" task handlers that carry
+out the work; in turn, a task handler may put more messages on the channel
+to ask another handler to so some other work.
+This mechanism is akin to continuations in functional programming, where you
+can save your task's state at any point, then get back to it later to do some
+more work, and so on until you're done with the task.
+
+The asynchronous messaging channel is a service provided by yet another of
+Smuggler's components: "messaging". This channel abstraction is loosely (very
+loosely!) based on Communicating Sequential Processes and is implemented using
+message queues, courtesy of [HornetQ][hornetq]. Though the implementation in
+terms of message-oriented middleware is transparent to the "services" component
+that uses the channel, it brings into Smuggler a lot of added functionality
+for free. For starters, queues are persistent and so, after a crash, Smuggler
+can pick up task from where he left it when he was so rudely interrupted.
+Also a queue can act as an effective back-pressure mechanism when OMERO is
+overloaded; work can be split across queues on different machines to cope
+with increased workloads; and so on. In short, we can use message queues as
+a foundation to build a [reactive system][reactive].
+
+
+
 [TODO: a para on tech stack]
 [Late night silly thought:
-Java, having become the bastion of [abject-oriented programming]
-(http://typicalprogrammer.com/abject-oriented/), is now poised to
+Java, having become the bastion of [abject-orientation]
+(http://typicalprogrammer.com/abject-oriented/), is now also poised to
 be the sanctuary of dysfunctional programming. 
 ]
+
+We can condense this whole explanation of what Smuggler looks like under the
+hood in a pretty diagram:
 
 <div class="diagram" id="components" src="components.svg">
 Wiring of Smuggler's components and third-party software.<br/>
@@ -58,19 +100,22 @@ You can find the [project on GitHub][springdoh-git].
 
 Codebase Essentials
 -------------------
+Time to start digging into the source. Besides bringing your bucket and spade,
+it may help at this point to keep your editor handy so to be able to move
+back and forth between the code and the narrative below.
+
 The source base is split into two root packages: `ome.smuggler`, containing
-the app itself, and `util`, a general-purpose library with code that is totally
+the app itself, and `util`, a general-purpose library whose code is totally
 independent of Smuggler and reusable across projects. In fact, `util` is part
-of the dowry we got when we forked from [Spring D'oh][springdoh-git].
+of the dowry we got when we forked from [Spring D'oh](#springdoh).
 Since then we added a few more `util` classes but we can potentially ditch
 the whole lot if there's a better alternative.
 In any case, if you realise some of the code you're writing for Smuggler can
-be generalised to make it reusable in other projects, well, then you know
+be generalised to make it reusable in other projects, well, now you know
 where to put it :-)
 
 With that out of the way, let's have a closer look at what's in `ome.smuggler`.
-As noted in the diagram above, this is how Smuggler's components map to actual
-Java code:
+For starters, this is how Smuggler's components map to actual Java code:
 
 * the *REST controllers* are in the `web` package;
 * the *services* are in `core.service`;
@@ -78,25 +123,59 @@ Java code:
 * whereas we keep all *config* in, well you guessed it, `config`.
 
 A few more words about messaging. The split mentioned above is between the
-abstract definition of the messaging functionality we need (what goes in
-`core.msg`) and the actual implementation in terms of a specific message
+abstract definition of the messaging functionality we need---the content of
+`core.msg`---and the actual implementation in terms of a specific message
 oriented middleware, HornetQ at the moment, that sits in `q`. The idea is
-that Smuggler should only play the messaging game as defined in `core.msg`
-without caring about the actual implementation in `q`. Accordingly, the
-only code that depends on `q` is that in `config` as it needs to tie the
-interfaces in `core.msg` to the actual implementations in `q` and make
-them available through Spring.
+that Smuggler should play the messaging game only by the rules (interfaces)
+defined in `core.msg` without caring about the actual implementation in `q`.
+Accordingly, the only code that depends on `q` is that in `config` as it
+needs to tie the interfaces in `core.msg` to the actual implementations in
+`q` and make them available through Spring.
 To keep our sanity, we decided to do away with both JMS and Spring's own
 flavour of it: the code in `q` piggybacks directly on the HornetQ core API
 to implement the various interfaces defined in `core.msg`. Besides these
-interfaces, `core.msg`
+interfaces, `core.msg` is home to classes that carry out generic messaging
+tasks that only depend on the `core.msg` interfaces.
+
+Think it's time we started visualising all these packages and dependencies
+so we can actually *see* what was the thinking behind the code structure
+breakdown. Here goes.
 
 <div class="diagram" id="package-dependencies" src="package-dependencies.svg">
 Top level Java packages and their dependencies.<br/>
 UML package diagram.</div>
 
+As noted in the diagram, the bulk of the functionality sits in `core` and is
+not meant to have any dependencies on third-party libraries. This way we can
+change the underlying frameworks we use without having to rewrite the whole
+app from scratch. For example, using a Web server other than Undertow requires
+just a few configuration tweaks---picture rubbing off Undertow from the diagram
+and follow the arrows to see what would be affected. Ditching HornetQ would
+take slightly more work as some of the code in `q` would need to change.
+Moving away from Spring? A bit more involved, but still doable.
+
+There are a few more packages shown in the diagram that we haven't touched
+on yet, but looking at them is not essential to get the hang of the code
+base. Anyway, let's just mention what they're there for. In `core`, you'll
+find `types`, which is where we keep the shared data types we use to shuttle
+data across app components; `convert` and `io` contain, respectively, some 
+util classes to deal with JSON serialisation and files. Finally, if you're
+wondering how the Web app starts or how we generate config files, then you
+should look at the launchers in `run`.
 
 
 
+[booty]: http://projects.spring.io/spring-boot/
+  "Spring Boot Home"
+[hornetq]: http://hornetq.jboss.org/
+  "HornetQ Home"
+[reactive]: http://www.reactivemanifesto.org/
+  "Reactive Manifesto"  
+[spring]: https://spring.io/
+  "Spring Home"  
 [springdoh-git]: https://github.com/c0c0n3/spring-doh
   "Spring D'oh Project on GitHub"
+[undertow]: http://undertow.io/
+  "Undertow Home"  
+[whirlwind-tour]: /content/examples/whirlwind-tour.html
+  "Whirlwind Tour"  

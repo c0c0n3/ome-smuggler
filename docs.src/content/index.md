@@ -31,7 +31,8 @@ To help the techies, Smuggler comes with a full-blown management &amp;
 monitoring interface, available both over HTTP and JMX.
 
 <p class="pull-quote">
-Oh, I should mention this site is intended as a <em>programmer's notebook</em>.
+Oh, I should mention this site is intended as a <em>programmer's notebook</em>,
+hence the colloquial language.
 Unless you're a programmer interested in joining development, you're unlikely
 to find anything interesting here. Rather check out the [OME Web site][ome].
 Or maybe you're just a bot prowling the interwebs...then go ahead and knock
@@ -75,7 +76,7 @@ needed to untie login sessions from OMERO imports and that the [FBI][fbi]
 paid for. (Nope, not <em>that</em> FBI, the Feds are supposed to bust
 smugglers!) Long story short, MRI users import images from acquisition
 workstations into OMERO with the Java client and so can't logout until the
-client has finished importing—or the client dies and the import with
+client has finished importing---or the client dies and the import with
 it. Long-running imports side-effects? Other users can't get access to the
 workstation and use the microscope. Also, users are billed for the duration
 of their login session, so time <em>is</em> money. All this quickly led to
