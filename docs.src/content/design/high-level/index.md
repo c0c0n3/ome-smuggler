@@ -12,10 +12,12 @@ A task is queued, then run and as it runs a URL is available from which to
 get status updates. If the task fails, it may be retried. On completion, an
 email report is sent to the interested parties. This is Smuggler's life
 purpose---at least for now. And for now, the only task Smuggler knows how
-to run is an OMERO import. If you haven't done it yet, now it'd be a good
-time to take Smuggler for a spin as explained [here][whirlwind-tour] so you
-have a good idea of how Smuggler's REST API works before we look at what
-happens under the bonnet.
+to run is an OMERO import. But it should be possible to add any other task
+without too much sweat using the same run/retry/notify mechanism.
+If you haven't done it yet, now it'd be a good time to take Smuggler for a
+spin as explained [here][whirlwind-tour] so you have a good idea of what is
+the functionality Smuggler makes available through its REST API before we
+look at what happens under the bonnet.
 
 
 Conceptual Overview
@@ -26,12 +28,12 @@ In both instances, service access is over HTTP and client-server interaction
 patterns are those of REST. Smuggler is a [Spring Boot][booty] app with an
 embedded [Undertow][undertow] Web server engine that propels external
 interaction with HTTP clients. Internally, HTTP requests and responses are
-managed by the [Spring][spring] MVC framework that runs the request handlers
-in Smuggler's Web front-end component, named *REST Controllers*. These
-handlers turn Web requests into calls to an internal service API and massage
-the results back into Web responses. This internal service API is provided by
-the Smuggler component named *services*; this component is where the actual
-app logic sits.
+managed by the [Spring][spring] MVC framework; MVC is what runs the request
+handlers in Smuggler's Web front-end component, named *REST Controllers*.
+These handlers turn Web requests into calls to an internal service API and
+massage the results back into Web responses. This internal service API is
+provided by the Smuggler component named *services* which is where the
+actual app logic sits.
 
 The *services* component splits work into tasks and sends them as messages
 on an asynchronous messaging channel; the channel then delivers these
@@ -49,12 +51,18 @@ message queues, courtesy of [HornetQ][hornetq] and its neat Core API.
 Though the implementation is transparent to the *services* component, using
 message-oriented middleware brings a lot of added value into Smuggler as a
 whole. For starters, queues are persistent and so, after a crash, Smuggler
-can pick up a task from where he left it when he was so rudely interrupted.
-Also a queue can act as an effective back-pressure mechanism when OMERO is
-overloaded; work can be split across queues on different machines to cope
-with increased workloads; and so on. In short, we can use message queues as
-a foundation to build a [reactive system][reactive].
+can carry on with a task from where he left off when he was so rudely
+interrupted. Also a queue can act as an effective back-pressure mechanism
+when OMERO is overloaded; work can be split across queues on different
+machines to cope with increased workloads; and so on. In short, we can use
+message queues as a foundation to build a [reactive system][reactive].
 
+The last piece of the puzzle is the *config* component. This is where we wire
+all the bits and pieces together. What we do is embed Undertow and HornetQ
+into the app, configure MVC, and beanify our own services. All this is done
+through Spring's IoC container facility and Spring Boot auto-configuration.
+The reading and writing of configuration data we do ourselves though so as
+to have typed configuration items instead of just plain strings.
 
 
 [TODO: a para on tech stack]
@@ -71,7 +79,11 @@ the hood in a pretty diagram?
 Wiring of Smuggler's components and third-party software.<br/>
 UML component diagram.</div>
 
-The note at the bottom of the diagram tells you how the conceptual components
+We should mention at this point that Smuggler comes with an off-the-shelf
+management and monitoring facility that you can access both over HTTP and
+JMX. It comes with the Spring Boot Actuator component that we enabled and
+configured to let sys admins gather app metrics and manage the app. Finally, 
+the note at the bottom of the diagram tells you how the conceptual components
 map to Java packages. You can find a lot more about source code breakdown and
 dependencies in the next section. But before we dive deep into the source, a
 word of caution: the tech sauce is quite heavy to digest so it may be too
@@ -101,7 +113,7 @@ You can find the [project on GitHub][springdoh-git].
 Codebase Essentials
 -------------------
 Time to start digging into the source. Besides bringing your bucket and spade,
-it may help at this point to keep your editor handy so to be able to move
+it may help at this point to keep your editor handy so as to be able to move
 back and forth between the code and the narrative below.
 
 The source base is split into two root packages: `ome.smuggler`, containing
@@ -115,7 +127,8 @@ be generalised to make it reusable in other projects, well, now you know
 where to put it :-)
 
 With that out of the way, let's have a closer look at what's in `ome.smuggler`.
-For starters, this is how Smuggler's components map to actual Java code:
+First things first, we should tell you  how Smuggler's components---the
+conceptual modules we talked about earlier---map to actual Java code:
 
 * the *REST controllers* are in the `web` package;
 * the *services* are in `core.service`;
@@ -130,7 +143,7 @@ that Smuggler should play the messaging game only by the rules (interfaces)
 defined in `core.msg` without caring about the actual implementation in `q`.
 Accordingly, the only code that depends on `q` is that in `config` as it
 needs to tie the interfaces in `core.msg` to the actual implementations in
-`q` and make them available through Spring.
+`q` and make them available through Spring's IoC container.
 To keep our sanity, we decided to do away with both JMS and Spring's own
 flavour of it: the code in `q` piggybacks directly on the HornetQ Core API
 to implement the various interfaces defined in `core.msg`. Besides these
@@ -159,9 +172,9 @@ on yet, but looking at them is not essential to get the hang of the code
 base. Anyway, let's just mention what they're there for. In `core`, you'll
 find `types`, which is where we keep the shared data types we use to shuttle
 data across app components; `convert` and `io` contain, respectively, some 
-util classes to deal with JSON serialisation and files. Finally, if you're
-wondering how the Web app starts or how we generate config files, then you
-should look at the launchers in `run`.
+util classes to deal with JSON serialisation and file-system tasks. Finally,
+if you're wondering how the Web app starts or how we generate config files,
+then you should look at the launchers in `run`.
 
 
 
