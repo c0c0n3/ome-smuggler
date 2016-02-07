@@ -32,7 +32,7 @@ monitoring interface, available both over HTTP and JMX.
 
 <p class="pull-quote">
 Oh, I should mention this site is intended as a <em>programmer's notebook</em>,
-hence the colloquial language.
+hence the relaxed and colloquial style of writing.
 Unless you're a programmer interested in joining development, you're unlikely
 to find anything interesting here. Rather check out the [OME Web site][ome].
 Or maybe you're just a bot prowling the interwebs...then go ahead and knock
@@ -65,25 +65,9 @@ us if something is not immediately obvious as, admittedly, it's not always
 easy to figure out what the heck was buzzing in someone else's skull when
 they wrote the code! If, after testing the waters, you feel like you'd like
 to get your hands dirty, here's a [TODO list][smuggler-todo] you can look at.
-Finally, in the next section you'll find some background info that may be
-useful to shed some light on possible use cases.
-
-
-A little Bit of History
------------------------
-This project started off as a little extension to OMERO that [MRI][mri]
-needed to untie login sessions from OMERO imports and that the [FBI][fbi]
-paid for. (Nope, not <em>that</em> FBI, the Feds are supposed to bust
-smugglers!) Long story short, MRI users import images from acquisition
-workstations into OMERO with the Java client and so can't logout until the
-client has finished importing---or the client dies and the import with
-it. Long-running imports side-effects? Other users can't get access to the
-workstation and use the microscope. Also, users are billed for the duration
-of their login session, so time <em>is</em> money. All this quickly led to
-the idea of running imports in a background process outside of any user
-session. The full story is recorded for posterity in
-[this document][bg-import-overview]; the intro section may still be worth
-a quick read to put Smuggler into perspective.
+Finally, you may want to have a look at our [Condensed Use Cases][use-cases]
+to get an idea of what were our initial requirements and what we're planning
+to do next.
 
 
 About the Name
@@ -106,14 +90,8 @@ Uh? No? <em>OMERO.Runner</em>? Okay, fine, got it, don't shout...
 
 
 
-[bg-import-overview]: /pdfs/bg-import.project-overview.pdf
-  "OMERO Backgound Import - Project Overview"
 [design]: design/index.html
   "Design"
-[fbi]: http://france-bioimaging.org/
-  "FBI Home"
-[mri]: http://www.mri.cnrs.fr/
-  "MRI Home"
 [ome]: http://www.openmicroscopy.org/
   "OME Home"
 [omero]: http://www.openmicroscopy.org/site/products/omero
@@ -122,5 +100,7 @@ Uh? No? <em>OMERO.Runner</em>? Okay, fine, got it, don't shout...
   "Smuggler on GitHub"
 [smuggler-todo]: https://github.com/c0c0n3/ome-smuggler/blob/master/TODO.md
   "Smuggler's TODO List"  
+[use-cases]: /content/use-cases/index.html
+  "Condensed Use Cases"
 [whirlwind-tour]: examples/whirlwind-tour.html
   "Whirlwind Tour of Smuggler"

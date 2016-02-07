@@ -60,20 +60,12 @@ message queues as a foundation to build a [reactive system][reactive].
 The last piece of the puzzle is the *config* component. This is where we wire
 all the bits and pieces together. What we do is embed Undertow and HornetQ
 into the app, configure MVC, and beanify our own services. All this is done
-through Spring's IoC container facility and Spring Boot auto-configuration.
+through Spring Boot auto-configuration and the Spring's IoC container API.
 The reading and writing of configuration data we do ourselves though so as
 to have typed configuration items instead of just plain strings.
 
-
-[TODO: a para on tech stack]
-[Late night silly thought:
-Java, having become the bastion of [abject-orientation]
-(http://typicalprogrammer.com/abject-oriented/), is now also poised to
-be the sanctuary of dysfunctional programming. 
-]
-
-Why not condense this lengthy explanation of what Smuggler looks like under
-the hood in a pretty diagram? 
+Why not condense this lengthy explanation of Smuggler's inner body into a
+picture? Here's an X-ray for you then.
 
 <div class="diagram" id="components" src="components.svg">
 Wiring of Smuggler's components and third-party software.<br/>
@@ -81,33 +73,11 @@ UML component diagram.</div>
 
 We should mention at this point that Smuggler comes with an off-the-shelf
 management and monitoring facility that you can access both over HTTP and
-JMX. It comes with the Spring Boot Actuator component that we enabled and
-configured to let sys admins gather app metrics and manage the app. Finally, 
-the note at the bottom of the diagram tells you how the conceptual components
-map to Java packages. You can find a lot more about source code breakdown and
-dependencies in the next section. But before we dive deep into the source, a
-word of caution: the tech sauce is quite heavy to digest so it may be too
-much to gulp down in just one go if you're not already pretty familiar with
-all the various techs we use. (It proved definitely too much for me, I tell
-you my tummy wasn't a happy camper for days afterwards!)
-In that case, it's probably best to take it slowly and skill up a bit before
-hand (as I did myself!), especially on Java 8 (dys-)functional programming
-and Streams API.
-
-<div class="side-note">
-###### Spring...D'oh!
-Before starting developing Smuggler, we built a prototype app to learn about
-and experiment with the various (many!) bits and pieces that make up our
-current technology stack. Aptly named "Spring...D'oh", this initial prototype
-has basically no app logic but pretty much the same architecture and exactly
-the same technology stack as Smuggler; we actually used its source base as a
-blueprint for Smuggler's.
-If you're not familiar with Java 8, Spring, Messaging, and all the other
-techs in Smuggler, "Spring...D'oh" may be a good starting point to get to
-grips with all this madness as it should be easier to see how the pieces
-of the puzzle all fall into place. At least it helped me...
-You can find the [project on GitHub][springdoh-git].
-</div>
+JMX. It's provided by the Spring Boot Actuator component that we enabled and
+configured to let sys admins gather app metrics and manage the app remotely.
+There's a note at the bottom of the diagram telling you how the conceptual
+components map to Java packages. You can find a lot more about source code
+breakdown and dependencies in the next section.
 
 
 Codebase Essentials
@@ -119,7 +89,7 @@ back and forth between the code and the narrative below.
 The source base is split into two root packages: `ome.smuggler`, containing
 the app itself, and `util`, a general-purpose library whose code is totally
 independent of Smuggler and reusable across projects. In fact, `util` is part
-of the dowry we got when we forked from [Spring D'oh](#springdoh).
+of the dowry we got when we forked from [Spring D'oh][springdoh].
 Since then we added a few more `util` classes but we can potentially ditch
 the whole lot if there's a better alternative.
 In any case, if you realise some of the code you're writing for Smuggler can
@@ -143,7 +113,7 @@ that Smuggler should play the messaging game only by the rules (interfaces)
 defined in `core.msg` without caring about the actual implementation in `q`.
 Accordingly, the only code that depends on `q` is that in `config` as it
 needs to tie the interfaces in `core.msg` to the actual implementations in
-`q` and make them available through Spring's IoC container.
+`q` and make them available through the Spring's IoC container.
 To keep our sanity, we decided to do away with both JMS and Spring's own
 flavour of it: the code in `q` piggybacks directly on the HornetQ Core API
 to implement the various interfaces defined in `core.msg`. Besides these
@@ -185,7 +155,9 @@ then you should look at the launchers in `run`.
 [reactive]: http://www.reactivemanifesto.org/
   "Reactive Manifesto"  
 [spring]: https://spring.io/
-  "Spring Home"  
+  "Spring Home"
+[springdoh]: /content/design/index.html#springdoh
+  "Spring...D'oh!"  
 [springdoh-git]: https://github.com/c0c0n3/spring-doh
   "Spring D'oh Project on GitHub"
 [undertow]: http://undertow.io/
