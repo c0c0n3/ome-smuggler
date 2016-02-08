@@ -60,11 +60,12 @@ scenarios as explained in [this example][whirlwind-tour].
 the land. As you do that, keep the source code handy so it's easier to map
 design concepts and ideas to actual code.
 
-Most of the code is commented, but it's probably easier to chat directly with
-us if something is not immediately obvious as, admittedly, it's not always
-easy to figure out what the heck was buzzing in someone else's skull when
-they wrote the code! If, after testing the waters, you feel like you'd like
-to get your hands dirty, here's a [TODO list][smuggler-todo] you can look at.
+Most of the code is commented and comes with test cases, but it's probably
+easier to chat directly with us if something is not immediately obvious as,
+admittedly, it's not always easy to figure out what the heck was buzzing in
+someone else's skull when they wrote the code! If, after testing the waters,
+you feel like you'd like to get your hands dirty, here's a [TODO list][smuggler-todo]
+you can look at.
 Finally, you may want to have a look at our [Condensed Use Cases][use-cases]
 to get an idea of what were our initial requirements and what we're planning
 to do next.
@@ -72,10 +73,10 @@ to do next.
 
 About the Name
 --------------
-<em>Smuggler</em>. Really?! Why?! Well, if you've followed along, you know our
-users have to pay for the time they're logged on any acquisition workstation;
-if an OMERO import happens within a login session, you pay for the time it
-takes to run the import.
+<em>Smuggler</em>. Really?! Why?! Well, if you've read about [how the project
+started][use-cases-history-section], you know our users at MRI have to pay
+for the time they're logged on any acquisition workstation; if an OMERO import
+happens within a login session, you pay for the time it takes to run the import.
 But we love our users and want to save them some money. So we've come up with
 this mechanism to import image goodies into OMERO sneakily, outside of login
 sessions, without paying MRI session duties...we're <em>smuggling</em> data
@@ -102,5 +103,7 @@ Uh? No? <em>OMERO.Runner</em>? Okay, fine, got it, don't shout...
   "Smuggler's TODO List"  
 [use-cases]: /content/use-cases/index.html
   "Condensed Use Cases"
+[use-cases-history-section]: /content/use-cases/index.html#a-little-bit-of-history
+  "Condensed Use Cases - A Little Bit of History"
 [whirlwind-tour]: examples/whirlwind-tour.html
   "Whirlwind Tour of Smuggler"

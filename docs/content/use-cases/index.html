@@ -35,7 +35,7 @@
 <main>
   <section id="content">
   <p class="intro">
-Where has Smuggler been? Where is he going? A quick look at the current and planned functionality helps to put things into perspective.
+Where we’ve been, where we’re going. A quick look at the current and planned functionality helps to put things into perspective.
 </p>
 <p>Let’s quickly talk about what were our initial requirements before we go on to see what we hope to do in the short, medium, and long term.</p>
 <h2 id="a-little-bit-of-history">A little Bit of History</h2>
@@ -45,7 +45,11 @@ Where has Smuggler been? Where is he going? A quick look at the current and plan
 <h2 id="watch-this-space">Watch this Space</h2>
 <p>Medium-term plans? Well, the next logical step would be to make OMERO imports work in the same way and moreover slow down the uploading of data chunks if OMERO can’t keep up. At the moment, we have a problem with large imports as they can make OMERO crash—we strongly suspect Java garbage collection is to blame rather than OMERO though. Anyway, it’d be nice to have some kind of back-pressure mechanism in place. And a similar back-pressure mechanism would work for mass deletes as these too can make OMERO crash.</p>
 <h2 id="maybe-one-day">Maybe One Day…</h2>
-<p>What about the long-term? No real plans yet, but probably worth mentioning that we could get more involved in the integration game. In fact, as things stand now we could already easily make the Web client work with Smuggler too so imports became available even in the browser. But then why not push it a step further and use Smuggler as a distributed event bus where participants exchange asynchronous messages using plain HTTP. Different components (e.g. agents, servers) can cooperate towards a common goal (e.g. data transfer, image rendering, analysis) without even knowing about each other. Each can be written in any programming language and there’s no need for ICE or other middleware to communicate. Here’s a possible scenario:</p>
+<p>What about the long-term? No real plans yet, but probably worth mentioning that we could get more involved in the integration game. In fact, as things stand now we could already easily make the Web client work with Smuggler too so imports became available even in the browser. But then why not push it a step further and use Smuggler as a distributed event bus where participants exchange asynchronous messages using plain HTTP. Different components (e.g. agents, servers) can cooperate towards a common goal (e.g. data transfer, image rendering, analysis) without even knowing about each other. Each can be written in any programming language and there’s no need for ICE or other middleware to communicate.</p>
+<p class="side-note">
+ICE is a fine framework, but we think in a integration scenario REST could be an easier way to bring together heterogeneous software as HTTP is known to most programmers and almost each language under the sun comes with robust support for it.
+</p>
+<p>Here’s a possible scenario:</p>
 <ol type="1">
 <li>Either Insight or the Web client triggers an import by putting a message on the distributed event bus.</li>
 <li>Smuggler picks up the message and starts the import; as it runs the import, it puts feedback messages on the bus.</li>

@@ -4,8 +4,8 @@ slogan: use it or lose it!
 ---
 
 <p class="intro">
-Where has Smuggler been? Where is he going? A quick look at the current and
-planned functionality helps to put things into perspective.
+Where we've been, where we're going. A quick look at the current and planned
+functionality helps to put things into perspective.
 </p>
 
 Let's quickly talk about what were our initial requirements before we go on
@@ -64,7 +64,16 @@ exchange asynchronous messages using plain HTTP. Different components (e.g.
 agents, servers) can cooperate towards a common goal (e.g. data transfer,
 image rendering, analysis) without even knowing about each other. Each can
 be written in any programming language and there's no need for ICE or other
-middleware to communicate. Here's a possible scenario:
+middleware to communicate.
+
+<p class="side-note">
+ICE is a fine framework, but we think in a integration scenario REST could
+be an easier way to bring together heterogeneous software as HTTP is known
+to most programmers and almost each language under the sun comes with robust
+support for it.
+</p>
+
+Here's a possible scenario:
 
 1. Either Insight or the Web client triggers an import by putting a message
 on the distributed event bus.
