@@ -35,8 +35,24 @@
 <main>
   <section id="content">
   <p class="intro">
-coming soon…
+The basic idea: asynchronous messaging (very) loosely based on Communicating Sequential Processes (CSP).
 </p>
+<p>The key idea behind Smuggler’s messaging component is that of an abstract communication channel where you can send and receive data asynchronously, very much in the style of CSP. We have a <code>ChannelSource</code> interface to <code>send</code> input data and symmetrically a <code>ChannelSink</code> interface to <code>consume</code> it. We then specialise these two with, respectively, <code>MessageSource</code> and <code>MessageSink</code> to impose a minimal structure on the data item being exchanged: what goes on the channel is now a message having some metadata and some actual data, the payload for the receiving end. Metadata is typically used to configure the sending of the message—e.g. schedule when to deliver it—or to set some message properties—e.g. a delivery count to tell how many times the message has been dispatched to a consumer in the case of repeat delivery. In fact, we specialise <code>MessageSource</code> further into a <code>SchedulingSource</code> so that the sender can request the delivery of a message to the consumer at a specified time in the future. With these interfaces in place, it’s easy to implement a <code>MessageSink</code> to let a consumer loop over a stream of data items at specified points in time—this is what the <code>ReschedulingSink</code> does. As an added bonus, we use the special case when all the items in the stream are the same as a way to retry failed tasks: picture a stream of requests to execute a given task and imagine a stream handler that executes each request at a specified time stopping as soon as the task succeeds.</p>
+<p>Well, I think some doodles to visualise all this would be nice at this point. <a href="structure/key-msg-classes.svg" title="Key classes in core.msg - UML class diagram">This UML class diagram</a> shows you the structure of the <code>core.msg</code> package in terms of its key classes and their relationships. Down below there are a couple of slides with more doodles to help explain how we conceptualised channels, messages, and all the other stuff we’ve been talking about here.</p>
+
+<figure id="ideas-slides">
+  <div><a href="ideas/1.channel.svg">view full screen</a></div>
+  <object type="image/svg+xml" data="ideas/1.channel.svg">
+  your browser doesn't support embedded SVG; 
+  click on the link above to see the image.
+  </object>
+  <figcaption>
+    <p>Conceptualisation of asynchronous channels and their specialisation to exchange messages and to exchange messages with repeat schedules. <br /> Navigation: click on blue arrows, then use browser back button to go back to first slide.</p>
+  </figcaption>
+</figure>
+
+<p>As you can see in the first slide, the idea is to define the messaging functionality needed in Smuggler abstractly in terms of interfaces and classes that only depend on those interfaces. This is what goes in the <code>core.msg</code> package and is the only thing all the other modules in Smuggler depend on. We implement these channel abstractions in the <code>q</code> package using HornetQ queues. Here’s an <a href="structure/key-q-classes.svg" title="Key classes in q - UML class diagram">annotated UML class diagram</a> that shows the key implementation classes in <code>q</code> and their relationship to both the abstract specification in <code>core.msg</code> and the HornetQ Core API.</p>
+<p>We also have a couple of UML object diagrams to show examples of how the instances of the various classes are wired together to provide communication channels to the services that need them—the wiring happens in the <code>config</code> package, through the Spring IoC API. <a href="structure/omero-import-gc-wiring.svg" title="Wiring of import GC - UML object diagram">The first diagram</a> shows how the import GC queue serves as a channel between the <code>ImportRunner</code> instance—the message producer—and the <code>ImportLogDisposer</code> instance, the consumer. In running an import, the <code>ImportRunner</code> schedules the deletion of the import log file by putting a message on the import GC queue using a <code>SchedulingSource</code>. This message is a basically a deletion request that, when the time comes, is delivered to the <code>ImportLogDisposer</code> through a <code>ChannelSink</code> instance. <a href="structure/omero-import-wiring.svg" title="Wiring of import service - UML object diagram">The second diagram</a> is more involved as it shows the wiring of the various class instances involved in the running of an import and how they’re connected through the import queue.</p>
   </section>
 </main>  
 
