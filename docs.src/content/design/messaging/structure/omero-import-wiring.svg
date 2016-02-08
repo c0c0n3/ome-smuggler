@@ -12,7 +12,7 @@
    viewBox="0 0 1024 768"
    id="svg8509"
    version="1.1"
-   inkscape:version="0.91+devel+osxmenu r12898"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="omero-import-wiring.svg">
   <sodipodi:namedview
      pagecolor="#3c4747"
@@ -23,17 +23,17 @@
      inkscape:zoom="1"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-maximized="0"
+     showgrid="true"
+     inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
      id="namedview8511"
-     inkscape:cx="448.75"
+     inkscape:cx="473.93151"
      inkscape:cy="390.60392"
-     inkscape:window-width="1440"
-     inkscape:window-height="851"
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
      inkscape:window-x="0"
-     inkscape:window-y="23"
+     inkscape:window-y="24"
      inkscape:snap-global="false"
      showguides="false">
     <inkscape:grid
@@ -247,23 +247,20 @@
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        inkscape:original-d="m -1,112 c 319.34333,-0.01 638.67667,-0.01 958,0"
-       inkscape:path-effect="#path-effect10949"
        id="path10947"
-       d="m -1,112 c 319.34333,0 638.67667,0 958,0"
-       style="opacity:0.3;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#20b6ea;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       d="m 5,112 c 317.34327,0 634.67661,0 952,0"
+       style="opacity:0.3;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#20b6ea;stroke-width:1.99372709;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        inkscape:connector-curvature="0"
        inkscape:original-d="M -1.1238654e-7,442 C 319.01,441.99 638.01,441.99 957,442"
-       inkscape:path-effect="#path-effect10371"
        id="path14653"
-       d="M -1.1238654e-7,442 C 319.01,442 638.01,442 957,442"
-       style="opacity:0.5;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#f48f97;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 5,442 c 317.34328,0 634.67661,0 952,0"
+       style="opacity:0.5;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#f48f97;stroke-width:1.9947685;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
     <path
-       style="opacity:0.3;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#20b6ea;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="m -1,262 c 319.34333,0 638.67667,0 958,0"
+       style="opacity:0.3;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#20b6ea;stroke-width:1.99372709;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 5,262 c 317.34327,0 634.67661,0 952,0"
        id="path10943"
-       inkscape:path-effect="#path-effect10945"
        inkscape:original-d="m -1,262 c 319.34333,-0.01 638.67667,-0.01 958,0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
@@ -1112,5 +1109,21 @@
        id="path11029"
        d="m 246.81997,116.52348 c -11.49929,10.8516 -11.49929,10.8516 -11.49929,10.8516 l -10.8515,-11.4992"
        style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       style="opacity:0.3;fill:#20b6ea;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect8664"
+       width="5"
+       height="442"
+       x="0"
+       y="0"
+       ry="0" />
+    <rect
+       ry="0"
+       y="441"
+       x="0"
+       height="327"
+       width="5"
+       id="rect8666"
+       style="opacity:0.5;fill:#f48f97;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   </g>
 </svg>
