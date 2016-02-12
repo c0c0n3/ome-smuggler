@@ -114,4 +114,8 @@ need as we're using HornetQ's core API. Look at what they do in this package:
 a `org.hornetq.jms.server.embedded.EmbeddedJMS`, we should rather instantiate
 its super-class `EmbeddedHornetQ` and get rid of the dependency on the HornetQ
 JMS server jar in our `build.gradle`.
+* OMERO port. Mandatory at the moment. Rather make it optional and default it
+to 4064 if not in the JSON import request.
+* Undertow port. Speaking of ports, make the default Undertow port 8000 rather
+than 8080 as 8080 is already used by OMERO.web.
 * ...[will add more to this list as I go along]
