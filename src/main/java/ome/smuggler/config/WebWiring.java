@@ -4,12 +4,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.boot.context.embedded.undertow.UndertowBuilderCustomizer;
+import org.springframework.boot.context.embedded.undertow.UndertowDeploymentInfoCustomizer;
+import org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import io.undertow.UndertowOptions;
+import io.undertow.Undertow.Builder;
+import io.undertow.servlet.api.DeploymentInfo;
+import ome.smuggler.config.items.UndertowConfig;
+import util.config.ConfigProvider;
 
 
 /**
@@ -52,5 +62,38 @@ public class WebWiring extends WebMvcConfigurerAdapter {
     }
     /* (*) this way methods that return a string need to do nothing and the
      * client doesn't need to specify an accept header either.
+     */
+    
+    @Bean
+    public UndertowEmbeddedServletContainerFactory 
+                embeddedServletContainerFactory(
+                        ConfigProvider<UndertowConfig> cfg) {
+        
+        int port = cfg.defaultReadConfig().findFirst().get().getPort();
+        
+        UndertowEmbeddedServletContainerFactory factory = 
+                new UndertowEmbeddedServletContainerFactory(port);
+        
+        factory.addBuilderCustomizers(new UndertowBuilderCustomizer() {
+            @Override
+            public void customize(Builder builder) {  // (*)
+                builder.setServerOption(UndertowOptions.DECODE_URL, true);
+                builder.setServerOption(UndertowOptions.URL_CHARSET, 
+                                        StandardCharsets.UTF_8.name());
+            }
+        });
+        
+        factory.addDeploymentInfoCustomizers(new UndertowDeploymentInfoCustomizer() {
+            @Override
+            public void customize(DeploymentInfo deployment) {  // (*)
+                deployment.setDefaultEncoding(StandardCharsets.UTF_8.name());
+            }
+        });
+        
+        return factory;
+    }
+    /* (*) objects are passed in after Spring Boot has set most of the values, 
+     * which allows us to add to or override the settings without having to 
+     * redo the entire server configuration.
      */
 }
