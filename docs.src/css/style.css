@@ -91,6 +91,33 @@ section {
  * longest lines.
  */
 
+nav {
+    border-bottom: 0.05263158em;
+    border-style: solid;
+}
+
+nav ul {
+    text-align: center;
+    white-space: normal;
+    vertical-align: middle;
+    margin: 0 auto;
+    max-width: 40em; /* 760px / 19px = 40em if 1em = 19px */
+    min-width: 20em;
+    list-style-type: none;
+    overflow: hidden;
+}
+
+nav ul li {
+    display: inline;
+    padding: 0 0.5em 0 0.5em;
+}
+
+nav ul li em {
+    font-family: "Kaushan Script", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
 h1 {
     font-size: 4.4em;
     line-height: 0.928em;
@@ -233,29 +260,29 @@ a:hover {
  * Eye candy. 
  */
 
-header {
+nav {
     position: relative;
 }
 
-header::before {
+nav::before {
     content: "";
     display: block;
     height: 7em;
     background-color: #3c4747;
 }
 
-header section:first-child {
-    padding-top: 2.5em;
-}
-
-header section:first-child::before {
+nav ul::before {
     content: "";
     position: absolute;
-    top: 1.46em;
-    background: url(../images/logo.svg) no-repeat;
-    background-size: 22.662em 7em; /* keep original aspect ratio */
-    width: 22.662em;
+    top: 0.99em;
+    background: url(../images/import-banner.svg) no-repeat;
+    background-size: 17.5em 7em; /* keep original aspect ratio */
+    width: 17.5em;
     height: 7em;
+}
+
+header section:first-child {
+    padding-top: 2.5em;
 }
 
 main {
@@ -281,17 +308,17 @@ footer section {
  * Eye candy adjustment for small displays. 
  */
 @media all and (max-width: 400px) {
-    header::before {
+    nav::before {
         height: 4.7727275em;
+    }
+    nav ul::before {
+        top: 0.43em;
+        background-size: 12.5em 5em; /* keep original aspect ratio */
+        width: 12.5em;
+        height: 5em;
     }
     header section:first-child {
         padding-top: 1.7045455em;
-    }
-    header section:first-child::before {
-        top: 1.59em;
-        background-size: 12.95em 4em; /* keep original aspect ratio */
-        width: 12.95em;
-        height: 4em;
-    }
+    } 
 }
 
