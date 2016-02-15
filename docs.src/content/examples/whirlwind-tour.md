@@ -57,6 +57,13 @@ $ java -jar build/libs/ome-smuggler-0.1.0.jar
 Keep it running in the foreground so you can see what's going on. In any case,
 terminal output is also saved in `ome-smuggler.log` in the current directory.
 
+<div class="side-note">
+###### Default Port
+Smuggler's HTTP port is 8000 by default. You can change this by copying 
+`undertow.yml` from `src/main/resources/config/` to the directory from
+which you started Smuggler and edit the copied file to change the port
+number. Then restart Smuggler.
+</div>
 
 Making an Import fail
 ---------------------

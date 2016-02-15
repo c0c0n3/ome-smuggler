@@ -63,6 +63,10 @@ $ <span class="kw">cp</span> /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar
 <p>We’re ready to run the server. (Java 8 required.) In the <code>ome-smuggler</code> root directory</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">java</span> -jar build/libs/ome-smuggler-0.1.0.jar</code></pre>
 <p>Keep it running in the foreground so you can see what’s going on. In any case, terminal output is also saved in <code>ome-smuggler.log</code> in the current directory.</p>
+<div class="side-note">
+<h6 id="default-port">Default Port</h6>
+<p>Smuggler’s HTTP port is 8000 by default. You can change this by copying <code>undertow.yml</code> from <code>src/main/resources/config/</code> to the directory from which you started Smuggler and edit the copied file to change the port number. Then restart Smuggler.</p>
+</div>
 <h2 id="making-an-import-fail">Making an Import fail</h2>
 <p>Why? Because this workflow touches most of the available functionality. First</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> src/test/scripts/http-import/
