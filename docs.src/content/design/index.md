@@ -4,7 +4,7 @@ slogan: doodles and giggles
 ---
 
 <p class="intro">
-So here's our *Hitch-Hacker Guide to the Code*. Even though the answer to
+So here's our *Hitch-Hacker's Guide to the Code*. Even though the answer to
 life, the universe and everything has already been "[calculated][_42]", you
 may still have a lot of questions about Smuggler's design. Then you might
 find some of the answers here...
