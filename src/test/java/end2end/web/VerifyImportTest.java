@@ -132,7 +132,7 @@ public class VerifyImportTest extends BaseWebTest {
     
     private void waitUntilPastLogRetentionPeriod() {
         long millis = config.importConfig.logRetentionPeriod()
-                     .plusSeconds(15).toMillis();
+                     .plusSeconds(60).toMillis();
         runUnchecked(() -> Thread.sleep(millis));
     }
     
