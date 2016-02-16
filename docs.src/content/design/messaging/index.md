@@ -1,6 +1,6 @@
 ---
 title: Messaging
-slogan: ...in a bottle ♫ yeah ♫
+slogan: ...a bottle ♫ yeah ♫
 ---
 
 <p class="intro">
