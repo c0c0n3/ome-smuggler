@@ -1,1 +1,1 @@
-!!ome.smuggler.config.items.UndertowConfig {port: 8080}
+!!ome.smuggler.config.items.UndertowConfig {port: 8000}

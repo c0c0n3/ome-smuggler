@@ -37,7 +37,7 @@ public class EnqueueImportTest extends BaseWebTest {
      *                      "omeroHost":"h", 
      *                      "omeroPort":"1", 
      *                      "sessionKey":"k"}' 
-     *         http://localhost:8080/ome/import
+     *         http://localhost:8000/ome/import
      */
     @Test
     public void postValidRequest() {
@@ -56,7 +56,7 @@ public class EnqueueImportTest extends BaseWebTest {
     /* curl -v -H 'Accept: application/json' 
      *         -H 'Content-Type: application/json'  
      *         -X POST -d '{}' 
-     *         http://localhost:8080/ome/import
+     *         http://localhost:8000/ome/import
      */
     @Test
     public void postRequestWithoutRequiredFields() {
@@ -72,7 +72,7 @@ public class EnqueueImportTest extends BaseWebTest {
     /* curl -v -H 'Accept: application/json' 
      *         -H 'Content-Type: application/json' 
      *         -X POST -d '' 
-     *         http://localhost:8080/ome/import
+     *         http://localhost:8000/ome/import
      */
     @Test
     public void postRequestWithEmptyBody() {
@@ -96,7 +96,7 @@ public class EnqueueImportTest extends BaseWebTest {
      *                      "omeroHost":"h", 
      *                      "omeroPort":"1", 
      *                      "sessionKey":"k"}' 
-     *         http://localhost:8080/ome/import
+     *         http://localhost:8000/ome/import
      */
     @Test
     public void postValidRequestWithAcceptAll() {

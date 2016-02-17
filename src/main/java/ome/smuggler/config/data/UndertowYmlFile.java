@@ -13,7 +13,7 @@ public class UndertowYmlFile implements ConfigProvider<UndertowConfig> {
     @Override
     public Stream<UndertowConfig> readConfig() {
         UndertowConfig cfg = new UndertowConfig();
-        cfg.setPort(8080);
+        cfg.setPort(8000);
         
         return Stream.of(cfg);
     }

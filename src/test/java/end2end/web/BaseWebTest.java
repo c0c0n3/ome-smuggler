@@ -25,7 +25,7 @@ public class BaseWebTest {
 
     public static URI url(String...xs) {
         UriComponentsBuilder builder = UriComponentsBuilder
-                                      .fromUriString("http://localhost:8080/");
+                                      .fromUriString("http://localhost:8000/");
         Arrays.asList(xs).forEach(x -> builder.path(x));
         return builder.build().toUri();
     }
