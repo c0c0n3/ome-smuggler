@@ -35,6 +35,8 @@ import util.validation.Validator;
  */
 public class ImportRequestValidator implements Validator<Error, ImportRequest> {
 
+    public static final int DefaultOmeroPort = 4064;
+    
     private Either<String, Email> email;
     private Either<String, URI> target;
     private Either<String, URI> omero;
@@ -46,6 +48,12 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     
     private List<Either<String, ?>> parseResults;
     
+    
+    private void applyDefaults(ImportRequest r) {
+        if (isNullOrEmpty(r.omeroPort)) {
+            r.omeroPort = "" + DefaultOmeroPort;
+        }
+    }
     
     private void checkRequiredFields(ImportRequest r) {
         email = label("experimenterEmail", email(r.experimenterEmail));
@@ -114,6 +122,8 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     public Either<Error, ImportRequest> validate(ImportRequest r) {
         if (r != null) {
             parseResults = new ArrayList<>();
+            
+            applyDefaults(r);
             
             checkRequiredFields(r);
             checkImageContainerId(r);

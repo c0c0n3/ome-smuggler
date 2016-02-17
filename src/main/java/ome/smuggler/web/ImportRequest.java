@@ -35,8 +35,8 @@ public class ImportRequest {
     public String omeroHost;
     
     /**
-     * The port of the OMERO server. This is a mandatory field and must parse
-     * to a non-negative integer.
+     * The port of the OMERO server. This is an optional field and must parse
+     * to a non-negative integer if specified. Defaults to 4064.
      */
     public String omeroPort;
     

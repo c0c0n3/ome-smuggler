@@ -69,13 +69,16 @@ public class ImportRequestValidatorTest {
     }
     
     @Test
-    public void failIfMissingOmeroPort() {
+    public void defaultOmeroPort() {
         ImportRequest r = new ImportRequest();
         r.experimenterEmail = "e@edu";
         r.targetUri = "/some/file";
         r.omeroHost = "omero";
+        r.sessionKey = "sesh";
         
-        assertFailure(r);
+        assertSuccess(r);
+        assertThat(r.omeroPort, 
+                   is("" + ImportRequestValidator.DefaultOmeroPort));
     }
     
     @Test
