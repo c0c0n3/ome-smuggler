@@ -234,10 +234,15 @@ a {
     text-decoration: none;
     color: #2d2d2d;
     font-weight: 600;
+    border-bottom: 1px solid #cccccc;
 }
 
 a:hover {
     color: #f37962;
+}
+
+nav a, footer a {
+    border-bottom: 0px;
 }
 
 /*
