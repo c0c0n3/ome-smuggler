@@ -8,7 +8,7 @@ import java.util.Objects;
  * Represents an import outcome notification that has been queued and is waiting
  * to be sent to the intended recipient.
  */
-public class QueuedImportNotification {
+public class ImportNotification {
 
     private final ImportId taskId;
     private final TextNotification outcome;
@@ -19,7 +19,7 @@ public class QueuedImportNotification {
      * @param outcome the notification message to send.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public QueuedImportNotification(ImportId taskId, TextNotification outcome) {
+    public ImportNotification(ImportId taskId, TextNotification outcome) {
         requireNonNull(taskId, "taskId");
         requireNonNull(outcome, "outcome");
         
@@ -47,8 +47,8 @@ public class QueuedImportNotification {
         if (this == x) {
             return true;
         }
-        if (x instanceof QueuedImportNotification) {
-            QueuedImportNotification other = (QueuedImportNotification) x;
+        if (x instanceof ImportNotification) {
+            ImportNotification other = (ImportNotification) x;
             return Objects.equals(taskId, other.taskId)
                 && Objects.equals(outcome, other.outcome);
         }

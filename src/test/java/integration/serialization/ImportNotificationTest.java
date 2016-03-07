@@ -8,10 +8,10 @@ import com.google.gson.reflect.TypeToken;
 
 import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.ImportId;
-import ome.smuggler.core.types.QueuedImportNotification;
+import ome.smuggler.core.types.ImportNotification;
 import ome.smuggler.core.types.TextNotification;
 
-public class QueuedImportNotificationTest extends JsonWriteReadTest {
+public class ImportNotificationTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
@@ -19,12 +19,12 @@ public class QueuedImportNotificationTest extends JsonWriteReadTest {
         Email recipient = email("guy@fbi.edu").getRight();
         TextNotification outcome = 
                 new TextNotification(recipient, "title", "content");
-        QueuedImportNotification initialValue = 
-                new QueuedImportNotification(new ImportId(), outcome);
-        Class<QueuedImportNotification> valueType = (Class<QueuedImportNotification>) 
+        ImportNotification initialValue = 
+                new ImportNotification(new ImportId(), outcome);
+        Class<ImportNotification> valueType = (Class<ImportNotification>) 
                 initialValue.getClass();
-        TypeToken<QueuedImportNotification> typeToken = 
-                new TypeToken<QueuedImportNotification>(){}; 
+        TypeToken<ImportNotification> typeToken = 
+                new TypeToken<ImportNotification>(){}; 
         
         assertWriteThenReadGivesInitialValue(initialValue, valueType);
         assertWriteThenReadGivesInitialValue(initialValue, typeToken);
