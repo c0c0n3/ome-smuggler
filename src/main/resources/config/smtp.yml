@@ -1,0 +1,2 @@
+!!ome.smuggler.config.items.SmtpConfig {fromAddress: omero-noreply@mri.cnrs.fr, host: localhost,
+  port: 25}
