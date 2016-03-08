@@ -7,20 +7,20 @@ import org.junit.Test;
 import com.google.gson.reflect.TypeToken;
 
 import ome.smuggler.core.types.Email;
-import ome.smuggler.core.types.TextNotification;
+import ome.smuggler.core.types.PlainTextMail;
 
-public class TextNotificationTest extends JsonWriteReadTest {
+public class PlainTextMailTest extends JsonWriteReadTest {
     
     @Test
     @SuppressWarnings("unchecked")
     public void jsonSerializeAndDeserialize() throws Exception {
         Email recipient = email("guy@fbi.edu").getRight();
-        TextNotification initialValue = 
-                new TextNotification(recipient, "title", "content"); 
-        Class<TextNotification> valueType = (Class<TextNotification>) 
+        PlainTextMail initialValue = 
+                new PlainTextMail(recipient, "title", "content"); 
+        Class<PlainTextMail> valueType = (Class<PlainTextMail>) 
                 initialValue.getClass();
-        TypeToken<TextNotification> typeToken = 
-                new TypeToken<TextNotification>(){}; 
+        TypeToken<PlainTextMail> typeToken = 
+                new TypeToken<PlainTextMail>(){}; 
         
         assertWriteThenReadGivesInitialValue(initialValue, valueType);
         assertWriteThenReadGivesInitialValue(initialValue, typeToken);
