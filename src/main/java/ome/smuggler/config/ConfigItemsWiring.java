@@ -9,6 +9,7 @@ import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
+import ome.smuggler.config.items.SmtpQConfig;
 import ome.smuggler.core.types.ImportConfigReader;
 import ome.smuggler.core.types.ImportConfigSource;
 import util.config.ConfigProvider;
@@ -48,6 +49,11 @@ public class ConfigItemsWiring {
     @Bean
     public HornetQPersistenceConfig hornetQPersistenceConfig(
             ConfigProvider<HornetQPersistenceConfig> src) {
+        return config(src);
+    }
+    
+    @Bean
+    public SmtpQConfig smtpQConfig(ConfigProvider<SmtpQConfig> src) {
         return config(src);
     }
     
