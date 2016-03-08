@@ -10,12 +10,16 @@ import util.config.ConfigProvider;
  */
 public class MailYmlFile implements ConfigProvider<MailConfig> {
 
+    public static String DeadMailDirRelPath = "mail/failed";
+    
     @Override
     public Stream<MailConfig> readConfig() {
         MailConfig cfg = new MailConfig();
-        cfg.setHost("localhost");
-        cfg.setPort(25);
+        cfg.setMailServerHost("localhost");
+        cfg.setMailServerPort(25);
         cfg.setFromAddress("omero-noreply@mri.cnrs.fr");
+        cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L });
+        cfg.setDeadMailDir(DeadMailDirRelPath);
         
         return Stream.of(cfg);
     }

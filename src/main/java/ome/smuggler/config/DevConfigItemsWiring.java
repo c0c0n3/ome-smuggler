@@ -11,12 +11,14 @@ import org.springframework.context.annotation.Profile;
 
 import ome.smuggler.config.data.DefaultHornetQPersistenceConfig;
 import ome.smuggler.config.data.DevImportConfigSource;
+import ome.smuggler.config.data.DevMailConfigSource;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.config.items.MailQConfig;
 import ome.smuggler.core.types.ImportConfigSource;
+import ome.smuggler.core.types.MailConfigSource;
 import util.config.ConfigProvider;
 
 
@@ -66,6 +68,11 @@ public class DevConfigItemsWiring {
     @Bean
     public MailQConfig mailQConfig(ConfigProvider<MailQConfig> src) {
         return config(src);
+    }
+    
+    @Bean
+    public MailConfigSource mailConfig() {
+        return new DevMailConfigSource(baseDataDir);
     }
     
 }

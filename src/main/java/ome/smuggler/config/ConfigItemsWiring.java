@@ -9,9 +9,12 @@ import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportQConfig;
+import ome.smuggler.config.items.MailConfig;
 import ome.smuggler.config.items.MailQConfig;
 import ome.smuggler.core.types.ImportConfigReader;
 import ome.smuggler.core.types.ImportConfigSource;
+import ome.smuggler.core.types.MailConfigReader;
+import ome.smuggler.core.types.MailConfigSource;
 import util.config.ConfigProvider;
 import util.config.ConfigReader;
 
@@ -55,6 +58,11 @@ public class ConfigItemsWiring {
     @Bean
     public MailQConfig mailQConfig(ConfigProvider<MailQConfig> src) {
         return config(src);
+    }
+    
+    @Bean
+    public MailConfigSource mailConfig(ConfigProvider<MailConfig> src) {
+        return config(ConfigReader.newReader(src, MailConfigReader::new));
     }
     
 }
