@@ -15,7 +15,7 @@ import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportQConfig;
-import ome.smuggler.config.items.SmtpQConfig;
+import ome.smuggler.config.items.MailQConfig;
 import ome.smuggler.core.types.ImportConfigSource;
 import util.config.ConfigProvider;
 
@@ -64,7 +64,7 @@ public class DevConfigItemsWiring {
     }
     
     @Bean
-    public SmtpQConfig smtpQConfig(ConfigProvider<SmtpQConfig> src) {
+    public MailQConfig mailQConfig(ConfigProvider<MailQConfig> src) {
         return config(src);
     }
     

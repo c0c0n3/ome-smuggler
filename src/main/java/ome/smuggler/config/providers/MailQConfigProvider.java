@@ -2,7 +2,7 @@ package ome.smuggler.config.providers;
 
 import org.springframework.stereotype.Component;
 
-import ome.smuggler.config.data.DefaultSmtpQConfig;
+import ome.smuggler.config.data.DefaultMailQConfig;
 
 
 /**
@@ -11,6 +11,6 @@ import ome.smuggler.config.data.DefaultSmtpQConfig;
  * import server.
  */
 @Component
-public class SmtpQConfigProvider extends DefaultSmtpQConfig {
+public class MailQConfigProvider extends DefaultMailQConfig {
 
 }

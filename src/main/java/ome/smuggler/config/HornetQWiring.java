@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportQConfig;
-import ome.smuggler.config.items.SmtpQConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.Reschedulable;
 import ome.smuggler.core.msg.ReschedulableFactory;
