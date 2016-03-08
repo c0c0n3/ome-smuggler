@@ -17,8 +17,8 @@ build
 /*.log
 /*.properties
 /*.yml
-hornetq-data
-ome-lib
-import
-mail
+/hornetq-data
+/ome-lib
+/import
+/mail
 
