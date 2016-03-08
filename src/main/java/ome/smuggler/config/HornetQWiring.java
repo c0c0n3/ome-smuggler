@@ -21,7 +21,6 @@ import ome.smuggler.core.service.ImportProcessor;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
-import ome.smuggler.core.types.ImportNotification;
 import ome.smuggler.q.DequeueTask;
 import ome.smuggler.q.QChannelFactory;
 import ome.smuggler.q.ServerConnector;
@@ -57,13 +56,6 @@ public class HornetQWiring {
     }
     
     @Bean
-    public QChannelFactory<ImportNotification> importNotificationChannelFactory(
-            ServerConnector connector, SmtpQConfig qConfig) 
-                    throws HornetQException {
-        return new QChannelFactory<>(connector, qConfig);
-    }
-    
-    @Bean
     public ChannelSource<QueuedImport> importSourceChannel(
             QChannelFactory<QueuedImport> factory) throws HornetQException {
         return factory.buildSource();
@@ -75,13 +67,6 @@ public class HornetQWiring {
         return factory.buildSchedulingSource();
     }
 
-    @Bean
-    public ChannelSource<ImportNotification> importNotificationSourceChannel(
-            QChannelFactory<ImportNotification> factory) 
-                    throws HornetQException {
-        return factory.buildSource();
-    }
-    
     @Bean
     public DequeueTask<QueuedImport> dequeueImportTask(
             QChannelFactory<QueuedImport> factory,
