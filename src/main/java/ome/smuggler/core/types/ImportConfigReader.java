@@ -1,16 +1,13 @@
 package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-import static util.string.Strings.requireString;
+import static ome.smuggler.core.convert.RawConfigValues.toDuration;
+import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
+import static ome.smuggler.core.convert.RawConfigValues.toPath;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import ome.smuggler.config.items.ImportConfig;
 
@@ -19,23 +16,6 @@ import ome.smuggler.config.items.ImportConfig;
  * from an underlying {@link ImportConfig}.
  */
 public class ImportConfigReader implements ImportConfigSource {
-
-    private static Path toPath(String path) {
-        requireString(path, "path");
-        return Paths.get(path);
-    }
-    
-    private static Duration toDuration(Long minutes) {
-        PositiveN v = PositiveN.of(minutes);  // NB throws if minutes <= 0
-        return Duration.ofMinutes(v.get());
-    }
-    
-    private static List<Duration> toDurationList(Long[] minutes) {
-        return Stream.of(minutes == null ? new Long[0] : minutes)
-                     .map(ms -> toDuration(ms))
-                     .collect(collectingAndThen(
-                                 toList(), Collections::unmodifiableList));
-    }
     
     private final Path importLogDir;
     private final Duration logRetentionPeriod;
