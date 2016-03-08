@@ -1,12 +1,12 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.service.impl.Loggers.logImportPermanentFailure;
+import static ome.smuggler.core.service.Loggers.logImportPermanentFailure;
 
 import java.nio.file.Path;
 
 import ome.smuggler.core.io.FileOps;
-import ome.smuggler.core.service.FailedImportHandler;
+import ome.smuggler.core.service.imports.FailedImportHandler;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.QueuedImport;
 

@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.io.FileOps;
-import ome.smuggler.core.service.ImportTracker;
+import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogPath;
 

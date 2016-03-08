@@ -1,9 +1,9 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import java.nio.file.Path;
 
 import ome.smuggler.core.io.FileOps;
-import ome.smuggler.core.service.ImportLogDisposer;
+import ome.smuggler.core.service.imports.ImportLogDisposer;
 import ome.smuggler.core.types.ImportLogFile;
 
 public class ImportLogDeleteAction implements ImportLogDisposer {

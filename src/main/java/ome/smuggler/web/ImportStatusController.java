@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
-import ome.smuggler.core.service.ImportTracker;
+import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
 import util.servlet.http.Caches;
 

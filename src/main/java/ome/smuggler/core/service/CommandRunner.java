@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;

@@ -1,4 +1,4 @@
-package ome.smuggler.core.service;
+package ome.smuggler.core.service.imports;
 
 import ome.smuggler.core.types.ImportLogFile;
 

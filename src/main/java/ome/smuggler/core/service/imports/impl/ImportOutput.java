@@ -1,8 +1,8 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static java.nio.file.StandardOpenOption.*;
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.service.impl.ImportOutputFormatter.*;
+import static ome.smuggler.core.service.imports.impl.ImportOutputFormatter.*;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;

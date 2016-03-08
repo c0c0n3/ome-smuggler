@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import ome.smuggler.config.data.DefaultCliImporterConfig;
 import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.core.service.imports.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 
 import org.junit.Test;

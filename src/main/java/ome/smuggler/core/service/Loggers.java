@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service;
 
 import static java.util.stream.Collectors.joining;
 import static util.object.Pair.pair;

@@ -1,16 +1,17 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
-import static ome.smuggler.core.service.impl.Loggers.logTransientError;
+import static ome.smuggler.core.service.Loggers.logTransientError;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 import ome.smuggler.core.msg.RepeatAction;
-import ome.smuggler.core.service.ImportProcessor;
+import ome.smuggler.core.service.CommandRunner;
+import ome.smuggler.core.service.imports.ImportProcessor;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;

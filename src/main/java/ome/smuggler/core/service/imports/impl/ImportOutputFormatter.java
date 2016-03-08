@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static util.string.Strings.write;
 

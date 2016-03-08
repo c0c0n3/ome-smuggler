@@ -3,7 +3,7 @@ package ome.smuggler.web;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static util.spring.http.ResponseEntities.okOr400;
 
-import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.service.imports.ImportRequestor;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportInput;
 

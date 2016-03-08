@@ -1,11 +1,11 @@
-package ome.smuggler.core.service.impl;
+package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
 
-import ome.smuggler.core.service.ImportRequestor;
+import ome.smuggler.core.service.imports.ImportRequestor;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
