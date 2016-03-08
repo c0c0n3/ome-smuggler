@@ -5,8 +5,8 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 import util.spring.io.ResourceReader;
-import ome.smuggler.config.data.SmtpYmlFile;
-import ome.smuggler.config.items.SmtpConfig;
+import ome.smuggler.config.data.MailYmlFile;
+import ome.smuggler.config.items.MailConfig;
 
 
 /**
@@ -17,18 +17,18 @@ import ome.smuggler.config.items.SmtpConfig;
  * to hard-code config if not found.
  */
 @Component
-public class SmtpConfigProvider extends PriorityConfigProvider<SmtpConfig> {
+public class MailConfigProvider extends PriorityConfigProvider<MailConfig> {
 
-    public static final String FileName = "smtp.yml";
+    public static final String FileName = "mail.yml";
     
     @Override
-    protected ResourceReader<SmtpConfig> getConverter() {
-        return new YmlResourceReader<>(SmtpConfig.class);
+    protected ResourceReader<MailConfig> getConverter() {
+        return new YmlResourceReader<>(MailConfig.class);
     }
     
     @Override 
-    public Stream<SmtpConfig> getFallback() {
-        return new SmtpYmlFile().readConfig();
+    public Stream<MailConfig> getFallback() {
+        return new MailYmlFile().readConfig();
     }
 
     @Override

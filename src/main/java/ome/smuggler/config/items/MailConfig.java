@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Holds the mail server parameters as read from configuration.
  */
-public class SmtpConfig {
+public class MailConfig {
     // NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
     // be (de-)serialized painlessly by SnakeYaml.
     
@@ -47,7 +47,7 @@ public class SmtpConfig {
         if (this == other) {
             return true;
         }
-        if (other instanceof SmtpConfig) {
+        if (other instanceof MailConfig) {
             return Objects.equals(other.toString(), this.toString());
         }
         return false;
