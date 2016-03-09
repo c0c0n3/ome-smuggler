@@ -14,8 +14,17 @@ import ome.smuggler.core.service.imports.impl.ImportLogDeleteAction;
 import ome.smuggler.core.service.imports.impl.ImportMonitor;
 import ome.smuggler.core.service.imports.impl.ImportRunner;
 import ome.smuggler.core.service.imports.impl.ImportTrigger;
+import ome.smuggler.core.service.mail.FailedMailHandler;
+import ome.smuggler.core.service.mail.MailProcessor;
+import ome.smuggler.core.service.mail.MailRequestor;
+import ome.smuggler.core.service.mail.impl.MailEnv;
+import ome.smuggler.core.service.mail.impl.MailFailureHandler;
+import ome.smuggler.core.service.mail.impl.MailTrigger;
+import ome.smuggler.core.service.mail.impl.Mailer;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
+import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.PlainTextMail;
 import ome.smuggler.core.types.QueuedImport;
 
 import org.springframework.context.annotation.Bean;
@@ -62,6 +71,33 @@ public class Wiring {
     @Bean
     public ImportTracker importTracker(ImportEnv env) {
         return new ImportMonitor(env);
+    }
+    
+    /* ---------------------------------------------------------------------- */
+    // MAIL
+    
+    @Bean
+    public MailEnv mailEnv(MailConfigSource config, 
+            ChannelSource<PlainTextMail> mailSourceChannel) {
+        MailEnv env = new MailEnv(config, mailSourceChannel);
+        
+        env.ensureDirectories();
+        return env;
+    }
+    
+    @Bean 
+    public MailRequestor mailRequestor() {
+        return new MailTrigger();
+    }
+    
+    @Bean
+    public MailProcessor mailProcessor() {
+        return new Mailer();
+    }
+    
+    @Bean
+    public FailedMailHandler failedMailHandler() {
+        return new MailFailureHandler();
     }
     
 }
