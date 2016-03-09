@@ -2,31 +2,11 @@ package ome.smuggler.config.wiring;
 
 import javax.jms.ConnectionFactory;
 
-import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportQConfig;
-import ome.smuggler.config.items.MailQConfig;
-import ome.smuggler.core.msg.ChannelSource;
-import ome.smuggler.core.msg.Reschedulable;
-import ome.smuggler.core.msg.ReschedulableFactory;
-import ome.smuggler.core.msg.SchedulingSource;
-import ome.smuggler.core.service.imports.FailedImportHandler;
-import ome.smuggler.core.service.imports.ImportLogDisposer;
-import ome.smuggler.core.service.imports.ImportProcessor;
-import ome.smuggler.core.service.mail.FailedMailHandler;
-import ome.smuggler.core.service.mail.MailProcessor;
-import ome.smuggler.core.types.ImportConfigSource;
-import ome.smuggler.core.types.ImportLogFile;
-import ome.smuggler.core.types.MailConfigSource;
-import ome.smuggler.core.types.PlainTextMail;
-import ome.smuggler.core.types.QueuedImport;
-import ome.smuggler.q.DequeueTask;
-import ome.smuggler.q.QChannelFactory;
 import ome.smuggler.q.ServerConnector;
 
 
@@ -44,78 +24,5 @@ public class HornetQWiring {
         ServerLocator locator = factory.getServerLocator();
         return new ServerConnector(locator);
     }
-    
-    @Bean
-    public QChannelFactory<QueuedImport> importChannelFactory(
-            ServerConnector connector, ImportQConfig qConfig) 
-                    throws HornetQException {
-        return new QChannelFactory<>(connector, qConfig);
-    }
-    
-    @Bean
-    public QChannelFactory<ImportLogFile> importGcChannelFactory(
-            ServerConnector connector, ImportGcQConfig qConfig) 
-                    throws HornetQException {
-        return new QChannelFactory<>(connector, qConfig);
-    }
-    
-    @Bean
-    public ChannelSource<QueuedImport> importSourceChannel(
-            QChannelFactory<QueuedImport> factory) throws HornetQException {
-        return factory.buildSource();
-    }
-    
-    @Bean
-    public SchedulingSource<ImportLogFile> importGcSourceChannel(
-            QChannelFactory<ImportLogFile> factory) throws HornetQException {
-        return factory.buildSchedulingSource();
-    }
 
-    @Bean
-    public DequeueTask<QueuedImport> dequeueImportTask(
-            QChannelFactory<QueuedImport> factory,
-            ImportConfigSource importConfig,
-            ImportProcessor processor,
-            FailedImportHandler failureHandler) throws HornetQException {
-        Reschedulable<QueuedImport> consumer = 
-                ReschedulableFactory.buildForRepeatConsumer(processor, 
-                        importConfig.retryIntervals(), failureHandler);
-        return factory.buildReschedulableSink(consumer, QueuedImport.class);
-    }
-    
-    @Bean
-    public DequeueTask<ImportLogFile> dequeueImportLogDisposalTask(
-            QChannelFactory<ImportLogFile> factory,
-            ImportLogDisposer reaper) throws HornetQException {
-        return factory.buildSink(reaper::dispose, ImportLogFile.class);
-    }
-    
-    /* ---------------------------------------------------------------------- */
-    // MAIL
-    
-    @Bean
-    public QChannelFactory<PlainTextMail> mailChannelFactory(
-            ServerConnector connector, MailQConfig qConfig) 
-                    throws HornetQException {
-        return new QChannelFactory<>(connector, qConfig);
-    }
-    
-    @Bean
-    public ChannelSource<PlainTextMail> mailSourceChannel(
-            QChannelFactory<PlainTextMail> factory) throws HornetQException {
-        return factory.buildSource();
-    }
-    
-    @Bean
-    public DequeueTask<PlainTextMail> dequeueMailTask(
-            QChannelFactory<PlainTextMail> factory,
-            MailConfigSource mailConfig,
-            MailProcessor processor,
-            FailedMailHandler failureHandler) throws HornetQException {
-        Reschedulable<PlainTextMail> consumer = 
-                ReschedulableFactory.buildForRepeatConsumer(processor, 
-                        mailConfig.retryIntervals(), failureHandler);
-        return factory.buildReschedulableSink(consumer, PlainTextMail.class);
-    }
-    
 }
