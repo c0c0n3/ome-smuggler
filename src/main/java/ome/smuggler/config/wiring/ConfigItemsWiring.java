@@ -1,9 +1,10 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import ome.smuggler.config.Profiles;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;

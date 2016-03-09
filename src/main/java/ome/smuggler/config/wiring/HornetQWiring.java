@@ -1,4 +1,4 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
 import javax.jms.ConnectionFactory;
 

@@ -1,4 +1,4 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;

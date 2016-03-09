@@ -1,4 +1,4 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

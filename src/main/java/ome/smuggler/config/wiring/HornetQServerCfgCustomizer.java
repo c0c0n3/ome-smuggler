@@ -1,4 +1,4 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
 import static util.sequence.Arrayz.asMutableList;
 

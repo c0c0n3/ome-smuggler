@@ -1,6 +1,6 @@
-package ome.smuggler.config;
+package ome.smuggler.config.wiring;
 
-import static ome.smuggler.config.ConfigItemsWiring.config;
+import static ome.smuggler.config.wiring.ConfigItemsWiring.config;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.DefaultHornetQPersistenceConfig;
 import ome.smuggler.config.data.DevImportConfigSource;
 import ome.smuggler.config.data.DevMailConfigSource;

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import ome.smuggler.config.DevConfigItemsWiring;
 import ome.smuggler.config.data.DevImportConfigSource;
+import ome.smuggler.config.wiring.DevConfigItemsWiring;
 import ome.smuggler.core.types.ImportConfigSource;
 
 public class Config {
