@@ -12,7 +12,7 @@ import ome.smuggler.core.service.mail.impl.MailFailureHandler;
 import ome.smuggler.core.service.mail.impl.MailTrigger;
 import ome.smuggler.core.service.mail.impl.Mailer;
 import ome.smuggler.core.types.MailConfigSource;
-import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
 
 /**
  * Spring bean wiring configuration for the mail service interfaces.
@@ -22,7 +22,7 @@ public class MailServiceBeans {
 
     @Bean
     public MailEnv mailEnv(MailConfigSource config, 
-            ChannelSource<PlainTextMail> mailSourceChannel) {
+            ChannelSource<QueuedMail> mailSourceChannel) {
         MailEnv env = new MailEnv(config, mailSourceChannel);
         
         env.ensureDirectories();

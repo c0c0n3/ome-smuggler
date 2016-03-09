@@ -5,7 +5,7 @@ import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.types.MailConfigSource;
-import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
 
 /**
  * Provides access to mail configuration and queue.
@@ -13,9 +13,9 @@ import ome.smuggler.core.types.PlainTextMail;
 public class MailEnv {
 
     private final MailConfigSource config;
-    private final ChannelSource<PlainTextMail> queue;
+    private final ChannelSource<QueuedMail> queue;
     
-    public MailEnv(MailConfigSource config, ChannelSource<PlainTextMail> queue) {
+    public MailEnv(MailConfigSource config, ChannelSource<QueuedMail> queue) {
         requireNonNull(config, "config");
         requireNonNull(queue, "queue");
         
@@ -27,7 +27,7 @@ public class MailEnv {
         return config;
     }
     
-    public ChannelSource<PlainTextMail> queue() {
+    public ChannelSource<QueuedMail> queue() {
         return queue;
     }
     

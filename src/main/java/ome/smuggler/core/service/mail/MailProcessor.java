@@ -2,7 +2,7 @@ package ome.smuggler.core.service.mail;
 
 import ome.smuggler.core.msg.RepeatAction;
 import ome.smuggler.core.msg.RepeatConsumer;
-import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
 
 /**
  * Carries out a request to send an email.
@@ -12,6 +12,6 @@ import ome.smuggler.core.types.PlainTextMail;
  * RepeatAction#Stop Stop} if the sending should not be retried because it 
  * succeeded or it failed but it's not possible to recover.
  */
-public interface MailProcessor extends RepeatConsumer<PlainTextMail> {
+public interface MailProcessor extends RepeatConsumer<QueuedMail> {
 
 }

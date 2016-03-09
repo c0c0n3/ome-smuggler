@@ -11,7 +11,7 @@ import ome.smuggler.core.msg.ReschedulableFactory;
 import ome.smuggler.core.service.mail.FailedMailHandler;
 import ome.smuggler.core.service.mail.MailProcessor;
 import ome.smuggler.core.types.MailConfigSource;
-import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
 import ome.smuggler.q.DequeueTask;
 import ome.smuggler.q.QChannelFactory;
 import ome.smuggler.q.ServerConnector;
@@ -24,28 +24,28 @@ import ome.smuggler.q.ServerConnector;
 public class MailQBeans {
 
     @Bean
-    public QChannelFactory<PlainTextMail> mailChannelFactory(
+    public QChannelFactory<QueuedMail> mailChannelFactory(
             ServerConnector connector, MailQConfig qConfig) 
                     throws HornetQException {
         return new QChannelFactory<>(connector, qConfig);
     }
     
     @Bean
-    public ChannelSource<PlainTextMail> mailSourceChannel(
-            QChannelFactory<PlainTextMail> factory) throws HornetQException {
+    public ChannelSource<QueuedMail> mailSourceChannel(
+            QChannelFactory<QueuedMail> factory) throws HornetQException {
         return factory.buildSource();
     }
     
     @Bean
-    public DequeueTask<PlainTextMail> dequeueMailTask(
-            QChannelFactory<PlainTextMail> factory,
+    public DequeueTask<QueuedMail> dequeueMailTask(
+            QChannelFactory<QueuedMail> factory,
             MailConfigSource mailConfig,
             MailProcessor processor,
             FailedMailHandler failureHandler) throws HornetQException {
-        Reschedulable<PlainTextMail> consumer = 
+        Reschedulable<QueuedMail> consumer = 
                 ReschedulableFactory.buildForRepeatConsumer(processor, 
                         mailConfig.retryIntervals(), failureHandler);
-        return factory.buildReschedulableSink(consumer, PlainTextMail.class);
+        return factory.buildReschedulableSink(consumer, QueuedMail.class);
     }
 
 }

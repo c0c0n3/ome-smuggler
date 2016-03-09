@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.MailId;
 import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
 
 public class MailTrigger implements MailRequestor {
 
@@ -16,10 +17,11 @@ public class MailTrigger implements MailRequestor {
     }
     
     @Override
-    public MailId enqueue(PlainTextMail request) {
+    public MailId enqueue(PlainTextMail message) {
+        MailId taskId = new MailId();
+        QueuedMail request = new QueuedMail(taskId, message);
         env.queue().uncheckedSend(request);
         return null;
     }
-    // TODO mail id
 
 }
