@@ -30,4 +30,14 @@ public interface ConfigProvider<T> {
         return unchecked(this::readConfig).get();
     }
     
+    /**
+     * Calls {@link #defaultReadConfig() defaultReadConfig} to get the first
+     * configuration item.
+     * @return the first configuration item if the configuration stream is not
+     * empty; an exception is thrown otherwise.
+     */
+    default T first() {
+        return defaultReadConfig().findFirst().get();
+    }
+    
 }
