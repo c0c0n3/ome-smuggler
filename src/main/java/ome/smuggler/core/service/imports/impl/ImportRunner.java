@@ -49,10 +49,16 @@ public class ImportRunner implements ImportProcessor {
         try {
             output.writeHeader(cliOmeroImporter);
             int status = run(cliOmeroImporter, task); 
-            boolean succeeded = status == 0;
             
+            boolean succeeded = status == 0;
             output.writeFooter(succeeded, status);
-            return succeeded ? Stop : Repeat;
+            
+            if (succeeded) {
+                new ImportOutcomeNotifier(env, task).tellSuccess();
+                return Stop;
+            } else {
+                return Repeat;
+            }
         } catch (IOException | InterruptedException e) {
             output.writeFooter(e);
             logTransientError(this, e);

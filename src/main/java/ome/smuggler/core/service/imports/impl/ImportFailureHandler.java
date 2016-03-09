@@ -32,6 +32,7 @@ public class ImportFailureHandler implements FailedImportHandler {
         requireNonNull(task, "task");
         
         logImportPermanentFailure(task);
+        new ImportOutcomeNotifier(env, task).tellFailure();
         storeAsFailedImport(task);
     }
 

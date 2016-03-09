@@ -17,6 +17,7 @@ import ome.smuggler.core.service.imports.impl.ImportLogDeleteAction;
 import ome.smuggler.core.service.imports.impl.ImportMonitor;
 import ome.smuggler.core.service.imports.impl.ImportRunner;
 import ome.smuggler.core.service.imports.impl.ImportTrigger;
+import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
@@ -32,9 +33,10 @@ public class ImportServiceBeans {
             ImportConfigSource config, 
             CliImporterConfig cliConfig, 
             ChannelSource<QueuedImport> importSourceChannel,
-            SchedulingSource<ImportLogFile> importGcSourceChannel) {
+            SchedulingSource<ImportLogFile> importGcSourceChannel,
+            MailRequestor mail) {
         ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
-                                      importGcSourceChannel);
+                                      importGcSourceChannel, mail);
         env.ensureDirectories();
         return env;
     }

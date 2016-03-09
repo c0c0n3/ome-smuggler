@@ -6,9 +6,8 @@ import ome.smuggler.core.types.PlainTextMail;
 public class MailFailureHandler implements FailedMailHandler {
 
     @Override
-    public void accept(PlainTextMail t) {
-        // TODO Auto-generated method stub
-        
+    public void accept(PlainTextMail data) {
+        // TODO implement.
     }
 
 }

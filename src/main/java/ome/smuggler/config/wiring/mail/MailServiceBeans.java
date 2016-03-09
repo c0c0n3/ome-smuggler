@@ -30,8 +30,8 @@ public class MailServiceBeans {
     }
     
     @Bean 
-    public MailRequestor mailRequestor() {
-        return new MailTrigger();
+    public MailRequestor mailRequestor(MailEnv env) {
+        return new MailTrigger(env);
     }
     
     @Bean
