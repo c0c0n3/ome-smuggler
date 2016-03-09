@@ -126,4 +126,16 @@ public class FileOps {
                 .get();
     }
     
+    /**
+     * Calls {@link Files#createDirectories(Path, java.nio.file.attribute.FileAttribute...)
+     * Files.createDirectories()} re-throwing any exception without wrapping. 
+     * @param p the path containing the directories to create.
+     */
+    public static void ensureDirectory(Path p) {
+        requireNonNull(p, "p");
+        
+        Path dir = p.toAbsolutePath();
+        runUnchecked(() -> Files.createDirectories(dir));
+    }
+    
 }

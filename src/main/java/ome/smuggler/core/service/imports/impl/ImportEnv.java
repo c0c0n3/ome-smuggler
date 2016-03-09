@@ -1,9 +1,8 @@
 package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
-import static util.error.Exceptions.runUnchecked;
+import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import ome.smuggler.config.items.CliImporterConfig;
@@ -20,11 +19,6 @@ import ome.smuggler.core.types.QueuedImport;
  * Provides access to import configuration and queues.
  */
 public class ImportEnv {
-
-    private static void ensureDirectory(Path p) {
-        Path dir = p.toAbsolutePath();
-        runUnchecked(() -> Files.createDirectories(dir));
-    }
     
     private final ImportConfigSource config;
     private final CliImporterConfig cliConfig;
