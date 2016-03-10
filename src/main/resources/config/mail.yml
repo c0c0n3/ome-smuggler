@@ -1,6 +1,8 @@
 !!ome.smuggler.config.items.MailConfig
 deadMailDir: mail/failed
-fromAddress: omero-noreply@mri.cnrs.fr
+fromAddress: omero-noreply@your.edu
 mailServerHost: localhost
 mailServerPort: 25
+password: password
 retryIntervals: [10, 10, 120, 1440, 1440, 1440]
+username: username

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import ome.smuggler.config.items.MailConfig;
 
@@ -22,6 +23,16 @@ public interface MailConfigSource {
      * @return the host and port of the mail server.
      */
     URI mailServer();
+    
+    /**
+     * @return the username for logging into the mail server, if configured.
+     */
+    Optional<String> username();
+    
+    /**
+     * @return the password for logging into the mail server, if configured.
+     */
+    Optional<String> password();
     
     /**
      * @return intervals at which to retry failed mail relays.

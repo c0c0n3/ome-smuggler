@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.MailConfigSource;
@@ -42,6 +43,16 @@ public class DevMailConfigSource implements MailConfigSource {
     @Override
     public Path deadMailDir() {
         return baseDataDir.resolve(MailYmlFile.DeadMailDirRelPath);
+    }
+
+    @Override
+    public Optional<String> username() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> password() {
+        return Optional.empty();
     }
     
 }

@@ -17,7 +17,9 @@ public class MailYmlFile implements ConfigProvider<MailConfig> {
         MailConfig cfg = new MailConfig();
         cfg.setMailServerHost("localhost");
         cfg.setMailServerPort(25);
-        cfg.setFromAddress("omero-noreply@mri.cnrs.fr");
+        cfg.setUsername("username");
+        cfg.setPassword("password");
+        cfg.setFromAddress("omero-noreply@your.edu");
         cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L, 1440L, 1440L });
         cfg.setDeadMailDir(DeadMailDirRelPath);
         

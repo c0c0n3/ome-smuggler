@@ -13,6 +13,12 @@ import java.util.Objects;
  *  <li>{@link #setMailServerPort(int) Mail server port}. The port of the mail
  *  server given above.
  *  </li>
+ *  <li>{@link #setUsername(String) Username}. The username to log into the
+ *  mail server, if required. Leave blank if not needed.
+ *  </li>
+ *  <li>{@link #setPassword(String) Password}. The password to log into the
+ *  mail server, if required. Leave blank if not needed.
+ *  </li>
  *  <li>{@link MailConfig#setFromAddress(String) From address}. The "from" 
  *  address of each and every mail we send.
  *  </li>
@@ -44,6 +50,8 @@ public class MailConfig {
     private String fromAddress;
     private String mailServerHost;
     private int mailServerPort;
+    private String username;
+    private String password;
     private Long[] retryIntervals;
     private String deadMailDir;
     
@@ -61,6 +69,22 @@ public class MailConfig {
     
     public void setMailServerPort(int port) {
         this.mailServerPort = port;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
     
     public String getFromAddress() {
@@ -106,8 +130,9 @@ public class MailConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s | %s", mailServerHost, 
-                mailServerPort, fromAddress, deadMailDir, xs);
+        return String.format("%s | %s | %s | %s | %s | %s | %s", 
+                             mailServerHost, mailServerPort, username, password,
+                             fromAddress, deadMailDir, xs);
     }
     
 }

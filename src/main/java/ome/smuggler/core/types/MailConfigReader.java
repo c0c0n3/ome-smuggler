@@ -6,11 +6,13 @@ import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
 import static ome.smuggler.core.convert.RawConfigValues.toPath;
 import static ome.smuggler.core.convert.RawConfigValues.toURI;
 import static ome.smuggler.core.types.ValueParserFactory.email;
+import static util.string.Strings.asOptional;
 
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import ome.smuggler.config.items.MailConfig;
 
@@ -24,6 +26,8 @@ public class MailConfigReader implements MailConfigSource {
     private final URI mailServer;
     private final List<Duration> retryIntervals;
     private final Path deadMailDir;
+    private final Optional<String> username;
+    private final Optional<String> password;
     
     /**
      * Creates a new instance.
@@ -42,6 +46,8 @@ public class MailConfigReader implements MailConfigSource {
                             config.getMailServerPort());
         retryIntervals = toDurationList(config.getRetryIntervals());
         deadMailDir = toPath(config.getDeadMailDir());
+        username = asOptional(config.getUsername());
+        password = asOptional(config.getPassword());
     }
     
     @Override
@@ -62,6 +68,16 @@ public class MailConfigReader implements MailConfigSource {
     @Override
     public Path deadMailDir() {
         return deadMailDir;
+    }
+
+    @Override
+    public Optional<String> username() {
+        return username;
+    }
+
+    @Override
+    public Optional<String> password() {
+        return password;
     }
 
 }
