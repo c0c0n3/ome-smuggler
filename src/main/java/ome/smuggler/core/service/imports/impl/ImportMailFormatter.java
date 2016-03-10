@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import ome.smuggler.core.types.PlainTextMail;
 import ome.smuggler.core.types.QueuedImport;
 
-public class ImporMailFormatter {
+public class ImportMailFormatter {
 
     private static final String SuccessSubject = "OMERO import succeeded";
     private static final String SuccessMessage = 

@@ -19,12 +19,12 @@ public class ImportOutcomeNotifier {
     }
     
     public void tellSuccess() {
-        PlainTextMail message = ImporMailFormatter.successMessage(task);
+        PlainTextMail message = ImportMailFormatter.successMessage(task);
         env.mail().enqueue(message);
     }
     
     public void tellFailure() {
-        PlainTextMail message = ImporMailFormatter.failureMessage(task);
+        PlainTextMail message = ImportMailFormatter.failureMessage(task);
         env.mail().enqueue(message);
     }
     
