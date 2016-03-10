@@ -7,7 +7,7 @@ import ome.smuggler.core.types.QueuedImport;
 
 public class ImporMailFormatter {
 
-    private static final String SuccessSubject = "OMERO import succeeded [ref. %s]";
+    private static final String SuccessSubject = "OMERO import succeeded";
     private static final String SuccessMessage = 
             "Your image data in %s on %s was successfully imported into the OMERO server on %s.";
     
