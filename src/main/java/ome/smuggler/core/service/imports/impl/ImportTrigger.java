@@ -1,6 +1,7 @@
 package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.service.imports.impl.ImportLoggers.logImportQueued;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class ImportTrigger implements ImportRequestor {
         notifyQueued(task);
         env.queue().uncheckedSend(task);
         
+        logImportQueued(task);
         return taskId;
     }
 

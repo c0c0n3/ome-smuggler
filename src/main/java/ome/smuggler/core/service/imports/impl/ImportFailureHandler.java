@@ -1,7 +1,7 @@
 package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.service.Loggers.logImportPermanentFailure;
+import static ome.smuggler.core.service.imports.impl.ImportLoggers.logImportPermanentFailure;
 
 import java.nio.file.Path;
 
