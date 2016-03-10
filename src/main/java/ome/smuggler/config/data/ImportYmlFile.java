@@ -22,7 +22,7 @@ public class ImportYmlFile implements ConfigProvider<ImportConfig> {
         cfg.setImportLogDir(RelImportLogDirPath);
         cfg.setFailedImportLogDir(RelFailedImportLogDirPath);
         cfg.setLogRetentionMinutes(Duration.ofDays(15).toMinutes());
-        cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L });
+        cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L, 1440L, 1440L });
         
         return Stream.of(cfg);
     }

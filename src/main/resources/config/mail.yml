@@ -3,4 +3,4 @@ deadMailDir: mail/failed
 fromAddress: omero-noreply@mri.cnrs.fr
 mailServerHost: localhost
 mailServerPort: 25
-retryIntervals: [10, 10, 120, 1440]
+retryIntervals: [10, 10, 120, 1440, 1440, 1440]
