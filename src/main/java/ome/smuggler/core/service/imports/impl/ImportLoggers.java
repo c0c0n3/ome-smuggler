@@ -2,8 +2,9 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.stream.Collectors.joining;
 import static util.object.Pair.pair;
-import static util.string.Strings.write;
 
+import java.io.PrintWriter;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.service.Loggers;
@@ -26,32 +27,25 @@ public class ImportLoggers extends Loggers {
             .collect(joining());
     }
     
-    private static void logInfo(QueuedImport data, String event) {
-        loggerFor(data).info(write(buf -> {
+    private static Consumer<PrintWriter> messageWriter(
+            QueuedImport data, String event) {
+        return buf -> {
             buf.println(event);
             buf.println(importDataSummary(data));
-        }));
+        };
     }
-    
-    private static void logError(QueuedImport data, String event) {
-        loggerFor(data).error(write(buf -> {
-            buf.println(event);
-            buf.println(importDataSummary(data));
-        }));
-    }
-    
-    // TODO refactor logError and logInfo above as they share 99% of the code!
     
     public static void logImportQueued(QueuedImport data) {
-        logInfo(data, "OMERO import task queued.");
+        logInfo(data, messageWriter(data, "OMERO import task queued."));
     }
     
     public static void logImportStart(QueuedImport data) {
-        logInfo(data, "OMERO import task starting.");
+        logInfo(data, messageWriter(data, "OMERO import task starting."));
     }
     
     public static void logImportSuccessful(QueuedImport data) {
-        logInfo(data, "OMERO import task completed successfully.");
+        logInfo(data, 
+                messageWriter(data, "OMERO import task completed successfully."));
     }
     
     /**
@@ -61,7 +55,8 @@ public class ImportLoggers extends Loggers {
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static void logImportPermanentFailure(QueuedImport failed) {
-        logError(failed, "OMERO import task failed permanently.");
+        logError(failed, 
+                messageWriter(failed, "OMERO import task failed permanently."));
     }
 
 }

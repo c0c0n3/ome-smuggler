@@ -2,6 +2,9 @@ package ome.smuggler.core.service;
 
 import static util.string.Strings.write;
 
+import java.io.PrintWriter;
+import java.util.function.Consumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +34,18 @@ public class Loggers {
         Logger logger = loggerFor(site);
         logger.warn(error.toString());
         logger.debug(write(buf -> error.printStackTrace(buf)));
+    }
+    
+    public static void logInfo(Object site, Consumer<PrintWriter> messageWriter) {
+        loggerFor(site).info(write(messageWriter));
+    }
+    
+    public static void logWarn(Object site, Consumer<PrintWriter> messageWriter) {
+        loggerFor(site).warn(write(messageWriter));
+    }
+    
+    public static void logError(Object site, Consumer<PrintWriter> messageWriter) {
+        loggerFor(site).error(write(messageWriter));
     }
     
 }
