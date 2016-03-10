@@ -1,23 +1,11 @@
 package ome.smuggler.core.types;
 
-import static java.util.Objects.requireNonNull;
-
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import util.object.Wrapper;
 
 /**
  * A path to the log file of an import run.
  */
-public class ImportLogPath extends Wrapper<Path> {
-    
-    private static Path logPath(Path importLogDir, ImportId taskId) {
-        requireNonNull(importLogDir, "importLogDir");
-        requireNonNull(taskId, "taskId");
-        
-        return Paths.get(importLogDir.toString(), taskId.id());
-    }
+public class ImportLogPath extends TaskIdPath {
     
     /**
      * Creates a new import log path where to store the output of the specified
@@ -27,7 +15,7 @@ public class ImportLogPath extends Wrapper<Path> {
      * @throws NullPointerException if any argument is {@code null}.
      */
     public ImportLogPath(Path importLogDir, ImportId taskId) {
-        super(logPath(importLogDir, taskId));
+        super(importLogDir, taskId);
     }
 
     public ImportLogFile file() {
