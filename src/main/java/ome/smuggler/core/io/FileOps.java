@@ -2,8 +2,11 @@ package ome.smuggler.core.io;
 
 import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.runUnchecked;
+import static util.error.Exceptions.throwAsIfUnchecked;
 import static util.error.Exceptions.unchecked;
 
+import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
@@ -15,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.types.Nat;
+import util.lambda.ConsumerE;
 
 /**
  * Utility methods for file operations.
@@ -136,6 +140,48 @@ public class FileOps {
         
         Path dir = p.toAbsolutePath();
         runUnchecked(() -> Files.createDirectories(dir));
+    }
+    
+    /**
+     * Creates a new file and has the given consumer write its contents.
+     * If the file already exists, it will be overwritten. 
+     * @param file path to the file to create and write.
+     * @param writer writes the file contents.
+     * @throws IOException if an I/O error occurs; the exception is caught and
+     * masked as unchecked.
+     */
+    public static void writeNew(Path file, ConsumerE<OutputStream> writer) {
+        requireNonNull(file, "file");
+        requireNonNull(writer, "writer");
+        
+        try {
+            OutputStream out = Files.newOutputStream(file);  // (*)
+            BufferedOutputStream buf = new BufferedOutputStream(out);
+            
+            writer.accept(buf);
+            
+            close(buf);
+        } catch (IOException e) {
+            throwAsIfUnchecked(e);
+        }
+    }
+    /* (*) The JavaDoc of the method states that it will truncate and overwrite 
+     * an existing file, or create the file if it doesn't initially exist.
+     */
+    
+    /**
+     * Closes the given stream, silently swallowing any {@link IOException}.
+     * @param stream the stream to close.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static void close(Closeable stream) {
+        requireNonNull(stream, "stream");
+        
+        try {
+            stream.close();
+        } catch (IOException e) {
+            // ignore
+        }
     }
     
 }
