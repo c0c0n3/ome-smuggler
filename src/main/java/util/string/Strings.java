@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -28,6 +29,16 @@ public class Strings {
      */
     public static boolean isNullOrEmpty(String x) {
         return x == null || x.isEmpty();
+    }
+    
+    /**
+     * Makes the given string an {@link Optional}.  
+     * @param x the string to convert.
+     * @return empty if the argument is {@code null} or empty; otherwise the
+     * argument wrapped into an {@link Optional}.
+     */
+    public static Optional<String> asOptional(String x) {
+        return isNullOrEmpty(x) ? Optional.empty() : Optional.of(x);
     }
     
     /**
