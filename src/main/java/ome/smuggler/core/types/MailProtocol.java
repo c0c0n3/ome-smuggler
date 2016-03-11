@@ -1,4 +1,4 @@
-package ome.smuggler.config.items;
+package ome.smuggler.core.types;
 
 public enum MailProtocol {
 

@@ -8,6 +8,7 @@ import static util.config.props.JPropKey.key;
 
 import java.time.Duration;
 
+import ome.smuggler.core.types.MailProtocol;
 import util.config.props.JPropAccessor;
 import util.config.props.JPropKey;
 

@@ -24,6 +24,7 @@ public class MailConfigReader implements MailConfigSource {
 
     private final Email fromAddress;
     private final URI mailServer;
+    private final MailProtocol protocol;
     private final List<Duration> retryIntervals;
     private final Path deadMailDir;
     private final Optional<String> username;
@@ -48,6 +49,7 @@ public class MailConfigReader implements MailConfigSource {
         deadMailDir = toPath(config.getDeadMailDir());
         username = asOptional(config.getUsername());
         password = asOptional(config.getPassword());
+        protocol = config.getUseSmtps() ? MailProtocol.smtps : MailProtocol.smtp;
     }
     
     @Override
@@ -78,6 +80,11 @@ public class MailConfigReader implements MailConfigSource {
     @Override
     public Optional<String> password() {
         return password;
+    }
+
+    @Override
+    public MailProtocol protocol() {
+        return protocol;
     }
 
 }

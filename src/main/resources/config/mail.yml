@@ -5,4 +5,5 @@ mailServerHost: localhost
 mailServerPort: 25
 password: password
 retryIntervals: [10, 10, 120, 1440, 1440, 1440]
+useSmtps: false
 username: username

@@ -13,6 +13,10 @@ import java.util.Objects;
  *  <li>{@link #setMailServerPort(int) Mail server port}. The port of the mail
  *  server given above.
  *  </li>
+ *  <li>{@link #setUseSmtps(boolean) Secure transmission}. If {@code true} then
+ *  use SMTPS (i.e. SMTP over TLS/SSL), otherwise plain, unprotected SMTP.
+ *  If not specified, it defaults to {@code false} and plain SMTP will be used.
+ *  </li>
  *  <li>{@link #setUsername(String) Username}. The username to log into the
  *  mail server, if required. Leave blank if not needed.
  *  </li>
@@ -50,6 +54,7 @@ public class MailConfig {
     private String fromAddress;
     private String mailServerHost;
     private int mailServerPort;
+    private boolean useSmtps;
     private String username;
     private String password;
     private Long[] retryIntervals;
@@ -69,6 +74,14 @@ public class MailConfig {
     
     public void setMailServerPort(int port) {
         this.mailServerPort = port;
+    }
+    
+    public boolean getUseSmtps() {
+        return useSmtps;
+    }
+
+    public void setUseSmtps(boolean useSmtps) {
+        this.useSmtps = useSmtps;
     }
     
     public String getUsername() {
@@ -130,9 +143,9 @@ public class MailConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s | %s | %s | %s", 
-                             mailServerHost, mailServerPort, username, password,
-                             fromAddress, deadMailDir, xs);
+        return String.format("%s | %s | %s | %s | %s | %s | %s | %s", 
+                             mailServerHost, mailServerPort, useSmtps, username,
+                             password, fromAddress, deadMailDir, xs);
     }
     
 }

@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.MailProtocol;
 
 /**
  * Dev mail settings.
@@ -53,6 +54,11 @@ public class DevMailConfigSource implements MailConfigSource {
     @Override
     public Optional<String> password() {
         return Optional.empty();
+    }
+
+    @Override
+    public MailProtocol protocol() {
+        return MailProtocol.smtp;
     }
     
 }

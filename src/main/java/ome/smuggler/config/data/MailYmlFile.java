@@ -17,6 +17,7 @@ public class MailYmlFile implements ConfigProvider<MailConfig> {
         MailConfig cfg = new MailConfig();
         cfg.setMailServerHost("localhost");
         cfg.setMailServerPort(25);
+        cfg.setUseSmtps(false);
         cfg.setUsername("username");
         cfg.setPassword("password");
         cfg.setFromAddress("omero-noreply@your.edu");

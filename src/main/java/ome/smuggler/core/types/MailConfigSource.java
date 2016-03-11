@@ -25,6 +25,11 @@ public interface MailConfigSource {
     URI mailServer();
     
     /**
+     * @return the protocol to use to communicate with the mail server.
+     */
+    MailProtocol protocol();
+    
+    /**
      * @return the username for logging into the mail server, if configured.
      */
     Optional<String> username();
