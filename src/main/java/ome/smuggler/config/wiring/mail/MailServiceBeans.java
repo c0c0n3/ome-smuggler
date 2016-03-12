@@ -19,6 +19,7 @@ import ome.smuggler.core.service.mail.impl.MailTrigger;
 import ome.smuggler.core.service.mail.impl.Mailer;
 import ome.smuggler.core.types.MailConfigSource;
 import ome.smuggler.core.types.QueuedMail;
+import ome.smuggler.providers.log.LogAdapter;
 import util.config.props.JProps;
 
 /**
@@ -51,7 +52,8 @@ public class MailServiceBeans {
     public MailEnv mailEnv(MailConfigSource config, 
             ChannelSource<QueuedMail> mailSourceChannel,
             JavaMailSender mailClient) {
-        MailEnv env = new MailEnv(config, mailSourceChannel, mailClient, null);
+        MailEnv env = new MailEnv(config, mailSourceChannel, mailClient, 
+                new LogAdapter());
         
         env.ensureDirectories();
         return env;

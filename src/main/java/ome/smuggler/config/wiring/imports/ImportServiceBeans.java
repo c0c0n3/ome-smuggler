@@ -21,6 +21,7 @@ import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
+import ome.smuggler.providers.log.LogAdapter;
 
 /**
  * Spring bean wiring configuration for the import service interfaces.
@@ -36,7 +37,8 @@ public class ImportServiceBeans {
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             MailRequestor mail) {
         ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
-                                      importGcSourceChannel, mail, null);
+                                      importGcSourceChannel, mail, 
+                                      new LogAdapter());
         env.ensureDirectories();
         return env;
     }

@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
-import static ome.smuggler.core.service.Loggers.logTransientError;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -65,7 +64,7 @@ public class ImportRunner implements ImportProcessor {
             }
         } catch (IOException | InterruptedException e) {
             output.writeFooter(e);
-            logTransientError(this, e);
+            env.log().transientError(this, e);
             return Repeat;
         } finally {
             scheduleDeletion(task);

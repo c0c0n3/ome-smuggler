@@ -3,7 +3,6 @@ package ome.smuggler.core.service.mail.impl;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
-import static ome.smuggler.core.service.Loggers.logTransientError;
 
 import javax.mail.internet.MimeMessage;
 
@@ -30,7 +29,7 @@ public class Mailer implements MailProcessor {
             env.log().mailSent(data);
             return Stop;
         } catch (Exception e) {
-            logTransientError(this, e);
+            env.log().transientError(this, e);
             return Repeat;
         }
     }
