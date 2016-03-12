@@ -2,8 +2,8 @@ package ome.smuggler.core.convert;
 
 import static java.util.Objects.requireNonNull;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 
 /**
  * Serializes an object into JSON and writes the serialized data to a sink.
@@ -26,7 +26,7 @@ public class JsonSinkWriter<T> implements SinkWriter<T> {
     }
     
     @Override
-    public void write(T body) throws JsonProcessingException {
+    public void write(T body) throws JsonIOException {
         mapper.toJson(body, sink);
     }
 
