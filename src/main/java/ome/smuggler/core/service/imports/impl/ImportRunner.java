@@ -8,8 +8,8 @@ import static ome.smuggler.core.msg.RepeatAction.Stop;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import ome.smuggler.core.io.CommandRunner;
 import ome.smuggler.core.msg.RepeatAction;
-import ome.smuggler.core.service.CommandRunner;
 import ome.smuggler.core.service.imports.ImportProcessor;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportLogFile;
