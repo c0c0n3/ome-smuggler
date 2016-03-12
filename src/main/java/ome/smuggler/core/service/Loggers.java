@@ -19,7 +19,7 @@ public class Loggers {
      * @return the logger.
      * @throws NullPointerException if the argument is {@code null}.
      */
-    public static Logger loggerFor(Object x) {
+    private static Logger loggerFor(Object x) {
         return LoggerFactory.getLogger(x.getClass().getName());
     }
     
