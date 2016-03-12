@@ -2,7 +2,6 @@ package ome.smuggler.core.service.mail.impl;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.io.FileOps.writeNew;
-import static ome.smuggler.core.service.mail.impl.MailLoggers.logFailedMail;
 
 import java.nio.file.Path;
 
@@ -22,7 +21,7 @@ public class MailFailureHandler implements FailedMailHandler {
     
     @Override
     public void accept(QueuedMail data) {
-        logFailedMail(data);
+        env.log().failedMail(data);
         
         Path failedMessageFile = env.failedMailPathFor(data.getTaskId());
         MessageBuilder builder = new MessageBuilder(env, data.getRequest());

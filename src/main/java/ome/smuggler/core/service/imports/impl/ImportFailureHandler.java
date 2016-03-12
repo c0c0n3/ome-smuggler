@@ -1,7 +1,6 @@
 package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.service.imports.impl.ImportLoggers.logImportPermanentFailure;
 
 import java.nio.file.Path;
 
@@ -31,7 +30,7 @@ public class ImportFailureHandler implements FailedImportHandler {
     public void accept(QueuedImport task) {
         requireNonNull(task, "task");
         
-        logImportPermanentFailure(task);
+        env.log().importPermanentFailure(task);
         new ImportOutcomeNotifier(env, task).tellFailure();
         storeAsFailedImport(task);
     }

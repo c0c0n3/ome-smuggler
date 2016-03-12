@@ -51,7 +51,7 @@ public class MailServiceBeans {
     public MailEnv mailEnv(MailConfigSource config, 
             ChannelSource<QueuedMail> mailSourceChannel,
             JavaMailSender mailClient) {
-        MailEnv env = new MailEnv(config, mailSourceChannel, mailClient);
+        MailEnv env = new MailEnv(config, mailSourceChannel, mailClient, null);
         
         env.ensureDirectories();
         return env;

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportConfigSource;
@@ -26,22 +27,26 @@ public class ImportEnv {
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
     private final MailRequestor mail;
+    private final ImportLogger log;
     
     public ImportEnv(ImportConfigSource config, CliImporterConfig cliConfig,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
-            MailRequestor mail) {
+            MailRequestor mail,
+            LogService logService) {
         requireNonNull(config, "config");
         requireNonNull(cliConfig, "cliConfig");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
         requireNonNull(mail, "mail");
+        requireNonNull(logService, "logService");
         
         this.config = config;
         this.cliConfig = cliConfig;
         this.queue = queue;
         this.gcQueue = gcQueue;
         this.mail = mail;
+        this.log = new ImportLogger(logService);
     }
     
     public ImportConfigSource config() {
@@ -62,6 +67,10 @@ public class ImportEnv {
     
     public MailRequestor mail() {
         return mail;
+    }
+    
+    public ImportLogger log() {
+        return log;
     }
     
     public ImportLogPath importLogPathFor(ImportId taskId) {

@@ -36,7 +36,7 @@ public class ImportServiceBeans {
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             MailRequestor mail) {
         ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
-                                      importGcSourceChannel, mail);
+                                      importGcSourceChannel, mail, null);
         env.ensureDirectories();
         return env;
     }

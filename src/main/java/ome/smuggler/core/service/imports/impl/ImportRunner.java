@@ -5,8 +5,6 @@ import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
 import static ome.smuggler.core.service.Loggers.logTransientError;
-import static ome.smuggler.core.service.imports.impl.ImportLoggers.logImportStart;
-import static ome.smuggler.core.service.imports.impl.ImportLoggers.logImportSuccessful;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,7 +41,7 @@ public class ImportRunner implements ImportProcessor {
     
     @Override
     public RepeatAction consume(QueuedImport task) {
-        logImportStart(task);
+        env.log().importStart(task);
         
         ImporterCommandBuilder cliOmeroImporter = 
                 new ImporterCommandBuilder(env.cliConfig(), task.getRequest());
@@ -60,7 +58,7 @@ public class ImportRunner implements ImportProcessor {
             if (succeeded) {
                 new ImportOutcomeNotifier(env, task).tellSuccess();
                 
-                logImportSuccessful(task);
+                env.log().importSuccessful(task);
                 return Stop;
             } else {
                 return Repeat;
