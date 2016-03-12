@@ -8,10 +8,10 @@ import java.io.StringWriter;
 
 import com.google.gson.reflect.TypeToken;
 
-import ome.smuggler.core.convert.JsonSinkWriter;
-import ome.smuggler.core.convert.JsonSourceReader;
 import ome.smuggler.core.convert.SinkWriter;
 import ome.smuggler.core.convert.SourceReader;
+import ome.smuggler.providers.json.JsonSinkWriter;
+import ome.smuggler.providers.json.JsonSourceReader;
 
 public class JsonWriteReadTest {
 

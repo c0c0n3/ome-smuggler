@@ -1,4 +1,4 @@
-package ome.smuggler.core.convert;
+package ome.smuggler.providers.json;
 
 import static java.util.Objects.requireNonNull;
 
@@ -10,6 +10,8 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.Primitives;
 import com.google.gson.reflect.TypeToken;
+
+import ome.smuggler.core.convert.SourceReader;
 
 /**
  * Parses an object in JSON serialized form as found in a given data source.
