@@ -71,13 +71,13 @@ picture? Here's an X-ray for you then.
 Wiring of Smuggler's components and third-party software.<br/>
 UML component diagram.</div>
 
-We should mention at this point that Smuggler comes with an off-the-shelf
-management and monitoring facility that you can access both over HTTP and
-JMX. It's provided by the Spring Boot Actuator component that we enabled and
-configured to let sys admins gather app metrics and manage the app remotely.
 There's a note at the bottom of the diagram telling you how the conceptual
 components map to Java packages. You can find a lot more about source code
 breakdown and dependencies in the next section.
+But before moving on, we should mention that Smuggler comes with an off-the-shelf
+management and monitoring facility that you can access both over HTTP and
+JMX. It's provided by the Spring Boot Actuator component that we enabled and
+configured to let sys admins gather app metrics and manage the app remotely.
 
 
 Codebase Essentials
