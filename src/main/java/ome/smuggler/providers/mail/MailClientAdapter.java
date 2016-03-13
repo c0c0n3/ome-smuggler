@@ -7,15 +7,21 @@ import static ome.smuggler.config.items.JavaMailConfigProps.smtpReadTimeout;
 import static ome.smuggler.config.items.JavaMailConfigProps.smtpWriteTimeout;
 import static ome.smuggler.config.items.JavaMailConfigProps.transportProtocol;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import ome.smuggler.core.service.mail.MailClient;
+import ome.smuggler.core.service.mail.MailClientException;
 import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.PlainTextMail;
 import util.config.props.JProps;
 
 public class MailClientAdapter implements MailClient {
@@ -42,21 +48,40 @@ public class MailClientAdapter implements MailClient {
         return mailSender;
     }
     
+    private final MailConfigSource config;
     private final JavaMailSender service;
     
     public MailClientAdapter(MailConfigSource config) {
         requireNonNull(config, "config");
-        service = build(config);
+        
+        this.config = config;
+        this.service = build(config);
+    }
+    
+    private MimeMessage message(PlainTextMail data) {
+        requireNonNull(data, "data");
+        
+        MessageBuilder builder = new MessageBuilder(config, service);
+        return builder.buildMimeMessage(data);
     }
     
     @Override
-    public MimeMessage createMimeMessage() {
-        return service.createMimeMessage();
+    public void send(PlainTextMail data) {
+        try {
+            service.send(message(data));
+        } catch (MailException e) {
+            throw new MailClientException(e);
+        }
     }
 
     @Override
-    public void send(MimeMessage data) {
-        service.send(data);
+    public void stream(PlainTextMail data, OutputStream destination) {
+        requireNonNull(destination, "destination");
+        try {
+            message(data).writeTo(destination);
+        } catch (IOException | MessagingException e) {
+            throw new MailClientException(e);
+        }
     }
 
 }

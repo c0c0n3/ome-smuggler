@@ -5,10 +5,9 @@ import static ome.smuggler.core.io.FileOps.writeNew;
 
 import java.nio.file.Path;
 
-import javax.mail.internet.MimeMessage;
-
 import ome.smuggler.core.service.mail.FailedMailHandler;
 import ome.smuggler.core.types.QueuedMail;
+
 
 public class MailFailureHandler implements FailedMailHandler {
 
@@ -24,11 +23,9 @@ public class MailFailureHandler implements FailedMailHandler {
         env.log().failedMail(data);
         
         Path failedMessageFile = env.failedMailPathFor(data.getTaskId());
-        MessageBuilder builder = new MessageBuilder(env, data.getRequest());
-        MimeMessage message = builder.buildMimeMessage();
-        
         writeNew(failedMessageFile, 
-                 outputStream -> message.writeTo(outputStream));
+                 outputStream -> env.mailClient()
+                                    .stream(data.getRequest(), outputStream));
     }
 
 }
