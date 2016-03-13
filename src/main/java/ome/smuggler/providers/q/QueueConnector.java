@@ -1,4 +1,4 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import static java.util.Objects.requireNonNull;
 

@@ -1,4 +1,4 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import java.io.StringReader;
 import java.io.StringWriter;

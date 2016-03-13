@@ -1,4 +1,4 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import static org.mockito.Mockito.*;
 import static ome.smuggler.core.msg.ChannelMessage.message;

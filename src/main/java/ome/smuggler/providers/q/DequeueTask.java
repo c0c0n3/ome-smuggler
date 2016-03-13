@@ -1,8 +1,8 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
-import static ome.smuggler.q.MessageBody.readBody;
+import static ome.smuggler.providers.q.MessageBody.readBody;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
 import org.hornetq.api.core.HornetQException;

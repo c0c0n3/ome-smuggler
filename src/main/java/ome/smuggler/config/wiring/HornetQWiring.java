@@ -7,7 +7,7 @@ import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ome.smuggler.q.ServerConnector;
+import ome.smuggler.providers.q.ServerConnector;
 
 
 /**

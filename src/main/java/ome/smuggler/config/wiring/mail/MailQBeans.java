@@ -12,9 +12,9 @@ import ome.smuggler.core.service.mail.FailedMailHandler;
 import ome.smuggler.core.service.mail.MailProcessor;
 import ome.smuggler.core.types.MailConfigSource;
 import ome.smuggler.core.types.QueuedMail;
-import ome.smuggler.q.DequeueTask;
-import ome.smuggler.q.QChannelFactory;
-import ome.smuggler.q.ServerConnector;
+import ome.smuggler.providers.q.DequeueTask;
+import ome.smuggler.providers.q.QChannelFactory;
+import ome.smuggler.providers.q.ServerConnector;
 
 /**
  * Singleton beans for HornetQ client resources that have to be shared and

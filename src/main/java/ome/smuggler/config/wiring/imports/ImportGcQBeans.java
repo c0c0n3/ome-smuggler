@@ -8,9 +8,9 @@ import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.imports.ImportLogDisposer;
 import ome.smuggler.core.types.ImportLogFile;
-import ome.smuggler.q.DequeueTask;
-import ome.smuggler.q.QChannelFactory;
-import ome.smuggler.q.ServerConnector;
+import ome.smuggler.providers.q.DequeueTask;
+import ome.smuggler.providers.q.QChannelFactory;
+import ome.smuggler.providers.q.ServerConnector;
 
 /**
  * Singleton beans for HornetQ client resources that have to be shared and

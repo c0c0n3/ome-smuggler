@@ -1,4 +1,4 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;

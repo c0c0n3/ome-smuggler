@@ -1,7 +1,7 @@
-package ome.smuggler.q;
+package ome.smuggler.providers.q;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.q.MessageBody.writeBody;
+import static ome.smuggler.providers.q.MessageBody.writeBody;
 
 import java.util.function.Function;
 
