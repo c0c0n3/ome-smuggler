@@ -34,7 +34,7 @@ logRetentionMinutes: 1
 retryIntervals: []
 ~~~
 
-(If you want to play around with the import configuration, read [this](https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/ImportConfig.java).)
+(If you want to play around with the import configuration, read [this][import-config].)
 Now we need to bring in the OMERO libraries; Smuggler expects to find them in
 the `ome-lib` directory in the current directory. (Though it can be configured
 to be wherever you like.) You can copy the `jar` files over from your local
@@ -85,7 +85,7 @@ $ ./request-import min-import.json
     
 This simply POSTs a JSON-encoded import request to upload a non-existing image
 to a non-existing OMERO sever. No wonder it should fail. To see how to build
-an import request, look [here](https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/ImportRequest.java).
+an import request, look [here][import-request].
 The response should be a 200 (import request accepted and queued for execution)
 and its body should be something like
 
@@ -165,7 +165,7 @@ Success Scenario
 ----------------
 All you need to make an image trek into OMERO is to POST a request for existing
 data to an existing OMERO server. Create a new file `my-import.json` taking
-`min-import.json` as an example and referring to [this specification](https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/ImportRequest.java).
+`min-import.json` as an example and referring to [this specification][import-request].
 You will need a valid session key to go in the file; to obtain one, use the
 OMERO CLI as shown below:
 
@@ -190,3 +190,7 @@ as your request will be serviced shortly after being put on the queue. I have
 some experimental code to keep the session alive while the import sits on the
 queue, but haven't merged the code in.
 
+
+
+[import-config]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/ImportConfig.java
+[import-request]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/imports/ImportRequest.java
