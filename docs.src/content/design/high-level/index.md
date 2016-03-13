@@ -23,7 +23,7 @@ look at what happens under the bonnet.
 Conceptual Overview
 -------------------
 Smuggler is a server that makes available two main service points: the one
-to run an OMERO import and the other to monitor and manage failed imports.
+to run an OMERO import and the other to monitor and manage failed tasks.
 In both instances, service access is over HTTP and client-server interaction
 patterns are those of REST. Smuggler is a [Spring Boot][booty] app with an
 embedded [Undertow][undertow] Web server engine that propels external
@@ -102,7 +102,7 @@ conceptual modules we talked about earlier---map to actual Java code:
 
 * the *REST controllers* are in the `web` package;
 * the *services* are in `core.service`;
-* the *messaging* functionality is split between `q` and `core.mgs`;
+* the *messaging* functionality is split between `providers.q` and `core.mgs`;
 * whereas we keep all *config* in, well you guessed it, `config`.
 
 A few more words about messaging. The split mentioned above is between the
@@ -129,22 +129,28 @@ Top level Java packages and their dependencies.<br/>
 UML package diagram.</div>
 
 As noted in the diagram, the bulk of the functionality sits in `core` and is
-not meant to have any dependencies on third-party libraries. This way we can
-change the underlying frameworks we use without having to rewrite the whole
-app from scratch. For example, using a Web server other than Undertow requires
-just a few configuration tweaks---picture rubbing off Undertow from the diagram
-and follow the arrows to see what would be affected. Ditching HornetQ would
-take slightly more work as some of the code in `q` would need to change.
-Moving away from Spring? A bit more involved, but still doable.
+not meant to have any dependencies on third-party libraries. In fact, if we
+need functionality from a third-party library (mail, logging, etc.), we define
+what we need abstractly in `core` through service provider interfaces and
+then put the actual implementation in `providers`---exactly the same deal
+as for `core.msg` and `providers.q`.
+This way we can change the underlying frameworks we use without having to
+rewrite the whole app from scratch. For example, using a Web server other
+than Undertow requires just a few configuration tweaks---picture rubbing
+off Undertow from the diagram and follow the arrows to see what would be
+affected. Ditching HornetQ would take slightly more work as some of the
+code in `q` would need to change. Moving away from Spring? A bit more
+involved, but still doable.
 
 There are a few more packages shown in the diagram that we haven't touched
 on yet, but looking at them is not essential to get the hang of the code
 base. Anyway, let's just mention what they're there for. In `core`, you'll
 find `types`, which is where we keep the shared data types we use to shuttle
 data across app components; `convert` and `io` contain, respectively, some 
-util classes to deal with JSON serialisation and file-system tasks. Finally,
-if you're wondering how the Web app starts or how we generate config files,
-then you should look at the launchers in `run`.
+util classes to deal with data format transformation (serialisation, string
+to typed value, etc.) and file-system tasks.
+Finally, if you're wondering how the Web app starts or how we generate config
+files, then you should look at the launchers in `run`.
 
 
 

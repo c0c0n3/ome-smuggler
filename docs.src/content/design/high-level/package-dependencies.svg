@@ -12,7 +12,7 @@
    viewBox="0 0 1024 768"
    id="svg8509"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.91+devel+osxmenu r12898"
    sodipodi:docname="package-dependencies.svg">
   <sodipodi:namedview
      pagecolor="#3c4747"
@@ -24,16 +24,16 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:showpageshadow="false"
      borderlayer="true"
      id="namedview8511"
-     inkscape:cx="630.36829"
-     inkscape:cy="336.29372"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
+     inkscape:cx="464.56522"
+     inkscape:cy="340.82451"
+     inkscape:window-width="1440"
+     inkscape:window-height="851"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="23"
      inkscape:snap-global="false"
      showguides="false">
     <inkscape:grid
@@ -256,50 +256,26 @@
          sodipodi:linespacing="125%"
          id="text8817"
          y="234"
-         x="579"
-         style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:15px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#f5f3f2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         x="439"
+         style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.66666698px;line-height:125%;font-family:monospace;-inkscape-font-specification:monospace;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#f5f3f2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
          xml:space="preserve"><tspan
-           y="234"
-           x="579"
-           id="tspan8819"
-           sodipodi:role="line">q</tspan></text>
+           sodipodi:role="line"
+           id="tspan9004"
+           x="439"
+           y="234">providers</tspan></text>
     </g>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:12, 12;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 766,472 0,-62"
-       id="path8821"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 776.18007,421 765,409.8199 753.81993,421"
-       id="path8823"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc" />
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path8833"
-       d="m 646,472 0,-62"
-       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:12, 12;stroke-dashoffset:0;stroke-opacity:1" />
+       d="m 646,472 0,-29.5"
+       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:1.9993701;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:7.99748039,7.99748039;stroke-dashoffset:0;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path8835"
-       d="M 656.18007,421 645,409.8199 633.81993,421"
+       d="M 656.18007,453 645,441.8199 633.81993,453"
        style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:12, 12;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 500,472.99138 500,382"
-       id="path8837"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 510.18007,393 499,381.8199 487.81993,393"
-       id="path8839"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#f5f3f2;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:12, 12;stroke-dashoffset:0;stroke-opacity:1"
        d="m 596.5,358.5 -45,0"
@@ -623,14 +599,18 @@
     <text
        sodipodi:linespacing="125%"
        id="text9372"
-       y="394"
+       y="384"
        x="853"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#90969b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        xml:space="preserve"><tspan
-         y="394"
+         y="384"
          x="853"
          sodipodi:role="line"
-         id="tspan9374">file utils</tspan></text>
+         id="tspan9374">process &amp;</tspan><tspan
+         y="399.625"
+         x="853"
+         sodipodi:role="line"
+         id="tspan9002">file utils</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text9376"
@@ -655,12 +635,12 @@
        sodipodi:linespacing="125%"><tspan
          id="tspan9384"
          sodipodi:role="line"
-         x="772.7666"
-         y="380">JSON </tspan><tspan
+         x="772.75439"
+         y="380">data fromat </tspan><tspan
          sodipodi:role="line"
          x="769.00684"
          y="395.625"
-         id="tspan9386">serializ.</tspan></text>
+         id="tspan9386">transforms</tspan></text>
     <text
        xml:space="preserve"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#90969b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
@@ -686,14 +666,18 @@
     <text
        sodipodi:linespacing="125%"
        id="text9396"
-       y="496"
-       x="711"
+       y="488"
+       x="641"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:monospace;-inkscape-font-specification:'monospace Medium';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#90969b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        xml:space="preserve"><tspan
-         y="496"
-         x="711"
+         y="488"
+         x="641"
          sodipodi:role="line"
-         id="tspan9398">messaging implementation </tspan></text>
+         id="tspan9010">service provider implementation:</tspan><tspan
+         y="503.625"
+         x="641"
+         sodipodi:role="line"
+         id="tspan9014">queues, mail, json, logging, ... </tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text9400"

@@ -29,7 +29,7 @@
      inkscape:showpageshadow="false"
      borderlayer="true"
      id="namedview8511"
-     inkscape:cx="566.21472"
+     inkscape:cx="448.71472"
      inkscape:cy="390.60392"
      inkscape:window-width="1440"
      inkscape:window-height="851"
@@ -160,7 +160,7 @@
          y="52"
          x="507"
          sodipodi:role="line"
-         id="tspan8671">HTTP import failure </tspan><tspan
+         id="tspan8671">HTTP task failure </tspan><tspan
          y="70.75"
          x="507"
          sodipodi:role="line"
