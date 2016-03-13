@@ -9,6 +9,7 @@ import static ome.smuggler.config.items.JavaMailConfigProps.transportProtocol;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import javax.mail.MessagingException;
@@ -30,6 +31,8 @@ public class MailClientAdapter implements MailClient {
     
     private static JavaMailSender build(MailConfigSource config) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        
+        mailSender.setDefaultEncoding(StandardCharsets.UTF_8.name());
         
         mailSender.setHost(config.mailServer().getHost());
         mailSender.setPort(config.mailServer().getPort());
