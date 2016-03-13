@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 import static java.util.stream.Collectors.toList;
 import static ome.smuggler.core.types.ValueParserFactory.*;
@@ -22,6 +22,7 @@ import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.PositiveN;
 import ome.smuggler.core.types.ScreenId;
 import ome.smuggler.core.types.TextAnnotation;
+import ome.smuggler.web.Error;
 import util.object.Either;
 import util.validation.Validator;
 

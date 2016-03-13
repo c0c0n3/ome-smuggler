@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 /**
  * Web clients use instances of this class to request an import.

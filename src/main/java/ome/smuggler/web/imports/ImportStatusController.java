@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
+import ome.smuggler.web.FileStreamer;
 import util.servlet.http.Caches;
 
 

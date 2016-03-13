@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
+import ome.smuggler.web.FileStreamer;
 import util.servlet.http.Caches;
 
 @RestController  // includes @ResponseBody: return vals bound to response body.

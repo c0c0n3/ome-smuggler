@@ -15,10 +15,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import ome.smuggler.web.ImportController;
-import ome.smuggler.web.ImportFailureController;
-import ome.smuggler.web.ImportRequest;
-import ome.smuggler.web.ImportResponse;
+import ome.smuggler.web.imports.ImportController;
+import ome.smuggler.web.imports.ImportFailureController;
+import ome.smuggler.web.imports.ImportRequest;
+import ome.smuggler.web.imports.ImportResponse;
 
 
 public class VerifyImportTest extends BaseWebTest {

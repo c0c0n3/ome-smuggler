@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 import java.net.URI;
 
 import ome.smuggler.web.Error;
-import ome.smuggler.web.ImportController;
-import ome.smuggler.web.ImportRequest;
-import ome.smuggler.web.ImportResponse;
+import ome.smuggler.web.imports.ImportController;
+import ome.smuggler.web.imports.ImportRequest;
+import ome.smuggler.web.imports.ImportResponse;
 
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;

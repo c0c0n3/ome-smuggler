@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static util.spring.http.ResponseEntities.okOr400;

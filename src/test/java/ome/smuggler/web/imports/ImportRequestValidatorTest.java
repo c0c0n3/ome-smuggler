@@ -1,4 +1,4 @@
-package ome.smuggler.web;
+package ome.smuggler.web.imports;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -7,6 +7,7 @@ import static util.sequence.Arrayz.array;
 import org.junit.Before;
 import org.junit.Test;
 
+import ome.smuggler.web.Error;
 import util.object.Either;
 
 public class ImportRequestValidatorTest {
