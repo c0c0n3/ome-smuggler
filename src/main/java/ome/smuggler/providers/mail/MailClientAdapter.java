@@ -1,10 +1,11 @@
 package ome.smuggler.providers.mail;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.config.items.JavaMailConfigProps.smtpAuthenticate;
-import static ome.smuggler.config.items.JavaMailConfigProps.smtpConnectionTimeout;
-import static ome.smuggler.config.items.JavaMailConfigProps.smtpReadTimeout;
-import static ome.smuggler.config.items.JavaMailConfigProps.smtpWriteTimeout;
+import static ome.smuggler.config.items.JavaMailConfigProps.authenticate;
+import static ome.smuggler.config.items.JavaMailConfigProps.connectionTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.readTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.smtpsTrustedServers;
+import static ome.smuggler.config.items.JavaMailConfigProps.writeTimeoutFor;
 import static ome.smuggler.config.items.JavaMailConfigProps.transportProtocol;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import ome.smuggler.core.service.mail.MailClient;
 import ome.smuggler.core.service.mail.MailClientException;
 import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.MailProtocol;
 import ome.smuggler.core.types.PlainTextMail;
 import util.config.props.JProps;
 
@@ -29,24 +31,38 @@ public class MailClientAdapter implements MailClient {
     
     public static final Duration OpTimeout = Duration.ofMinutes(5); 
     
+    private static void configureTransport(MailConfigSource config,
+            JProps mailProps) {
+        MailProtocol proto = config.protocol();
+        mailProps.set(transportProtocol().with(proto));
+        mailProps.set(connectionTimeoutFor(proto).with(OpTimeout));
+        mailProps.set(readTimeoutFor(proto).with(OpTimeout));
+        mailProps.set(writeTimeoutFor(proto).with(OpTimeout));
+    }
+    /* NOTE. Avoid sender hanging.
+     * We need to avoid infinite timeouts (the default) as the HornetQ consumer
+     * thread would be hanging forever and the queue would keep on growing. 
+     * This is why we set the timeout properties.
+     */
+    
+    private static void configureAuthentication(MailConfigSource config,
+            String username, JavaMailSenderImpl mailSender, JProps mailProps) {
+        mailSender.setUsername(username);
+        config.password().ifPresent(p -> mailSender.setPassword(p));
+        mailProps.set(authenticate(config.protocol()).with(true));
+    }
+    
     private static JavaMailSender build(MailConfigSource config) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         
         mailSender.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        
         mailSender.setHost(config.mailServer().getHost());
         mailSender.setPort(config.mailServer().getPort());
-        config.username().ifPresent(u -> mailSender.setUsername(u));
-        config.password().ifPresent(p -> mailSender.setPassword(p));
         
         JProps mailProps = new JProps(mailSender.getJavaMailProperties());
+        configureTransport(config, mailProps);
         config.username().ifPresent(
-                u -> mailProps.set(smtpAuthenticate().with(true)));
-        mailProps.set(transportProtocol().with(config.protocol()));
-        
-        mailProps.set(smtpConnectionTimeout().with(OpTimeout));
-        mailProps.set(smtpReadTimeout().with(OpTimeout));
-        mailProps.set(smtpWriteTimeout().with(OpTimeout));
+                u -> configureAuthentication(config, u, mailSender, mailProps));
         
         return mailSender;
     }

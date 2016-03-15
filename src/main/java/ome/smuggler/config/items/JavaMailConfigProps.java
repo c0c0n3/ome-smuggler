@@ -39,23 +39,23 @@ public class JavaMailConfigProps {
     }
     
     public static
-    JPropAccessor<Duration> smtpConnectionTimeout() {
-        return makeDurationOfMillis(key("mail.smtp.connectiontimeout"));
+    JPropAccessor<Duration> connectionTimeoutFor(MailProtocol p) {
+        return makeDurationOfMillis(key("mail", p.name(), "connectiontimeout"));
     }
     
     public static
-    JPropAccessor<Duration> smtpReadTimeout() {
-        return makeDurationOfMillis(key("mail.smtp.timeout"));
+    JPropAccessor<Duration> readTimeoutFor(MailProtocol p) {
+        return makeDurationOfMillis(key("mail", p.name(),"timeout"));
     }
     
     public static
-    JPropAccessor<Duration> smtpWriteTimeout() {
-        return makeDurationOfMillis(key("mail.smtp.writetimeout"));
+    JPropAccessor<Duration> writeTimeoutFor(MailProtocol p) {
+        return makeDurationOfMillis(key("mail", p.name(), "writetimeout"));
     }
     
     public static
-    JPropAccessor<Boolean> smtpAuthenticate() {
-        return makeBool(key("mail.smtp.auth"));
+    JPropAccessor<Boolean> authenticate(MailProtocol p) {
+        return makeBool(key("mail", p.name(), "auth"));
     }
     
     public static
@@ -64,13 +64,13 @@ public class JavaMailConfigProps {
     }
     
     public static
-    JPropAccessor<Boolean> smtpCheckServerIdentity() {
-        return makeBool(key("mail.smtp.ssl.checkserveridentity"));
+    JPropAccessor<Boolean> smtpsCheckServerIdentity() {
+        return makeBool(key("mail.smtps.ssl.checkserveridentity"));
     }
     
     public static
-    JPropAccessor<String> smtpTrustedServers() {
-        return makeString(key("mail.smtp.ssl.trust"));
+    JPropAccessor<String> smtpsTrustedServers() {
+        return makeString(key("mail.smtps.ssl.trust"));
     }
     
     public static
