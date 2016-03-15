@@ -30,6 +30,12 @@ public interface MailConfigSource {
     MailProtocol protocol();
     
     /**
+     * @return whether to skip certificate validation when SMTPS is in use;
+     * always returns {@code false} if the protocol is not SMTPS.
+     */
+    boolean skipServerCertificateValidation();
+    
+    /**
      * @return the username for logging into the mail server, if configured.
      */
     Optional<String> username();

@@ -60,5 +60,10 @@ public class DevMailConfigSource implements MailConfigSource {
     public MailProtocol protocol() {
         return MailProtocol.smtp;
     }
+
+    @Override
+    public boolean skipServerCertificateValidation() {
+        return false;
+    }
     
 }

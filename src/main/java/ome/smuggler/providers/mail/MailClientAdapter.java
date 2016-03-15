@@ -55,10 +55,17 @@ public class MailClientAdapter implements MailClient {
     
     private static void configureTls(MailConfigSource config, JProps mailProps) {
         mailProps.set(smtpsCheckServerIdentity().with(true));  // (1)
+        if (config.skipServerCertificateValidation()) {        // (2)
+            mailProps.set(smtpsTrustedServers()
+                         .with(config.mailServer().getHost()));
+        }
+        
     }
     /* NOTES.
      * (1) This check needs to be on to prevent man-in-the-middle attacks, but
      * it's turned off by default in Java Mail for backward compatibility.
+     * (2) Always returns false if the protocol is not SMTPS. Oh, BTW, this is
+     * setting introduces a security vulnerability as already noted in config.
      */
     
     private static JavaMailSender build(MailConfigSource config) {

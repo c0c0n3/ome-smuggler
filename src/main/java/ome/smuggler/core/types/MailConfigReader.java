@@ -5,6 +5,8 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
 import static ome.smuggler.core.convert.RawConfigValues.toPath;
 import static ome.smuggler.core.convert.RawConfigValues.toURI;
+import static ome.smuggler.core.types.MailProtocol.smtp;
+import static ome.smuggler.core.types.MailProtocol.smtps;
 import static ome.smuggler.core.types.ValueParserFactory.email;
 import static util.string.Strings.asOptional;
 
@@ -25,6 +27,7 @@ public class MailConfigReader implements MailConfigSource {
     private final Email fromAddress;
     private final URI mailServer;
     private final MailProtocol protocol;
+    private final boolean skipServerCertificateValidation;
     private final List<Duration> retryIntervals;
     private final Path deadMailDir;
     private final Optional<String> username;
@@ -49,7 +52,9 @@ public class MailConfigReader implements MailConfigSource {
         deadMailDir = toPath(config.getDeadMailDir());
         username = asOptional(config.getUsername());
         password = asOptional(config.getPassword());
-        protocol = config.getUseSmtps() ? MailProtocol.smtps : MailProtocol.smtp;
+        protocol = config.getUseSmtps() ? smtps : smtp;
+        skipServerCertificateValidation = smtps.equals(protocol) ? 
+                config.getSkipServerCertificateValidation() : false;
     }
     
     @Override
@@ -85,6 +90,11 @@ public class MailConfigReader implements MailConfigSource {
     @Override
     public MailProtocol protocol() {
         return protocol;
+    }
+
+    @Override
+    public boolean skipServerCertificateValidation() {
+        return skipServerCertificateValidation;
     }
 
 }

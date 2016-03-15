@@ -13,9 +13,17 @@ import java.util.Objects;
  *  <li>{@link #setMailServerPort(int) Mail server port}. The port of the mail
  *  server given above.
  *  </li>
- *  <li>{@link #setUseSmtps(boolean) Secure transmission}. If {@code true} then
+ *  <li>{@link #setUseSmtps(boolean) Secure connection}. If {@code true} then
  *  use SMTPS (i.e. SMTP over TLS/SSL), otherwise plain, unprotected SMTP.
  *  If not specified, it defaults to {@code false} and plain SMTP will be used.
+ *  </li>
+ *  <li>{@link #setSkipServerCertificateValidation(boolean) Skip server 
+ *  certificate validation}. If set to {@code true} when using an SMTPS 
+ *  connection, the mail server certificate is not checked for validity.
+ *  Ideally this setting should never be used (security loophole!) but it may be
+ *  your only option with a self-signed server certificate which you cannot add
+ *  to the Java key store. This setting defaults to {@code false} if not 
+ *  specified and will be in any case ignored for an SMTP connection.  
  *  </li>
  *  <li>{@link #setUsername(String) Username}. The username to log into the
  *  mail server, if required. Leave blank if not needed.
@@ -55,6 +63,7 @@ public class MailConfig {
     private String mailServerHost;
     private int mailServerPort;
     private boolean useSmtps;
+    private boolean skipServerCertificateValidation;
     private String username;
     private String password;
     private Long[] retryIntervals;
@@ -82,6 +91,14 @@ public class MailConfig {
 
     public void setUseSmtps(boolean useSmtps) {
         this.useSmtps = useSmtps;
+    }
+    
+    public boolean getSkipServerCertificateValidation() {
+        return skipServerCertificateValidation;
+    }
+
+    public void setSkipServerCertificateValidation(boolean skipServerCertificateValidation) {
+        this.skipServerCertificateValidation = skipServerCertificateValidation;
     }
     
     public String getUsername() {
@@ -143,8 +160,9 @@ public class MailConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s | %s | %s | %s | %s", 
-                             mailServerHost, mailServerPort, useSmtps, username,
+        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s", 
+                             mailServerHost, mailServerPort, useSmtps, 
+                             skipServerCertificateValidation ,username,
                              password, fromAddress, deadMailDir, xs);
     }
     
