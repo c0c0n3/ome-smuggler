@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.config.items.JavaMailConfigProps.authenticate;
 import static ome.smuggler.config.items.JavaMailConfigProps.connectionTimeoutFor;
 import static ome.smuggler.config.items.JavaMailConfigProps.readTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.smtpsCheckServerIdentity;
 import static ome.smuggler.config.items.JavaMailConfigProps.smtpsTrustedServers;
 import static ome.smuggler.config.items.JavaMailConfigProps.writeTimeoutFor;
 import static ome.smuggler.config.items.JavaMailConfigProps.transportProtocol;
@@ -52,6 +53,14 @@ public class MailClientAdapter implements MailClient {
         mailProps.set(authenticate(config.protocol()).with(true));
     }
     
+    private static void configureTls(MailConfigSource config, JProps mailProps) {
+        mailProps.set(smtpsCheckServerIdentity().with(true));  // (1)
+    }
+    /* NOTES.
+     * (1) This check needs to be on to prevent man-in-the-middle attacks, but
+     * it's turned off by default in Java Mail for backward compatibility.
+     */
+    
     private static JavaMailSender build(MailConfigSource config) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         
@@ -63,6 +72,9 @@ public class MailClientAdapter implements MailClient {
         configureTransport(config, mailProps);
         config.username().ifPresent(
                 u -> configureAuthentication(config, u, mailSender, mailProps));
+        if (MailProtocol.smtps.equals(config.protocol())) {
+            configureTls(config, mailProps);
+        }
         
         return mailSender;
     }
