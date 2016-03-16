@@ -53,4 +53,8 @@ public class TaskIdPathStore<T extends Identifiable>
         FileOps.delete(pathFor(taskId));
     }
     
+    public Path storeDir() {
+        return storeDir;
+    }
+    
 }
