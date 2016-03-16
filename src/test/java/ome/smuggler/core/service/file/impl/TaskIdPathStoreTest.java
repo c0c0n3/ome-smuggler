@@ -89,6 +89,17 @@ public class TaskIdPathStoreTest {
     }
     
     @Test
+    public void removeDoesNothingIfFileDoesntExist() throws IOException {
+        BaseStringId existingTaskId = addNewTaskIdFileToStore();
+        BaseStringId nonExistentTaskId = new BaseStringId();
+        
+        target.remove(nonExistentTaskId);
+        
+        assertThat(target.listTaskIds().count(), is(1L));
+        assertThat(target.listTaskIds().findFirst().get(), is(existingTaskId));
+    }
+    
+    @Test
     public void removeTaskIdFile() throws IOException {
         BaseStringId taskId1 = addNewTaskIdFileToStore();
         BaseStringId taskId2 = addNewTaskIdFileToStore();
