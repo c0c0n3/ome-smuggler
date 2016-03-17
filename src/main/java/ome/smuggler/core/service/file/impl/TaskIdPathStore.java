@@ -2,6 +2,7 @@ package ome.smuggler.core.service.file.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 import ome.smuggler.core.io.FileOps;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.types.TaskIdPath;
+import util.lambda.ConsumerE;
 import util.object.Identifiable;
 
 /**
@@ -55,6 +57,11 @@ public class TaskIdPathStore<T extends Identifiable>
     
     public Path storeDir() {
         return storeDir;
+    }
+
+    @Override
+    public void add(T taskId, ConsumerE<OutputStream> contentWriter) {
+        FileOps.writeNew(pathFor(taskId), contentWriter);
     }
     
 }

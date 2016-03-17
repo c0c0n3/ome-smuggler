@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +16,7 @@ import org.junit.rules.TemporaryFolder;
 
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.types.BaseStringId;
+import util.lambda.ConsumerE;
 
 public class TaskIdPathStoreTest {
 
@@ -25,9 +27,7 @@ public class TaskIdPathStoreTest {
     
     private BaseStringId addNewTaskIdFileToStore() throws IOException {
         BaseStringId taskId = new BaseStringId();
-        Path taskIdPath = target.pathFor(taskId);
-        
-        storeDir.newFile(taskIdPath.getFileName().toString());
+        target.add(taskId, taskId.toString());
         
         return taskId;
     }
@@ -56,6 +56,16 @@ public class TaskIdPathStoreTest {
     @Test(expected = NullPointerException.class)
     public void removeThrowsIfNullArg() {
         target.remove(null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void addThrowsIfFirstArgNull() {
+        target.add(null, out -> {});
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void addThrowsIfSecondArgNull() {
+        target.add(new BaseStringId(), (ConsumerE<OutputStream>)null);
     }
     
     @Test
