@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.service.file.impl.TaskIdPathStore;
 import ome.smuggler.core.service.mail.FailedMailHandler;
 import ome.smuggler.core.service.mail.MailProcessor;
 import ome.smuggler.core.service.mail.MailRequestor;
@@ -12,6 +13,7 @@ import ome.smuggler.core.service.mail.impl.MailFailureHandler;
 import ome.smuggler.core.service.mail.impl.MailTrigger;
 import ome.smuggler.core.service.mail.impl.Mailer;
 import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.MailId;
 import ome.smuggler.core.types.QueuedMail;
 import ome.smuggler.providers.log.LogAdapter;
 import ome.smuggler.providers.mail.MailClientAdapter;
@@ -27,7 +29,9 @@ public class MailServiceBeans {
     public MailEnv mailEnv(MailConfigSource config, 
             ChannelSource<QueuedMail> mailSourceChannel) {
         MailEnv env = new MailEnv(config, mailSourceChannel, 
-                new MailClientAdapter(config), new LogAdapter());
+                new MailClientAdapter(config), 
+                new TaskIdPathStore<>(config.deadMailDir(), MailId::new),
+                new LogAdapter());
         
         env.ensureDirectories();
         return env;
