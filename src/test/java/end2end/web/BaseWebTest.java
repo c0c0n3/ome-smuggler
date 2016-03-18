@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import ome.smuggler.Main;
 import ome.smuggler.config.Profiles;
 import ome.smuggler.run.ImportServer;
+import util.sequence.Arrayz;
 
 import org.junit.BeforeClass;
 import org.springframework.boot.test.TestRestTemplate;
@@ -26,7 +27,8 @@ public class BaseWebTest {
     public static URI url(String...xs) {
         UriComponentsBuilder builder = UriComponentsBuilder
                                       .fromUriString("http://localhost:8000/");
-        Arrays.asList(xs).forEach(x -> builder.path(x));
+        String[] ys = Arrayz.op(String[]::new).intersperse(() -> "/", xs);
+        Arrays.asList(ys).forEach(y -> builder.path(y));
         return builder.build().toUri();
     }
     
