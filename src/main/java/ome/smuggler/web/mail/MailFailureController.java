@@ -39,8 +39,8 @@ public class MailFailureController {
     }
     
     @RequestMapping(method = GET, produces = MediaType.APPLICATION_JSON_VALUE) 
-    public String[] listTaskIds() {
-        return newAdapter().listTaskIds();
+    public String[] listTaskFileUrlPaths() {
+        return newAdapter().listTaskFileUrlPaths();
     }
     
     @RequestMapping(method = GET, value = "{" + TaskIdPathVar + "}") 

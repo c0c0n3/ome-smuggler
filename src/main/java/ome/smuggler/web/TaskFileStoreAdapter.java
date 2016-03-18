@@ -63,9 +63,10 @@ public class TaskFileStoreAdapter<T extends Identifiable> {
     }
     
     /**
-     * @return the ID's of all the files currently in the store. 
+     * @return the URL root paths to access each of the files currently in the
+     * store. 
      */
-    public String[] listTaskIds() {
+    public String[] listTaskFileUrlPaths() {
         return service.listTaskIds()
                       .map(this::toUrlString)
                       .toArray(String[]::new);
