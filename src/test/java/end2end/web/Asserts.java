@@ -34,6 +34,14 @@ public class Asserts {
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }
     
+    public static boolean assert200andReturnTrueOr404andReturnFalse(
+            ResponseEntity<?> response) {
+        HttpStatus status = response.getStatusCode();
+        assertThat(status, anyOf(equalTo(HttpStatus.OK), 
+                                 equalTo(HttpStatus.NOT_FOUND)));
+        return status.equals(HttpStatus.OK);
+    }
+    
     public static void assertNoCaching(ResponseEntity<?> response) {
         HttpHeaders hs = response.getHeaders();
         String cache = joinAllHeadersFor(HttpHeaders.CACHE_CONTROL, response);
