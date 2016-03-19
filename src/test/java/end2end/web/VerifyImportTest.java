@@ -5,16 +5,13 @@ import static org.junit.Assert.*;
 import static util.error.Exceptions.runUnchecked;
 import static end2end.web.Asserts.*;
 
-import java.net.URI;
-import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.stream.Stream;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
+import ome.smuggler.core.types.ImportId;
 import ome.smuggler.web.imports.ImportController;
 import ome.smuggler.web.imports.ImportFailureController;
 import ome.smuggler.web.imports.ImportRequest;
@@ -34,100 +31,70 @@ public class VerifyImportTest extends BaseWebTest {
         return req;
     }
     
-    private static void assertImportLogResponse(
-            ResponseEntity<String> response, ImportRequest expected) {
-        assert200(response);
-        assertPlainText(response);
+    private static void assertImportLogContent(
+            Optional<String> actual, ImportRequest expected) {
+        assertTrue(actual.isPresent());
         
-        String importLog = response.getBody();
+        String importLog = actual.get();
         assertThat(importLog, containsString(expected.targetUri));
         assertThat(importLog, containsString(expected.experimenterEmail));
     }
     
-    private static void assertImportResponse(
-            ResponseEntity<String> response, ImportRequest expected) {
-        assertImportLogResponse(response, expected);
-        assertNoCaching(response);
+    
+    private TaskFileStoreClient<ImportId> statusUpdateClient;
+    private TaskFileStoreClient<ImportId> failedLogClient;
+    
+    @Before
+    public void setup() {
+        statusUpdateClient = new TaskFileStoreClient<>(httpClient, 
+                ImportController.ImportUrl, Asserts::assertNoCaching, 
+                ImportId::new);
+        failedLogClient = new TaskFileStoreClient<>(httpClient, 
+                ImportFailureController.FailedImportUrl, 
+                Asserts::assertCacheForAsLongAsPossible, 
+                ImportId::new);
     }
     
-    private static void assertFailedLogDownload(
-            ResponseEntity<String> response, ImportRequest expected) {
-        assertImportLogResponse(response, expected);
-        assertCacheForAsLongAsPossible(response);
-    }
-    
-    private URI requestImport(ImportRequest req) {
+    private ImportId requestImport(ImportRequest req) {
         ResponseEntity<ImportResponse> postImportResponse = 
                 post(url(ImportController.ImportUrl), req, ImportResponse.class);
         assert200(postImportResponse);
-        return url(postImportResponse.getBody().statusUri);
+        return statusUpdateClient.taskIdFromUrl(
+                postImportResponse.getBody().statusUri);
     }
     
-    private void canGetStatusUpdate(URI statusUri, ImportRequest requested) {
-        ResponseEntity<String> response = 
-                httpClient.getForEntity(statusUri, String.class);
-        assertImportResponse(response, requested);
+    private void canGetStatusUpdate(ImportId taskId, ImportRequest requested) {
+        Optional<String> body = statusUpdateClient.download(taskId);  // (*)
+        assertImportLogContent(body, requested);
+    }
+    // (*) client asserts 200, no caching, plain text.
+    
+    private void noMoreImportStatusUpdatesAfterLogRetentionPeriod(ImportId taskId) {
+        Optional<String> body = statusUpdateClient.download(taskId); // asserts 404
+        assertFalse(body.isPresent());  // ==> log was garbage collected
     }
     
-    private void noMoreImportStatusUpdatesAfterLogRetentionPeriod(URI statusUri) {
-        ResponseEntity<String> statusUpdateResponse = 
-                httpClient.getForEntity(statusUri, String.class);
-        assert404(statusUpdateResponse);  // ==> log was garbage collected
+    private void canGetFailedImportLog(ImportId taskId) {
+        assertTrue(failedLogClient.exists(taskId));
     }
     
-    private String[] getFailedLogUrls() {
-        ResponseEntity<String[]> response = 
-                httpClient.getForEntity(
-                        url(ImportFailureController.FailedImportUrl), 
-                        String[].class);
-        assert200(response);
-        
-        String[] logs = response.getBody();
-        assertNotNull(logs);
-        
-        return logs;
+    private void canDownloadFailedLog(ImportId taskId, ImportRequest requested) {
+        Optional<String> body = failedLogClient.download(taskId);  // (*)
+        assertImportLogContent(body, requested);
+    }
+    // (*) client asserts 200, caching forever, plain text.
+    
+    private void cannotDownloadFailedLog(ImportId taskId) {
+        Optional<String> body = failedLogClient.download(taskId);  // asserts 404
+        assertFalse(body.isPresent());
     }
     
-    private Optional<URI> findFailedLog(URI logUri) {
-        String importId = Paths.get(logUri.getPath())
-                               .getFileName()
-                               .toString();
-        String[] logs = getFailedLogUrls();
-        return Stream.of(logs)
-                     .filter(x -> x.endsWith(importId))
-                     .map(x -> url(x))
-                     .findFirst();
+    private void canStopTrackingFailedLog(ImportId taskId) {
+        failedLogClient.delete(taskId);  // asserts 204
     }
     
-    private URI canGetFailedImportLog(URI statusUri) {
-        Optional<URI> failedLogUri = findFailedLog(statusUri);
-        assertTrue(failedLogUri.isPresent());
-        return failedLogUri.get();
-    }
-    
-    private void canDownloadFailedLog(URI logUri, ImportRequest requested) {
-        ResponseEntity<String> response = 
-                httpClient.getForEntity(logUri, String.class);
-        assertFailedLogDownload(response, requested);
-    }
-    
-    private void cannotDownloadFailedLog(URI logUri) {
-        ResponseEntity<String> response = 
-                httpClient.getForEntity(logUri, String.class);
-        assert404(response);
-    }
-    
-    private void canStopTrackingFailedLog(URI logUri) {
-        RequestEntity<Object> request = 
-                new RequestEntity<>(HttpMethod.DELETE, logUri);
-        ResponseEntity<Object> response = 
-                httpClient.exchange(request, Object.class);
-        assert204(response);
-    }
-    
-    private void failedLogNoLongerTracked(URI logUri) {
-        Optional<URI> failedLogUri = findFailedLog(logUri);
-        assertFalse(failedLogUri.isPresent());
+    private void failedLogNoLongerTracked(ImportId taskId) {
+        assertFalse(failedLogClient.exists(taskId));
     }
     
     private void waitUntilPastLogRetentionPeriod() {
@@ -139,17 +106,17 @@ public class VerifyImportTest extends BaseWebTest {
     @Test
     public void failedImportWorkflow() {
         ImportRequest doomedImportRequest = buildValidRequestThatWillFail();
-        URI statusUri = requestImport(doomedImportRequest);
-        canGetStatusUpdate(statusUri, doomedImportRequest);
+        ImportId taskId = requestImport(doomedImportRequest);
+        canGetStatusUpdate(taskId, doomedImportRequest);
         
         waitUntilPastLogRetentionPeriod();  // (1)
-        noMoreImportStatusUpdatesAfterLogRetentionPeriod(statusUri);
+        noMoreImportStatusUpdatesAfterLogRetentionPeriod(taskId);
         
-        URI failedLog = canGetFailedImportLog(statusUri);  // (2)
-        canDownloadFailedLog(failedLog, doomedImportRequest);
-        canStopTrackingFailedLog(failedLog);
-        cannotDownloadFailedLog(failedLog);
-        failedLogNoLongerTracked(failedLog);  // (3)
+        canGetFailedImportLog(taskId);  // (2)
+        canDownloadFailedLog(taskId, doomedImportRequest);
+        canStopTrackingFailedLog(taskId);
+        cannotDownloadFailedLog(taskId);
+        failedLogNoLongerTracked(taskId);  // (3)
     }
     /* NOTES.
      * 1. Assumes the duration in config.importConfig is the same as that used 

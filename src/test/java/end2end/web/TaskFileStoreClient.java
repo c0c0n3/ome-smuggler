@@ -47,11 +47,6 @@ public class TaskFileStoreClient<T extends Identifiable> {
         return ids;
     }
     
-    private T taskIdFromUrl(String path) {
-        String id = Paths.get(path).getFileName().toString();
-        return newTaskId.apply(id);
-    }
-    
     public TaskFileStoreClient(RestTemplate httpClient, String rootPath,
             Consumer<ResponseEntity<?>> assertCachingStrategy,
             Function<String, T> newTaskId) {
@@ -59,6 +54,11 @@ public class TaskFileStoreClient<T extends Identifiable> {
         this.rootPath = rootPath;
         this.assertCachingStrategy = assertCachingStrategy;
         this.newTaskId = newTaskId;
+    }
+    
+    public T taskIdFromUrl(String path) {
+        String id = Paths.get(path).getFileName().toString();
+        return newTaskId.apply(id);
     }
     
     public Stream<T> loadTaskIds() {
