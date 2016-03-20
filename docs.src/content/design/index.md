@@ -42,11 +42,11 @@ understand the reasons behind the design and to put it into perspective.
 Technology Stack
 ----------------
 The bad news: Smuggler relies on lots of frameworks---[Spring][spring] and
-its offspring (love puns!) [Spring Boot][booty], [HornetQ][hornetq], and
-[Undertow][undertow]. The good news: its `core` package, where most of
-the functionality sits, has no dependencies on any of them. So we have the
-good and the bad, what about the ugly? `core` relies heavily on Java 8 and
-the new Streams API.
+its offspring (love puns!) [Spring Boot][booty], [HornetQ][hornetq],
+[Undertow][undertow], [Gson][gson], and [SLF4J][slf4j].
+The good news: its `core` package, where most of the functionality sits,
+has no dependencies on any of them. So we have the good and the bad, what
+about the ugly? `core` relies heavily on Java 8 and the new Streams API.
 
 <p class="side-note">
 Java, having become the bastion of [abject-orientation][abject-oriented],
@@ -117,6 +117,8 @@ obviously up for debate...
   "Introduction to Abject-Oriented Programming"
 [booty]: http://projects.spring.io/spring-boot/
   "Spring Boot Home"
+[gson]: https://github.com/google/gson
+  "Gson Home"  
 [hi-level]: high-level/index.html
   "High-level View"
 [hamcrest]: http://hamcrest.org/
@@ -133,6 +135,8 @@ obviously up for debate...
   "Process View"
 [reactive]: http://www.reactivemanifesto.org/
   "Reactive Manifesto"
+[slf4j]: http://www.slf4j.org/
+  "SLF4J Home"
 [spring]: https://spring.io/
   "Spring Home"
 [springdoh-git]: https://github.com/c0c0n3/spring-doh
