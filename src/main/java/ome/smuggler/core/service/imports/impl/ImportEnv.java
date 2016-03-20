@@ -3,8 +3,6 @@ package ome.smuggler.core.service.imports.impl;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
-import java.nio.file.Path;
-
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
@@ -84,11 +82,6 @@ public class ImportEnv {
     
     public ImportLogPath importLogPathFor(ImportId taskId) {
         return new ImportLogPath(config().importLogDir(), taskId);
-    }
-    
-    public Path failedImportLogPathFor(ImportId taskId) {
-        Path importLog = importLogPathFor(taskId).get();
-        return config.failedImportLogDir().resolve(importLog.getFileName());
     }
     
     public FutureTimepoint importLogRetentionFromNow() {
