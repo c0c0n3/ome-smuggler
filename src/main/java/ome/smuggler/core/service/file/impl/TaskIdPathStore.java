@@ -54,14 +54,19 @@ public class TaskIdPathStore<T extends Identifiable>
     public void remove(T taskId) {
         FileOps.delete(pathFor(taskId));
     }
-    
-    public Path storeDir() {
-        return storeDir;
-    }
 
     @Override
     public void add(T taskId, ConsumerE<OutputStream> contentWriter) {
         FileOps.writeNew(pathFor(taskId), contentWriter);
+    }
+    
+    @Override 
+    public void add(T taskId, Path contentSource) {
+        FileOps.copy(contentSource, pathFor(taskId));    
+    }
+    
+    public Path storeDir() {
+        return storeDir;
     }
     
 }

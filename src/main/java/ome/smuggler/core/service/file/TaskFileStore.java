@@ -66,4 +66,17 @@ public interface TaskFileStore<T extends Identifiable> {
         });
     }
     
+    /**
+     * Writes a file associated to the specified task by taking the contents
+     * from a source file.
+     * If the file already exists in the store, it will be overwritten.
+     * (The source file is never modified though.)
+     * @param taskId identifies the task.
+     * @param contentSource the file contents to use.
+     * @throws NullPointerException if any argument is {@code null}.
+     * @throws IOException if an I/O error occurs; the exception is masked as
+     * runtime exception and re-thrown as is.
+     */
+    void add(T taskId, Path contentSource);
+    
 }
