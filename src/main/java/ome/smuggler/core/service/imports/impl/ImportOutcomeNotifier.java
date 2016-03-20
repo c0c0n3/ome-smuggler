@@ -26,6 +26,12 @@ public class ImportOutcomeNotifier {
     public void tellFailure() {
         PlainTextMail message = ImportMailFormatter.failureMessage(task);
         env.mail().enqueue(message);
+        
+        if (env.sysAdminEmail().isPresent()) {
+            message = ImportMailFormatter.sysAdminFailureMessage(task, 
+                                                    env.sysAdminEmail().get());
+            env.mail().enqueue(message);
+        }
     }
     
 }

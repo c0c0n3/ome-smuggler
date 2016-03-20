@@ -23,6 +23,7 @@ import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogFile;
+import ome.smuggler.core.types.MailConfigSource;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.providers.log.LogAdapter;
 
@@ -46,10 +47,12 @@ public class ImportServiceBeans {
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             TaskFileStore<ImportId> failedImportLogStore,
-            MailRequestor mail) {
+            MailRequestor mail, 
+            MailConfigSource mailConfig) {
         ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
                                       importGcSourceChannel, 
                                       failedImportLogStore, mail, 
+                                      mailConfig.sysAdminAddress(), 
                                       new LogAdapter());
         env.ensureDirectories();
         return env;

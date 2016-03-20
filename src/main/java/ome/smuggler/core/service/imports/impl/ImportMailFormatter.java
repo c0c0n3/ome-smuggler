@@ -2,6 +2,7 @@ package ome.smuggler.core.service.imports.impl;
 
 import java.net.InetAddress;
 
+import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.PlainTextMail;
 import ome.smuggler.core.types.QueuedImport;
 
@@ -25,15 +26,20 @@ public class ImportMailFormatter {
     }
     
     private static PlainTextMail format(String subjectTemplate, 
-            String contentTemplate, QueuedImport task) {
+            String contentTemplate, QueuedImport task, Email recipient) {
         String subject = String.format(subjectTemplate, task.getTaskId());
         String content = String.format(contentTemplate,
                                        task.getRequest().getTarget(),
                                        hostname(),
                                        task.getRequest().getOmeroHost().getHost());
 
-        return new PlainTextMail(task.getRequest().getExperimenterEmail(), 
-                                 subject, content);
+        return new PlainTextMail(recipient, subject, content);
+    }
+    
+    private static PlainTextMail format(String subjectTemplate, 
+            String contentTemplate, QueuedImport task) {
+        return format(subjectTemplate, contentTemplate, task, 
+                      task.getRequest().getExperimenterEmail());
     }
     
     public static PlainTextMail successMessage(QueuedImport task) {
@@ -42,6 +48,11 @@ public class ImportMailFormatter {
     
     public static PlainTextMail failureMessage(QueuedImport task) {
         return format(FailureSubject, FailureMessage, task);
+    }
+    
+    public static PlainTextMail sysAdminFailureMessage(QueuedImport task, 
+            Email sysAdminAddress) {
+        return format(FailureSubject, FailureMessage, task, sysAdminAddress);
     }
     
 }

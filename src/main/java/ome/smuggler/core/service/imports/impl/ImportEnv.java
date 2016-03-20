@@ -3,12 +3,15 @@ package ome.smuggler.core.service.imports.impl;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
+import java.util.Optional;
+
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
+import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportId;
@@ -27,6 +30,7 @@ public class ImportEnv {
     private final SchedulingSource<ImportLogFile> gcQueue;
     private final TaskFileStore<ImportId> failedImportLogStore;
     private final MailRequestor mail;
+    private final Optional<Email> sysAdminEmail; 
     private final ImportLogger log;
     
     public ImportEnv(ImportConfigSource config, CliImporterConfig cliConfig,
@@ -34,6 +38,7 @@ public class ImportEnv {
             SchedulingSource<ImportLogFile> gcQueue,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail,
+            Optional<Email> sysAdminEmail,
             LogService logService) {
         requireNonNull(config, "config");
         requireNonNull(cliConfig, "cliConfig");
@@ -41,6 +46,7 @@ public class ImportEnv {
         requireNonNull(gcQueue, "gcQueue");
         requireNonNull(failedImportLogStore, "failedImportLogStore");
         requireNonNull(mail, "mail");
+        requireNonNull(sysAdminEmail, "sysAdminEmail");
         requireNonNull(logService, "logService");
         
         this.config = config;
@@ -49,6 +55,7 @@ public class ImportEnv {
         this.gcQueue = gcQueue;
         this.failedImportLogStore = failedImportLogStore;
         this.mail = mail;
+        this.sysAdminEmail = sysAdminEmail;
         this.log = new ImportLogger(logService);
     }
     
@@ -74,6 +81,10 @@ public class ImportEnv {
     
     public MailRequestor mail() {
         return mail;
+    }
+    
+    public Optional<Email> sysAdminEmail() {
+        return sysAdminEmail;
     }
     
     public ImportLogger log() {
