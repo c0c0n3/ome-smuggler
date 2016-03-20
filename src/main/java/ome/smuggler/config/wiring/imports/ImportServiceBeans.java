@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.file.TaskFileStore;
+import ome.smuggler.core.service.file.impl.TaskIdPathStore;
 import ome.smuggler.core.service.imports.FailedImportHandler;
 import ome.smuggler.core.service.imports.ImportLogDisposer;
 import ome.smuggler.core.service.imports.ImportProcessor;
@@ -19,6 +21,7 @@ import ome.smuggler.core.service.imports.impl.ImportRunner;
 import ome.smuggler.core.service.imports.impl.ImportTrigger;
 import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.types.ImportConfigSource;
+import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.providers.log.LogAdapter;
@@ -30,14 +33,23 @@ import ome.smuggler.providers.log.LogAdapter;
 public class ImportServiceBeans {
     
     @Bean
+    public TaskFileStore<ImportId> failedImportLogStore(
+            ImportConfigSource config) {
+        return new TaskIdPathStore<>(config.failedImportLogDir(), 
+                                     ImportId::new);
+    }
+    
+    @Bean
     public ImportEnv importEnv(
             ImportConfigSource config, 
             CliImporterConfig cliConfig, 
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
+            TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail) {
         ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
-                                      importGcSourceChannel, mail, 
+                                      importGcSourceChannel, 
+                                      failedImportLogStore, mail, 
                                       new LogAdapter());
         env.ensureDirectories();
         return env;
