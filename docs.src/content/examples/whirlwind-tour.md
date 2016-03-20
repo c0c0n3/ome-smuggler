@@ -45,6 +45,21 @@ $ mkdir -p ome-lib
 $ cp /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar ome-lib/
 ~~~
 
+You should configure the sending of email notifications---details [here][mail-config].
+For that, you can copy the default configuration file in the current
+directory and then tweak it:
+
+~~~ {.bash}
+$ cp src/main/resources/config/mail.yml ./
+~~~
+
+<p class="side-note">
+You can skip the configuration of the email service; in that case all email
+messages will fail to send which you don't need to give two hoots about for
+the sake of this whirlwind tour. But Smuggler tracks mail failures too and
+allows you to recover, if that makes you feel better.
+</p>
+
 Running the Server
 ------------------
 We're ready to run the server. (Java 8 required.) In the `ome-smuggler` root
@@ -72,12 +87,17 @@ Why? Because this workflow touches most of the available functionality. First
 ~~~ {.bash}
 $ cd src/test/scripts/http-import/
 $ ls
-    delete  get  list-failed-imports  min-import.json  request-import
-$ chmod +x delete get list-failed-imports request-import
+    ...
+$ chmod +x get delete
+$ chmod +x request-import list-failed-imports
+$ chmod +x list-failed-mail
 ~~~
 
 These are just convenience scripts using `curl` to interact with Smuggler over
-HTTP. So on to requesting an import that will fail
+HTTP. You may have noticed an additional file, `min-import.json`: this is JSON
+to request an import; if you configured the mail service, you should replace
+the nonsensical email address in there with yours to get love letters from
+Smuggler. So on to requesting an import that will fail
 
 ~~~ {.bash}
 $ ./request-import min-import.json 
@@ -153,12 +173,16 @@ tracked, so all you should see in the response body is
 []
 ~~~
 
-###### Note
 On failure, Smuggler sends a notification email to both the user who requested
-the import (see contents of `min-import.json`) and the system administrator.
-Email notifications are disabled until we sort out the mail server issue. (Let
-me know if you want to try using Gmail, in which case I can merge the code in
-to enable the feature.)
+the import (see contents of `min-import.json`) and the system administrator---
+assuming you [configured one][mail-config]. If you didn't configured the mail
+service earlier, then the sending of emails will fail, after a couple of days
+of trying though---as per default configuration. On giving up sending, Smuggler
+stores the failed email messages and lets you manage them through its REST API
+just like we've done for failed imports. Use the `list-failed-mail` script to
+list them, and then the `get` and `delete` scripts; the messages are stored in
+MIME format so they can be piped directly into a program such as `sendmail` to
+send them off.
 
 
 Success Scenario
@@ -174,8 +198,8 @@ $ omero login
 Server: [localhost:4064]
 Username: [root] your-user
 Password: your-pass
-Created session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064). Idle timeout: 10 min. Current group: system
-~~~ 
+Created session 44ecfba2-9266-422e-87e8-cd3604c64c64   (...)
+~~~
 
 Copy and paste the session key into `my-import.json`, then
 
@@ -194,3 +218,4 @@ queue, but haven't merged the code in.
 
 [import-config]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/ImportConfig.java
 [import-request]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/imports/ImportRequest.java
+[mail-config]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/MailConfig.java

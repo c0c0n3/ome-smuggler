@@ -59,6 +59,11 @@ $ <span class="kw">emacs</span> import.yml</code></pre>
 <p>(If you want to play around with the import configuration, read <a href="https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/ImportConfig.java">this</a>.) Now we need to bring in the OMERO libraries; Smuggler expects to find them in the <code>ome-lib</code> directory in the current directory. (Though it can be configured to be wherever you like.) You can copy the <code>jar</code> files over from your local Insight or OMERO <code>libs</code> directory, e.g.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">mkdir</span> -p ome-lib
 $ <span class="kw">cp</span> /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar ome-lib/</code></pre>
+<p>You should configure the sending of email notifications—details <a href="https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/MailConfig.java">here</a>. For that, you can copy the default configuration file in the current directory and then tweak it:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cp</span> src/main/resources/config/mail.yml ./</code></pre>
+<p class="side-note">
+You can skip the configuration of the email service; in that case all email messages will fail to send which you don’t need to give two hoots about for the sake of this whirlwind tour. But Smuggler tracks mail failures too and allows you to recover, if that makes you feel better.
+</p>
 <h2 id="running-the-server">Running the Server</h2>
 <p>We’re ready to run the server. (Java 8 required.) In the <code>ome-smuggler</code> root directory</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">java</span> -jar build/libs/ome-smuggler-0.1.0.jar</code></pre>
@@ -71,9 +76,11 @@ $ <span class="kw">cp</span> /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar
 <p>Why? Because this workflow touches most of the available functionality. First</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> src/test/scripts/http-import/
 $ <span class="kw">ls</span>
-    <span class="kw">delete</span>  get  list-failed-imports  min-import.json  request-import
-$ <span class="kw">chmod</span> +x delete get list-failed-imports request-import</code></pre>
-<p>These are just convenience scripts using <code>curl</code> to interact with Smuggler over HTTP. So on to requesting an import that will fail</p>
+    <span class="kw">...</span>
+$ <span class="kw">chmod</span> +x get delete
+$ <span class="kw">chmod</span> +x request-import list-failed-imports
+$ <span class="kw">chmod</span> +x list-failed-mail</code></pre>
+<p>These are just convenience scripts using <code>curl</code> to interact with Smuggler over HTTP. You may have noticed an additional file, <code>min-import.json</code>: this is JSON to request an import; if you configured the mail service, you should replace the nonsensical email address in there with yours to get love letters from Smuggler. So on to requesting an import that will fail</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./request-import</span> min-import.json </code></pre>
 <p>This simply POSTs a JSON-encoded import request to upload a non-existing image to a non-existing OMERO sever. No wonder it should fail. To see how to build an import request, look <a href="https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/imports/ImportRequest.java">here</a>. The response should be a 200 (import request accepted and queued for execution) and its body should be something like</p>
 <pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span><span class="dt">&quot;statusUri&quot;</span><span class="fu">:</span><span class="st">&quot;/ome/import/740f848c-7099-461e-a988-563eecaeccba&quot;</span><span class="fu">}</span></code></pre>
@@ -93,18 +100,17 @@ $ <span class="kw">chmod</span> +x delete get list-failed-imports request-import
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./list-failed-imports</span></code></pre>
 <p>you should get back an empty JSON array as there are no failed imports being tracked, so all you should see in the response body is</p>
 <pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[]</span></code></pre>
-<h6 id="note">Note</h6>
-<p>On failure, Smuggler sends a notification email to both the user who requested the import (see contents of <code>min-import.json</code>) and the system administrator. Email notifications are disabled until we sort out the mail server issue. (Let me know if you want to try using Gmail, in which case I can merge the code in to enable the feature.)</p>
+<p>On failure, Smuggler sends a notification email to both the user who requested the import (see contents of <code>min-import.json</code>) and the system administrator— assuming you <a href="https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/MailConfig.java">configured one</a>. If you didn’t configured the mail service earlier, then the sending of emails will fail, after a couple of days of trying though—as per default configuration. On giving up sending, Smuggler stores the failed email messages and lets you manage them through its REST API just like we’ve done for failed imports. Use the <code>list-failed-mail</code> script to list them, and then the <code>get</code> and <code>delete</code> scripts; the messages are stored in MIME format so they can be piped directly into a program such as <code>sendmail</code> to send them off.</p>
 <h2 id="success-scenario">Success Scenario</h2>
 <p>All you need to make an image trek into OMERO is to POST a request for existing data to an existing OMERO server. Create a new file <code>my-import.json</code> taking <code>min-import.json</code> as an example and referring to <a href="https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/imports/ImportRequest.java">this specification</a>. You will need a valid session key to go in the file; to obtain one, use the OMERO CLI as shown below:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">omero</span> login
 <span class="kw">Server</span>: [localhost:4064]
 <span class="kw">Username</span>: [root] your-user
 <span class="kw">Password</span>: your-pass
-<span class="kw">Created</span> session 44ecfba2-9266-422e-87e8-cd3604c64c64 (root@localhost:4064)<span class="kw">.</span> <span class="kw">Idle</span> timeout: 10 min. Current group: system</code></pre>
+<span class="kw">Created</span> session 44ecfba2-9266-422e-87e8-cd3604c64c64   (...)</code></pre>
 <p>Copy and paste the session key into <code>my-import.json</code>, then</p>
 <pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./request-import</span> my-import.json</code></pre>
-<h6 id="note-1">Note</h6>
+<h6 id="note">Note</h6>
 <p>Your OMERO session will expire in 10 minutes. Smuggler needs an active session to run the import; if no other imports are queued, then this is not a problem as your request will be serviced shortly after being put on the queue. I have some experimental code to keep the session alive while the import sits on the queue, but haven’t merged the code in.</p>
   </section>
 </main>  
