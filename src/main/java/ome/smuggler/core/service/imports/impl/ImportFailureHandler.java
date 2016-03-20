@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
 
-import ome.smuggler.core.io.FileOps;
 import ome.smuggler.core.service.imports.FailedImportHandler;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.QueuedImport;
@@ -22,8 +21,8 @@ public class ImportFailureHandler implements FailedImportHandler {
     private void storeAsFailedImport(QueuedImport task) {
         ImportId taskId = task.getTaskId();
         Path importLog = env.importLogPathFor(taskId).get();
-        Path target = env.failedImportLogPathFor(taskId);
-        FileOps.copy(importLog, target);
+        
+        env.failedImportLogStore().add(taskId, importLog);
     }
     
     @Override
