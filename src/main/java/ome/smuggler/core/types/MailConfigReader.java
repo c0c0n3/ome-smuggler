@@ -9,6 +9,7 @@ import static ome.smuggler.core.types.MailProtocol.smtp;
 import static ome.smuggler.core.types.MailProtocol.smtps;
 import static ome.smuggler.core.types.ValueParserFactory.email;
 import static util.string.Strings.asOptional;
+import static util.string.Strings.isNullOrEmpty;
 
 import java.net.URI;
 import java.nio.file.Path;
@@ -24,6 +25,18 @@ import ome.smuggler.config.items.MailConfig;
  */
 public class MailConfigReader implements MailConfigSource {
 
+    private static Email parseEmail(String address) {
+        return email(address)
+              .either(errorMsg -> {
+                          throw new IllegalArgumentException(errorMsg);
+                      }, identity());
+    }
+    
+    private static Optional<Email> parseOptionalEmail(String address) {
+        return isNullOrEmpty(address) ? Optional.empty()
+                                      : Optional.of(parseEmail(address));
+    }
+    
     private final Email fromAddress;
     private final URI mailServer;
     private final MailProtocol protocol;
@@ -32,6 +45,7 @@ public class MailConfigReader implements MailConfigSource {
     private final Path deadMailDir;
     private final Optional<String> username;
     private final Optional<String> password;
+    private final Optional<Email> sysAdminAddress;
     
     /**
      * Creates a new instance.
@@ -42,10 +56,7 @@ public class MailConfigReader implements MailConfigSource {
     public MailConfigReader(MailConfig config) {
         requireNonNull(config, "config");
         
-        fromAddress = email(config.getFromAddress())
-                     .either(errorMsg -> {
-                                 throw new IllegalArgumentException(errorMsg);
-                             }, identity());
+        fromAddress = parseEmail(config.getFromAddress());
         mailServer = toURI("smtp", config.getMailServerHost(), 
                             config.getMailServerPort());
         retryIntervals = toDurationList(config.getRetryIntervals());
@@ -55,6 +66,7 @@ public class MailConfigReader implements MailConfigSource {
         protocol = config.getUseSmtps() ? smtps : smtp;
         skipServerCertificateValidation = smtps.equals(protocol) ? 
                 config.getSkipServerCertificateValidation() : false;
+        sysAdminAddress = parseOptionalEmail(config.getSysAdminEmail());
     }
     
     @Override
@@ -95,6 +107,11 @@ public class MailConfigReader implements MailConfigSource {
     @Override
     public boolean skipServerCertificateValidation() {
         return skipServerCertificateValidation;
+    }
+
+    @Override
+    public Optional<Email> sysAdminAddress() {
+        return sysAdminAddress;
     }
 
 }

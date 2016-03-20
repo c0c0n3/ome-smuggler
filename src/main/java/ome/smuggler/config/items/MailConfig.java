@@ -53,6 +53,10 @@ import java.util.Objects;
  *  as {@code sendmail}.
  *  Note that directories in the given path will be created if needed.
  *  </li>
+ *  <li>{@link #setSysAdminEmail(String) System administrator's email}.
+ *  Optional email address of the system administrator. If specified, every time
+ *  an import fails permanently an alert email is sent to this address. 
+ *  </li>
  * </ul>
  */
 public class MailConfig {
@@ -68,6 +72,7 @@ public class MailConfig {
     private String password;
     private Long[] retryIntervals;
     private String deadMailDir;
+    private String sysAdminEmail;
     
     public String getMailServerHost() {
         return mailServerHost;
@@ -141,6 +146,14 @@ public class MailConfig {
         this.deadMailDir = failedRelayDir;
     }
     
+    public String getSysAdminEmail() {
+        return sysAdminEmail;
+    }
+
+    public void setSysAdminEmail(String sysAdminEmail) {
+        this.sysAdminEmail = sysAdminEmail;
+    }
+    
     @Override
     public int hashCode() {
         return toString().hashCode();
@@ -160,10 +173,11 @@ public class MailConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s", 
+        return String.format("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s", 
                              mailServerHost, mailServerPort, useSmtps, 
                              skipServerCertificateValidation ,username,
-                             password, fromAddress, deadMailDir, xs);
+                             password, fromAddress, deadMailDir, sysAdminEmail,
+                             xs);
     }
     
 }

@@ -65,5 +65,10 @@ public class DevMailConfigSource implements MailConfigSource {
     public boolean skipServerCertificateValidation() {
         return false;
     }
+
+    @Override
+    public Optional<Email> sysAdminAddress() {
+        return Optional.empty();
+    }
     
 }

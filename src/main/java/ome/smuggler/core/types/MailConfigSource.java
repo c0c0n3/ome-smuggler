@@ -56,4 +56,10 @@ public interface MailConfigSource {
      */
     Path deadMailDir();
     
+    /**
+     * @return the email address of the system administrator, if configured or
+     * empty otherwise.
+     */
+    Optional<Email> sysAdminAddress();
+    
 }
