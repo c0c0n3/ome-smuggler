@@ -50,7 +50,7 @@ public class VerifyImportTest extends BaseWebTest {
                 ImportController.ImportUrl, Asserts::assertNoCaching, 
                 ImportId::new);
         failedLogClient = new TaskFileStoreClient<>(httpClient, 
-                ImportFailureController.FailedImportUrl, 
+                ImportFailureController.RootPath, 
                 Asserts::assertCacheForAsLongAsPossible, 
                 ImportId::new);
     }

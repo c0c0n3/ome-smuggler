@@ -2,10 +2,6 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import java.nio.file.Path;
-import java.util.stream.Stream;
-
-import ome.smuggler.core.io.FileOps;
 import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportLogPath;
@@ -30,25 +26,6 @@ public class ImportMonitor implements ImportTracker {
     @Override
     public ImportLogPath importLogPathFor(ImportId taskId) {
         return env.importLogPathFor(taskId);
-    }
-
-    @Override
-    public Path failedImportLogPathFor(ImportId taskId) {
-        return env.failedImportLogPathFor(taskId);
-    }
-
-    @Override
-    public Stream<ImportId> listFailedImports() {
-        Path failedImportLogDir = env.config().failedImportLogDir();
-        return FileOps.listChildFiles(failedImportLogDir)
-                      .map(Path::getFileName)
-                      .map(Path::toString)
-                      .map(ImportId::new);
-    }
-
-    @Override
-    public void stopTrackingFailedImport(ImportId taskId) {
-        FileOps.delete(failedImportLogPathFor(taskId));
     }
 
 }

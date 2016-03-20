@@ -1,73 +1,51 @@
 package ome.smuggler.web.imports;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
-import static util.spring.http.ResponseEntities._204;
-
-import java.io.IOException;
-import java.nio.file.Path;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import ome.smuggler.core.service.imports.ImportTracker;
+import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.types.ImportId;
-import ome.smuggler.web.FileStreamer;
-import util.servlet.http.Caches;
+import ome.smuggler.web.TaskFileStoreAdapter;
 
+
+/**
+ * Exposes the functionality of the failed import log store to Web clients.
+ * A Web client can get the current {@link #listTaskFileUrlPaths() list} of 
+ * failed imports (i.e. imports that failed permanently, after having being 
+ * retried) and then {@link #streamFileOr404(String, javax.servlet.http.HttpServletResponse)
+ * download} the associated import logs. 
+ * Normally after the system administrator has resolved the cause of the failure
+ * for a specific import, there is no need to keep the log file around anymore
+ * and it can be {@link #deleteFile(String) deleted}.
+ */
 @RestController  // includes @ResponseBody: return vals bound to response body.
-@RequestMapping(ImportFailureController.FailedImportUrl)
+@RequestMapping(ImportFailureController.RootPath)
 @Scope(WebApplicationContext.SCOPE_REQUEST)
-public class ImportFailureController {
+public class ImportFailureController extends TaskFileStoreAdapter<ImportId> {
 
-    public static final String FailedImportUrl = "/ome/failed/import";
-    private static final String ImportIdPathVar = "failedImportId";
+    public static final String RootPath = "/ome/failed/import";
     
     @Autowired
-    private ImportTracker service;
-    
-    private String toUrlString(ImportId task) {
-        return UriComponentsBuilder.newInstance()
-                                   .path(FailedImportUrl)
-                                   .path("/")
-                                   .path(task.id())
-                                   .toUriString();
+    private TaskFileStore<ImportId> service;
+
+    @Override
+    protected TaskFileStore<ImportId> service() {
+        return service;
     }
-    
-    @RequestMapping(method = GET, produces = MediaType.APPLICATION_JSON_VALUE) 
-    public String[] getFailedImportList() {
-        return service.listFailedImports()
-                      .map(this::toUrlString)
-                      .toArray(String[]::new);
+
+    @Override
+    protected String rootPath() {
+        return RootPath;
     }
-    
-    @RequestMapping(method = GET, value = "{" + ImportIdPathVar + "}") 
-    public ResponseEntity<String> getFailedImportLog(
-            @PathVariable(value=ImportIdPathVar) String failedImportId, 
-            HttpServletResponse response) throws IOException {
-        ImportId taskId = new ImportId(failedImportId);
-        Path importLog = service.failedImportLogPathFor(taskId); 
-        FileStreamer streamer = new FileStreamer(importLog, 
-                                                 MediaType.TEXT_PLAIN, 
-                                                 Caches::cacheForAsLongAsPossible);
-        return streamer.streamOr404(response);
-    }
-    
-    @RequestMapping(method = DELETE, value = "{" + ImportIdPathVar + "}") 
-    public ResponseEntity<?> deleteFailedImportLog(
-            @PathVariable(value=ImportIdPathVar) String failedImportId) {
-        ImportId taskId = new ImportId(failedImportId);
-        service.stopTrackingFailedImport(taskId); 
-        return _204();
+
+    @Override
+    protected Function<String, ImportId> taskIdFromString() {
+        return ImportId::new;
     }
     
 }
