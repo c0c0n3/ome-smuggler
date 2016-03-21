@@ -9,6 +9,7 @@ import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.DevImportConfigSource;
 import ome.smuggler.config.items.CliImporterConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
+import ome.smuggler.config.items.ImportKeepAliveQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.types.ImportConfigSource;
 import util.config.ConfigProvider;
@@ -28,6 +29,12 @@ public class ImportDevConfigBeans {
     
     @Bean
     public ImportGcQConfig importGcQConfig(ConfigProvider<ImportGcQConfig> src) {
+        return src.first();
+    }
+    
+    @Bean
+    public ImportKeepAliveQConfig importKeepAliveQConfig(
+            ConfigProvider<ImportKeepAliveQConfig> src) {
         return src.first();
     }
     
