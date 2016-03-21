@@ -6,7 +6,7 @@ import ome.smuggler.config.data.DefaultMailQConfig;
 
 
 /**
- * The import queue configuration as required by HornetQ.
+ * The mail queue configuration as required by HornetQ.
  * This configuration is hard-coded as the queue is only used internally by the
  * import server.
  */
