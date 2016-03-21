@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.types.Nat;
@@ -29,6 +30,12 @@ public class RawConfigValues {
     public static Duration toDuration(Long minutes) {
         PositiveN v = PositiveN.of(minutes);  // NB throws if minutes <= 0
         return Duration.ofMinutes(v.get());
+    }
+    
+    public static Duration toDuration(Long minutes, Duration defaultValue) {
+        return Optional.ofNullable(minutes)
+                       .map(RawConfigValues::toDuration)
+                       .orElse(defaultValue);
     }
     
     public static List<Duration> toDurationList(Long[] minutes) {

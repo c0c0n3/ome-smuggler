@@ -32,14 +32,20 @@ import java.util.Objects;
  *  #getLogRetentionMinutes() retention period}. However, its copy in the 
  *  failed log directory will be kept indefinitely, the system administrator 
  *  will have to explicitly delete it after resolving the issue that caused 
- *  the failure.   
+ *  the failure.
+ *  </li>
+ *  <li>{@link #setKeepAliveInterval(Long) Session keep alive interval}.
+ *  Interval, in minutes, at which to refresh the OMERO session of a queued 
+ *  import. Even though the client that requested the import established already 
+ *  an import session with OMERO, the import request may sit in the queue for
+ *  a period of time longer than the OMERO session timeout; hence a session
+ *  a keep-alive is needed to avoid the session expiring before the import
+ *  request is fetched from the queue and run. 
+ *  This interval should be a few minutes less than the session timeout
+ *  of the OMERO server and defaults to 5 minutes if not specified. (This is
+ *  because the OMERO default session timeout is 10 minutes.)
  *  </li>
  * </ul>
- * <p>The failed log directory path should not be a sub-directory of the import
- * log directory, or vice-versa. This limitation will be lifted in a future
- * release. (This is so to avoid trouble with Spring MVC static serving of
- * files from the import log directory.)
- * </p>
  */
 public class ImportConfig {
     /* NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
@@ -50,6 +56,7 @@ public class ImportConfig {
     private Long logRetentionMinutes;
     private Long[] retryIntervals;
     private String failedImportLogDir;
+    private Long keepAliveInterval;
     
     public String getImportLogDir() {
         return importLogDir;
@@ -83,6 +90,14 @@ public class ImportConfig {
         this.failedImportLogDir = failedImportLogDir;
     }
     
+    public Long getKeepAliveInterval() {
+        return keepAliveInterval;
+    }
+
+    public void setKeepAliveInterval(Long keepAliveInterval) {
+        this.keepAliveInterval = keepAliveInterval;
+    }
+    
     @Override
     public int hashCode() {
         return toString().hashCode();
@@ -102,8 +117,9 @@ public class ImportConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s",
-                importLogDir, failedImportLogDir, logRetentionMinutes, xs);
+        return String.format("%s | %s | %s | %s | %s",
+                importLogDir, failedImportLogDir, logRetentionMinutes, 
+                keepAliveInterval, xs);
     }
     
 }

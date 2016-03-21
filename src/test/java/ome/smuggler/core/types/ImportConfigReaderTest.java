@@ -80,4 +80,27 @@ public class ImportConfigReaderTest {
         assertThat(actual.size(), is(0));
     }
     
+    @Test
+    public void acceptNullKeepAliveInterval() {
+        Duration actual = reader(cfg -> cfg.setKeepAliveInterval(null))
+                         .keepAliveInterval();
+        assertNotNull(actual);
+        assertThat(actual, is(ImportConfigReader.DefaultKeepAliveInterval));
+    }
+    
+    @Test (expected = IllegalArgumentException.class)
+    public void rejectNonPositiveKeepAliveInterval() {
+        reader(cfg -> cfg.setKeepAliveInterval(0L));
+    }
+    
+    @Test
+    public void acceptPositiveKeepAliveInterval() {
+        Long minutes = 2L;
+        Duration actual = reader(cfg -> cfg.setKeepAliveInterval(minutes))
+                         .keepAliveInterval();
+        
+        assertNotNull(actual);
+        assertThat(actual, is(Duration.ofMinutes(minutes)));
+    }
+    
 }

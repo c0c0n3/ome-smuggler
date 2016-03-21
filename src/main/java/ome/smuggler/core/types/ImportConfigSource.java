@@ -32,4 +32,10 @@ public interface ImportConfigSource {
      */
     Path failedImportLogDir();
     
+    /**
+     * @return at which interval to refresh the OMERO session of a queued 
+     * import.
+     */
+    Duration keepAliveInterval();
+    
 }
