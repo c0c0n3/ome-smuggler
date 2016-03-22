@@ -2,6 +2,7 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.throwAsIfUnchecked;
+import static ome.smuggler.core.types.ImportKeepAlive.keepAliveMessage;
 
 import java.io.IOException;
 
@@ -29,12 +30,18 @@ public class ImportTrigger implements ImportRequestor {
         }
     }
     
+    private void startSessionKeepAlive(QueuedImport task) {
+        env.keepAliveQueue().uncheckedSend(keepAliveMessage(task));
+    }
+    
     @Override
     public ImportId enqueue(ImportInput request) {
         ImportId taskId = new ImportId();
         QueuedImport task = new QueuedImport(taskId, request);
+        
         notifyQueued(task);
         env.queue().uncheckedSend(task);
+        startSessionKeepAlive(task);
         
         env.log().importQueued(task);
         return taskId;

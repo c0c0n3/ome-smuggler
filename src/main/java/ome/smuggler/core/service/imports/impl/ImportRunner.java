@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
+import static ome.smuggler.core.types.ImportKeepAlive.stopKeepAliveMessage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -38,9 +39,15 @@ public class ImportRunner implements ImportProcessor {
         env.gcQueue().uncheckedSend(message(when, logFile));
     }
     
+    private void stopSessionKeepAlive(QueuedImport task) {
+        env.keepAliveQueue().uncheckedSend(stopKeepAliveMessage(task));    
+    }
+    
     @Override
     public RepeatAction consume(QueuedImport task) {
         env.log().importStart(task);
+        
+        stopSessionKeepAlive(task);
         
         ImporterCommandBuilder cliOmeroImporter = 
                 new ImporterCommandBuilder(env.cliConfig(), task.getRequest());

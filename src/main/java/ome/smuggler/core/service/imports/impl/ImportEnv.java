@@ -15,6 +15,7 @@ import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportConfigSource;
 import ome.smuggler.core.types.ImportId;
+import ome.smuggler.core.types.ImportKeepAlive;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
@@ -28,6 +29,7 @@ public class ImportEnv {
     private final CliImporterConfig cliConfig;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
+    private final ChannelSource<ImportKeepAlive> keepAliveQueue;
     private final TaskFileStore<ImportId> failedImportLogStore;
     private final MailRequestor mail;
     private final Optional<Email> sysAdminEmail; 
@@ -36,6 +38,7 @@ public class ImportEnv {
     public ImportEnv(ImportConfigSource config, CliImporterConfig cliConfig,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
+            ChannelSource<ImportKeepAlive> keepAliveQueue,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail,
             Optional<Email> sysAdminEmail,
@@ -44,6 +47,7 @@ public class ImportEnv {
         requireNonNull(cliConfig, "cliConfig");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
+        requireNonNull(keepAliveQueue, "keepAliveQueue");
         requireNonNull(failedImportLogStore, "failedImportLogStore");
         requireNonNull(mail, "mail");
         requireNonNull(sysAdminEmail, "sysAdminEmail");
@@ -53,6 +57,7 @@ public class ImportEnv {
         this.cliConfig = cliConfig;
         this.queue = queue;
         this.gcQueue = gcQueue;
+        this.keepAliveQueue = keepAliveQueue;
         this.failedImportLogStore = failedImportLogStore;
         this.mail = mail;
         this.sysAdminEmail = sysAdminEmail;
@@ -73,6 +78,10 @@ public class ImportEnv {
     
     public SchedulingSource<ImportLogFile> gcQueue() {
         return gcQueue;
+    }
+    
+    public ChannelSource<ImportKeepAlive> keepAliveQueue() {
+        return keepAliveQueue;
     }
     
     public TaskFileStore<ImportId> failedImportLogStore() {
