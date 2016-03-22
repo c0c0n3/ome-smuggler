@@ -43,9 +43,13 @@ public class ImportKeepAliveScheduler {
      * @param data the current request to keep the session alive.
      * @return either a new schedule or empty if the session doesn't need a
      * further keep-alive.
+     * @throws NullPointerException if any argument is {@code null}.
      */
     public Optional<Schedule<ImportKeepAlive>> nextSchedule(
             CountedSchedule current, ImportKeepAlive data) {
+        requireNonNull(current, "current");
+        requireNonNull(data, "data");
+        
         ImportId taskId = data.importRequest().getTaskId();
         if (data.stop()) {
             queuedImports.remove(taskId);

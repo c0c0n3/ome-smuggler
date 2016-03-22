@@ -38,7 +38,7 @@ public class ImportKeepAlive {
     private final boolean stop;
 
 
-    private ImportKeepAlive(QueuedImport importRequest, boolean stop) {
+    public ImportKeepAlive(QueuedImport importRequest, boolean stop) {
         requireNonNull(importRequest, "importRequest");
         
         this.importRequest = importRequest;
