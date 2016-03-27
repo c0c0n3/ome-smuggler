@@ -30,7 +30,7 @@ public class DequeueTaskTest implements MessageSink<ClientMessage, String> {
         
         QueueConnector connector = new QueueConnector(q, sesh);
         DequeueTask<String> task = 
-                new DequeueTask<>(connector, this, String.class);
+                new DequeueTask<>(connector, this, String.class, true);
         verify(receiver).setMessageHandler(task);
         
         return task;
@@ -61,38 +61,38 @@ public class DequeueTaskTest implements MessageSink<ClientMessage, String> {
     
     @Test (expected = NullPointerException.class)
     public void ctor1ThrowsIfArg1Null() throws HornetQException {
-        new DequeueTask<>(null, (ChannelSink<String>) d -> {}, String.class);
+        new DequeueTask<>(null, (ChannelSink<String>) d -> {}, String.class, true);
     }
     
     @Test (expected = NullPointerException.class)
     public void ctor1ThrowsIfArg2Null() throws HornetQException {
         new DequeueTask<>(mock(QueueConnector.class), 
-                          (ChannelSink<String>)null, String.class);
+                          (ChannelSink<String>)null, String.class, true);
     }
     
     @Test (expected = NullPointerException.class)
     public void ctor1ThrowsIfArg3Null() throws HornetQException {
         new DequeueTask<>(mock(QueueConnector.class), 
-                          (ChannelSink<String>) d -> {}, null);
+                          (ChannelSink<String>) d -> {}, null, true);
     }
     
     @Test (expected = NullPointerException.class)
     public void ctor2ThrowsIfArg1Null() throws HornetQException {
         new DequeueTask<>(null, (MessageSink<ClientMessage, String>) msg -> {}, 
-                          String.class);
+                          String.class, true);
     }
     
     @Test (expected = NullPointerException.class)
     public void ctor2ThrowsIfArg2Null() throws HornetQException {
         new DequeueTask<>(mock(QueueConnector.class), 
-                (MessageSink<ClientMessage, String>)null, String.class);
+                (MessageSink<ClientMessage, String>)null, String.class, true);
     }
     
     @Test (expected = NullPointerException.class)
     public void ctor2ThrowsIfArg3Null() throws HornetQException {
         new DequeueTask<>(mock(QueueConnector.class), 
                           (MessageSink<ClientMessage, String>) msg -> {}, 
-                          (Class<String>) null);
+                          (Class<String>) null, true);
     }
     
 }

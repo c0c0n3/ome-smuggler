@@ -71,22 +71,43 @@ public class QChannelFactory<T> {
     
     public DequeueTask<T> buildSink(ChannelSink<T> consumer, 
             Class<T> messageType) throws HornetQException {
-        return new DequeueTask<>(queue(), consumer, messageType);
+        return new DequeueTask<>(queue(), consumer, messageType, true);
+    }
+    
+    public DequeueTask<T> buildSink(ChannelSink<T> consumer, 
+            Class<T> messageType, boolean redeliverOnCrash) 
+                    throws HornetQException {
+        return new DequeueTask<>(queue(), consumer, messageType, 
+                                 redeliverOnCrash);
     }
     
     public DequeueTask<T> buildCountedScheduleSink(
             MessageSink<CountedSchedule, T> consumer, Class<T> messageType) 
                     throws HornetQException {
         return new DequeueTask<>(queue(), new CountedScheduleSink<>(consumer),
-                                 messageType);
+                                 messageType, true);
+    }
+    
+    public DequeueTask<T> buildCountedScheduleSink(
+            MessageSink<CountedSchedule, T> consumer, Class<T> messageType,
+            boolean redeliverOnCrash) 
+                    throws HornetQException {
+        return new DequeueTask<>(queue(), new CountedScheduleSink<>(consumer),
+                                 messageType, redeliverOnCrash);
     }
     
     public DequeueTask<T> buildReschedulableSink(Reschedulable<T> consumer, 
             Class<T> messageType) throws HornetQException {
+        return buildReschedulableSink(consumer, messageType, true);
+    }
+    
+    public DequeueTask<T> buildReschedulableSink(Reschedulable<T> consumer, 
+            Class<T> messageType, boolean redeliverOnCrash) 
+                    throws HornetQException {
         MessageSource<CountedSchedule, T> loopback = 
                 buildCountedScheduleSource();
         ReschedulingSink<T> sink = new ReschedulingSink<>(consumer, loopback);
-        return buildCountedScheduleSink(sink, messageType);
+        return buildCountedScheduleSink(sink, messageType, redeliverOnCrash);
     }
     
 }
