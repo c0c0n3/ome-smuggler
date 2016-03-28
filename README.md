@@ -5,7 +5,23 @@ Sneakily imports image goodies into OMERO without paying MRI session duties.
 
 Idea
 ----
-TODO: still clueless :-)
+The basic idea: a Web-based work queue to run tasks on behalf of OMERO clients.
+A task is queued, then run and as it runs a URL is available from which to get
+status updates. If the task fails, it may be retried. On completion, an email
+report is sent to the interested parties. This is Smuggler’s life purpose—at
+least for now. And for now, the only task Smuggler knows how to run is an OMERO
+import. But it should be possible to add any other task without too much sweat
+using the same run/retry/notify mechanism.
+
+
+Contributing
+------------
+Want to hack Smuggler to pieces? Or contribute a couple of tweaks or a bug fix?
+You're welcome to fork the repo and submit a pull request.
+If you're planning to do open-heart surgery, you may find it useful to read the
+developer docs over here:
+
+* [http://c0c0n3.github.io/ome-smuggler/docs/content/](http://c0c0n3.github.io/ome-smuggler/docs/content/)
 
 
 Build & Run...for the loo
