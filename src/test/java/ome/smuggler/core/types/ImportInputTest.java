@@ -111,7 +111,8 @@ public class ImportInputTest {
     public void datatsetOrScreenEmptyIfUnset() {
         ImportInput x = makeNew();
         
-        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertEmptyOptional(x.getDatasetId());
+        assertEmptyOptional(x.getScreenId());
         assertFalse(x.hasDatasetId());
         assertFalse(x.hasScreenId());
     }
@@ -120,7 +121,8 @@ public class ImportInputTest {
     public void setEmptyDatasetId() {
         ImportInput x = makeNew().setDatasetId(Optional.empty());
         
-        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertEmptyOptional(x.getDatasetId());
+        assertEmptyOptional(x.getScreenId());
         assertFalse(x.hasDatasetId());
         assertFalse(x.hasScreenId());
     }
@@ -129,7 +131,7 @@ public class ImportInputTest {
     public void setNonEmptyDatasetId() {
         DatasetId id = new DatasetId(1L);
         ImportInput x = makeNew().setDatasetId(Optional.of(id));
-        Optional<PositiveN> actual = x.getDatasetOrScreenId();
+        Optional<DatasetId> actual = x.getDatasetId();
         
         assertOptionalValue(actual, id.get());
         assertTrue(x.hasDatasetId());
@@ -140,7 +142,7 @@ public class ImportInputTest {
     public void setNonEmptyScreenId() {
         ScreenId id = new ScreenId(1L);
         ImportInput x = makeNew().setScreenId(Optional.of(id));
-        Optional<PositiveN> actual = x.getDatasetOrScreenId(); 
+        Optional<ScreenId> actual = x.getScreenId(); 
         
         assertOptionalValue(actual, id.get());
         assertFalse(x.hasDatasetId());
@@ -151,7 +153,8 @@ public class ImportInputTest {
     public void setEmptyScreenId() {
         ImportInput x = makeNew().setScreenId(Optional.empty());
         
-        assertEmptyOptional(x.getDatasetOrScreenId());
+        assertEmptyOptional(x.getDatasetId());
+        assertEmptyOptional(x.getScreenId());
         assertFalse(x.hasDatasetId());
         assertFalse(x.hasScreenId());
     }
@@ -162,7 +165,8 @@ public class ImportInputTest {
         ImportInput x = makeNew();
         x.setScreenId(one).setDatasetId(two);
         
-        assertOptionalValue(x.getDatasetOrScreenId(), two);
+        assertOptionalValue(x.getDatasetId(), two);
+        assertEmptyOptional(x.getScreenId());
     }
     
     @Test
@@ -171,7 +175,8 @@ public class ImportInputTest {
         ImportInput x = makeNew();
         x.setDatasetId(one).setScreenId(two);
         
-        assertOptionalValue(x.getDatasetOrScreenId(), two);
+        assertOptionalValue(x.getScreenId(), two);
+        assertEmptyOptional(x.getDatasetId());
     }
     
     @Test (expected = NullPointerException.class)

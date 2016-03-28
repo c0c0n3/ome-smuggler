@@ -88,15 +88,11 @@ public class ImporterCommandBuilder implements CommandBuilder {
     }
     
     private ListProgramArgument<String> datasetId() {
-        return importArgs.hasDatasetId() ?
-                optionalArg("-d", importArgs.getDatasetOrScreenId()) :
-                arg();                     
+        return optionalArg("-d", importArgs.getDatasetId());                     
     }
     
     private ListProgramArgument<String> screenId() {
-        return importArgs.hasScreenId() ?
-                optionalArg("-r", importArgs.getDatasetOrScreenId()) :
-                arg();                     
+        return optionalArg("-r", importArgs.getScreenId());
     }
     
     private CommandBuilder[] textAnnotations() {

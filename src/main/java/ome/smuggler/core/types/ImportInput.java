@@ -24,7 +24,8 @@ public class ImportInput {
     private final String sessionKey;
     private Optional<String> name;
     private Optional<String> description;    
-    private Optional<PositiveN> datasetOrScreenId;
+    private Optional<DatasetId> datasetId;
+    private Optional<ScreenId> screenId;
     private List<TextAnnotation> textAnnotations;
     private List<PositiveN> annotationIds;
 
@@ -41,7 +42,8 @@ public class ImportInput {
         this.sessionKey = sessionKey;
         name = Optional.empty();
         description = Optional.empty();
-        datasetOrScreenId = Optional.empty();
+        datasetId = Optional.empty();
+        screenId = Optional.empty();
         textAnnotations = new ArrayList<>();
         annotationIds = new ArrayList<>();
     }
@@ -80,13 +82,14 @@ public class ImportInput {
         return this;
     }
     
-    public Optional<PositiveN> getDatasetOrScreenId() {
-        return datasetOrScreenId;
+    public Optional<DatasetId> getDatasetId() {
+        return datasetId;
     }
     
     public ImportInput setDatasetId(PositiveN id) {
         requireNonNull(id, "id");
-        datasetOrScreenId = Optional.of(new DatasetId(id.get()));
+        datasetId = Optional.of(new DatasetId(id.get()));
+        screenId = Optional.empty();
         return this;
     }
     
@@ -97,12 +100,17 @@ public class ImportInput {
     }
     
     public boolean hasDatasetId() {
-        return datasetOrScreenId.map(x -> x instanceof DatasetId).orElse(false);
+        return datasetId.isPresent();
+    }
+    
+    public Optional<ScreenId> getScreenId() {
+        return screenId;
     }
     
     public ImportInput setScreenId(PositiveN id) {
         requireNonNull(id, "id");
-        datasetOrScreenId = Optional.of(new ScreenId(id.get()));
+        screenId = Optional.of(new ScreenId(id.get()));
+        datasetId = Optional.empty();
         return this;
     }
 
@@ -114,7 +122,7 @@ public class ImportInput {
     }
     
     public boolean hasScreenId() {
-        return datasetOrScreenId.map(x -> x instanceof ScreenId).orElse(false);
+        return screenId.isPresent();
     }
     
     public ImportInput addTextAnnotation(TextAnnotation...xs) {
@@ -180,7 +188,8 @@ public class ImportInput {
                 && Objects.equals(sessionKey, other.sessionKey)
                 && Objects.equals(name, other.name)
                 && Objects.equals(description, other.description)
-                && Objects.equals(datasetOrScreenId, other.datasetOrScreenId)
+                && Objects.equals(datasetId, other.datasetId)
+                && Objects.equals(screenId, other.screenId)
                 && Objects.equals(textAnnotations, other.textAnnotations)
                 && Objects.equals(annotationIds, other.annotationIds);
         }
@@ -190,7 +199,7 @@ public class ImportInput {
     @Override
     public int hashCode() {
         return Objects.hash(experimenterEmail, target, omero, sessionKey,
-                            name, description, datasetOrScreenId, 
+                            name, description, datasetId, screenId, 
                             textAnnotations, annotationIds);
     }
     
