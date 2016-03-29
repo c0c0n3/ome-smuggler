@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ResourceReader.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.spring.io</a> &gt; <span class="el_source">ResourceReader.java</span></div><h1>ResourceReader.java</h1><pre class="source lang-java linenums">package util.spring.io;
+
+import static java.util.Objects.requireNonNull;
+import static util.error.Exceptions.unchecked;
+
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.springframework.core.io.Resource;
+
+import util.lambda.FunctionE;
+
+
+/**
+ * Converts resource data into instances of {@code T}.
+ */
+public interface ResourceReader&lt;T&gt; {
+
+    /**
+     * Converts the resource data into instances of {@code T}.
+     * @param data the resource data.
+     * @return the data in the input stream as instances of {@code T}; the
+     * returned stream will be empty or {@code null} if the input stream was 
+     * empty.
+     * @throws Exception if an I/O or data conversion error occurs.
+     */
+    Stream&lt;T&gt; convert(InputStream data) throws Exception;
+    
+    /**
+     * Convenience method, same as the other {@link #readResource(Optional) 
+     * readResource} but it accepts a straight resource. 
+     * This method is defaulted to call the other {@code readResource} method. 
+     * @param data the resource to read from.
+     * @return the resource data as {@code T}'s or an empty stream as the case
+     * may be, but never {@code null}.
+     */
+    default Stream&lt;T&gt; readResource(Resource data) {
+<span class="fc" id="L39">        return readResource(Optional.ofNullable(data));</span>
+    }
+    
+    /**
+     * Reads the resource input stream and converts the data into objects if
+     * a resource is present; otherwise just returns an empty stream.
+     * An empty stream will also be returned if the data conversion resulted
+     * in a {@code null}, e.g. if the resource stream was empty. Any exception
+     * raised will be wrapped in a runtime {@link ResourceReadException} and
+     * re-thrown as such.
+     * This method is defaulted to carry out all the above using the {@link 
+     * #convert(InputStream) convert} method. 
+     * @param data the resource to read from.
+     * @return the resource data as {@code T}'s or an empty stream as the case
+     * may be, but never {@code null}.
+     * @throws ResourceReadException to wrap any exception that was raised when
+     * attempting to read the resource input stream and convert the data into 
+     * objects.
+     */
+    default Stream&lt;T&gt; readResource(Optional&lt;Resource&gt; data) {
+<span class="fc" id="L59">        requireNonNull(data, &quot;data&quot;);</span>
+        
+        FunctionE&lt;Resource, InputStream&gt; 
+<span class="fc" id="L62">            getResourceStreamOrThrowIoE = Resource::getInputStream;</span>
+
+        try {
+<span class="fc" id="L65">            return data.map(getResourceStreamOrThrowIoE)  // (*) see note below</span>
+<span class="fc" id="L66">                       .map(unchecked(this::convert))</span>
+<span class="fc" id="L67">                       .orElse(Stream.empty());    </span>
+<span class="nc" id="L68">        } catch (Exception e) {</span>
+<span class="nc" id="L69">            throw new ResourceReadException(e);</span>
+        }
+    }
+}
+/* NOTE.
+ * replacing: .map(getResourceStreamOrThrowIoE)
+ *      with: .map(unchecked(Resource::getInputStream))
+ * or for that matter
+ *   FunctionE&lt;Resource, InputStream&gt; getResourceStreamOrThrowIoE = 
+ *                                              Resource::getInputStream;
+ * with
+ *   Function&lt;Resource, InputStream&gt; getResourceStreamOrThrowIoE = 
+ *                                  unchecked(Resource::getInputStream);
+ *                                   
+ * will confuse the hell out of the eclipse compiler when trying to do type 
+ * inference, so it won't compile in eclipse, but it will in OpenJDK 1.8. 
+ * Looks like I'm not alone tho as Java's typsie infirmity has caused some
+ * headaches to the surgeons over here too:
+ * - https://bugs.eclipse.org/bugs/show_bug.cgi?id=461004
+ * 
+ * But wait! It gets better. If I replace the last statement above with:
+ * 
+ *   return data.flatMap(unchecked(this::readResource));
+ *   
+ * then the OpenJDK compiler can't figure it out and tells  me the reference 
+ * to unchecked is ambiguous as it could refer both to:
+ *  
+ *  1. Function&lt;T, R&gt; unchecked(FunctionE&lt;T, R&gt;)
+ *  2. Consumer&lt;T&gt; unchecked(ConsumerE&lt;T&gt;)
+ *  
+ * Really?!
+ * The eclipsie compiler tells me the unchecked method doesn't even exist...
+ * Oh well. 
+ */
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

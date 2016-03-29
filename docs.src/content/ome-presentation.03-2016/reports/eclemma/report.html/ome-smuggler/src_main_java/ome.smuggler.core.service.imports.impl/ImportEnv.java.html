@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportEnv.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.service.imports.impl</a> &gt; <span class="el_source">ImportEnv.java</span></div><h1>ImportEnv.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.service.imports.impl;
+
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.io.FileOps.ensureDirectory;
+
+import java.util.Optional;
+
+import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.core.msg.ChannelSource;
+import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.file.TaskFileStore;
+import ome.smuggler.core.service.log.LogService;
+import ome.smuggler.core.service.mail.MailRequestor;
+import ome.smuggler.core.types.Email;
+import ome.smuggler.core.types.FutureTimepoint;
+import ome.smuggler.core.types.ImportConfigSource;
+import ome.smuggler.core.types.ImportId;
+import ome.smuggler.core.types.ImportKeepAlive;
+import ome.smuggler.core.types.ImportLogFile;
+import ome.smuggler.core.types.ImportLogPath;
+import ome.smuggler.core.types.QueuedImport;
+
+/**
+ * Provides access to import configuration and queues.
+ */
+public class ImportEnv {
+    
+    private final ImportConfigSource config;
+    private final CliImporterConfig cliConfig;
+    private final ChannelSource&lt;QueuedImport&gt; queue;
+    private final SchedulingSource&lt;ImportLogFile&gt; gcQueue;
+    private final ChannelSource&lt;ImportKeepAlive&gt; keepAliveQueue;
+    private final TaskFileStore&lt;ImportId&gt; failedImportLogStore;
+    private final MailRequestor mail;
+    private final Optional&lt;Email&gt; sysAdminEmail; 
+    private final ImportLogger log;
+    
+<span class="fc" id="L38">    public ImportEnv(ImportConfigSource config, CliImporterConfig cliConfig,</span>
+            ChannelSource&lt;QueuedImport&gt; queue, 
+            SchedulingSource&lt;ImportLogFile&gt; gcQueue,
+            ChannelSource&lt;ImportKeepAlive&gt; keepAliveQueue,
+            TaskFileStore&lt;ImportId&gt; failedImportLogStore,
+            MailRequestor mail,
+            Optional&lt;Email&gt; sysAdminEmail,
+            LogService logService) {
+<span class="fc" id="L46">        requireNonNull(config, &quot;config&quot;);</span>
+<span class="fc" id="L47">        requireNonNull(cliConfig, &quot;cliConfig&quot;);</span>
+<span class="fc" id="L48">        requireNonNull(queue, &quot;queue&quot;);</span>
+<span class="fc" id="L49">        requireNonNull(gcQueue, &quot;gcQueue&quot;);</span>
+<span class="fc" id="L50">        requireNonNull(keepAliveQueue, &quot;keepAliveQueue&quot;);</span>
+<span class="fc" id="L51">        requireNonNull(failedImportLogStore, &quot;failedImportLogStore&quot;);</span>
+<span class="fc" id="L52">        requireNonNull(mail, &quot;mail&quot;);</span>
+<span class="fc" id="L53">        requireNonNull(sysAdminEmail, &quot;sysAdminEmail&quot;);</span>
+<span class="fc" id="L54">        requireNonNull(logService, &quot;logService&quot;);</span>
+        
+<span class="fc" id="L56">        this.config = config;</span>
+<span class="fc" id="L57">        this.cliConfig = cliConfig;</span>
+<span class="fc" id="L58">        this.queue = queue;</span>
+<span class="fc" id="L59">        this.gcQueue = gcQueue;</span>
+<span class="fc" id="L60">        this.keepAliveQueue = keepAliveQueue;</span>
+<span class="fc" id="L61">        this.failedImportLogStore = failedImportLogStore;</span>
+<span class="fc" id="L62">        this.mail = mail;</span>
+<span class="fc" id="L63">        this.sysAdminEmail = sysAdminEmail;</span>
+<span class="fc" id="L64">        this.log = new ImportLogger(logService);</span>
+<span class="fc" id="L65">    }</span>
+    
+    public ImportConfigSource config() {
+<span class="fc" id="L68">        return config;</span>
+    }
+    
+    public CliImporterConfig cliConfig() {
+<span class="fc" id="L72">        return cliConfig;</span>
+    }
+    
+    public ChannelSource&lt;QueuedImport&gt; queue() {
+<span class="fc" id="L76">        return queue;</span>
+    }
+    
+    public SchedulingSource&lt;ImportLogFile&gt; gcQueue() {
+<span class="fc" id="L80">        return gcQueue;</span>
+    }
+    
+    public ChannelSource&lt;ImportKeepAlive&gt; keepAliveQueue() {
+<span class="fc" id="L84">        return keepAliveQueue;</span>
+    }
+    
+    public TaskFileStore&lt;ImportId&gt; failedImportLogStore() {
+<span class="fc" id="L88">        return failedImportLogStore;</span>
+    }
+    
+    public MailRequestor mail() {
+<span class="fc" id="L92">        return mail;</span>
+    }
+    
+    public Optional&lt;Email&gt; sysAdminEmail() {
+<span class="fc" id="L96">        return sysAdminEmail;</span>
+    }
+    
+    public ImportLogger log() {
+<span class="fc" id="L100">        return log;</span>
+    }
+    
+    public ImportLogPath importLogPathFor(ImportId taskId) {
+<span class="fc" id="L104">        return new ImportLogPath(config().importLogDir(), taskId);</span>
+    }
+    
+    public FutureTimepoint importLogRetentionFromNow() {
+<span class="fc" id="L108">        return new FutureTimepoint(config().logRetentionPeriod());</span>
+    }
+    
+    public void ensureDirectories() {
+<span class="fc" id="L112">        ensureDirectory(config().importLogDir());</span>
+<span class="fc" id="L113">        ensureDirectory(config().failedImportLogDir());</span>
+<span class="fc" id="L114">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

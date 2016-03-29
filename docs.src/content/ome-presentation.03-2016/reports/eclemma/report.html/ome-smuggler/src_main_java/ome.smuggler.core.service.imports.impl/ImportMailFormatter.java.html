@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportMailFormatter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.service.imports.impl</a> &gt; <span class="el_source">ImportMailFormatter.java</span></div><h1>ImportMailFormatter.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.service.imports.impl;
+
+import java.net.InetAddress;
+
+import ome.smuggler.core.types.Email;
+import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedImport;
+
+<span class="nc" id="L9">public class ImportMailFormatter {</span>
+
+    private static final String SuccessSubject = &quot;OMERO import succeeded&quot;;
+    private static final String SuccessMessage = 
+            &quot;Your image data in %s on %s was successfully imported into the OMERO server on %s.&quot;;
+    
+    private static final String FailureSubject = &quot;Failed OMERO import [ref. %s]&quot;;
+    private static final String FailureMessage = 
+            &quot;Your image data in %s on %s failed to import. Please contact your OMERO administrator.&quot;;
+    
+    
+    private static String hostname() {
+        try {
+<span class="fc" id="L22">            return InetAddress.getLocalHost().getHostName();</span>
+<span class="nc" id="L23">        } catch (Exception e) {</span>
+<span class="nc" id="L24">            return &quot;[unknown host]&quot;;</span>
+        }
+    }
+    
+    private static PlainTextMail format(String subjectTemplate, 
+            String contentTemplate, QueuedImport task, Email recipient) {
+<span class="fc" id="L30">        String subject = String.format(subjectTemplate, task.getTaskId());</span>
+<span class="fc" id="L31">        String content = String.format(contentTemplate,</span>
+<span class="fc" id="L32">                                       task.getRequest().getTarget(),</span>
+<span class="fc" id="L33">                                       hostname(),</span>
+<span class="fc" id="L34">                                       task.getRequest().getOmeroHost().getHost());</span>
+
+<span class="fc" id="L36">        return new PlainTextMail(recipient, subject, content);</span>
+    }
+    
+    private static PlainTextMail format(String subjectTemplate, 
+            String contentTemplate, QueuedImport task) {
+<span class="fc" id="L41">        return format(subjectTemplate, contentTemplate, task, </span>
+<span class="fc" id="L42">                      task.getRequest().getExperimenterEmail());</span>
+    }
+    
+    public static PlainTextMail successMessage(QueuedImport task) {
+<span class="nc" id="L46">        return format(SuccessSubject, SuccessMessage, task);</span>
+    }
+    
+    public static PlainTextMail failureMessage(QueuedImport task) {
+<span class="fc" id="L50">        return format(FailureSubject, FailureMessage, task);</span>
+    }
+    
+    public static PlainTextMail sysAdminFailureMessage(QueuedImport task, 
+            Email sysAdminAddress) {
+<span class="nc" id="L55">        return format(FailureSubject, FailureMessage, task, sysAdminAddress);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

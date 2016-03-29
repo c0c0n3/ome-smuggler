@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportRequestValidator.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.web.imports</a> &gt; <span class="el_source">ImportRequestValidator.java</span></div><h1>ImportRequestValidator.java</h1><pre class="source lang-java linenums">package ome.smuggler.web.imports;
+
+import static java.util.stream.Collectors.toList;
+import static ome.smuggler.core.types.ValueParserFactory.*;
+import static ome.smuggler.web.Error.error;
+import static util.object.Either.left;
+import static util.object.Either.right;
+import static util.object.Eithers.collectLeft;
+import static util.sequence.Arrayz.isNullOrZeroLength;
+import static util.string.Strings.isNullOrEmpty;
+import static util.string.Strings.unlines;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import ome.smuggler.core.types.DatasetId;
+import ome.smuggler.core.types.Email;
+import ome.smuggler.core.types.PositiveN;
+import ome.smuggler.core.types.ScreenId;
+import ome.smuggler.core.types.TextAnnotation;
+import ome.smuggler.web.Error;
+import util.object.Either;
+import util.validation.Validator;
+
+/**
+ * Validates an {@link ImportRequest}.
+ * Validation is carried out using field parsers to check whether it's possible
+ * to instantiate valid values from the provided input fields and if the {@code 
+ * #validate(ImportRequest) validate} method returns successfully (i.e. right
+ * value) the parsed values will be available through the various getters 
+ * provided by this class. 
+ */
+<span class="fc" id="L37">public class ImportRequestValidator implements Validator&lt;Error, ImportRequest&gt; {</span>
+
+    public static final int DefaultOmeroPort = 4064;
+    
+    private Either&lt;String, Email&gt; email;
+    private Either&lt;String, URI&gt; target;
+    private Either&lt;String, URI&gt; omero;
+    private Either&lt;String, String&gt; session;
+    private Optional&lt;Either&lt;String, DatasetId&gt;&gt; datasetId;
+    private Optional&lt;Either&lt;String, ScreenId&gt;&gt; screenId;
+    private List&lt;Either&lt;String, TextAnnotation&gt;&gt; textAnnotations;
+    private List&lt;Either&lt;String, PositiveN&gt;&gt; annotationIds;
+    
+    private List&lt;Either&lt;String, ?&gt;&gt; parseResults;
+    
+    
+    private void applyDefaults(ImportRequest r) {
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (isNullOrEmpty(r.omeroPort)) {</span>
+<span class="fc" id="L55">            r.omeroPort = &quot;&quot; + DefaultOmeroPort;</span>
+        }
+<span class="fc" id="L57">    }</span>
+    
+    private void checkRequiredFields(ImportRequest r) {
+<span class="fc" id="L60">        email = label(&quot;experimenterEmail&quot;, email(r.experimenterEmail));</span>
+<span class="fc" id="L61">        target = label(&quot;targetUri&quot;, uri(r.targetUri));</span>
+<span class="fc" id="L62">        omero = label(&quot;omeroHost, omeroPort&quot;, omeroUri(r.omeroHost, r.omeroPort));</span>
+<span class="fc" id="L63">        session = label(&quot;sessionKey&quot;, string(r.sessionKey));</span>
+        
+<span class="fc" id="L65">        parseResults.addAll(Arrays.asList(email, target, omero, session));</span>
+<span class="fc" id="L66">    }</span>
+    
+    private void checkImageContainerId(ImportRequest r) {
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (isNullOrEmpty(r.datasetId)) {</span>
+<span class="fc" id="L70">            datasetId = Optional.empty();</span>
+<span class="fc" id="L71">        }</span>
+        else {
+<span class="fc" id="L73">            datasetId = Optional.of(label(&quot;datasetId&quot;, datasetId(r.datasetId)));</span>
+        }
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (isNullOrEmpty(r.screenId)) {</span>
+<span class="fc" id="L76">            screenId = Optional.empty();</span>
+<span class="fc" id="L77">        }</span>
+        else {
+<span class="fc" id="L79">            screenId = Optional.of(label(&quot;screenId&quot;, screenId(r.screenId)));</span>
+        }
+<span class="fc bfc" id="L81" title="All 4 branches covered.">        if (datasetId.isPresent() &amp;&amp; screenId.isPresent()) {</span>
+<span class="fc" id="L82">            parseResults.add(left(&quot;datasetId and screenId are mutually exclusive&quot;));</span>
+<span class="fc" id="L83">        } else {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (datasetId.isPresent()) {</span>
+<span class="fc" id="L85">                parseResults.add(datasetId.get());</span>
+            }
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (screenId.isPresent()) {</span>
+<span class="fc" id="L88">                parseResults.add(screenId.get());</span>
+            }
+        }
+<span class="fc" id="L91">    }</span>
+    
+    private void checkTextAnnotations(ImportRequest r) {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (isNullOrZeroLength(r.textAnnotations)) {</span>
+<span class="fc" id="L95">            textAnnotations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L96">        } else {</span>
+<span class="fc" id="L97">            textAnnotations = Stream.of(r.textAnnotations)</span>
+<span class="fc" id="L98">                             .map(p -&gt; label(&quot;annotation&quot;, textAnnotation(p)))</span>
+<span class="fc" id="L99">                             .collect(toList());</span>
+            
+<span class="fc" id="L101">            parseResults.addAll(textAnnotations);</span>
+        }
+<span class="fc" id="L103">    }</span>
+    
+    private void checkAnnotationIds(ImportRequest r) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (isNullOrZeroLength(r.annotationIds)) {</span>
+<span class="fc" id="L107">            annotationIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L108">        } else {</span>
+<span class="fc" id="L109">            annotationIds = Stream.of(r.annotationIds)</span>
+<span class="fc" id="L110">                           .map(x -&gt; label(&quot;annotation id&quot;, positiveInt(x)))</span>
+<span class="fc" id="L111">                           .collect(toList());</span>
+            
+<span class="fc" id="L113">            parseResults.addAll(annotationIds);</span>
+        }
+<span class="fc" id="L115">    }</span>
+    
+    private Optional&lt;String&gt; collectErrors() {
+<span class="fc" id="L118">        String errors = unlines(collectLeft(parseResults.stream()));</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        return isNullOrEmpty(errors) ? Optional.empty() : Optional.of(errors);</span>
+    }
+    
+    @Override
+    public Either&lt;Error, ImportRequest&gt; validate(ImportRequest r) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (r != null) {</span>
+<span class="fc" id="L125">            parseResults = new ArrayList&lt;&gt;();</span>
+            
+<span class="fc" id="L127">            applyDefaults(r);</span>
+            
+<span class="fc" id="L129">            checkRequiredFields(r);</span>
+<span class="fc" id="L130">            checkImageContainerId(r);</span>
+<span class="fc" id="L131">            checkTextAnnotations(r);</span>
+<span class="fc" id="L132">            checkAnnotationIds(r);</span>
+            
+<span class="fc" id="L134">            Optional&lt;String&gt; errors = collectErrors();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            return errors.isPresent() ? error(errors.get()) : right(r);</span>
+        }
+<span class="fc" id="L137">        return error(&quot;no import request&quot;);</span>
+    }
+
+    // util getters to use *only* in case validation succeeds
+    
+    public Email getEmail() {
+<span class="fc" id="L143">        return email.getRight();</span>
+    }
+    
+    public URI getTarget() {
+<span class="fc" id="L147">        return target.getRight();</span>
+    }
+    
+    public URI getOmero() {
+<span class="fc" id="L151">        return omero.getRight();</span>
+    }
+    
+    public String getSession() {
+<span class="fc" id="L155">        return session.getRight();</span>
+    }
+    
+    public Optional&lt;DatasetId&gt; getDatasetId() {
+<span class="fc" id="L159">        return datasetId.map(Either::getRight);</span>
+    }
+    
+    public Optional&lt;ScreenId&gt; getScreenId() {
+<span class="fc" id="L163">        return screenId.map(Either::getRight);</span>
+    }
+    
+    public List&lt;TextAnnotation&gt; getTextAnnotations() {
+<span class="fc" id="L167">        return textAnnotations.stream().map(Either::getRight).collect(toList());</span>
+    }
+    
+    public List&lt;PositiveN&gt; getAnnotationIds() {
+<span class="fc" id="L171">        return annotationIds.stream().map(Either::getRight).collect(toList());</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

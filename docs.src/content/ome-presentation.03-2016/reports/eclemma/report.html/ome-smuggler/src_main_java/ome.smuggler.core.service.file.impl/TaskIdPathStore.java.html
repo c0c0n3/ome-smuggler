@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>TaskIdPathStore.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.service.file.impl</a> &gt; <span class="el_source">TaskIdPathStore.java</span></div><h1>TaskIdPathStore.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.service.file.impl;
+
+import static java.util.Objects.requireNonNull;
+
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import ome.smuggler.core.io.FileOps;
+import ome.smuggler.core.service.file.TaskFileStore;
+import ome.smuggler.core.types.TaskIdPath;
+import util.lambda.ConsumerE;
+import util.object.Identifiable;
+
+/**
+ * A {@link TaskFileStore} based on {@link TaskIdPath}.
+ */
+public class TaskIdPathStore&lt;T extends Identifiable&gt; 
+    implements TaskFileStore&lt;T&gt; {
+
+    private final Path storeDir;
+    private final Function&lt;String, T&gt; newTaskId;
+    
+    /**
+     * Creates a new instance.
+     * @param storeDir the directory where files are stored.
+     * @param newTaskId creates a task id from its string representation.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+<span class="fc" id="L31">    public TaskIdPathStore(Path storeDir, Function&lt;String, T&gt; newTaskId) {</span>
+<span class="fc" id="L32">        requireNonNull(storeDir, &quot;storeDir&quot;);</span>
+<span class="fc" id="L33">        requireNonNull(newTaskId, &quot;newTaskId&quot;);</span>
+        
+<span class="fc" id="L35">        this.storeDir = storeDir;</span>
+<span class="fc" id="L36">        this.newTaskId = newTaskId;</span>
+<span class="fc" id="L37">    }</span>
+    
+    @Override
+    public Path pathFor(T taskId) {
+<span class="fc" id="L41">        requireNonNull(taskId, &quot;taskId&quot;);</span>
+<span class="fc" id="L42">        return new TaskIdPath(storeDir, taskId).get();</span>
+    }
+
+    @Override
+    public Stream&lt;T&gt; listTaskIds() {
+<span class="fc" id="L47">        return FileOps.listChildFiles(storeDir)</span>
+<span class="fc" id="L48">                      .map(Path::getFileName)</span>
+<span class="fc" id="L49">                      .map(Path::toString)</span>
+<span class="fc" id="L50">                      .map(newTaskId);</span>
+    }
+    
+    @Override
+    public void remove(T taskId) {
+<span class="fc" id="L55">        FileOps.delete(pathFor(taskId));</span>
+<span class="fc" id="L56">    }</span>
+
+    @Override
+    public void add(T taskId, ConsumerE&lt;OutputStream&gt; contentWriter) {
+<span class="fc" id="L60">        FileOps.writeNew(pathFor(taskId), contentWriter);</span>
+<span class="fc" id="L61">    }</span>
+    
+    @Override 
+    public void add(T taskId, Path contentSource) {
+<span class="fc" id="L65">        FileOps.copy(contentSource, pathFor(taskId));    </span>
+<span class="fc" id="L66">    }</span>
+    
+    public Path storeDir() {
+<span class="nc" id="L69">        return storeDir;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

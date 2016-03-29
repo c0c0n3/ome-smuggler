@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>MailClientAdapter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.providers.mail</a> &gt; <span class="el_source">MailClientAdapter.java</span></div><h1>MailClientAdapter.java</h1><pre class="source lang-java linenums">package ome.smuggler.providers.mail;
+
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.config.items.JavaMailConfigProps.authenticate;
+import static ome.smuggler.config.items.JavaMailConfigProps.connectionTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.readTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.smtpsCheckServerIdentity;
+import static ome.smuggler.config.items.JavaMailConfigProps.smtpsTrustedServers;
+import static ome.smuggler.config.items.JavaMailConfigProps.writeTimeoutFor;
+import static ome.smuggler.config.items.JavaMailConfigProps.transportProtocol;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import ome.smuggler.core.service.mail.MailClient;
+import ome.smuggler.core.service.mail.MailClientException;
+import ome.smuggler.core.types.MailConfigSource;
+import ome.smuggler.core.types.MailProtocol;
+import ome.smuggler.core.types.PlainTextMail;
+import util.config.props.JProps;
+
+public class MailClientAdapter implements MailClient {
+    
+<span class="fc" id="L33">    public static final Duration OpTimeout = Duration.ofMinutes(5); </span>
+    
+    private static void configureTransport(MailConfigSource config,
+            JProps mailProps) {
+<span class="fc" id="L37">        MailProtocol proto = config.protocol();</span>
+<span class="fc" id="L38">        mailProps.set(transportProtocol().with(proto));</span>
+<span class="fc" id="L39">        mailProps.set(connectionTimeoutFor(proto).with(OpTimeout));</span>
+<span class="fc" id="L40">        mailProps.set(readTimeoutFor(proto).with(OpTimeout));</span>
+<span class="fc" id="L41">        mailProps.set(writeTimeoutFor(proto).with(OpTimeout));</span>
+<span class="fc" id="L42">    }</span>
+    /* NOTE. Avoid sender hanging.
+     * We need to avoid infinite timeouts (the default) as the HornetQ consumer
+     * thread would be hanging forever and the queue would keep on growing. 
+     * This is why we set the timeout properties.
+     */
+    
+    private static void configureAuthentication(MailConfigSource config,
+            String username, JavaMailSenderImpl mailSender, JProps mailProps) {
+<span class="nc" id="L51">        mailSender.setUsername(username);</span>
+<span class="nc" id="L52">        config.password().ifPresent(p -&gt; mailSender.setPassword(p));</span>
+<span class="nc" id="L53">        mailProps.set(authenticate(config.protocol()).with(true));</span>
+<span class="nc" id="L54">    }</span>
+    
+    private static void configureTls(MailConfigSource config, JProps mailProps) {
+<span class="nc" id="L57">        mailProps.set(smtpsCheckServerIdentity().with(true));  // (1)</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (config.skipServerCertificateValidation()) {        // (2)</span>
+<span class="nc" id="L59">            mailProps.set(smtpsTrustedServers()</span>
+<span class="nc" id="L60">                         .with(config.mailServer().getHost()));</span>
+        }
+        
+<span class="nc" id="L63">    }</span>
+    /* NOTES.
+     * (1) This check needs to be on to prevent man-in-the-middle attacks, but
+     * it's turned off by default in Java Mail for backward compatibility.
+     * (2) Always returns false if the protocol is not SMTPS. Oh, BTW, this is
+     * setting introduces a security vulnerability as already noted in config.
+     */
+    
+    private static JavaMailSender build(MailConfigSource config) {
+<span class="fc" id="L72">        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();</span>
+        
+<span class="fc" id="L74">        mailSender.setDefaultEncoding(StandardCharsets.UTF_8.name());</span>
+<span class="fc" id="L75">        mailSender.setHost(config.mailServer().getHost());</span>
+<span class="fc" id="L76">        mailSender.setPort(config.mailServer().getPort());</span>
+        
+<span class="fc" id="L78">        JProps mailProps = new JProps(mailSender.getJavaMailProperties());</span>
+<span class="fc" id="L79">        configureTransport(config, mailProps);</span>
+<span class="fc" id="L80">        config.username().ifPresent(</span>
+<span class="pc" id="L81">                u -&gt; configureAuthentication(config, u, mailSender, mailProps));</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (MailProtocol.smtps.equals(config.protocol())) {</span>
+<span class="nc" id="L83">            configureTls(config, mailProps);</span>
+        }
+        
+<span class="fc" id="L86">        return mailSender;</span>
+    }
+    
+    private final MailConfigSource config;
+    private final JavaMailSender service;
+    
+<span class="fc" id="L92">    public MailClientAdapter(MailConfigSource config) {</span>
+<span class="fc" id="L93">        requireNonNull(config, &quot;config&quot;);</span>
+        
+<span class="fc" id="L95">        this.config = config;</span>
+<span class="fc" id="L96">        this.service = build(config);</span>
+<span class="fc" id="L97">    }</span>
+    
+    private MimeMessage message(PlainTextMail data) {
+<span class="fc" id="L100">        requireNonNull(data, &quot;data&quot;);</span>
+        
+<span class="fc" id="L102">        MessageBuilder builder = new MessageBuilder(config, service);</span>
+<span class="fc" id="L103">        return builder.buildMimeMessage(data);</span>
+    }
+    
+    @Override
+    public void send(PlainTextMail data) {
+        try {
+<span class="nc" id="L109">            service.send(message(data));</span>
+<span class="pc" id="L110">        } catch (MailException e) {</span>
+<span class="fc" id="L111">            throw new MailClientException(e);</span>
+        }
+<span class="nc" id="L113">    }</span>
+
+    @Override
+    public void stream(PlainTextMail data, OutputStream destination) {
+<span class="fc" id="L117">        requireNonNull(destination, &quot;destination&quot;);</span>
+        try {
+<span class="fc" id="L119">            message(data).writeTo(destination);</span>
+<span class="pc" id="L120">        } catch (IOException | MessagingException e) {</span>
+<span class="nc" id="L121">            throw new MailClientException(e);</span>
+        }
+<span class="fc" id="L123">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

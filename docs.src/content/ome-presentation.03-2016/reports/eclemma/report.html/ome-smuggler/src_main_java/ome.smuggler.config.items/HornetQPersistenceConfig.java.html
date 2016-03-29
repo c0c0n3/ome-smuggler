@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>HornetQPersistenceConfig.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.config.items</a> &gt; <span class="el_source">HornetQPersistenceConfig.java</span></div><h1>HornetQPersistenceConfig.java</h1><pre class="source lang-java linenums">package ome.smuggler.config.items;
+
+import java.util.Objects;
+
+/**
+ * Specifies operational parameters for the embedded HornetQ server. 
+ */
+<span class="fc" id="L8">public class HornetQPersistenceConfig {</span>
+    /* NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
+     * be (de-)serialized painlessly by SnakeYaml.  
+     */ 
+
+    private boolean persistenceEnabled;
+    private String journalDirPath;
+    private String largeMessagesDirPath;
+    private String bindingsDirPath;
+    private String pagingDirPath;
+    
+    public boolean isPersistenceEnabled() {
+<span class="fc" id="L20">        return persistenceEnabled;</span>
+    }
+    
+    public void setPersistenceEnabled(boolean persistenceEnabled) {
+<span class="fc" id="L24">        this.persistenceEnabled = persistenceEnabled;</span>
+<span class="fc" id="L25">    }</span>
+    
+    public String getJournalDirPath() {
+<span class="fc" id="L28">        return journalDirPath;</span>
+    }
+
+    public void setJournalDirPath(String journalDirPath) {
+<span class="fc" id="L32">        this.journalDirPath = journalDirPath;</span>
+<span class="fc" id="L33">    }</span>
+
+    public String getLargeMessagesDirPath() {
+<span class="fc" id="L36">        return largeMessagesDirPath;</span>
+    }
+
+    public void setLargeMessagesDirPath(String largeMessagesDirPath) {
+<span class="fc" id="L40">        this.largeMessagesDirPath = largeMessagesDirPath;</span>
+<span class="fc" id="L41">    }</span>
+
+    public String getBindingsDirPath() {
+<span class="fc" id="L44">        return bindingsDirPath;</span>
+    }
+
+    public void setBindingsDirPath(String bindingsDirPath) {
+<span class="fc" id="L48">        this.bindingsDirPath = bindingsDirPath;</span>
+<span class="fc" id="L49">    }</span>
+
+    public String getPagingDirPath() {
+<span class="fc" id="L52">        return pagingDirPath;</span>
+    }
+
+    public void setPagingDirPath(String pagingDirPath) {
+<span class="fc" id="L56">        this.pagingDirPath = pagingDirPath;</span>
+<span class="fc" id="L57">    }</span>
+    
+    @Override
+    public int hashCode() {
+<span class="nc" id="L61">        return toString().hashCode();</span>
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (this == other) {</span>
+<span class="nc" id="L67">            return true;</span>
+        }
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (other instanceof HornetQPersistenceConfig) {</span>
+<span class="nc" id="L70">            return Objects.equals(other.toString(), this.toString());</span>
+        }
+<span class="nc" id="L72">        return false;</span>
+    }
+    
+    @Override
+    public String toString() {
+<span class="nc" id="L77">        return String.format(&quot;%s | %s | %s | %s | %s&quot;, </span>
+<span class="nc" id="L78">                persistenceEnabled, journalDirPath, largeMessagesDirPath, </span>
+<span class="nc" id="L79">                bindingsDirPath, pagingDirPath);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

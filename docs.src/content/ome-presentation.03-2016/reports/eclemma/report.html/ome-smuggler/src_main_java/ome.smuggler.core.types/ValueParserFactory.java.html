@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ValueParserFactory.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.types</a> &gt; <span class="el_source">ValueParserFactory.java</span></div><h1>ValueParserFactory.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.types;
+
+import static java.util.Objects.requireNonNull;
+import static util.validation.ParserFactory.pairParser;
+import static util.validation.ParserFactory.positiveIntParser;
+import static util.validation.ParserFactory.positiveLongParser;
+import static util.validation.ParserFactory.stringParser;
+import static util.validation.ParserFactory.uriParser;
+
+import java.net.URI;
+import java.util.function.Function;
+
+import util.object.Either;
+
+/**
+ * Methods to instantiate valid values of a certain type from their string
+ * representation.
+ */
+<span class="nc" id="L19">public class ValueParserFactory {</span>
+
+    private static &lt;T extends PositiveN&gt;
+    Either&lt;String, T&gt; parsePosInt(String value, Function&lt;Long, T&gt; mapper) {
+<span class="fc" id="L23">        return positiveLongParser().parse(value).map(mapper);</span>
+    }
+    
+    /**
+     * Creates a dataset ID from a positive integer.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, DatasetId&gt; datasetId(String value) {
+<span class="fc" id="L33">        return parsePosInt(value, DatasetId::new);</span>
+    }
+    
+    /**
+     * Creates a screen ID from a positive integer.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, ScreenId&gt; screenId(String value) {
+<span class="fc" id="L43">        return parsePosInt(value, ScreenId::new);</span>
+    }
+    
+    /**
+     * Creates an email from its string representation.
+     * @param value string representation of an email address, e.g. {@code 
+     * x@y.edu}.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, Email&gt; email(String value) {
+<span class="fc" id="L54">        return stringParser()</span>
+<span class="fc" id="L55">              .withValidation(Email.validator())</span>
+<span class="fc" id="L56">              .parse(value)</span>
+<span class="fc" id="L57">              .map(Email::new);</span>
+    }
+    
+    /**
+     * Creates a positive natural from its string representation.
+     * @param value string representation of a positive integer.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, PositiveN&gt; positiveInt(String value) {
+<span class="fc" id="L67">        return parsePosInt(value, PositiveN::new);</span>
+    }
+    
+    /**
+     * Creates a text annotation from its string representation.
+     * @param xs a pair of strings: a namespace followed by the annotation 
+     * content.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, TextAnnotation&gt; textAnnotation(String...xs) {
+<span class="fc" id="L78">        return pairParser(stringParser(), stringParser())</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">              .parse(xs == null ? new String[0] : xs)</span>
+<span class="fc" id="L80">              .map(TextAnnotation::new);</span>
+    }
+    
+    /**
+     * Creates a URI from its string representation.
+     * @param value string representation of a URI, e.g. {@code /some/file}.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, URI&gt; uri(String value) {
+<span class="fc" id="L90">        return uriParser().parse(value);</span>
+    }
+    
+    /**
+     * Creates a URI from host and port components: the returned URI will be of
+     * the form {@code omero://host:port/}. 
+     * @param host the host component of the URI.
+     * @param port the port component of the URI.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, URI&gt; omeroUri(String host, String port) {
+<span class="fc" id="L102">        return pairParser(stringParser(), positiveIntParser())</span>
+<span class="fc" id="L103">              .parse(host, port)</span>
+<span class="fc" id="L104">              .map(p -&gt; String.format(&quot;omero://%s:%s/&quot;, p.fst(), p.snd()))</span>
+<span class="fc" id="L105">              .bind(s -&gt; uri(s));</span>
+    }
+    
+    /**
+     * Parses a string of length at least one.
+     * @param value a string of length at least one.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not being instantiated.
+     */
+    public static Either&lt;String, String&gt; string(String value) {
+<span class="fc" id="L115">        return stringParser().parse(value);</span>
+    }
+    
+    /**
+     * Prefixes the error message (i.e. any left value) with the specified 
+     * label {@code p} so that if {@code e} is the original message, the new
+     * message will be of the form {@code p:e}.
+     * @param errorMsgPrefix the string to prefix to the error message.
+     * @param value the input to prefix in the case it's a left value.
+     * @return the prefixed error message if the input either is a left value; 
+     * otherwise the input's right value as is.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;T&gt; Either&lt;String, T&gt; label(String errorMsgPrefix, 
+                                              Either&lt;String, T&gt; value) {
+<span class="fc" id="L130">        requireNonNull(errorMsgPrefix, &quot;errorMsgPrefix&quot;);</span>
+<span class="fc" id="L131">        requireNonNull(value, &quot;value&quot;);</span>
+        
+<span class="fc" id="L133">        return value.mapLeft(e -&gt; String.format(&quot;%s: %s&quot;, errorMsgPrefix, e));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

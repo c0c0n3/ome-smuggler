@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>FifoResourceLoaderAdapter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.spring.io</a> &gt; <span class="el_source">FifoResourceLoaderAdapter.java</span></div><h1>FifoResourceLoaderAdapter.java</h1><pre class="source lang-java linenums"><span class="fc" id="L1">package util.spring.io;</span>
+
+import static java.util.Objects.requireNonNull;
+import static util.sequence.Streams.pruneNull;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+/**
+ * Uses a given {@link ResourceLoader} to implement a &quot;first-available&quot; strategy
+ * to determine from which location to load a resource.
+ */
+public class FifoResourceLoaderAdapter implements LociResourceLoader {
+
+    private final ResourceLoader resourceLoader;
+    
+    /**
+     * Creates a new instance to use the given loader.
+     * @param resourceLoader the loader to use.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+<span class="fc" id="L25">    public FifoResourceLoaderAdapter(ResourceLoader resourceLoader) {</span>
+<span class="fc" id="L26">        requireNonNull(resourceLoader, &quot;resourceLoader&quot;);</span>
+        
+<span class="fc" id="L28">        this.resourceLoader = resourceLoader;</span>
+<span class="fc" id="L29">    }</span>
+    
+    private Optional&lt;Resource&gt; select(String[] loci) {
+<span class="fc" id="L32">        return Stream.of(loci)</span>
+<span class="pc bpc" id="L33" title="2 of 4 branches missed.">                     .filter(l -&gt; l != null &amp;&amp; !l.isEmpty())</span>
+<span class="fc" id="L34">                     .map(this::getResource)</span>
+<span class="fc bfc" id="L35" title="All 6 branches covered.">                     .filter(r -&gt; r != null &amp;&amp; r.exists() &amp;&amp; r.isReadable())</span>
+<span class="fc" id="L36">                     .findFirst();</span>
+    }
+    
+    /**
+     * Uses the underlying {@link ResourceLoader} to select the first available 
+     * resource out of the possible locations.
+     * In detail, this method will select the resource at {@code loci[k]} with
+     * {@code k} the minimum index for which the following conditions are met:
+     * &lt;ul&gt;
+     *  &lt;li&gt;{@code loci[k]} is not null or empty&lt;/li&gt;
+     *  &lt;li&gt;the resource at {@code loci[k]} {@link Resource#exists() exists}
+     *      and {@link Resource#isReadable() is readable}&lt;/li&gt;
+     * &lt;/ul&gt;
+     * If none of the resources at the given locations satisfy this condition
+     * or no locations are given, then {@link Optional#empty() empty} is 
+     * returned.
+     */
+    @Override
+    public Optional&lt;Resource&gt; selectResource(ResourceLocation...loci) {
+<span class="fc" id="L55">        String[] xs = pruneNull(loci).map(l -&gt; l.get()).toArray(String[]::new);</span>
+<span class="fc" id="L56">        return select(xs);</span>
+    }
+    
+    /**
+     * Just forwards to the underlying {@link ResourceLoader}.
+     */
+    @Override
+    public Resource getResource(String location) {
+<span class="fc" id="L64">        return resourceLoader.getResource(location);</span>
+    }
+    
+    @Override
+    public ClassLoader getClassLoader() {
+<span class="nc" id="L69">        return resourceLoader.getClassLoader();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

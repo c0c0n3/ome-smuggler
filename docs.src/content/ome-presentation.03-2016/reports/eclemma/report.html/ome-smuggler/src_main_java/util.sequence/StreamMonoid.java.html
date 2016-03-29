@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>StreamMonoid.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.sequence</a> &gt; <span class="el_source">StreamMonoid.java</span></div><h1>StreamMonoid.java</h1><pre class="source lang-java linenums">package util.sequence;
+
+import java.util.stream.Stream;
+
+import util.alg.MonoidProvider;
+
+/**
+ * A monoid whose values are streams carrying {@code T}-values; the product is
+ * {@link Stream#concat(Stream, Stream) concatenation} and the unit is the
+ * {@link Stream#empty() empty} stream.
+ * Conceptually, this is the &lt;a href=&quot;https://en.wikipedia.org/wiki/Free_monoid&quot;&gt;
+ * free monoid&lt;/a&gt; on {@code T}-values.
+ */
+public class StreamMonoid&lt;T&gt; extends MonoidProvider&lt;Stream&lt;T&gt;&gt; {
+
+    public StreamMonoid() {
+<span class="fc" id="L17">        super(Stream::concat, Stream::empty);</span>
+<span class="fc" id="L18">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

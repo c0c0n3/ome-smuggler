@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>Nat.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.types</a> &gt; <span class="el_source">Nat.java</span></div><h1>Nat.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.types;
+
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import util.object.Wrapper;
+
+/**
+ * A natural number, i.e. an integer greater than or equal to zero.
+ */
+public class Nat extends Wrapper&lt;Long&gt; {
+
+    /**
+     * Test to check if a {@code long} can be used to instantiate a {@link Nat}.
+     */
+<span class="fc bfc" id="L16" title="All 2 branches covered.">    public static final Predicate&lt;Long&gt; isValid = x -&gt; x &gt;= 0;</span>
+    
+    /**
+     * Instantiate a {@link Nat} from the given value only if it's not negative.
+     * @param value the value to use.
+     * @return a {@link Nat} wrapping the given value or empty if the value is
+     * negative.
+     */
+    public static Optional&lt;Nat&gt; from(long value) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        return isValid.test(value) ? Optional.of(new Nat(value)) </span>
+<span class="fc" id="L26">                                   : Optional.empty();</span>
+    }
+    
+    /**
+     * Instantiate a {@link Nat} from a non-negative value.
+     * @param nonNegativeValue the value to use.
+     * @return a {@link Nat} wrapping the given value.
+     * @throws IllegalArgumentException if the value is negative.
+     */
+    public static Nat of(long nonNegativeValue) {
+<span class="fc" id="L36">        return from(nonNegativeValue)</span>
+<span class="fc" id="L37">               .orElseThrow(() -&gt; new IllegalArgumentException(</span>
+<span class="fc" id="L38">                                       &quot;negative value: &quot; + nonNegativeValue)); </span>
+    }
+    
+    private Nat(Long wrappedValue) {
+<span class="fc" id="L42">        super(wrappedValue);</span>
+<span class="fc" id="L43">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

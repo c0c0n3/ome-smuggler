@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>Identifiable.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.object</a> &gt; <span class="el_source">Identifiable.java</span></div><h1>Identifiable.java</h1><pre class="source lang-java linenums">package util.object;
+
+/**
+ * A way to identify an object in a given context.
+ */
+public interface Identifiable {
+
+    /**
+     * Produces the unique id that identifies this object in some given 
+     * context.
+     * This method is defaulted to return the string {@code fqn@ref}, where
+     * {@code fqn} is the fully qualified class name of this object and 
+     * {@code ref} is the HEX representation of this object's native hash code
+     * (i.e. what is returned by {@link System#identityHashCode(Object) 
+     * identityHashCode}) which is usually the memory address of the object.
+     * This is the same of what {@code toString} returns if it has not been
+     * overwritten and {@code hashCode} has not been overwritten either.
+     * @return this object's id.
+     */
+    default String id() {
+<span class="fc" id="L21">        return String.format(&quot;%s@%h&quot;, </span>
+<span class="fc" id="L22">                             this.getClass().getName(),</span>
+<span class="fc" id="L23">                             System.identityHashCode(this));</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

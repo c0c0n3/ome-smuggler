@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportOutputFormatter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.service.imports.impl</a> &gt; <span class="el_source">ImportOutputFormatter.java</span></div><h1>ImportOutputFormatter.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.service.imports.impl;
+
+import static util.string.Strings.write;
+
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import ome.smuggler.core.types.ImportInput;
+import ome.smuggler.core.types.QueuedImport;
+
+<span class="nc" id="L14">public class ImportOutputFormatter {</span>
+
+    private static void field(PrintWriter out, String name, Object value) {
+<span class="fc" id="L17">        out.format(&quot;%s: %s%n&quot;, name, value);</span>
+<span class="fc" id="L18">    }</span>
+    
+    private static void timestamp(PrintWriter out) {
+<span class="fc" id="L21">        Date now = Calendar.getInstance().getTime();</span>
+<span class="fc" id="L22">        String value = DateFormat.getDateTimeInstance().format(now);</span>
+<span class="fc" id="L23">        field(out, &quot;Timestamp&quot;, value);</span>
+<span class="fc" id="L24">    }</span>
+    
+    private static void importId(PrintWriter out, QueuedImport task) {
+<span class="fc" id="L27">        field(out, &quot;Import ID&quot;, task.getTaskId());</span>
+<span class="fc" id="L28">    }</span>
+    
+    private static void importTarget(PrintWriter out, ImportInput req) {
+<span class="fc" id="L31">        field(out, &quot;Import Target&quot;, req.getTarget());</span>
+<span class="fc" id="L32">    }</span>
+    
+    private static void omeroServer(PrintWriter out, ImportInput req) {
+<span class="fc" id="L35">        field(out, &quot;OMERO Server&quot;, req.getOmeroHost());</span>
+<span class="fc" id="L36">    }</span>
+    
+    private static void experimenterEmail(PrintWriter out, ImportInput req) {
+<span class="fc" id="L39">        field(out, &quot;Experimenter's Email&quot;, req.getExperimenterEmail());</span>
+<span class="fc" id="L40">    }</span>
+    
+    private static void summary(PrintWriter out, QueuedImport task) {
+<span class="fc" id="L43">        ImportInput req = task.getRequest();</span>
+        
+<span class="fc" id="L45">        timestamp(out);</span>
+<span class="fc" id="L46">        importId(out, task);</span>
+<span class="fc" id="L47">        importTarget(out, req);</span>
+<span class="fc" id="L48">        omeroServer(out, req);</span>
+<span class="fc" id="L49">        experimenterEmail(out, req);</span>
+<span class="fc" id="L50">    }</span>
+    
+    private static void succeeded(PrintWriter out, boolean success) {
+<span class="fc" id="L53">        timestamp(out);</span>
+<span class="fc" id="L54">        field(out, &quot;Succeeded&quot;, success);</span>
+<span class="fc" id="L55">    }</span>
+    
+    public static String queued(QueuedImport task) {
+<span class="fc" id="L58">        return write(out -&gt; {    </span>
+<span class="fc" id="L59">            out.println(&quot;====================&gt; Queued OMERO Import:&quot;);</span>
+<span class="fc" id="L60">            summary(out, task);</span>
+<span class="fc" id="L61">            out.println(&quot;============================================&quot;);</span>
+<span class="fc" id="L62">        });</span>
+    }
+    
+    public static String header(QueuedImport task,
+                                ImporterCommandBuilder importCommand,
+                                Path outputFile) {
+<span class="fc" id="L68">        return write(out -&gt; {</span>
+<span class="fc" id="L69">            out.println(&quot;====================&gt; Starting OMERO Import:&quot;);</span>
+<span class="fc" id="L70">            summary(out, task);</span>
+<span class="fc" id="L71">            field(out, &quot;Import Command&quot;, importCommand);</span>
+<span class="fc" id="L72">            field(out, &quot;Output File&quot;, outputFile);</span>
+<span class="fc" id="L73">            out.println(&quot;============================================&quot;);</span>
+<span class="fc" id="L74">        });</span>
+    }
+    
+    public static String footer(boolean success, int exitStatus) {
+<span class="fc" id="L78">        return write(out -&gt; {</span>
+<span class="fc" id="L79">            out.println();</span>
+<span class="fc" id="L80">            out.println(&quot;=================&gt; OMERO Import Run Report:&quot;);</span>
+<span class="fc" id="L81">            succeeded(out, success);</span>
+<span class="fc" id="L82">            field(out, &quot;Exit Status&quot;, exitStatus);</span>
+<span class="fc" id="L83">            out.println(&quot;============================================&quot;);</span>
+<span class="fc" id="L84">        });</span>
+    }
+    
+    public static String footer(Exception e) {
+<span class="nc" id="L88">        return write(out -&gt; {</span>
+<span class="nc" id="L89">            out.println();</span>
+<span class="nc" id="L90">            out.println(&quot;=================&gt; OMERO Import Run Report:&quot;);</span>
+<span class="nc" id="L91">            succeeded(out, false);</span>
+<span class="nc" id="L92">            field(out, &quot;Cause of Failure&quot;, e.getMessage());</span>
+<span class="nc" id="L93">            out.println(&quot;Error Detail:&quot;);</span>
+<span class="nc" id="L94">            e.printStackTrace(out);</span>
+<span class="nc" id="L95">            out.println(&quot;============================================&quot;);</span>
+<span class="nc" id="L96">        });</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

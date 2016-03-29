@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>DefaultHornetQPersistenceConfig.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.config.data</a> &gt; <span class="el_source">DefaultHornetQPersistenceConfig.java</span></div><h1>DefaultHornetQPersistenceConfig.java</h1><pre class="source lang-java linenums">package ome.smuggler.config.data;
+
+import static java.util.Objects.requireNonNull;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+import ome.smuggler.config.items.HornetQPersistenceConfig;
+import util.config.ConfigProvider;
+
+/**
+ * Hard-coded operational parameters for the embedded HornetQ server.
+ */
+<span class="nc" id="L15">public class DefaultHornetQPersistenceConfig </span>
+    implements ConfigProvider&lt;HornetQPersistenceConfig&gt; {
+
+    public static final String RootDir = &quot;hornetq-data&quot;;
+
+    public static HornetQPersistenceConfig build(Path baseDir) {
+<span class="fc" id="L21">        requireNonNull(baseDir, &quot;baseDir&quot;);</span>
+        
+<span class="fc" id="L23">        Path d = baseDir.resolve(RootDir);</span>
+<span class="fc" id="L24">        HornetQPersistenceConfig cfg = new HornetQPersistenceConfig();</span>
+        
+<span class="fc" id="L26">        cfg.setPersistenceEnabled(true);</span>
+<span class="fc" id="L27">        cfg.setBindingsDirPath(d.resolve(&quot;bindings&quot;).toString());</span>
+<span class="fc" id="L28">        cfg.setJournalDirPath(d.resolve(&quot;journal&quot;).toString());</span>
+<span class="fc" id="L29">        cfg.setLargeMessagesDirPath(d.resolve(&quot;largemessages&quot;).toString());</span>
+<span class="fc" id="L30">        cfg.setPagingDirPath(d.resolve(&quot;paging&quot;).toString());</span>
+        
+<span class="fc" id="L32">        return cfg;</span>
+    }
+    
+    @Override
+    public Stream&lt;HornetQPersistenceConfig&gt; readConfig() {
+<span class="nc" id="L37">        return Stream.of(build(Paths.get(&quot;&quot;)));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

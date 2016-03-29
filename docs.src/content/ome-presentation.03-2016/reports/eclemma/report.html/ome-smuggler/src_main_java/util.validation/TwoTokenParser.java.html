@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>TwoTokenParser.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.validation</a> &gt; <span class="el_source">TwoTokenParser.java</span></div><h1>TwoTokenParser.java</h1><pre class="source lang-java linenums"><span class="fc" id="L1">package util.validation;</span>
+
+import static java.util.Objects.requireNonNull;
+import static util.object.Either.left;
+
+import java.util.stream.Stream;
+
+import util.object.Either;
+import util.object.Pair;
+
+/**
+ * Combines two parsers into one that applies the fist parser to the first
+ * token and the second parser to the second token to produce a parsed pair.
+ */
+public class TwoTokenParser&lt;X, Y&gt; implements ObjectParser&lt;Pair&lt;X, Y&gt;&gt; {
+
+    private final ObjectParser&lt;X&gt; fstTokenParser;
+    private final ObjectParser&lt;Y&gt; sndTokenParser;
+    
+    /**
+     * Creates a new instance.
+     * @param fstTokenParser parses the first token.
+     * @param sndTokenParser parses the second token.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+<span class="fc" id="L26">    public TwoTokenParser(ObjectParser&lt;X&gt; fstTokenParser,</span>
+                          ObjectParser&lt;Y&gt; sndTokenParser) {
+<span class="fc" id="L28">        requireNonNull(fstTokenParser, &quot;fstTokenParser&quot;);</span>
+<span class="fc" id="L29">        requireNonNull(sndTokenParser, &quot;sndTokenParser&quot;);</span>
+        
+<span class="fc" id="L31">        this.fstTokenParser = fstTokenParser;</span>
+<span class="fc" id="L32">        this.sndTokenParser = sndTokenParser;</span>
+<span class="fc" id="L33">    }</span>
+    
+    @Override
+    public Either&lt;String, Pair&lt;X, Y&gt;&gt; parseNonNull(Stream&lt;String&gt; tokens) {
+<span class="fc" id="L37">        String[] ts = tokens.toArray(String[]::new);</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        int len = ts == null ? 0 : ts.length;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (len &lt; 2) {</span>
+<span class="fc" id="L40">            return left(&quot;two tokens expected, found: &quot; + len);</span>
+        }
+<span class="fc" id="L42">        return fstTokenParser</span>
+<span class="fc" id="L43">              .parse(ts[0])</span>
+<span class="fc" id="L44">              .bind(x -&gt; sndTokenParser.parse(ts[1])</span>
+<span class="fc" id="L45">                                       .map(y -&gt; new Pair&lt;&gt;(x, y)));</span>
+    }
+
+}
+/* NOTE. Sooo lame!!!
+ * So what if we wanted to sequence 3 parsers? And 4? Did I mention this is the
+ * wrong approach to parsing in general? 
+ * Also trying to combine more than two of these puppies in Java and be type 
+ * safe at the same time is way more work than a single minion like me can 
+ * possibly endure in a life time!
+ */ 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>JavaMailConfigProps.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.config.items</a> &gt; <span class="el_source">JavaMailConfigProps.java</span></div><h1>JavaMailConfigProps.java</h1><pre class="source lang-java linenums">package ome.smuggler.config.items;
+
+import static util.config.StringConfigReaderFactory.intParser;
+import static util.config.props.JPropAccessorFactory.makeBool;
+import static util.config.props.JPropAccessorFactory.makeEnum;
+import static util.config.props.JPropAccessorFactory.makeString;
+import static util.config.props.JPropKey.key;
+
+import java.time.Duration;
+
+import ome.smuggler.core.types.MailProtocol;
+import util.config.props.JPropAccessor;
+import util.config.props.JPropKey;
+
+/**
+ * Accessors for Java Mail SMTP properties.
+ * @see &lt;a href=&quot;https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html&quot;&gt;
+ * Java Mail SMTP summary&lt;/a&gt;.
+ */
+<span class="nc" id="L20">public class JavaMailConfigProps {</span>
+    
+    private static 
+    JPropAccessor&lt;Duration&gt; makeDurationOfMillis(JPropKey k) {
+<span class="fc" id="L24">        return new JPropAccessor&lt;&gt;(k, </span>
+<span class="fc" id="L25">                intParser().andThen(Duration::ofMillis), </span>
+<span class="fc" id="L26">                d -&gt; String.valueOf(d.toMillis()));</span>
+    }
+    // NB using intParser as all millis values in the java SMTP mail props page
+    // are of type int.
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; debug() {
+<span class="nc" id="L33">        return makeBool(key(&quot;mail.debug&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;MailProtocol&gt; transportProtocol() {
+<span class="fc" id="L38">        return makeEnum(MailProtocol.class, key(&quot;mail.transport.protocol&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Duration&gt; connectionTimeoutFor(MailProtocol p) {
+<span class="fc" id="L43">        return makeDurationOfMillis(key(&quot;mail&quot;, p.name(), &quot;connectiontimeout&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Duration&gt; readTimeoutFor(MailProtocol p) {
+<span class="fc" id="L48">        return makeDurationOfMillis(key(&quot;mail&quot;, p.name(),&quot;timeout&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Duration&gt; writeTimeoutFor(MailProtocol p) {
+<span class="fc" id="L53">        return makeDurationOfMillis(key(&quot;mail&quot;, p.name(), &quot;writetimeout&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; authenticate(MailProtocol p) {
+<span class="nc" id="L58">        return makeBool(key(&quot;mail&quot;, p.name(), &quot;auth&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; smtpEnableSsl() {
+<span class="nc" id="L63">        return makeBool(key(&quot;mail.smtp.ssl.enable&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; smtpsCheckServerIdentity() {
+<span class="nc" id="L68">        return makeBool(key(&quot;mail.smtps.ssl.checkserveridentity&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;String&gt; smtpsTrustedServers() {
+<span class="nc" id="L73">        return makeString(key(&quot;mail.smtps.ssl.trust&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; smtpEnableStartTls() {
+<span class="nc" id="L78">        return makeBool(key(&quot;mail.smtp.starttls.enable&quot;));</span>
+    }
+    
+    public static
+    JPropAccessor&lt;Boolean&gt; smtpRequireStartTls() {
+<span class="nc" id="L83">        return makeBool(key(&quot;mail.smtp.starttls.required&quot;));</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

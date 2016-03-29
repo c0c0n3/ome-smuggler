@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>QueueConnector.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.providers.q</a> &gt; <span class="el_source">QueueConnector.java</span></div><h1>QueueConnector.java</h1><pre class="source lang-java linenums">package ome.smuggler.providers.q;
+
+import static java.util.Objects.requireNonNull;
+
+import org.hornetq.api.core.HornetQException;
+import org.hornetq.api.core.client.ClientConsumer;
+import org.hornetq.api.core.client.ClientMessage;
+import org.hornetq.api.core.client.ClientProducer;
+import org.hornetq.api.core.client.ClientSession;
+import org.hornetq.core.config.CoreQueueConfiguration;
+
+/**
+ * Provides access to a HornetQ queue.
+ */
+public class QueueConnector {
+
+    private final CoreQueueConfiguration config;
+    private final ClientSession session;
+    
+    /**
+     * Creates a new instance to access the specified queue.
+     * @param config the queue to access.
+     * @param session the session to use to access the queue.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+<span class="fc" id="L26">    public QueueConnector(CoreQueueConfiguration config, ClientSession session) {</span>
+<span class="fc" id="L27">        requireNonNull(config, &quot;config&quot;);</span>
+<span class="fc" id="L28">        requireNonNull(session, &quot;session&quot;);</span>
+        
+<span class="fc" id="L30">        this.config = config;</span>
+<span class="fc" id="L31">        this.session = session;</span>
+<span class="fc" id="L32">    }</span>
+    
+    /**
+     * Creates a new consumer to fetch messages from the queue.
+     * @return the consumer.
+     * @throws HornetQException if the consumer could not be created.
+     */
+    public ClientConsumer newConsumer() throws HornetQException {
+<span class="fc" id="L40">        return session.createConsumer(config.getName(), false);</span>
+    }
+    
+    /**
+     * Creates a new consumer to receive messages from the queue without 
+     * removing them.
+     * @return the consumer.
+     * @throws HornetQException if the consumer could not be created.
+     */
+    public ClientConsumer newBrowser() throws HornetQException {
+<span class="nc" id="L50">        return session.createConsumer(config.getName(), true);</span>
+    }
+    
+    /**
+     * Creates a new producer to put messages on the queue.
+     * @return the producer.
+     * @throws HornetQException if the producer could not be created.
+     */
+    public ClientProducer newProducer() throws HornetQException {
+<span class="fc" id="L59">        return session.createProducer(config.getAddress());</span>
+    }
+    
+    /**
+     * Creates a new durable message.
+     * @return the message.
+     */
+    public ClientMessage newDurableMessage() {
+<span class="fc" id="L67">        return session.createMessage(true);</span>
+    }
+    
+    /**
+     * @return the session in use to access the queue.
+     */
+    public ClientSession getSession() {
+<span class="nc" id="L74">        return session;</span>
+    }
+    
+    /**
+     * @return configuration of the queue to access.
+     */
+    public CoreQueueConfiguration getConfig() {
+<span class="nc" id="L81">        return config;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

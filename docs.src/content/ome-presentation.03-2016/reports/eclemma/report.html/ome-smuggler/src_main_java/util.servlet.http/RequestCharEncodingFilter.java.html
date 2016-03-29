@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>RequestCharEncodingFilter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.servlet.http</a> &gt; <span class="el_source">RequestCharEncodingFilter.java</span></div><h1>RequestCharEncodingFilter.java</h1><pre class="source lang-java linenums">package util.servlet.http;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import util.object.Pair;
+import util.servlet.ServletCharEncoding;
+
+/**
+ * &lt;p&gt;
+ * Sets character encoding for servlets that read characters from the request
+ * if none has been specified.
+ * This filter is useful when most or all web components in the application
+ * handle text in a given character encoding only (e.g. UTF-8); using this 
+ * filter explicit setting of the character encoding in each component can 
+ * then be avoided.
+ * &lt;/p&gt;
+ * &lt;p&gt;Note that in order to avoid interference (as much as possible) with other
+ * components in the HTTP processing pipeline, this filter delays the setting of
+ * the character encoding until the very last moment it is possible to do it. 
+ * (According to the servlet spec, this is just before request parameters
+ * are read or the request body is read.) In fact, a request handler downstream 
+ * may make a decision as to what encoding to use based on the absence of the 
+ * character encoding, which is why this filter holds off setting it. 
+ * &lt;/p&gt;
+ * @see ResponseCharEncodingFilter
+ */
+public class RequestCharEncodingFilter extends CharEncodingFilter {
+    
+    /**
+     * Creates a new instance to set the given default encoding.
+     * @param defaultEncoder the encoder that can set the default encoding.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public RequestCharEncodingFilter(ServletCharEncoding defaultEncoder) {
+<span class="fc" id="L38">        super(defaultEncoder);</span>
+<span class="fc" id="L39">    }</span>
+    
+    @Override
+    protected Pair&lt;ServletRequest, ServletResponse&gt; wrap(
+            HttpServletRequest request, HttpServletResponse response) {
+<span class="fc" id="L44">        RequestCharEncodingWrapper wrapper = new RequestCharEncodingWrapper(</span>
+<span class="fc" id="L45">                request, </span>
+<span class="fc" id="L46">                defaultEncoder::setEncodingIfAbsent);</span>
+<span class="fc" id="L47">        return new Pair&lt;&gt;(wrapper, response);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

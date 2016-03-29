@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>Streams.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.sequence</a> &gt; <span class="el_source">Streams.java</span></div><h1>Streams.java</h1><pre class="source lang-java linenums">package util.sequence;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.empty;
+import static java.util.stream.Stream.iterate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+
+import util.object.Pair;
+
+/**
+ * Utility methods to use with {@link Stream}'s.
+ * Similar in concept to the Haskell list processing functions but with all
+ * the (ridiculous?) limitations of Java. 
+ * &lt;em&gt;Do not use for heavy duty or parallel computations&lt;/em&gt;. You have been
+ * warned...
+ */
+<span class="nc" id="L29">public class Streams {</span>
+    
+    // NOTE: these methods all have naive implementations, you're welcome to 
+    // replace them with something better; just beware of the ridiculous amount
+    // of work involved---e.g. performance, mutation, parallel vs sequential, 
+    // ordered vs unordered, etc. Love Java.
+
+    /**
+     * Repeats a &lt;em&gt;finite&lt;/em&gt; stream the specified number of {@code times}.
+     * This is a terminal operation on the input stream.
+     * @param times how many times to repeat the input stream.
+     * @param ts the input stream.
+     * @return the stream {@code ts + ts + ... + ts}, the given number of 
+     * {@code times}.
+     * @throws NullPointerException if any argument is {@code null}. 
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; cycle(int times, Stream&lt;T&gt; ts) {
+<span class="fc" id="L46">        requireNonNull(ts, &quot;ts&quot;);</span>
+        
+<span class="fc" id="L48">        List&lt;T&gt; xs = ts.collect(toList());</span>
+<span class="fc" id="L49">        return iterate(xs.stream(), i -&gt; xs.stream())</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">               .limit(times &lt; 0 ? 0 : times)</span>
+<span class="fc" id="L51">               .reduce(empty(), (x, y) -&gt; concat(x, y));</span>
+    }
+    
+    /**
+     * Builds the initial segments of the given &lt;em&gt;finite&lt;/em&gt; input stream
+     * {@code ts}.
+     * For example, if {@code ts = [1, 2, 3]} then {@code init(ts) = [[], [1], 
+     * [1,2], [1,2,3]]}.
+     * This is a terminal operation. 
+     * @param ts the input stream.
+     * @return the initial segments of {@code ts}.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;T&gt; Stream&lt;Stream&lt;T&gt;&gt; inits(Stream&lt;T&gt; ts) {
+<span class="fc" id="L65">        requireNonNull(ts, &quot;ts&quot;);</span>
+        
+<span class="fc" id="L67">        List&lt;T&gt; xs = ts.collect(toList());</span>
+<span class="fc" id="L68">        Pair&lt;Stream&lt;T&gt;, Long&gt; seed = new Pair&lt;&gt;(empty(), 0L);</span>
+        
+<span class="fc" id="L70">        UnaryOperator&lt;Pair&lt;Stream&lt;T&gt;, Long&gt;&gt; nextSegment = k -&gt; {</span>
+<span class="fc" id="L71">            long size = k.snd() + 1;</span>
+<span class="fc" id="L72">            Stream&lt;T&gt; segment = xs.stream().limit(size);</span>
+<span class="fc" id="L73">            return new Pair&lt;&gt;(segment, size);</span>
+        };
+<span class="fc" id="L75">        return iterate(seed, nextSegment)</span>
+<span class="fc" id="L76">               .map(Pair::fst)</span>
+<span class="fc" id="L77">               .limit(1 + xs.size());</span>
+    }
+    
+    /**
+     * Maps the function {@code f} over the list of pairs (x&lt;sub&gt;0&lt;/sub&gt;, 
+     * y&lt;sub&gt;0&lt;/sub&gt;), (x&lt;sub&gt;1&lt;/sub&gt;, y&lt;sub&gt;1&lt;/sub&gt;), ... , (x&lt;sub&gt;m&lt;/sub&gt;, 
+     * y&lt;sub&gt;m&lt;/sub&gt;) with x&lt;sub&gt;k&lt;/sub&gt; in {@code xs} and y&lt;sub&gt;k&lt;/sub&gt; in
+     * {@code ys} and where {@code m} is the length of the shortest between
+     * {@code xs} and {@code ys}.
+     * For example (pseudo code): {@code zipWith((x,y) -&gt; x + y, [a,b], [1,2,3])
+     * = [a1, b2]}.
+     * This is a terminal operation on the input streams.
+     * @param f the function to map.
+     * @param xs the list providing the left values.
+     * @param ys the list providing the right values.
+     * @return the &quot;zipped&quot; list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;X, Y, Z&gt;
+    Stream&lt;Z&gt; zipWith(BiFunction&lt;X, Y, Z&gt; f, Stream&lt;X&gt; xs, Stream&lt;Y&gt; ys) {
+<span class="fc" id="L97">        requireNonNull(f, &quot;f&quot;);</span>
+<span class="fc" id="L98">        requireNonNull(xs, &quot;xs&quot;);</span>
+<span class="fc" id="L99">        requireNonNull(ys, &quot;ys&quot;);</span>
+        
+<span class="fc" id="L101">        Iterator&lt;X&gt; ix = xs.iterator();</span>
+<span class="fc" id="L102">        Iterator&lt;Y&gt; iy = ys.iterator();</span>
+<span class="fc" id="L103">        List&lt;Z&gt; zs = new ArrayList&lt;Z&gt;();</span>
+        
+<span class="fc bfc" id="L105" title="All 4 branches covered.">        while (ix.hasNext() &amp;&amp; iy.hasNext()) {</span>
+<span class="fc" id="L106">            zs.add(f.apply(ix.next(), iy.next()));</span>
+        }
+        
+<span class="fc" id="L109">        return zs.stream();</span>
+    }
+    
+    /**
+     * Pairs up the elements of two lists up to the length of the shortest of
+     * the two.
+     * For example (pseudo code): {@code zip([a,b], [1,2,3]) = [(a, 1), (b, 2)]}.
+     * This is a terminal operation on the input streams.
+     * @param xs the list providing the left values.
+     * @param ys the list providing the right values.
+     * @return the &quot;zipped&quot; list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;X, Y&gt; Stream&lt;Pair&lt;X, Y&gt;&gt; zip(Stream&lt;X&gt; xs, Stream&lt;Y&gt; ys) {
+<span class="fc" id="L123">        return zipWith(Pair&lt;X,Y&gt;::new, xs, ys);</span>
+    }
+    
+    /**
+     * Indexes the elements of the given finite list, starting from {@code 0}.
+     * For example (pseudo code): {@code zipIndex([a,b,c]) = [(a, 0), (b, 1),
+     * (c, 2)]}.
+     * This is a terminal operation on the input streams. 
+     * @param xs the list to index.
+     * @return the indexed list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;X&gt; Stream&lt;Pair&lt;Integer, X&gt;&gt; zipIndex(Stream&lt;X&gt; xs) {
+<span class="fc" id="L136">        Stream&lt;Integer&gt; ks = Stream.iterate(0, x -&gt; x + 1);</span>
+<span class="fc" id="L137">        return zip(ks, xs);</span>
+    }
+    
+    /**
+     * Applies the function {@code f} to each element of the stream.
+     * The function {@code f} is called with the index (in {@code ys}) of the
+     * element to map (first argument) and with the element itself (second
+     * argument). That is: {@code map(f,[v,w,...]) = [f(0,v),f(1,w),...]}.
+     * For example (pseudo code) if {@code f(i,x) = i+x} then 
+     * {@code map(f,[1,2,3]) = [1,3,5]}.
+     * @param f turns an index and a {@code Y} into a {@code Z}.
+     * @param ys the list to map.
+     * @return a new list with the mapped elements.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;Y, Z&gt;
+    Stream&lt;Z&gt; map(BiFunction&lt;Integer, Y, Z&gt; f, Stream&lt;Y&gt; ys) {
+<span class="fc" id="L154">        requireNonNull(f, &quot;f&quot;);</span>
+<span class="fc" id="L155">        requireNonNull(ys, &quot;ys&quot;);</span>
+        
+<span class="fc" id="L157">        Iterator&lt;Y&gt; iy = ys.iterator();</span>
+<span class="fc" id="L158">        List&lt;Z&gt; zs = new ArrayList&lt;Z&gt;();</span>
+        
+<span class="fc" id="L160">        int index = 0;</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        while (iy.hasNext()) {</span>
+<span class="fc" id="L162">            zs.add(f.apply(index++, iy.next()));</span>
+        }
+        
+<span class="fc" id="L165">        return zs.stream();</span>
+    }
+    // ya, could be done using zipWith (e.g. map f = zipWith f [0..]) but the
+    // implementation is more complicated and has worse performance than the 
+    // code above!
+    
+    /**
+     * Interleaves the elements of the given stream with the specified 
+     * separator.
+     * For example (pseudo code) {@code intersperse(0,[1,2,3]) = [1,0,2,0,3]}.
+     * @param sep the value to put in between stream elements; ideally this 
+     * should be a new object for each slot.
+     * @param xs the elements to interleave.
+     * @return the interleaved list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static &lt;X&gt; Stream&lt;X&gt; intersperse(Supplier&lt;X&gt; sep, Stream&lt;X&gt; xs) {
+<span class="fc" id="L182">        requireNonNull(sep, &quot;sep&quot;);</span>
+<span class="fc" id="L183">        requireNonNull(xs, &quot;xs&quot;);</span>
+        
+<span class="fc" id="L185">        return xs.flatMap(x -&gt; Stream.of(sep.get(), x)).skip(1);</span>
+    }
+    
+    /**
+     * Removes all {@code null}'s from the stream; if the stream itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the stream to cleanse.
+     * @return the cleansed stream.
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; pruneNull(Stream&lt;T&gt; xs) {
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">        if (xs == null) return empty();</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        return xs.filter(x -&gt; x != null);</span>
+    }
+    
+    /**
+     * Removes all {@code null}'s from the list; if the list itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the list to cleanse.
+     * @return the cleansed stream.
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; pruneNull(List&lt;T&gt; xs) {
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if (xs == null) return empty();</span>
+<span class="nc" id="L207">        return pruneNull(xs.stream());</span>
+    }
+    
+    /**
+     * Removes all {@code null}'s from the array; if the array itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the array to cleanse.
+     * @return the cleansed stream.
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; pruneNull(T[] xs) {
+<span class="fc bfc" id="L217" title="All 2 branches covered.">        if (xs == null) return empty();</span>
+<span class="fc" id="L218">        return pruneNull(Arrays.stream(xs));</span>
+    }
+    
+    /**
+     * Collects the given stream's elements into a list; if the stream is 
+     * {@code null}, then the empty list is returned.
+     * @param xs the stream to convert.
+     * @return the stream's elements collected into a list.
+     */
+    public static &lt;T&gt; List&lt;T&gt; asList(Stream&lt;T&gt; xs) {
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (xs == null) return Collections.emptyList();</span>
+<span class="fc" id="L229">        return xs.collect(toList());</span>
+    }
+    
+    /**
+     * Collects the given list's elements into a stream; if the list is {@code
+     * null}, then the empty stream is returned.
+     * @param xs the list to convert.
+     * @return the list's elements collected into a stream.
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; asStream(List&lt;T&gt; xs) {
+<span class="fc bfc" id="L239" title="All 2 branches covered.">        return xs == null ? Stream.empty() : xs.stream();</span>
+    }
+    
+    /**
+     * Puts an optional value into a stream.
+     * If the given value is {@code null} or an empty optional, then the empty
+     * stream is returned; otherwise a stream containing the optional value.
+     * @param maybeValue the value to convert, possibly {@code null}.
+     * @return an empty stream or a stream with the optional value as the case
+     * may be.
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; asStream(Optional&lt;T&gt; maybeValue) {
+<span class="fc bfc" id="L251" title="All 4 branches covered.">        return maybeValue != null &amp;&amp; maybeValue.isPresent() ?</span>
+<span class="fc" id="L252">                Stream.of(maybeValue.get()) : Stream.empty();</span>
+    }
+    
+    /**
+     * Returns empty if the argument is {@code null}, otherwise the argument
+     * itself.
+     * @param xs a possibly {@code null} reference.
+     * @return {@code xs} if not {@code null}, an empty stream otherwise. 
+     */
+    public static &lt;T&gt; Stream&lt;T&gt; emptyIfNull(Stream&lt;T&gt; xs) {
+<span class="fc bfc" id="L262" title="All 2 branches covered.">        return xs == null ? Stream.empty() : xs;</span>
+    }
+    
+    /**
+     * Joins the given streams in encounter order.
+     * For example (pseudo code): {@code concat([1, 2], null, [3, 4]) = [1, 2, 
+     * 3, 4]}. Any {@code null} stream is replaced with empty.
+     * @param xs the streams to join.
+     * @return the joined stream.
+     * @throws NullPointerException if the argument array is {@code null}.
+     */
+    @SafeVarargs
+    public static &lt;T&gt; Stream&lt;T&gt; concat(Stream&lt;T&gt;...xs) {
+<span class="fc" id="L275">        requireNonNull(xs, &quot;xs&quot;);</span>
+<span class="fc" id="L276">        return Stream.of(xs).flatMap(identity());</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

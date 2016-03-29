@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>SingleTokenParserAdapter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.validation</a> &gt; <span class="el_source">SingleTokenParserAdapter.java</span></div><h1>SingleTokenParserAdapter.java</h1><pre class="source lang-java linenums"><span class="fc" id="L1">package util.validation;</span>
+
+import static java.util.Objects.requireNonNull;
+import static util.object.Either.right;
+import static util.object.Either.left;
+import static util.string.Strings.isNullOrEmpty;
+
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import util.lambda.FunctionE;
+import util.object.Either;
+
+/**
+ * Makes a function {@code String → T} works as an {@link ObjectParser}.  
+ */
+public class SingleTokenParserAdapter&lt;T&gt; implements ObjectParser&lt;T&gt; {
+    
+    private final Function&lt;String, T&gt; parser;
+    
+    /**
+     * Creates a new instance.
+     * @param parser turns strings into {@code T}-values.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+<span class="fc" id="L26">    public SingleTokenParserAdapter(FunctionE&lt;String, T&gt; parser) {</span>
+<span class="fc" id="L27">        requireNonNull(parser, &quot;parser&quot;);</span>
+<span class="fc" id="L28">        this.parser = parser;</span>
+<span class="fc" id="L29">    }</span>
+    
+    /**
+     * Creates a new instance.
+     * @param parser turns strings into {@code T}-values.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+<span class="fc" id="L36">    public SingleTokenParserAdapter(Function&lt;String, T&gt; parser) {</span>
+<span class="fc" id="L37">        requireNonNull(parser, &quot;parser&quot;);</span>
+<span class="fc" id="L38">        this.parser = parser;</span>
+<span class="fc" id="L39">    }</span>
+    
+    @Override
+    public Either&lt;String, T&gt; parseNonNull(Stream&lt;String&gt; tokens) {
+<span class="fc" id="L43">        String[] ts = tokens.toArray(String[]::new);</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        String value = ts.length &gt; 0 ? ts[0] : null;</span>
+<span class="fc" id="L45">        return doParse(value);</span>
+    }
+    /* (*) Ideally this would be: 
+     *     String value = tokens.findFirst().orElse(null);
+     * but findFirst throws if the stream value is null.
+     */
+
+    /**
+     * Parses a textual representation of a {@code T}-value. 
+     * @param value the input to parse, may be {@code null} or empty.
+     * @return either the parsed value (right) or a parse error message (left).
+     */
+    private Either&lt;String, T&gt; doParse(String value) {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (isNullOrEmpty(value)) {</span>
+<span class="fc" id="L59">            return left(&quot;no input&quot;);</span>
+        }
+        try {
+<span class="fc" id="L62">            T parsed = parser.apply(value);</span>
+<span class="fc" id="L63">            return right(parsed);</span>
+<span class="fc" id="L64">        } catch (Exception e) {</span>
+<span class="fc" id="L65">            return left(e.getMessage());</span>
+        }
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

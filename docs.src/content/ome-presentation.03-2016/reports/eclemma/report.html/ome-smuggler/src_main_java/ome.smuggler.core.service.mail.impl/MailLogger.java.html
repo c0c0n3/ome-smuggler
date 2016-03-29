@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>MailLogger.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.service.mail.impl</a> &gt; <span class="el_source">MailLogger.java</span></div><h1>MailLogger.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.service.mail.impl;
+
+import static util.object.Pair.pair;
+
+import java.io.PrintWriter;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import ome.smuggler.core.service.log.BaseLogger;
+import ome.smuggler.core.service.log.LogService;
+import ome.smuggler.core.types.PlainTextMail;
+import ome.smuggler.core.types.QueuedMail;
+import util.object.Pair;
+
+/**
+ * Logging methods for the mail service.
+ */
+public class MailLogger extends BaseLogger {
+
+    private static Stream&lt;Pair&lt;Object, Object&gt;&gt; summary(QueuedMail data) {
+<span class="fc" id="L21">        PlainTextMail req = data.getRequest();</span>
+<span class="fc" id="L22">        return Stream.of(</span>
+<span class="fc" id="L23">                pair(&quot;To&quot;, req.getRecipient().get()),</span>
+<span class="fc" id="L24">                pair(&quot;Subject&quot;, req.getSubject()));</span>
+    }
+    
+    private static Consumer&lt;PrintWriter&gt; writer(String header, 
+            QueuedMail data) {
+<span class="fc" id="L29">        return fieldsWriter(header, summary(data));</span>
+    }
+    
+    public MailLogger(LogService service) {
+<span class="fc" id="L33">        super(service);</span>
+<span class="fc" id="L34">    }</span>
+
+    public void mailSent(QueuedMail data) {
+<span class="nc" id="L37">        info(data, writer(&quot;Email sent.&quot;, data));</span>
+<span class="nc" id="L38">    }</span>
+    
+    public void failedMail(QueuedMail data) {
+<span class="fc" id="L41">        error(data, writer(&quot;Failed to send email.&quot;, data));</span>
+<span class="fc" id="L42">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

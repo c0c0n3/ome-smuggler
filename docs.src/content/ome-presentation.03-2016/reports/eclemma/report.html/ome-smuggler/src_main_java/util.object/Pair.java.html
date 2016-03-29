@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>Pair.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.object</a> &gt; <span class="el_source">Pair.java</span></div><h1>Pair.java</h1><pre class="source lang-java linenums">package util.object;
+
+import java.util.Objects;
+
+/**
+ * A pair {@code (x,y)} in {@code A×B}.
+ */
+public class Pair&lt;A, B&gt; {
+
+    /**
+     * Syntactic sugar to use in place of the constructor.
+     */
+    public static &lt;A, B&gt; Pair&lt;A, B&gt; pair(A x, B y) {
+<span class="fc" id="L14">        return new Pair&lt;&gt;(x, y);</span>
+    }
+
+    
+    private final A fst;
+    private final B snd;
+
+    /**
+     * Creates a new pair.
+     * @param x the first element.
+     * @param y the second element.
+     */
+<span class="fc" id="L26">    public Pair(A x, B y) {</span>
+<span class="fc" id="L27">        fst = x;</span>
+<span class="fc" id="L28">        snd = y;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * @return the first element of the pair.
+     */
+    public A fst() {
+<span class="fc" id="L35">        return fst;</span>
+    }
+
+    /**
+     * @return the second element of the pair.
+     */
+    public B snd() {
+<span class="fc" id="L42">        return snd;</span>
+    }
+
+    @Override 
+    public boolean equals(Object x) {
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (this == x) return true;               // avoid unnecessary work</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (x instanceof Pair) {                  // false if x == null or type differs</span>
+<span class="fc" id="L49">            Pair&lt;?, ?&gt; other = (Pair&lt;?, ?&gt;) x;    // best we can do, courtesy of type erasure</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">            return Objects.equals(fst, other.fst) // crossing fingers their equals methods check</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">                &amp;&amp; Objects.equals(snd, other.snd);// the type is the same</span>
+         }
+<span class="nc" id="L53">         return false;</span>
+    }
+    /* NOTE. See also:
+     * - http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ501
+     */
+    
+    @Override 
+    public int hashCode() {
+<span class="nc" id="L61">        return Objects.hash(fst, snd);</span>
+    }
+    
+    @Override
+    public String toString() {
+<span class="nc" id="L66">        return String.format(&quot;(%s, %s)&quot;, fst, snd);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

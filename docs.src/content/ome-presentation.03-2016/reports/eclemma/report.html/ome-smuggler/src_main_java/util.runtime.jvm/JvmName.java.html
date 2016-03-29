@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>JvmName.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.runtime.jvm</a> &gt; <span class="el_source">JvmName.java</span></div><h1>JvmName.java</h1><pre class="source lang-java linenums"><span class="nc" id="L1">package util.runtime.jvm;</span>
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+/**
+ * The JVM command name on various platforms.
+ */
+<span class="fc" id="L10">public enum JvmName {</span>
+
+<span class="fc" id="L12">    /**</span>
+     * JVM command name on most Unix or Unix-like systems, e.g. Free BSD, AIX,
+     * Linux, Mac OS X, etc.
+     */
+<span class="fc" id="L16">    Java(&quot;java&quot;),</span>
+    
+<span class="fc" id="L18">    /**</span>
+     * JVM command name on Windows.
+     */
+<span class="fc" id="L21">    JavaExe(&quot;java.exe&quot;);</span>
+    
+    /**
+     * Queries the runtime to find out what OS platform we're running on in
+     * order to determine what is the expected name of the JVM command.
+     * @return the expected JVM command name for this platform.
+     */
+    public static JvmName find() {
+<span class="fc" id="L29">        return Optional.ofNullable(System.getProperty(&quot;os.name&quot;))</span>
+<span class="fc" id="L30">                       .filter(n -&gt; n.startsWith(&quot;Windows&quot;))</span>
+<span class="fc" id="L31">                       .map(n -&gt; JavaExe)</span>
+<span class="fc" id="L32">                       .orElse(Java);</span>
+    }
+    
+    private String commandName;
+    
+<span class="fc" id="L37">    private JvmName(String commandName) {</span>
+<span class="fc" id="L38">        this.commandName = commandName;</span>
+<span class="fc" id="L39">    }</span>
+    
+    /**
+     * @return the JVM command name as a (relative) {@link Path}, e.g. &quot;java&quot;, 
+     * &quot;java.exe&quot;. 
+     */
+    public Path toPath() {
+<span class="fc" id="L46">        return Paths.get(commandName);</span>
+    }
+    
+    /**
+     * @return the JVM command name as a string, e.g. &quot;java&quot;, &quot;java.exe&quot;.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L54">        return commandName;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

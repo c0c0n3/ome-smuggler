@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>SingleItemConfigProvider.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.config</a> &gt; <span class="el_source">SingleItemConfigProvider.java</span></div><h1>SingleItemConfigProvider.java</h1><pre class="source lang-java linenums">package util.config;
+
+import static java.util.Objects.requireNonNull;
+import static util.sequence.Streams.asStream;
+
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+
+/**
+ * Looks up a configuration item using a supplier.
+ */
+public class SingleItemConfigProvider&lt;T&gt; 
+    implements ConfigProvider&lt;T&gt;, Supplier&lt;Optional&lt;T&gt;&gt; {
+
+    private final Supplier&lt;T&gt; lookup;
+    
+    /**
+     * Creates a new instance to read a configuration item given a supplier.
+     * @param lookup supplies the configuration item, can return {@code null}
+     * if the item is not found.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+<span class="fc" id="L25">    public SingleItemConfigProvider(Supplier&lt;T&gt; lookup) {</span>
+<span class="fc" id="L26">        requireNonNull(lookup, &quot;lookup&quot;);</span>
+<span class="fc" id="L27">        this.lookup = lookup;</span>
+<span class="fc" id="L28">    }</span>
+    
+    /**
+     * Uses the underlying supplier to look up the configuration item.
+     * If the supplier returns {@code null} (e.g. item not found), then the 
+     * returned stream will be empty; otherwise it will contain whichever
+     * object the supplier returned.
+     */
+    @Override
+    public Stream&lt;T&gt; readConfig() throws Exception {
+<span class="fc" id="L38">        return asStream(get());</span>
+    }
+
+    /**
+     * Uses the underlying supplier to look up the configuration item.
+     * If the supplier returns {@code null} (e.g. item not found), then the 
+     * returned optional will be empty; otherwise it will contain whichever
+     * object the supplier returned.
+     */
+    @Override
+    public Optional&lt;T&gt; get() {
+<span class="fc" id="L49">        return Optional.ofNullable(lookup.get());</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

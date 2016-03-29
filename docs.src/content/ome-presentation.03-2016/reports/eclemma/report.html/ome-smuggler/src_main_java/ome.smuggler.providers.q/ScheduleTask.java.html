@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ScheduleTask.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.providers.q</a> &gt; <span class="el_source">ScheduleTask.java</span></div><h1>ScheduleTask.java</h1><pre class="source lang-java linenums">package ome.smuggler.providers.q;
+
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.msg.ChannelMessage.message;
+import static ome.smuggler.core.types.FutureTimepoint.now;
+import static ome.smuggler.providers.q.Messages.durableMessage;
+import static ome.smuggler.providers.q.Messages.setScheduledDeliveryTime;
+
+import org.hornetq.api.core.HornetQException;
+
+import ome.smuggler.core.msg.ChannelMessage;
+import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.types.FutureTimepoint;
+
+/**
+ * Enqueues a message that will only be delivered to consumers at a specified
+ * time in the future.
+ */
+public class ScheduleTask&lt;T&gt; implements SchedulingSource&lt;T&gt; {
+
+    private final EnqueueTask&lt;T&gt; channel;
+    
+    /**
+     * Creates a new instance.
+     * @param queue provides access to the queue on which to put messages. 
+     * @throws HornetQException if a queue producer could not be created.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+<span class="fc" id="L29">    public ScheduleTask(QueueConnector queue) throws HornetQException {</span>
+<span class="fc" id="L30">        this.channel = new EnqueueTask&lt;&gt;(queue);</span>
+<span class="fc" id="L31">    }</span>
+    
+    /**
+     * Sends the message so that the channel will only deliver it to consumers
+     * at the specified time in the future.
+     * @param msg amount of time from now to specify when in the
+     * future the message should be delivered.
+     */
+    @Override
+    public void send(ChannelMessage&lt;FutureTimepoint, T&gt; msg) throws Exception {
+<span class="fc" id="L41">        requireNonNull(msg, &quot;msg&quot;);</span>
+        
+<span class="fc" id="L43">        FutureTimepoint when = msg.metadata().orElse(now());</span>
+<span class="fc" id="L44">        channel.send(</span>
+<span class="fc" id="L45">                message(durableMessage().andThen(</span>
+<span class="fc" id="L46">                            setScheduledDeliveryTime(when)), </span>
+<span class="fc" id="L47">                        msg.data()));</span>
+<span class="fc" id="L48">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

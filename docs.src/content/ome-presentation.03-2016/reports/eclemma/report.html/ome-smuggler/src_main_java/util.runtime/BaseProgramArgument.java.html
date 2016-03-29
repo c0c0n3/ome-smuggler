@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>BaseProgramArgument.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.runtime</a> &gt; <span class="el_source">BaseProgramArgument.java</span></div><h1>BaseProgramArgument.java</h1><pre class="source lang-java linenums">package util.runtime;
+
+import static java.util.Objects.requireNonNull;
+import static util.object.Either.right;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import util.object.Either;
+
+/**
+ * Base class to enforce the set/build protocol required by the {@link 
+ * ProgramArgument} interface.
+ */
+public class BaseProgramArgument&lt;T&gt; implements ProgramArgument&lt;T&gt; {
+
+    private Optional&lt;T&gt; maybeArg;
+    
+    /**
+     * Creates a new instance.
+     */
+<span class="fc" id="L22">    public BaseProgramArgument() {</span>
+<span class="fc" id="L23">        maybeArg = Optional.empty();</span>
+<span class="fc" id="L24">    }</span>
+    
+    /**
+     * Creates a new instance to hold the specified argument.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public BaseProgramArgument(T arg) {
+<span class="fc" id="L31">        this();</span>
+<span class="fc" id="L32">        set(arg);</span>
+<span class="fc" id="L33">    }</span>
+
+    @Override
+    public ProgramArgument&lt;T&gt; set(T arg) {
+<span class="fc" id="L37">        requireNonNull(arg);</span>
+<span class="fc" id="L38">        maybeArg = validate(arg).either(this::throwIfNotValid, Optional::of);</span>
+<span class="fc" id="L39">        return this;</span>
+    }
+    
+    private Optional&lt;T&gt; throwIfNotValid(String errorMessage) {
+<span class="fc" id="L43">        throw new IllegalArgumentException(errorMessage);</span>
+    }
+    
+    /**
+     * Override this method to do additional validation of the argument to set.
+     * @param argToSet the value to validate.
+     * @return either an error message if validation fails or the argument 
+     * itself if validation succeeds.
+     */
+    protected Either&lt;String, T&gt; validate(T argToSet) {
+<span class="fc" id="L53">        return right(argToSet);</span>
+    }
+
+    @Override
+    public Stream&lt;String&gt; tokens() {
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (!maybeArg.isPresent()) {</span>
+<span class="fc" id="L59">            throw new IllegalStateException(&quot;argument not set yet&quot;);</span>
+        }
+<span class="fc" id="L61">        return tokenize(maybeArg.get());</span>
+    }
+    
+    /**
+     * Override this method to convert the argument into token components if
+     * the default of calling the argument's {@code toString} method is not
+     * suitable.
+     * @param arg the argument to convert to tokens.
+     * @return the tokenized representation of the argument as required by the
+     * {@link #tokens() tokens} method.
+     */
+    protected Stream&lt;String&gt; tokenize(T arg) {
+<span class="fc" id="L73">        return Stream.of(arg.toString());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

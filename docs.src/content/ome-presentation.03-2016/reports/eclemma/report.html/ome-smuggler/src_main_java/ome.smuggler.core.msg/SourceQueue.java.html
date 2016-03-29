@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>SourceQueue.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.msg</a> &gt; <span class="el_source">SourceQueue.java</span></div><h1>SourceQueue.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.msg;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+
+/**
+ * A channel source that queues messages in memory and allows to retrieve the
+ * head of the queue to consume messages or do a bulk retrieval of all queued
+ * messages.
+ */
+public class SourceQueue&lt;M, D&gt; implements MessageSource&lt;M, D&gt; {
+
+    private final ConcurrentLinkedQueue&lt;ChannelMessage&lt;M, D&gt;&gt; sendBuffer;
+    
+    /**
+     * Creates a new instance.
+     */
+<span class="fc" id="L24">    public SourceQueue() {</span>
+<span class="fc" id="L25">        sendBuffer = new ConcurrentLinkedQueue&lt;&gt;();</span>
+<span class="fc" id="L26">    }</span>
+    
+    @Override
+    public void send(ChannelMessage&lt;M, D&gt; msg) throws Exception {
+<span class="fc" id="L30">        requireNonNull(msg, &quot;msg&quot;);</span>
+<span class="fc" id="L31">        sendBuffer.offer(msg);</span>
+<span class="fc" id="L32">    }</span>
+    
+    /**
+     * @return the oldest message item (metadata + data) on the queue or empty 
+     * if the queue has no items.
+     */
+    public Optional&lt;ChannelMessage&lt;M, D&gt;&gt; head() {
+<span class="fc" id="L39">        return Optional.ofNullable(sendBuffer.poll());</span>
+    }
+    
+    /**
+     * Same as {@link #head()} but discards message metadata.
+     * @return the data of the oldest message item on the queue or empty if the
+     * queue has no items.
+     */
+    public Optional&lt;D&gt; headData() {
+<span class="fc" id="L48">        return head().map(ChannelMessage::data);</span>
+    }
+    
+    /**
+     * Removes all the items currently in the queue, returning them in FIFO
+     * order.
+     * @return the items in the queue or empty if the queue has no items.
+     */
+    public List&lt;ChannelMessage&lt;M, D&gt;&gt; dequeue() {
+<span class="fc" id="L57">        ArrayList&lt;ChannelMessage&lt;M, D&gt;&gt; queued = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        while (!sendBuffer.isEmpty()) {</span>
+<span class="fc" id="L59">            ChannelMessage&lt;M, D&gt; head = sendBuffer.poll();</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">            if (head != null) {   // (*)</span>
+<span class="fc" id="L61">                queued.add(head);</span>
+            } 
+        }
+<span class="fc" id="L64">        return queued;</span>
+    }
+    /* NOTE. Race conditions.
+     * Another thread may call head() and remove the last element, then we'd 
+     * poll() and get null, which we don't want to add to queued.
+     */
+    
+    /**
+     * Same as {@link #dequeue()} but discards message metadata.
+     * @return the data in each queued message or empty if the queue has no 
+     * items.
+     */
+    public List&lt;D&gt; dequeueData() {
+<span class="fc" id="L77">        return dequeue().stream().map(ChannelMessage::data).collect(toList());</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

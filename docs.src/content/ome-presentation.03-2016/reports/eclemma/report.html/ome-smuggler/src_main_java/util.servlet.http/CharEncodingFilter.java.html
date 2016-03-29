@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>CharEncodingFilter.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.servlet.http</a> &gt; <span class="el_source">CharEncodingFilter.java</span></div><h1>CharEncodingFilter.java</h1><pre class="source lang-java linenums">package util.servlet.http;
+
+import static java.util.Objects.requireNonNull;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import util.object.Pair;
+import util.servlet.ServletCharEncoding;
+
+/**
+ * Base class for filters that set request/response character encoding.
+ * @see RequestCharEncodingFilter
+ * @see ResponseCharEncodingFilter
+ */
+public abstract class CharEncodingFilter implements Filter {
+    
+    /* NB this is how the various possible cases are handled.
+     * 
+     *   E = char Encoding is set; !E = not set;
+     *   T = content type is Text (i.e. any text/*) but no charset specified;
+     *   O = content type Other than text/* (e.g. application/jason) or no 
+     *       content type at all.
+     *       
+     * Request !E O =&gt; set default encoding (1)
+     *          E O =&gt; do nothing
+     *         !E T =&gt; set default encoding
+     *          E T =&gt; do nothing
+     * 
+     * Response !E O =&gt; set default encoding (2)
+     *           E O =&gt; do nothing
+     *          !E T =&gt; set default encoding (3)
+     *           E T =&gt; do nothing
+     *                    
+     * (1) setting the encoding should have no effect on getInputStream but the
+     *     Reader returned by getReader should be created with the default 
+     *     encoding that was set; no harm can be done.
+     * (2) same argument as above but for getOutputStream and getWriter.
+     * (3) even if the response is written through getOutputStream, it will have
+     *     the default encoding set which fits in with our intents as the 
+     *     content type is text so we assume the application is going to write
+     *     in the default encoding, otherwise they shouldn't have used this
+     *     filter.
+     *     
+     * So we only have one condition to check: char encoding not set.
+     * To set the default encoding, we going to wait until the very last moment 
+     * after which it's no longer possible to set the encoding. (See JavaDoc of
+     * setContentType and setEncoding.)
+     */
+
+    /**
+     * Creates a new request filter to default character encoding to UTF-8. 
+     * @return a new filter to add UTF-8 default encoding.
+     */
+    public static RequestCharEncodingFilter Utf8Request() {
+<span class="fc" id="L64">        return new RequestCharEncodingFilter(ServletCharEncoding.Utf8());</span>
+    }
+    
+    /**
+     * Creates a new response filter to default character encoding to UTF-8. 
+     * @return a new filter to add UTF-8 default encoding.
+     */
+    public static ResponseCharEncodingFilter Utf8Response() {
+<span class="fc" id="L72">        return new ResponseCharEncodingFilter(ServletCharEncoding.Utf8());</span>
+    }
+    
+    protected final ServletCharEncoding defaultEncoder;
+    
+<span class="fc" id="L77">    protected CharEncodingFilter(ServletCharEncoding defaultEncoder) {</span>
+<span class="fc" id="L78">        requireNonNull(defaultEncoder, &quot;defaultEncoder&quot;);</span>
+<span class="fc" id="L79">        this.defaultEncoder = defaultEncoder;</span>
+<span class="fc" id="L80">    }</span>
+    
+    protected abstract Pair&lt;ServletRequest, ServletResponse&gt; wrap(
+            HttpServletRequest req, HttpServletResponse res);
+    
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (request instanceof HttpServletRequest</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            &amp;&amp; response instanceof HttpServletResponse) {</span>
+<span class="fc" id="L90">            Pair&lt;ServletRequest, ServletResponse&gt; wrapped = wrap(</span>
+<span class="fc" id="L91">                    (HttpServletRequest) request,</span>
+<span class="fc" id="L92">                    (HttpServletResponse) response);</span>
+            
+<span class="fc" id="L94">            request = wrapped.fst();</span>
+<span class="fc" id="L95">            response = wrapped.snd();</span>
+        }
+<span class="fc" id="L97">        chain.doFilter(request, response);</span>
+<span class="fc" id="L98">    }</span>
+    
+    @Override
+<span class="nc" id="L101">    public void init(FilterConfig filterConfig) throws ServletException { }</span>
+
+    @Override
+<span class="nc" id="L104">    public void destroy() { }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

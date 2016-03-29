@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportConfigReader.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.core.types</a> &gt; <span class="el_source">ImportConfigReader.java</span></div><h1>ImportConfigReader.java</h1><pre class="source lang-java linenums">package ome.smuggler.core.types;
+
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.convert.RawConfigValues.toDuration;
+import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
+import static ome.smuggler.core.convert.RawConfigValues.toPath;
+
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.List;
+
+import ome.smuggler.config.items.ImportConfig;
+
+/**
+ * Implements {@link ImportConfigSource} by extracting and validating values 
+ * from an underlying {@link ImportConfig}.
+ */
+public class ImportConfigReader implements ImportConfigSource {
+    
+<span class="fc" id="L20">    public static final Duration DefaultKeepAliveInterval = toDuration(5L);</span>
+    
+    private final Path importLogDir;
+    private final Duration logRetentionPeriod;
+    private final List&lt;Duration&gt; retryIntervals;
+    private final Path failedImportLogDir;
+    private final Duration keepAliveInterval;
+    
+    /**
+     * Creates a new instance.
+     * @param config the configuration as obtained by the configuration 
+     * provider.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+<span class="fc" id="L34">    public ImportConfigReader(ImportConfig config) {</span>
+<span class="fc" id="L35">        requireNonNull(config, &quot;config&quot;);</span>
+        
+<span class="fc" id="L37">        importLogDir = toPath(config.getImportLogDir());</span>
+<span class="fc" id="L38">        logRetentionPeriod = toDuration(config.getLogRetentionMinutes());</span>
+<span class="fc" id="L39">        retryIntervals = toDurationList(config.getRetryIntervals());</span>
+<span class="fc" id="L40">        failedImportLogDir = toPath(config.getFailedImportLogDir());</span>
+<span class="fc" id="L41">        keepAliveInterval = toDuration(config.getKeepAliveInterval(),</span>
+<span class="fc" id="L42">                                       DefaultKeepAliveInterval);</span>
+<span class="fc" id="L43">    }</span>
+    
+    @Override
+    public Path importLogDir() {
+<span class="nc" id="L47">        return importLogDir;</span>
+    }
+
+    @Override
+    public Duration logRetentionPeriod() {
+<span class="nc" id="L52">        return logRetentionPeriod;</span>
+    }
+
+    @Override
+    public List&lt;Duration&gt; retryIntervals() {
+<span class="fc" id="L57">        return retryIntervals;</span>
+    }
+
+    @Override
+    public Path failedImportLogDir() {
+<span class="nc" id="L62">        return failedImportLogDir;</span>
+    }
+
+    @Override
+    public Duration keepAliveInterval() {
+<span class="fc" id="L67">        return keepAliveInterval;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

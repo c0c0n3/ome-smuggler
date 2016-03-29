@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ImportYmlFile.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">ome.smuggler.config.data</a> &gt; <span class="el_source">ImportYmlFile.java</span></div><h1>ImportYmlFile.java</h1><pre class="source lang-java linenums">package ome.smuggler.config.data;
+
+import java.time.Duration;
+import java.util.stream.Stream;
+
+import ome.smuggler.config.items.ImportConfig;
+import util.config.ConfigProvider;
+
+
+/**
+ * Default configuration for the import, i.e. the content of the YAML file
+ * if provided.
+ */
+<span class="fc" id="L14">public class ImportYmlFile implements ConfigProvider&lt;ImportConfig&gt; {</span>
+
+<span class="fc" id="L16">    public static String RelImportLogDirPath = &quot;import/log&quot;;</span>
+<span class="fc" id="L17">    public static String RelFailedImportLogDirPath = &quot;import/failed-log&quot;;</span>
+    
+    @Override
+    public Stream&lt;ImportConfig&gt; readConfig() {
+<span class="fc" id="L21">        ImportConfig cfg = new ImportConfig();</span>
+<span class="fc" id="L22">        cfg.setImportLogDir(RelImportLogDirPath);</span>
+<span class="fc" id="L23">        cfg.setFailedImportLogDir(RelFailedImportLogDirPath);</span>
+<span class="fc" id="L24">        cfg.setLogRetentionMinutes(Duration.ofDays(15).toMinutes());</span>
+<span class="fc" id="L25">        cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L, 1440L, 1440L });</span>
+        
+<span class="fc" id="L27">        return Stream.of(cfg);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>

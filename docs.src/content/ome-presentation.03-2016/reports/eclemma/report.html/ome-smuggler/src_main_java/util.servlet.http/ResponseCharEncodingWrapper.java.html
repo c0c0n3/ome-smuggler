@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>ResponseCharEncodingWrapper.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</a> &gt; <a href="../../index.html" class="el_group">ome-smuggler</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">util.servlet.http</a> &gt; <span class="el_source">ResponseCharEncodingWrapper.java</span></div><h1>ResponseCharEncodingWrapper.java</h1><pre class="source lang-java linenums">package util.servlet.http;
+
+import static java.util.Objects.requireNonNull;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.function.Consumer;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+/**
+ * Wraps an {@link HttpServletResponse} to call a response consumer just before 
+ * the moment past which the response character encoding cannot be set anymore.
+ */
+public class ResponseCharEncodingWrapper extends HttpServletResponseWrapper {
+    
+    private final HttpServletResponse target;
+    private final Consumer&lt;HttpServletResponse&gt; hook;
+    
+    /**
+     * Creates a new instance.
+     * @param target the request.
+     * @param hook the consumer to call. 
+     * @throws IllegalArgumentException if the response is {@code null}.
+     * @throws NullPointerException if the hook is {@code null}.
+     */
+    public ResponseCharEncodingWrapper(
+            HttpServletResponse target, Consumer&lt;HttpServletResponse&gt; hook) {
+<span class="fc" id="L31">        super(target);</span>
+<span class="fc" id="L32">        requireNonNull(hook, &quot;hook&quot;);</span>
+        
+<span class="fc" id="L34">        this.target = target;</span>
+<span class="fc" id="L35">        this.hook = hook;</span>
+<span class="fc" id="L36">    }</span>
+
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+<span class="fc" id="L40">        hook.accept(target);</span>
+<span class="fc" id="L41">        return super.getOutputStream();</span>
+    }
+    
+    @Override
+    public PrintWriter getWriter() throws IOException {
+<span class="fc" id="L46">        hook.accept(target);</span>
+<span class="fc" id="L47">        return super.getWriter();</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.2.201409121644</span>Smuggler All Tests (Mar 29, 2016 9:20:39 AM)</div></body></html>
