@@ -23,6 +23,15 @@ developer docs over here:
 
 * [http://c0c0n3.github.io/ome-smuggler/docs/content/](http://c0c0n3.github.io/ome-smuggler/docs/content/)
 
+And by the way, if you're looking for the docs sources, we keep the whole lot
+in the `gh-pages` branch:
+
+* [https://github.com/c0c0n3/ome-smuggler/tree/gh-pages](https://github.com/c0c0n3/ome-smuggler/tree/gh-pages)
+
+The docs site is generated from the sources in the same branch so that GitHub
+can kindly publish it as a GitHub project site. To find out how, start from
+the README in the `gh-pages` branch...
+
 
 Build & Run...for the loo
 -------------------------
