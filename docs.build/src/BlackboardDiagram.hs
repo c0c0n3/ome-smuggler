@@ -18,6 +18,14 @@ import           Text.XML
 -- make it fit the window. The background colour above is that of the BG layer
 -- of the diagrams so that the browser doesn't display the diagram on a white
 -- background.
+--
+-- NOTE.
+-- As of 02 April 2016, I'm using an improved Inkscape blackboard template in
+-- which the background colour is set using a style attribute on the svg root
+-- element, so the setting of the background done by this module is redundant
+-- for the new blackboard files.
+-- But we need to keep it for backward compatibility as all the SVG diagrams
+-- already in 'build.src' don't have the style attribute set on the svg root.
 -- 
 makeFitBrowserWindow :: String -> String
 makeFitBrowserWindow = T.unpack . transformRoot makeFit . T.pack
