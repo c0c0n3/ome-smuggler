@@ -74,4 +74,39 @@ public class ImportKeepAliveScheduler {
      * and the import runner puts the stop on the queue; another consumer c2
      * picks it up before c1 is resumed...
      */
+    /* TODO keep-alive party pooper.
+     * The code and explanation above assume that:
+     * 
+     *  - the first keep-alive message ever delivered for an import task
+     *    has count = 1.
+     *  
+     * Unfortunately, that may not always be the case. In fact, here are two
+     * nasty scenarios where the assumption doesn't hold true.
+     * The Initial keep-alive message m1 with count 1 is put on the queue by the
+     * ImportTrigger but it sits on the queue until after the ImportRunner
+     * completes the import and puts the "stop" message m2 with count 2 on the
+     * queue. Now HornetQ delivers m2 before m1 because:
+     * 
+     * 1. In general, there are no message ordering guarantees; or
+     * 2. HornetQ crashed and on reboot the messages are picked up from the 
+     * client buffer and delivered out of order.
+     * 
+     * More details here:
+     * - http://stackoverflow.com/questions/4085270/force-order-of-messages-with-hornetq
+     * 
+     * In both cases, the keep-alive would go on forever because the scheduler
+     * would keep on repeating the schedule.
+     * Though both scenarios are unlikely, they're possible.
+     * 
+     * Suggested solutions:
+     * --------------------
+     * 1. Ditch the keep-alive functionality. Rather use long-lived sessions.
+     * 2. Change keep-alive implementation:
+     *  (A) Keep on scheduling OMERO pings for a configured period of time (e.g.
+     *      a week) then stop. 
+     *  (B) Or close the session on import completion and keep on scheduling 
+     *      pings as long as the keep-alive command does not return an exit code
+     *      that indicates the session is closed.
+     *  (C) Or a combination of (A) and (B).   
+     */
 }
