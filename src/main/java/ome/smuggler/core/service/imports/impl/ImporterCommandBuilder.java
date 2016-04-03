@@ -3,17 +3,9 @@ package ome.smuggler.core.service.imports.impl;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static util.error.Exceptions.unchecked;
-import static util.runtime.jvm.ClassPathFactory.fromLibDir;
-import static util.runtime.jvm.JvmCmdFactory.java;
-import static util.sequence.Arrayz.asList;
 
 import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.types.ImportInput;
@@ -21,27 +13,16 @@ import util.runtime.BaseProgramArgument;
 import util.runtime.CommandBuilder;
 import util.runtime.ListProgramArgument;
 import util.runtime.ProgramArgument;
-import util.runtime.jvm.ClassPath;
-import util.runtime.jvm.ClassPathJvmArg;
+import util.runtime.jvm.JvmCmdBuilder;
 
 /**
  * Build the command line to call the OMERO importer.
  */
-public class ImporterCommandBuilder implements CommandBuilder {
+public class ImporterCommandBuilder extends OmeCliCommandBuilder {
 
     public static final String SessionKeySwitch = "-k";
     public static final String MaskedSessionKey = "***";
     
-    private static ListProgramArgument<String> arg(String...tokens) {
-        return new ListProgramArgument<String>(asList(tokens));
-    }
-    
-    private static <T> ListProgramArgument<String> optionalArg(
-            String argName, Optional<T> argValue) {
-        return argValue.map(Object::toString)
-                       .map(n -> arg(argName, n))
-                       .orElse(arg());
-    }
     
     private final ImportInput importArgs;
     private final OmeCliConfig config;
@@ -54,21 +35,16 @@ public class ImporterCommandBuilder implements CommandBuilder {
      */
     public ImporterCommandBuilder(OmeCliConfig config,
                                   ImportInput importArgs) {
-        requireNonNull(config, "config");
+        super(config);
         requireNonNull(importArgs, "importArgs");
         
         this.config = config;
         this.importArgs = importArgs;
     }
     
-    private ProgramArgument<String> mainClass() {  
-        return new BaseProgramArgument<>(config.getImporterMainClassFqn());  
-    }
-    
-    private ClassPathJvmArg classPath() {  
-        Path libDir = Paths.get(config.getOmeLibDirPath());
-        ClassPath cp = unchecked(() -> fromLibDir(libDir)).get();
-        return new ClassPathJvmArg(cp);
+    @Override
+    protected String getMainClassFqn() {
+        return config.getImporterMainClassFqn();
     }
     
     private ListProgramArgument<String> server() {
@@ -112,8 +88,8 @@ public class ImporterCommandBuilder implements CommandBuilder {
         return new BaseProgramArgument<>(importArgs.getTarget().toString());
     }
     
-    private CommandBuilder assembleCommand() {
-        return java(classPath(), mainClass())
+    protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
+        return java
                .addApplicationArgument(server())
                .addApplicationArgument(name())
                .addApplicationArgument(description())
@@ -122,11 +98,6 @@ public class ImporterCommandBuilder implements CommandBuilder {
                .addApplicationArgument(textAnnotations())
                .addApplicationArgument(annotationIds())
                .addApplicationArgument(importTarget());
-    }
-    
-    @Override
-    public Stream<String> tokens() {
-        return assembleCommand().tokens();
     }
     
     @Override
