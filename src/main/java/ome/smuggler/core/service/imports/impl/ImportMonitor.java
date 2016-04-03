@@ -9,6 +9,7 @@ import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportKeepAlive;
 import ome.smuggler.core.types.ImportLogPath;
+import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.core.types.Schedule;
 
 /**
@@ -32,8 +33,10 @@ public class ImportMonitor implements ImportTracker {
                                             env.config().keepAliveInterval());
     }
     
-    private void pingOmero(String sessionKey) {
-        // TODO implement
+    private void pingOmero(QueuedImport task) {
+        KeepAliveCommandBuilder keepAlive = new KeepAliveCommandBuilder(
+                env.cliConfig(), task.getRequest());
+        
     }
     
     @Override
@@ -47,7 +50,7 @@ public class ImportMonitor implements ImportTracker {
         Optional<Schedule<ImportKeepAlive>> next = 
                 scheduler.nextSchedule(current, data);
         if (next.isPresent()) {
-            pingOmero(data.importRequest().getRequest().getSessionKey());
+            pingOmero(data.importRequest());
         }
         return next;
     }
