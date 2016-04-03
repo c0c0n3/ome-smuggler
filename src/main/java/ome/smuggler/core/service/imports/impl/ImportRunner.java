@@ -1,10 +1,8 @@
 package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.msg.ChannelMessage.message;
 import static ome.smuggler.core.msg.RepeatAction.Repeat;
 import static ome.smuggler.core.msg.RepeatAction.Stop;
-import static ome.smuggler.core.types.ImportKeepAlive.stopKeepAliveMessage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,8 +10,6 @@ import java.nio.file.Path;
 import ome.smuggler.core.io.CommandRunner;
 import ome.smuggler.core.msg.RepeatAction;
 import ome.smuggler.core.service.imports.ImportProcessor;
-import ome.smuggler.core.types.FutureTimepoint;
-import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 
 
