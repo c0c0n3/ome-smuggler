@@ -25,11 +25,10 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     
     
     private final ImportInput importArgs;
-    private final OmeCliConfig config;
     
     /**
      * Creates a new instance to build a command line from the given data.
-     * @param config configuration applicable to all import runs.
+     * @param config configuration for the OMERO CLI commands.
      * @param importArgs details what to import.
      * @throws NullPointerException if any argument is {@code null}.
      */
@@ -38,13 +37,7 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
         super(config);
         requireNonNull(importArgs, "importArgs");
         
-        this.config = config;
         this.importArgs = importArgs;
-    }
-    
-    @Override
-    protected String getMainClassFqn() {
-        return config.getImporterMainClassFqn();
     }
     
     private ListProgramArgument<String> server() {
@@ -88,6 +81,12 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
         return new BaseProgramArgument<>(importArgs.getTarget().toString());
     }
     
+    @Override
+    protected String getMainClassFqn() {
+        return config.getImporterMainClassFqn();
+    }
+    
+    @Override
     protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
         return java
                .addApplicationArgument(server())
