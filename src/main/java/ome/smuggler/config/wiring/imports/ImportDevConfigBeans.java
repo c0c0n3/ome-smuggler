@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.DevImportConfigSource;
-import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportKeepAliveQConfig;
 import ome.smuggler.config.items.ImportQConfig;
@@ -39,7 +39,7 @@ public class ImportDevConfigBeans {
     }
     
     @Bean
-    public CliImporterConfig cliImporterConfig(ConfigProvider<CliImporterConfig> src) {
+    public OmeCliConfig omeCliConfig(ConfigProvider<OmeCliConfig> src) {
         return src.first();
     }
     

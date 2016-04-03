@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.types.ImportInput;
 import util.runtime.BaseProgramArgument;
 import util.runtime.CommandBuilder;
@@ -44,7 +44,7 @@ public class ImporterCommandBuilder implements CommandBuilder {
     }
     
     private final ImportInput importArgs;
-    private final CliImporterConfig config;
+    private final OmeCliConfig config;
     
     /**
      * Creates a new instance to build a command line from the given data.
@@ -52,7 +52,7 @@ public class ImporterCommandBuilder implements CommandBuilder {
      * @param importArgs details what to import.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public ImporterCommandBuilder(CliImporterConfig config,
+    public ImporterCommandBuilder(OmeCliConfig config,
                                   ImportInput importArgs) {
         requireNonNull(config, "config");
         requireNonNull(importArgs, "importArgs");
@@ -62,7 +62,7 @@ public class ImporterCommandBuilder implements CommandBuilder {
     }
     
     private ProgramArgument<String> mainClass() {  
-        return new BaseProgramArgument<>(config.getMainClassFqn());  
+        return new BaseProgramArgument<>(config.getImporterMainClassFqn());  
     }
     
     private ClassPathJvmArg classPath() {  

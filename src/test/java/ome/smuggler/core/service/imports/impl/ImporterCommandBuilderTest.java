@@ -6,8 +6,8 @@ import static ome.smuggler.core.types.ImportInputTest.*;
 
 import java.util.Arrays;
 
-import ome.smuggler.config.data.DefaultCliImporterConfig;
-import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.data.DefaultOmeCliConfig;
+import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.service.imports.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 
@@ -15,8 +15,8 @@ import org.junit.Test;
 
 public class ImporterCommandBuilderTest {
 
-    private static CliImporterConfig config() {
-        CliImporterConfig cfg = new DefaultCliImporterConfig()
+    private static OmeCliConfig config() {
+        OmeCliConfig cfg = new DefaultOmeCliConfig()
                                .defaultReadConfig()
                                .findFirst()
                                .get();

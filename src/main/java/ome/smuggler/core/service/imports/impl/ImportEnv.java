@@ -5,7 +5,7 @@ import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
 import java.util.Optional;
 
-import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
@@ -26,7 +26,7 @@ import ome.smuggler.core.types.QueuedImport;
 public class ImportEnv {
     
     private final ImportConfigSource config;
-    private final CliImporterConfig cliConfig;
+    private final OmeCliConfig cliConfig;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
     private final ChannelSource<ImportKeepAlive> keepAliveQueue;
@@ -35,7 +35,7 @@ public class ImportEnv {
     private final Optional<Email> sysAdminEmail; 
     private final ImportLogger log;
     
-    public ImportEnv(ImportConfigSource config, CliImporterConfig cliConfig,
+    public ImportEnv(ImportConfigSource config, OmeCliConfig cliConfig,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
             ChannelSource<ImportKeepAlive> keepAliveQueue,
@@ -68,7 +68,7 @@ public class ImportEnv {
         return config;
     }
     
-    public CliImporterConfig cliConfig() {
+    public OmeCliConfig cliConfig() {
         return cliConfig;
     }
     

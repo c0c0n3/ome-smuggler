@@ -1,22 +1,22 @@
 package ome.smuggler.config.items;
 
 /**
- * Holds the data needed to configure a run of the OMERO CLI importer.
+ * Holds the data needed to call the various OMERO CLI commands.
  */
-public class CliImporterConfig {
+public class OmeCliConfig {
     /* NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
      * be (de-)serialized painlessly by SnakeYaml.  
      */ 
 
-    private String mainClassFqn;
+    private String importerMainClassFqn;
     private String omeLibDirPath;
     
-    public String getMainClassFqn() {
-        return mainClassFqn;
+    public String getImporterMainClassFqn() {
+        return importerMainClassFqn;
     }
     
-    public void setMainClassFqn(String mainClassFqn) {
-        this.mainClassFqn = mainClassFqn;
+    public void setImporterMainClassFqn(String mainClassFqn) {
+        this.importerMainClassFqn = mainClassFqn;
     }
     
     public String getOmeLibDirPath() {

@@ -3,7 +3,7 @@ package ome.smuggler.config.wiring.imports;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ome.smuggler.config.items.CliImporterConfig;
+import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
@@ -44,7 +44,7 @@ public class ImportServiceBeans {
     @Bean
     public ImportEnv importEnv(
             ImportConfigSource config, 
-            CliImporterConfig cliConfig, 
+            OmeCliConfig cliConfig, 
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel,
