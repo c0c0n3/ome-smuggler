@@ -8,8 +8,17 @@ public class OmeCliConfig {
      * be (de-)serialized painlessly by SnakeYaml.  
      */ 
 
-    private String importerMainClassFqn;
     private String omeLibDirPath;
+    private String importerMainClassFqn;
+    private String keepAliveMainClassFqn;
+    
+    public String getOmeLibDirPath() {
+        return omeLibDirPath;
+    }
+    
+    public void setOmeLibDirPath(String omeLibDirPath) {
+        this.omeLibDirPath = omeLibDirPath;
+    }
     
     public String getImporterMainClassFqn() {
         return importerMainClassFqn;
@@ -18,13 +27,13 @@ public class OmeCliConfig {
     public void setImporterMainClassFqn(String mainClassFqn) {
         this.importerMainClassFqn = mainClassFqn;
     }
-    
-    public String getOmeLibDirPath() {
-        return omeLibDirPath;
+
+    public String getKeepAliveMainClassFqn() {
+        return keepAliveMainClassFqn;
     }
-    
-    public void setOmeLibDirPath(String omeLibDirPath) {
-        this.omeLibDirPath = omeLibDirPath;
+
+    public void setKeepAliveMainClassFqn(String keepAliveMainClassFqn) {
+        this.keepAliveMainClassFqn = keepAliveMainClassFqn;
     }
     
 }
