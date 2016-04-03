@@ -80,6 +80,10 @@ public class ImportEnv {
         return gcQueue;
     }
     
+    public ImportGc garbageCollector() {
+        return new ImportGc(this);
+    }
+    
     public ChannelSource<ImportKeepAlive> keepAliveQueue() {
         return keepAliveQueue;
     }

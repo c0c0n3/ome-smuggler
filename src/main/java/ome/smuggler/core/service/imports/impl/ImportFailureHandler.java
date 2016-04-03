@@ -29,9 +29,13 @@ public class ImportFailureHandler implements FailedImportHandler {
     public void accept(QueuedImport task) {
         requireNonNull(task, "task");
         
-        env.log().importPermanentFailure(task);
-        new ImportOutcomeNotifier(env, task).tellFailure();
-        storeAsFailedImport(task);
+        try {
+            env.log().importPermanentFailure(task);
+            env.garbageCollector().run(task);
+            storeAsFailedImport(task);
+        } finally {
+            new ImportOutcomeNotifier(env, task).tellFailure();
+        }
     }
 
 }

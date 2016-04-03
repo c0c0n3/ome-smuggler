@@ -33,27 +33,16 @@ public class ImportRunner implements ImportProcessor {
         return runner.exec(importTarget);
     }
     
-    private void scheduleDeletion(QueuedImport task) {
-        ImportLogFile logFile = env.importLogPathFor(task.getTaskId()).file();
-        FutureTimepoint when = env.importLogRetentionFromNow();
-        env.gcQueue().uncheckedSend(message(when, logFile));
-    }
-    
-    private void stopSessionKeepAlive(QueuedImport task) {
-        env.keepAliveQueue().uncheckedSend(stopKeepAliveMessage(task));    
-    }
-    
     @Override
     public RepeatAction consume(QueuedImport task) {
         env.log().importStart(task);
-        
-        stopSessionKeepAlive(task);
         
         ImporterCommandBuilder cliOmeroImporter = 
                 new ImporterCommandBuilder(env.cliConfig(), task.getRequest());
         ImportOutput output = new ImportOutput(
                 env.importLogPathFor(task.getTaskId()), task);
         
+        RepeatAction action = Repeat;
         try {
             output.writeHeader(cliOmeroImporter);
             int status = run(cliOmeroImporter, task); 
@@ -65,17 +54,17 @@ public class ImportRunner implements ImportProcessor {
                 new ImportOutcomeNotifier(env, task).tellSuccess();
                 
                 env.log().importSuccessful(task);
-                return Stop;
-            } else {
-                return Repeat;
-            }
+                action = Stop;
+            } 
         } catch (IOException | InterruptedException e) {
             output.writeFooter(e);
             env.log().transientError(this, e);
-            return Repeat;
         } finally {
-            scheduleDeletion(task);
+            if (Stop.equals(action)) {
+                env.garbageCollector().run(task);
+            }
         }
+        return action;
     }
 
 }
