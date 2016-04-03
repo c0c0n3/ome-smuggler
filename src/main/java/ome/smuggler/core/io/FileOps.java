@@ -6,7 +6,6 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 import static util.error.Exceptions.unchecked;
 
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
@@ -160,7 +159,7 @@ public class FileOps {
             
             writer.accept(buf);
             
-            close(buf);
+            StreamOps.close(buf);
         } catch (IOException e) {
             throwAsIfUnchecked(e);
         }
@@ -168,20 +167,5 @@ public class FileOps {
     /* (*) The JavaDoc of the method states that it will truncate and overwrite 
      * an existing file, or create the file if it doesn't initially exist.
      */
-    
-    /**
-     * Closes the given stream, silently swallowing any {@link IOException}.
-     * @param stream the stream to close.
-     * @throws NullPointerException if the argument is {@code null}.
-     */
-    public static void close(Closeable stream) {
-        requireNonNull(stream, "stream");
-        
-        try {
-            stream.close();
-        } catch (IOException e) {
-            // ignore
-        }
-    }
     
 }
