@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import util.object.Pair;

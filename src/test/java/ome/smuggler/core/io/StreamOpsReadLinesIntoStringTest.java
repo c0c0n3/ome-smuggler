@@ -1,8 +1,8 @@
 package ome.smuggler.core.io;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static java.util.stream.Collectors.joining;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static util.sequence.Arrayz.array;
 import static ome.smuggler.core.io.StreamOps.readLinesIntoString;
 

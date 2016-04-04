@@ -1,6 +1,5 @@
 package util.servlet.http;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
