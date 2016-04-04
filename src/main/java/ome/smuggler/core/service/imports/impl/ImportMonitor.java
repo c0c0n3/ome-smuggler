@@ -47,7 +47,7 @@ public class ImportMonitor implements ImportTracker {
             int exitCode = output.fst();
             String cmdOutput = output.snd();
 
-            if (exitCode != 0) {
+            if (exitCode == 0) {
                 env.log().keepAlive().successful(task, exitCode, cmdOutput,
                         keepAlive);
             } else {
