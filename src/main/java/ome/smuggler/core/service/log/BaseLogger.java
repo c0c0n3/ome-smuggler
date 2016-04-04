@@ -57,7 +57,7 @@ public class BaseLogger implements LogService {
 
     @Override
     public void debug(Object site, Consumer<PrintWriter> messageWriter) {
-        service.error(site, messageWriter);
+        service.debug(site, messageWriter);
     }
     
     @Override
