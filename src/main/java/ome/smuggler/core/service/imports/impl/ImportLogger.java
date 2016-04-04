@@ -30,9 +30,12 @@ public class ImportLogger extends BaseLogger {
             QueuedImport data) {
         return fieldsWriter(header, summary(data));
     }
-    
+
+    private final KeepAliveLogger keepAlive;
+
     public ImportLogger(LogService service) {
         super(service);
+        keepAlive = new KeepAliveLogger(service);
     }
 
     public void importQueued(QueuedImport data) {
@@ -56,5 +59,9 @@ public class ImportLogger extends BaseLogger {
     public void importPermanentFailure(QueuedImport data) {
         error(data, writer("OMERO import task failed permanently.", data));
     }
-    
+
+    public KeepAliveLogger keepAlive() {
+        return keepAlive;
+    }
+
 }

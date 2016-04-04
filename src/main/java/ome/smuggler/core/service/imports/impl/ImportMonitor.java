@@ -2,8 +2,11 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
 import java.util.Optional;
 
+import ome.smuggler.core.io.CommandRunner;
+import ome.smuggler.core.io.StreamOps;
 import ome.smuggler.core.msg.CountedSchedule;
 import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.types.ImportId;
@@ -11,6 +14,7 @@ import ome.smuggler.core.types.ImportKeepAlive;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.core.types.Schedule;
+import util.object.Pair;
 
 /**
  * Implementation of the {@link ImportTracker import tracking} service.
@@ -36,7 +40,23 @@ public class ImportMonitor implements ImportTracker {
     private void pingOmero(QueuedImport task) {
         KeepAliveCommandBuilder keepAlive = new KeepAliveCommandBuilder(
                 env.cliConfig(), task.getRequest());
-        
+        CommandRunner cmd = new CommandRunner(keepAlive);
+        try {
+            Pair<Integer, String> output =
+                    cmd.exec(StreamOps::readLinesIntoString);
+            int exitCode = output.fst();
+            String cmdOutput = output.snd();
+
+            if (exitCode != 0) {
+                env.log().keepAlive().successful(task, exitCode, cmdOutput,
+                        keepAlive);
+            } else {
+                env.log().keepAlive().failed(task, exitCode, cmdOutput,
+                        keepAlive);
+            }
+        } catch (Exception e) {
+            env.log().keepAlive().failed(task, e);
+        }
     }
     
     @Override
