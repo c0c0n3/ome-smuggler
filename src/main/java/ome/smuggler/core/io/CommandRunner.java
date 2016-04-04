@@ -4,10 +4,14 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
+import util.object.Pair;
 import util.runtime.CommandBuilder;
 
 /**
@@ -36,10 +40,10 @@ public class CommandRunner {
         this.command = command;
     }
     
-    private Process startProcess(Path outputFile) throws IOException {
+    private Process startProcess(Redirect outputDestination) throws IOException {
         ProcessBuilder builder = processBuilder(command);
         builder.redirectErrorStream(true);
-        builder.redirectOutput(Redirect.appendTo(outputFile.toFile()));
+        builder.redirectOutput(outputDestination);
         
         Process process = builder.start();
         process.getOutputStream().close();
@@ -58,10 +62,29 @@ public class CommandRunner {
      */
     public int exec(Path outputFile) throws IOException, InterruptedException {
         requireNonNull(outputFile, "outputFile");
-        
-        int status = startProcess(outputFile).waitFor();
-        
-        return status;
+
+        Redirect withOutputFile = Redirect.appendTo(outputFile.toFile());
+        return startProcess(withOutputFile).waitFor();
+    }
+
+    /**
+     * Runs the process redirecting both its error and output streams to an
+     * input stream that is given to a consumer to read.
+     * @param outputReader reads the process's output.
+     * @return the process's exit status and the output result as read by the
+     * output reader.
+     * @throws IOException if an I/O error occurs while running the process.
+     * @throws InterruptedException if the current thread is interrupted before
+     * the spawned process terminates.
+     */
+    public <T> Pair<Integer, T> exec(Function<InputStream, T> outputReader)
+            throws IOException, InterruptedException {
+        requireNonNull(outputReader, "outputReader");
+
+        Process p = startProcess(Redirect.PIPE);
+        T result = outputReader.apply(p.getInputStream());
+        int status = p.waitFor();
+        return new Pair<>(status, result);
     }
     
 }
