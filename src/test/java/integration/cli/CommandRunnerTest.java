@@ -32,7 +32,6 @@ public class CommandRunnerTest {
     }
 
     private static Pair<Integer, String[]> callLinesProducer() throws Exception {
-        String[] linesOutput = null;
         Function<InputStream, String[]> outputReader =
                 in -> StreamOps.readLines(in, xs -> xs.toArray(String[]::new));
         CommandRunner runner = new CommandRunner(command());

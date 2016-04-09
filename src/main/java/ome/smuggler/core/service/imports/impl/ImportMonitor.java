@@ -2,7 +2,6 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import ome.smuggler.core.io.CommandRunner;
