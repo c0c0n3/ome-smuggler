@@ -5,6 +5,7 @@ import static util.object.Either.left;
 import static util.object.Either.right;
 
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import util.object.Either;
@@ -90,6 +91,16 @@ public class ParserFactory {
      */
     public static ObjectParser<URI> uriParser() {
         return new SingleTokenParserAdapter<>(URI::new);
+    }
+    
+    /**
+     * Builds a parser that accepts a file path and turns it into a "file:" 
+     * {@link URI}'s. If the path is not absolute, it will be resolved against
+     * the current working directory, i.e. using the {@code user.dir} JVM prop.
+     * @return the parser.
+     */
+    public static ObjectParser<URI> filePathUriParser() {
+        return new SingleTokenParserAdapter<>(x -> Paths.get(x).toUri());
     }
     
 }
