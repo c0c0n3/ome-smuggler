@@ -17,11 +17,15 @@ public class ImportRequest {
     
     /**
      * The URI of the file or directory containing the data to import.
-     * This is a mandatory field and must be a "file:" URI pointing to the file 
-     * on the machine where the data to import sits. 
-     * If the host part is missing, the path is assumed to be that of a file on 
-     * the same machine where this server runs. 
-     * For now this is the only supported option, but, going forward, we will 
+     * This is a mandatory field and must be either 
+     * <ul>
+     *  <li>a "file:" URI pointing to the file on the machine where the data to 
+     *  import sits (if the host part is missing, the path is assumed to be that
+     *  of a file on the same machine where this server runs); or</li>
+     *  <li>if both client and server run on the same machine, a local path to
+     *  the data to import.</li>
+     * </ul>
+     * For now these are the only supported options, but, going forward, we will 
      * implement the means to resolve file locations across a network so that an 
      * import server may pull image data from multiple acquisition workstations.
      * @see https://en.wikipedia.org/wiki/File_URI_scheme

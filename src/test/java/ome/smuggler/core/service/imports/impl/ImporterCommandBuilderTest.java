@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static ome.smuggler.core.types.ImportInputTest.*;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import ome.smuggler.config.data.DefaultOmeCliConfig;
@@ -50,7 +51,9 @@ public class ImporterCommandBuilderTest {
         assertThat(xs[0], is("-s"));
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
-        assertThat(xs[6], is(makeNew().getTarget().toString()));
+        
+        String targetUri = Paths.get(makeNew().getTarget()).toString();
+        assertThat(xs[6], is(targetUri));
     }
     
     @Test

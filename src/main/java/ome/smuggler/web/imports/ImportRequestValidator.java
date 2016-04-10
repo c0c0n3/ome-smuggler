@@ -58,7 +58,7 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     
     private void checkRequiredFields(ImportRequest r) {
         email = label("experimenterEmail", email(r.experimenterEmail));
-        target = label("targetUri", uri(r.targetUri));
+        target = label("targetUri", targetUri(r.targetUri));
         omero = label("omeroHost, omeroPort", omeroUri(r.omeroHost, r.omeroPort));
         session = label("sessionKey", string(r.sessionKey));
         

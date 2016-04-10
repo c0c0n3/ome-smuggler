@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.net.URI;
+import java.nio.file.Paths;
 import java.util.List;
 
 import ome.smuggler.config.items.OmeCliConfig;
@@ -78,8 +79,16 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     }
     
     private ProgramArgument<String> importTarget() {
-        return new BaseProgramArgument<>(importArgs.getTarget().toString());
+        String absPath = Paths.get(importArgs.getTarget()).toString();  // (*) 
+        return new BaseProgramArgument<>(absPath);
     }
+    /* (*) URI resolution. We're assuming the file is local but going forward
+     * we might replace this with a more sophisticated URI to file resolution
+     * so that files may at least come from a network share visible to both
+     * client and smuggler. We could stretch it even further and cater for
+     * FTP and HTTP but the OMERO import library will have to be modified to
+     * read files from FTP or HTTP... 
+     */
     
     @Override
     protected String getMainClassFqn() {

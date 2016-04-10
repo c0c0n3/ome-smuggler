@@ -12,6 +12,10 @@ import org.junit.Test;
 
 public class ImportInputTest {
 
+    public static boolean isRunningOnWindows() {
+        return System.getProperty("os.name").startsWith("Windows");
+    }
+    
     public static PositiveN posN(String value) {
         return positiveInt(value).getRight();
     }
@@ -21,8 +25,11 @@ public class ImportInputTest {
     }
     
     public static ImportInput makeNew() {
+        String target = isRunningOnWindows() ? "C:\\target\\my file"
+                                             : "/target/my file";
+        
         return new ImportInput(email("user@micro.edu").getRight(), 
-                               uri("target/file").getRight(), 
+                               targetUri(target).getRight(), 
                                omeroUri("omero", "1234").getRight(), 
                                "sessionKey");
     }
