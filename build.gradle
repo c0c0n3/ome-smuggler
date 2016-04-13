@@ -6,9 +6,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
     }
-
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
 }
 
 task wrapper(type: Wrapper) {
