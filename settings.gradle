@@ -1,2 +1,4 @@
+rootProject.name = 'ome-smuggler'
+
 include 'components:cli',  'components:server', 'components:util'
 
