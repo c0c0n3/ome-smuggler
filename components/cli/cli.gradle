@@ -1,14 +1,6 @@
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.9'
-}
-
-
 apply plugin: 'application'
-apply plugin: 'eclipse'
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven {
         name 'Unidata'
         url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases'}
@@ -30,24 +22,9 @@ dependencies {
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-version = '0.1.0'
-
 mainClassName = 'ome.cli.omero.session.Create'
 
 jar {
     baseName = 'ome-cli'
-}
-
-// create a single Jar with all dependencies
-// see: http://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
-task fatJar(type: Jar) {
-	baseName = 'ome-cli.all'
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
 }
 

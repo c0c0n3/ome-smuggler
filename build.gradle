@@ -1,0 +1,25 @@
+allprojects {
+    group = 'ome'
+    version = '0.1.0'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+}
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+task wrapper(type: Wrapper) {
+    description 'Sets up the Gradle Wrapper.'
+    gradleVersion = '2.12'
+}
+
+

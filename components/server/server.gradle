@@ -1,22 +1,3 @@
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
-}
-
-task test1(type: Test) {
-    group 'verification'
-    description 'Runs the unit tests only.'
-    exclude '**/end2end/**'
-    exclude '**/integration/**'
-}
-
-task test2(type: Test) {
-    group 'verification'
-    description 'Runs the unit and integration tests but leaves end to end tests out.'
-    exclude '**/end2end/**'
-}
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
 buildscript {
@@ -29,14 +10,10 @@ buildscript {
 }
 
 repositories {
-    mavenCentral()
     maven {
         url "http://repository.jboss.org/nexus/content/groups/public"
     }
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
@@ -57,9 +34,21 @@ configurations {
 
 jar {
     baseName = 'ome-smuggler'
-    version =  '0.1.0'
 }
 
 test {  // added by java plugin, but says 'Runs the unit tests.'
     description 'Runs all available tests.'
+}
+
+task test1(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests only.'
+    exclude '**/end2end/**'
+    exclude '**/integration/**'
+}
+
+task test2(type: Test) {
+    group 'verification'
+    description 'Runs the unit and integration tests but leaves end to end tests out.'
+    exclude '**/end2end/**'
 }
