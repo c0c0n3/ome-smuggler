@@ -1,10 +1,18 @@
-# Build Files #
+# Gradle Files #
 
 /.gradle
 
+# Gradle Output Directories #
+
+/components/*/build/
+
 # Eclipse Project Files #
 
-/.classpath
-/.project
-/.settings
+.classpath
+.project
+.settings
+
+# Eclipse Output Directories #
+
+/components/*/bin/
 
