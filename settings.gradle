@@ -1,1 +1,2 @@
-include 'components:cli'  'components:server', 'components:util'
+include 'components:cli',  'components:server', 'components:util'
+
