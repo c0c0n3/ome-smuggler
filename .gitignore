@@ -16,3 +16,6 @@
 
 /components/*/bin/
 
+# IDEA Files #
+
+/.idea
