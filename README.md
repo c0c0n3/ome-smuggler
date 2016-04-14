@@ -44,19 +44,38 @@ building, testing, etc. This lists all available build tasks:
 
     ./gradlew tasks
 
-To run the app just follow the instructions TODO :-)
+Ours is a Gradle multi-project build, 
+
+    ./gradlew projects
+
+lists all the build projects. Each of them comes with its own build you can
+run independently using `gradlew :<project>:<task>`; for example
+
+    ./gradlew :server:test
+
+runs all the tests in the `server` project. If you feel adventurous and want
+to actually run Smuggler, take our [whirlwind tour](http://c0c0n3.github.io/ome-smuggler/docs/content/examples/whirlwind-tour.html)!
 
 
-Tricksy Eclipsie
-----------------
-Using Eclipse? You can generate all project files with:
+Tricksy Eclipsie, Have no IDEA!
+-------------------------------
+Using Eclipse or IDEA? With recent versions you should be able to import the
+entire Gradle multi-project build seamlessly as a Gradle project. If that
+doesn't work for you, try adding the Gradle Eclipse or IDEA plugin to each
+build project, which you can do in the root `build.gradle` file:
+
+    allprojects {
+        apply plugin: 'eclipse'
+        apply plugin: 'idea' 
+        ...
+
+Then run:
 
     ./gradlew eclipse
 
-then just import the project into Eclipse; alternatively if you have the Gradle 
-Eclipse plugin (Buildship), you could instead run: 
-
-    ./gradlew build
- 
-then import into Eclipse as a Gradle project.
+(or `./gradlew idea` for IDEA) and import your Git checkout root directory
+into Eclipse (IDEA) as an existing project.
+If you're unhappy with the result, you'll have to have a look at our build
+files and create the projects manually in your IDE. Give me a shout if you
+need help to get you going! (I'm deaf.)
 
