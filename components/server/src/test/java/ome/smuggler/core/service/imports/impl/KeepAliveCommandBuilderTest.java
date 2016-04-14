@@ -8,24 +8,13 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import ome.smuggler.config.data.DefaultOmeCliConfig;
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.types.ImportInput;
 
 public class KeepAliveCommandBuilderTest {
 
-    private static OmeCliConfig config() {
-        OmeCliConfig cfg = new DefaultOmeCliConfig()
-                               .defaultReadConfig()
-                               .findFirst()
-                               .get();
-        cfg.setOmeLibDirPath("gradle");
-        
-        return cfg;
-    }
-    
     private static String[] tokenPgmArgs(ImportInput args) {
-        String[] whole = new KeepAliveCommandBuilder(config(), args)
+        String[] whole = new KeepAliveCommandBuilder(
+                                    OmeCliConfigBuilder.config(), args)
                         .tokens()
                         .toArray(String[]::new);
         return Arrays.copyOfRange(whole, 4, whole.length);
@@ -38,7 +27,7 @@ public class KeepAliveCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
-        new KeepAliveCommandBuilder(config(), null);
+        new KeepAliveCommandBuilder(OmeCliConfigBuilder.config(), null);
     }
     
     @Test

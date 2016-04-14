@@ -7,27 +7,15 @@ import static ome.smuggler.core.types.ImportInputTest.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import ome.smuggler.config.data.DefaultOmeCliConfig;
-import ome.smuggler.config.items.OmeCliConfig;
-import ome.smuggler.core.service.imports.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 
 import org.junit.Test;
 
 public class ImporterCommandBuilderTest {
-
-    private static OmeCliConfig config() {
-        OmeCliConfig cfg = new DefaultOmeCliConfig()
-                               .defaultReadConfig()
-                               .findFirst()
-                               .get();
-        cfg.setOmeLibDirPath("gradle");
-        
-        return cfg;
-    }
     
     private static String[] tokenPgmArgs(ImportInput args) {
-        String[] whole = new ImporterCommandBuilder(config(), args)
+        String[] whole = new ImporterCommandBuilder(
+                                        OmeCliConfigBuilder.config(), args)
                         .tokens()
                         .toArray(String[]::new);
         return Arrays.copyOfRange(whole, 4, whole.length);
@@ -40,7 +28,7 @@ public class ImporterCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
-        new ImporterCommandBuilder(config(), null);
+        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null);
     }
     
     @Test
@@ -172,7 +160,8 @@ public class ImporterCommandBuilderTest {
     public void maskSessionKey() {
         ImportInput args = makeNew();
         String sessionKey = args.getSessionKey();
-        String cmd = new ImporterCommandBuilder(config(), args).toString();
+        String cmd = new ImporterCommandBuilder(
+                            OmeCliConfigBuilder.config(), args).toString();
         
         assertThat(cmd, not(containsString(sessionKey)));
     }
