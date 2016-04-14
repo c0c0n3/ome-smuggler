@@ -25,8 +25,7 @@ public class SpringBootAppPropsFile
         JProps cfg = new JProps(new Properties()); 
         
         cfg.set(appName().with(appName));
-        
-        cfg.set(logFilePathName().with("ome-smuggler.log"));
+
         cfg.set(rootLogLevel().with(LogLevel.INFO));
         
         cfg.setAll(endpointsEnabled(), true);
