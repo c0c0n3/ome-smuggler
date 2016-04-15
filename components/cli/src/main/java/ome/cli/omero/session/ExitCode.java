@@ -8,19 +8,28 @@ import Glacier2.PermissionDeniedException;
 import Ice.ConnectionRefusedException;
 import Ice.DNSException;
 
+/**
+ * Enumerates the exit codes for session-related commands.
+ * For the lack of better standards, we use adopt the Bash recommendations and
+ * use {@code 0} for success and the range {@code 64 - 113} for errors. (This
+ * happens to play well with C/C++ conventions too.) We reserve {@code 64} for
+ * a parse error in {@code ome.cli.Main} when the wrong command name or no
+ * arguments are given.
+ *
+ * @see <a href="http://tldp.org/LDP/abs/html/exitcodes.html">Bash exit codes</a>.
+ */
 public enum ExitCode {
     
     Ok(0),
-    InvalidArgs(1),
-    InvalidPort(2),
-    BadHostName(3, DNSException.class),
-    ConnectionRefused(4, ConnectionRefusedException.class),
-    CannotCreateSession(5, CannotCreateSessionException.class),
-    PermissionDenied(6, PermissionDeniedException.class),
-    ServerError(7, omero.ServerError.class),
-    InternalError(8);
-    
-    
+    InvalidArgs(65),
+    InvalidPort(66),
+    BadHostName(67, DNSException.class),
+    ConnectionRefused(68, ConnectionRefusedException.class),
+    CannotCreateSession(69, CannotCreateSessionException.class),
+    PermissionDenied(70, PermissionDeniedException.class),
+    ServerError(71, omero.ServerError.class),
+    InternalError(72);
+
     private final int code;
     private final Optional<Class<?>> errorType;
     
