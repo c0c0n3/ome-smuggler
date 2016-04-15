@@ -8,8 +8,8 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.List;
 
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.types.ImportInput;
+import ome.smuggler.core.types.OmeCliConfigSource;
 import util.runtime.BaseProgramArgument;
 import util.runtime.CommandBuilder;
 import util.runtime.ListProgramArgument;
@@ -33,7 +33,7 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
      * @param importArgs details what to import.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public ImporterCommandBuilder(OmeCliConfig config,
+    public ImporterCommandBuilder(OmeCliConfigSource config,
                                   ImportInput importArgs) {
         super(config);
         requireNonNull(importArgs, "importArgs");
@@ -89,15 +89,11 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
      * FTP and HTTP but the OMERO import library will have to be modified to
      * read files from FTP or HTTP... 
      */
-    
-    @Override
-    protected String getMainClassFqn() {
-        return config.getImporterMainClassFqn();
-    }
-    
+
     @Override
     protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
         return java
+               .addApplicationArgument(arg("Import"))
                .addApplicationArgument(server())
                .addApplicationArgument(name())
                .addApplicationArgument(description())

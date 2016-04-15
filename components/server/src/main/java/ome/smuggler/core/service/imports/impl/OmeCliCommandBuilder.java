@@ -2,23 +2,16 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static util.error.Exceptions.unchecked;
-import static util.runtime.jvm.ClassPathFactory.fromLibDir;
 import static util.runtime.jvm.JvmCmdFactory.java;
 import static util.sequence.Arrayz.asList;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import ome.smuggler.config.items.OmeCliConfig;
-import util.runtime.BaseProgramArgument;
+import ome.smuggler.core.types.OmeCliConfigSource;
 import util.runtime.CommandBuilder;
 import util.runtime.ListProgramArgument;
-import util.runtime.ProgramArgument;
-import util.runtime.jvm.ClassPath;
-import util.runtime.jvm.ClassPathJvmArg;
+import util.runtime.jvm.JarJvmArg;
 import util.runtime.jvm.JvmCmdBuilder;
 
 /**
@@ -38,38 +31,30 @@ public abstract class OmeCliCommandBuilder implements CommandBuilder {
     }
     
     
-    protected final OmeCliConfig config;
+    protected final OmeCliConfigSource config;
     
-    protected OmeCliCommandBuilder(OmeCliConfig config) {
+    protected OmeCliCommandBuilder(OmeCliConfigSource config) {
         requireNonNull(config, "config");
         
         this.config = config;
     }
-    
-    protected abstract String getMainClassFqn();
-    
+
     protected abstract JvmCmdBuilder assembleArguments(JvmCmdBuilder bareCommand);
-    
-    protected ProgramArgument<String> mainClass() {  
-        return new BaseProgramArgument<>(getMainClassFqn());  
+
+    protected JarJvmArg jarFile() {
+        return new JarJvmArg(config.omeCliJar());
     }
-    
-    protected ClassPathJvmArg classPath() {  
-        Path libDir = Paths.get(config.getOmeLibDirPath());
-        ClassPath cp = unchecked(() -> fromLibDir(libDir)).get();
-        return new ClassPathJvmArg(cp);
-    }
-    
+
     protected CommandBuilder assembleCommand() {
-        JvmCmdBuilder bareCommand = java(classPath(), mainClass());
+        JvmCmdBuilder bareCommand = java(jarFile());
         return assembleArguments(bareCommand);
     }
-    
+
     @Override
     public Stream<String> tokens() { 
         return assembleCommand().tokens();
     }
-    
+
     @Override
     public String toString() {
         return tokens().collect(joining(" "));

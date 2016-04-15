@@ -5,8 +5,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
 
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.types.ImportInput;
+import ome.smuggler.core.types.OmeCliConfigSource;
 import util.runtime.ListProgramArgument;
 import util.runtime.jvm.JvmCmdBuilder;
 
@@ -23,7 +23,7 @@ public class KeepAliveCommandBuilder extends OmeCliCommandBuilder {
      * @param importArgs details what to import.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public KeepAliveCommandBuilder(OmeCliConfig config, ImportInput importArgs) {
+    public KeepAliveCommandBuilder(OmeCliConfigSource config, ImportInput importArgs) {
         super(config);
         requireNonNull(importArgs, "importArgs");
         
@@ -36,15 +36,12 @@ public class KeepAliveCommandBuilder extends OmeCliCommandBuilder {
                    String.valueOf(omero.getPort()), 
                    importArgs.getSessionKey());
     }
-    
-    @Override
-    protected String getMainClassFqn() {
-        return config.getKeepAliveMainClassFqn();
-    }
 
     @Override
     protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
-        return java.addApplicationArgument(serverAndKey());
+        return java
+                .addApplicationArgument(arg("SessionKeepAlive"))
+                .addApplicationArgument(serverAndKey());
     }
-    
+
 }

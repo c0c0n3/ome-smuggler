@@ -2,22 +2,26 @@ package ome.smuggler.core.service.imports.impl;
 
 import ome.smuggler.config.data.DefaultOmeCliConfig;
 import ome.smuggler.config.items.OmeCliConfig;
+import ome.smuggler.core.types.OmeCliConfigReader;
+import ome.smuggler.core.types.OmeCliConfigSource;
 
 public class OmeCliConfigBuilder {
 
-    public static OmeCliConfig config() {
+    public static OmeCliConfigSource config() {
         OmeCliConfig cfg = new DefaultOmeCliConfig()
                 .defaultReadConfig()
                 .findFirst()
                 .get();
-        cfg.setOmeLibDirPath("../../gradle");  // (*)
+        cfg.setOmeCliJarPath("any-name-will-do");  // (*)
 
-        return cfg;
+        return new OmeCliConfigReader(cfg);
     }
-    /* (*) Avoid Cmd Builders bomb out on empty classpath.
-     * We need to specify a directory with at least one jar file in it or
-     * in its subdirectories, which jar doesn't matter for our tests here.
-     * Gradle always cd's in the project directory so the path above points
-     * to the 'gradle' directory in our root.
+    /* (*) Avoid bombing out on ome-cli jar.
+     * If no jar path is configured, the OmeCliConfigReader will try locating an
+     * ome-cli jar file in the same directory as Smuggler's jar. This is fine
+     * when running the app, but as we test there will be no jar files as the
+     * tests are run straight from the compiled classes in the build directory.
+     * So we explicitly set a value for the ome-cli jar file which results in
+     * the OmeCliConfigReader just returning the value as a path.
      */
 }

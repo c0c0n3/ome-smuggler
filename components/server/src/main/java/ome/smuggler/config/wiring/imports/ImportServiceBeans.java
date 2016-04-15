@@ -1,9 +1,9 @@
 package ome.smuggler.config.wiring.imports;
 
+import ome.smuggler.core.types.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
@@ -20,12 +20,6 @@ import ome.smuggler.core.service.imports.impl.ImportMonitor;
 import ome.smuggler.core.service.imports.impl.ImportRunner;
 import ome.smuggler.core.service.imports.impl.ImportTrigger;
 import ome.smuggler.core.service.mail.MailRequestor;
-import ome.smuggler.core.types.ImportConfigSource;
-import ome.smuggler.core.types.ImportId;
-import ome.smuggler.core.types.ImportKeepAlive;
-import ome.smuggler.core.types.ImportLogFile;
-import ome.smuggler.core.types.MailConfigSource;
-import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.providers.log.LogAdapter;
 
 /**
@@ -33,18 +27,18 @@ import ome.smuggler.providers.log.LogAdapter;
  */
 @Configuration
 public class ImportServiceBeans {
-    
+
     @Bean
     public TaskFileStore<ImportId> failedImportLogStore(
             ImportConfigSource config) {
         return new TaskIdPathStore<>(config.failedImportLogDir(), 
                                      ImportId::new);
     }
-    
+
     @Bean
     public ImportEnv importEnv(
             ImportConfigSource config, 
-            OmeCliConfig cliConfig, 
+            OmeCliConfigSource cliConfig,
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel,
@@ -60,30 +54,30 @@ public class ImportServiceBeans {
         env.ensureDirectories();
         return env;
     }
-    
+
     @Bean
     public ImportRequestor importRequestor(ImportEnv env) {
         return new ImportTrigger(env);
     }
-    
+
     @Bean
     public ImportProcessor importProcessor(ImportEnv env) {
         return new ImportRunner(env);
     }
-    
+
     @Bean
     public ImportLogDisposer importLogDisposer() {
         return new ImportLogDeleteAction();
     }
-    
+
     @Bean
     public FailedImportHandler failedImportHandler(ImportEnv env) {
         return new ImportFailureHandler(env);
     }
-    
+
     @Bean
     public ImportTracker importTracker(ImportEnv env) {
         return new ImportMonitor(env);
     }
-    
+
 }

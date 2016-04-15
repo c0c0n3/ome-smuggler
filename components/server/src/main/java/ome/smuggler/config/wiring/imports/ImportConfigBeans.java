@@ -1,5 +1,7 @@
 package ome.smuggler.config.wiring.imports;
 
+import ome.smuggler.core.types.OmeCliConfigReader;
+import ome.smuggler.core.types.OmeCliConfigSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -39,13 +41,13 @@ public class ImportConfigBeans {
     }
     
     @Bean
-    public OmeCliConfig omeCliConfig(ConfigProvider<OmeCliConfig> src) {
-        return src.first();
+    public OmeCliConfigSource omeCliConfig(ConfigProvider<OmeCliConfig> src) {
+        return ConfigReader.newReader(src, OmeCliConfigReader::new).first();
     }
     
     @Bean
     public ImportConfigSource importConfig(ConfigProvider<ImportConfig> src) {
         return ConfigReader.newReader(src, ImportConfigReader::new).first();
     }
-    
+
 }

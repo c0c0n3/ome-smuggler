@@ -5,20 +5,12 @@ import static ome.smuggler.core.io.FileOps.ensureDirectory;
 
 import java.util.Optional;
 
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
-import ome.smuggler.core.types.Email;
-import ome.smuggler.core.types.FutureTimepoint;
-import ome.smuggler.core.types.ImportConfigSource;
-import ome.smuggler.core.types.ImportId;
-import ome.smuggler.core.types.ImportKeepAlive;
-import ome.smuggler.core.types.ImportLogFile;
-import ome.smuggler.core.types.ImportLogPath;
-import ome.smuggler.core.types.QueuedImport;
+import ome.smuggler.core.types.*;
 
 /**
  * Provides access to import configuration and queues.
@@ -26,7 +18,7 @@ import ome.smuggler.core.types.QueuedImport;
 public class ImportEnv {
     
     private final ImportConfigSource config;
-    private final OmeCliConfig cliConfig;
+    private final OmeCliConfigSource cliConfig;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
     private final ChannelSource<ImportKeepAlive> keepAliveQueue;
@@ -35,7 +27,7 @@ public class ImportEnv {
     private final Optional<Email> sysAdminEmail; 
     private final ImportLogger log;
     
-    public ImportEnv(ImportConfigSource config, OmeCliConfig cliConfig,
+    public ImportEnv(ImportConfigSource config, OmeCliConfigSource cliConfig,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
             ChannelSource<ImportKeepAlive> keepAliveQueue,
@@ -68,7 +60,7 @@ public class ImportEnv {
         return config;
     }
     
-    public OmeCliConfig cliConfig() {
+    public OmeCliConfigSource cliConfig() {
         return cliConfig;
     }
     
