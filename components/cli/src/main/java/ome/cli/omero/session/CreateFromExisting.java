@@ -2,6 +2,7 @@ package ome.cli.omero.session;
 
 import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
+import ome.cli.cmd.*;
 import omero.ServerError;
 import omero.api.ServiceFactoryPrx;
 import omero.client;
@@ -59,7 +60,7 @@ public class CreateFromExisting extends BaseCommand implements Command {
     }
 
     @Override
-    public ExitCode exec(PrintStream out) throws CannotCreateSessionException, 
+    public ExitCode exec(PrintStream out) throws CannotCreateSessionException,
             PermissionDeniedException, ServerError {
         client c = newClient();
         ServiceFactoryPrx serviceFactory = c.joinSession(sessionKey);

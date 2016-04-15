@@ -1,4 +1,4 @@
-package ome.cli.omero.session;
+package ome.cli.cmd;
 
 import java.io.PrintStream;
 
@@ -14,6 +14,6 @@ public interface Command {
      * @return the JVM exit code.
      * @throws Exception if an error occurs.
      */
-    ExitCode exec(PrintStream out) throws Exception; 
+    ExitCode exec(PrintStream out) throws Exception;
     
 }

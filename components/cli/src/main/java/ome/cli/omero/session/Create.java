@@ -2,6 +2,7 @@ package ome.cli.omero.session;
 
 import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
+import ome.cli.cmd.*;
 import omero.ServerError;
 import omero.client;
 

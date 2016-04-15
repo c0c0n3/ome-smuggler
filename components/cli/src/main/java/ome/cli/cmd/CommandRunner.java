@@ -1,4 +1,4 @@
-package ome.cli.omero.session;
+package ome.cli.cmd;
 
 /**
  * Executes a {@link Command} to interact with OMERO.

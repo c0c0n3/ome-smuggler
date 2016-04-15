@@ -1,4 +1,4 @@
-package ome.cli.omero.session;
+package ome.cli.cmd;
 
 import omero.IllegalArgumentException;
 import omero.client;

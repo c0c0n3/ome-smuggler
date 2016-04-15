@@ -1,4 +1,4 @@
-package ome.cli.omero.session;
+package ome.cli.cmd;
 
 import java.util.Optional;
 import java.util.stream.Stream;

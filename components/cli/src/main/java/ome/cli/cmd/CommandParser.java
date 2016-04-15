@@ -1,7 +1,7 @@
-package ome.cli.omero.session;
+package ome.cli.cmd;
 
 /**
- * Instantiates a {@link Command} from the arguments that were passed on the 
+ * Instantiates a {@link Command} from the arguments that were passed on the
  * JVM command line.
  */
 public interface CommandParser<T extends Command> {
