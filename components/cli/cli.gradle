@@ -2,7 +2,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-apply plugin: 'application'
+apply plugin: 'spring-boot'
 
 repositories {
     maven {
@@ -26,7 +26,7 @@ dependencies {
     }
 }
 
-mainClassName = 'ome.cli.omero.session.Create'
+mainClassName = 'ome.cli.Main'
 
 jar {
     baseName = 'ome-cli'
