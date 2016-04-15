@@ -1,5 +1,6 @@
 package ome.cli;
 
+import ome.cli.omero.imports.ImportAdapter;
 import ome.cli.omero.session.Create;
 import ome.cli.omero.session.CreateFromExisting;
 import ome.cli.omero.session.KeepAlive;
@@ -24,7 +25,9 @@ public enum Commands {
     /**
      * The session {@link KeepAlive} command entry point.
      */
-    SessionKeepAlive(KeepAlive::main);
+    SessionKeepAlive(KeepAlive::main),
+
+    Import(ImportAdapter::main);
 
     private Consumer<String[]> commandMain;
 
