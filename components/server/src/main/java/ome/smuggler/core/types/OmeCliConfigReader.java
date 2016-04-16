@@ -4,8 +4,10 @@ import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.io.FileOps;
 import util.runtime.jvm.ClassPathLocator;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static util.string.Strings.isNullOrEmpty;
@@ -17,6 +19,46 @@ import static util.string.Strings.isNullOrEmpty;
  */
 public class OmeCliConfigReader implements OmeCliConfigSource {
 
+    private static Path jarPath(OmeCliConfig config) {
+        String rawPath = config.getOmeCliJarPath();
+        if (isNullOrEmpty(rawPath)) {
+            return defaultJarPath(config.getOmeCliJarPrefix());
+        } else {
+            return Paths.get(rawPath);
+        }
+    }
+
+    private static Path defaultJarPath(String omeCliJarPrefix) {
+        String prefix = isNullOrEmpty(omeCliJarPrefix) ?
+                        OmeCliConfig.DefaultOmeCliJarPrefix :
+                        omeCliJarPrefix;
+        return ClassPathLocator.findBase(OmeCliConfigReader.class)
+                               .map(p -> find(p, prefix))
+                               .orElseThrow(err("cannot locate main jar"));
+    }
+
+    private static Path find(Path thisJar, String prefix) {
+        return FileOps.listChildFiles(thisJar.getParent())
+                      .filter(p -> { 
+                          String fileName = p.getFileName().toString();
+                          return fileName.startsWith(prefix) 
+                              && fileName.endsWith(".jar");
+                       })
+                      .findFirst()
+                      .orElseThrow(err(thisJar, prefix));
+    }
+
+    private static Supplier<RuntimeException> err(String msg) {
+        return () -> new RuntimeException(msg);
+    }
+
+    private static Supplier<RuntimeException> err(Path thisJar, String prefix) {
+        String msg = String.format(
+                "cannot locate OME CLI jar matching: %s%s%s*.jar", 
+                thisJar.getParent(), File.separator, prefix);
+        return err(msg);
+    }
+    
     private final Path omeCliJar;
 
     /**
@@ -28,35 +70,6 @@ public class OmeCliConfigReader implements OmeCliConfigSource {
         requireNonNull(config, "config");
 
         omeCliJar = jarPath(config);
-    }
-
-    private Path jarPath(OmeCliConfig config) {
-        String rawPath = config.getOmeCliJarPath();
-        if (isNullOrEmpty(rawPath)) {
-            return defaultJarPath(config.getOmeCliJarPrefix());
-        } else {
-            return Paths.get(rawPath);
-        }
-    }
-
-    private Path defaultJarPath(String omeCliJarPrefix) {
-        String prefix = isNullOrEmpty(omeCliJarPrefix) ?
-                        OmeCliConfig.DefaultOmeCliJarPrefix :
-                        omeCliJarPrefix;
-        return ClassPathLocator.findBase(getClass())
-                               .map(p -> find(p, prefix))
-                               .orElseThrow(() -> new RuntimeException("cannot locate main jar"));
-    }
-
-    private Path find(Path thisJar, String prefix) {
-        return FileOps.listChildFiles(thisJar.getParent())
-                      .filter(p -> { 
-                          String fileName = p.getFileName().toString();
-                          return fileName.startsWith(prefix) 
-                              && fileName.endsWith(".jar");
-                       })
-                      .findFirst()
-                      .orElseThrow(() -> new RuntimeException("cannot locate OME CLI jar using prefix: " + prefix));
     }
 
     @Override
