@@ -50,9 +50,13 @@ public class OmeCliConfigReader implements OmeCliConfigSource {
 
     private Path find(Path thisJar, String prefix) {
         return FileOps.listChildFiles(thisJar.getParent())
-                      .filter(p -> p.startsWith(prefix) && p.endsWith("jar"))
+                      .filter(p -> { 
+                          String fileName = p.getFileName().toString();
+                          return fileName.startsWith(prefix) 
+                              && fileName.endsWith(".jar");
+                       })
                       .findFirst()
-                      .orElseThrow(() -> new RuntimeException("cannot locate OME CLI jar: " + prefix));
+                      .orElseThrow(() -> new RuntimeException("cannot locate OME CLI jar using prefix: " + prefix));
     }
 
     @Override
