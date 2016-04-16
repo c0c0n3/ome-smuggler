@@ -13,19 +13,20 @@ import ome.smuggler.core.types.MailConfigSource;
 import ome.smuggler.core.types.MailId;
 
 public class Config {
-    
+
     public final Path baseDataDir;
     public final ImportConfigSource importConfig;
     public final MailConfigSource mailConfig;
     public final TaskFileStore<MailId> failedMailStore;
-    
+
     public Config() throws IOException {
-        baseDataDir = BaseDataDir.setupSysPropToTempDir("smuggler-tests").get();
-        
+        baseDataDir = BaseDataDir
+                    .storeTempDir(BaseDataDir.SysPropKey, "smuggler-tests");
+
         importConfig = new DevImportConfigSource(baseDataDir);
         mailConfig = new DevMailConfigSource(baseDataDir);
         failedMailStore = new MailServiceBeans().failedMailStore(mailConfig);
         // ...exact copies of the ones instantiated in the Spring container.
     }
-    
+
 }
