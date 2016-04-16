@@ -14,9 +14,7 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Optional;
-import java.util.function.Function;
 
-import util.lambda.FunctionE;
 
 /**
  * Locates the base directory or jar file from which a given class was loaded.
