@@ -6,6 +6,11 @@
 
 /components/*/build/
 
+# Smuggler's Configuration Files #
+# NB files used for a run from the server directory.
+
+/components/server/*.yml
+
 # Eclipse Project Files #
 
 .classpath
