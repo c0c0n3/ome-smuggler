@@ -8,8 +8,7 @@ package ome.smuggler.config.items;
  * specified, then the jar is assumed to be located in the same directory as
  * Smuggler's jar and have a name starting with the {@link #setOmeCliJarPrefix(String)
  * configured prefix} unless such prefix is {@code null} or empty, in which case
- * it defaults to {@link #DefaultOmeCliJarPrefix}.</li>
- * </ul>
+ * it defaults to {@link #DefaultOmeCliJarPrefix}.
  */
 public class OmeCliConfig {
     /* NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
