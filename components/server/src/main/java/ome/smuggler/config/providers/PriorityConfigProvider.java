@@ -3,7 +3,6 @@ package ome.smuggler.config.providers;
 import static util.spring.io.ResourceLocation.classpath;
 
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,7 @@ public abstract class PriorityConfigProvider<T>
     private ResourceLoader resourceLoader;
     
     private ResourceLocation fileInBaseConfigDir() {
-        Path base = new BaseConfigDir().get();
-        URI file = base.resolve(getConfigFileName()).toUri();
+        URI file = new BaseConfigDir().resolve(getConfigFileName()).toUri();
         return new ResourceLocation(file);
     }
 
