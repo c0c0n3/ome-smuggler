@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.DevMailConfigSource;
 import ome.smuggler.config.items.MailQConfig;
@@ -26,7 +25,7 @@ public class MailDevConfigBeans {
     
     @Bean
     public MailConfigSource mailConfig() {
-        return new DevMailConfigSource(new BaseDataDir().get());
+        return new DevMailConfigSource();
     }
     
 }

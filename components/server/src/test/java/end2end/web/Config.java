@@ -23,8 +23,8 @@ public class Config {
         baseDataDir = BaseDataDir
                     .storeTempDir(BaseDataDir.SysPropKey, "smuggler-tests");
 
-        importConfig = new DevImportConfigSource(baseDataDir);
-        mailConfig = new DevMailConfigSource(baseDataDir);
+        importConfig = new DevImportConfigSource();
+        mailConfig = new DevMailConfigSource();
         failedMailStore = new MailServiceBeans().failedMailStore(mailConfig);
         // ...exact copies of the ones instantiated in the Spring container.
     }

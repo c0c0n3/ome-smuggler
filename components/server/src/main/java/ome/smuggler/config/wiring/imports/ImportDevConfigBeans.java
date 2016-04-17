@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.data.DevImportConfigSource;
 import ome.smuggler.config.items.OmeCliConfig;
@@ -58,7 +57,7 @@ public class ImportDevConfigBeans {
     
     @Bean
     public ImportConfigSource importConfig() {
-        return new DevImportConfigSource(new BaseDataDir().get());
+        return new DevImportConfigSource();
     }
 
 }

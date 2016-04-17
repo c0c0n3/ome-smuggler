@@ -3,12 +3,12 @@ package ome.smuggler.core.types;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.convert.RawConfigValues.toDuration;
 import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
-import static ome.smuggler.core.convert.RawConfigValues.toPath;
 
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 
+import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.items.ImportConfig;
 
 /**
@@ -34,10 +34,13 @@ public class ImportConfigReader implements ImportConfigSource {
     public ImportConfigReader(ImportConfig config) {
         requireNonNull(config, "config");
         
-        importLogDir = toPath(config.getImportLogDir());
+        BaseDataDir base = new BaseDataDir();
+        
+        importLogDir = base.resolveRequiredPath(config.getImportLogDir());
         logRetentionPeriod = toDuration(config.getLogRetentionMinutes());
         retryIntervals = toDurationList(config.getRetryIntervals());
-        failedImportLogDir = toPath(config.getFailedImportLogDir());
+        failedImportLogDir = base.resolveRequiredPath(
+                                config.getFailedImportLogDir());
         keepAliveInterval = toDuration(config.getKeepAliveInterval(),
                                        DefaultKeepAliveInterval);
     }

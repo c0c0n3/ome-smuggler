@@ -1,6 +1,5 @@
 package ome.smuggler.config.data;
 
-import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.types.ValueParserFactory.email;
 
 import java.net.URI;
@@ -10,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.MailConfigSource;
 import ome.smuggler.core.types.MailProtocol;
@@ -19,11 +19,10 @@ import ome.smuggler.core.types.MailProtocol;
  */
 public class DevMailConfigSource implements MailConfigSource {
 
-    private final Path baseDataDir;
+    private final BaseDataDir baseDataDir;
     
-    public DevMailConfigSource(Path baseDataDir) {
-        requireNonNull(baseDataDir, "baseDataDir");
-        this.baseDataDir = baseDataDir;
+    public DevMailConfigSource() {
+        this.baseDataDir = new BaseDataDir();
     }
     
     @Override

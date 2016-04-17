@@ -3,7 +3,6 @@ package ome.smuggler.core.types;
 import static java.util.function.Function.identity;
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
-import static ome.smuggler.core.convert.RawConfigValues.toPath;
 import static ome.smuggler.core.convert.RawConfigValues.toURI;
 import static ome.smuggler.core.types.MailProtocol.smtp;
 import static ome.smuggler.core.types.MailProtocol.smtps;
@@ -17,6 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
+import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.items.MailConfig;
 
 /**
@@ -56,11 +56,13 @@ public class MailConfigReader implements MailConfigSource {
     public MailConfigReader(MailConfig config) {
         requireNonNull(config, "config");
         
+        BaseDataDir base = new BaseDataDir();
+        
         fromAddress = parseEmail(config.getFromAddress());
         mailServer = toURI("smtp", config.getMailServerHost(), 
                             config.getMailServerPort());
         retryIntervals = toDurationList(config.getRetryIntervals());
-        deadMailDir = toPath(config.getDeadMailDir());
+        deadMailDir = base.resolveRequiredPath(config.getDeadMailDir());
         username = asOptional(config.getUsername());
         password = asOptional(config.getPassword());
         protocol = config.getUseSmtps() ? smtps : smtp;

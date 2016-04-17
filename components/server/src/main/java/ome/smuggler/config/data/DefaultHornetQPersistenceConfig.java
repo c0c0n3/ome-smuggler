@@ -3,9 +3,9 @@ package ome.smuggler.config.data;
 import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.items.HornetQPersistenceConfig;
 import util.config.ConfigProvider;
 
@@ -15,9 +15,9 @@ import util.config.ConfigProvider;
 public class DefaultHornetQPersistenceConfig 
     implements ConfigProvider<HornetQPersistenceConfig> {
 
-    public static final String RootDir = "hornetq-data";
+    public static final String RootDir = "hornetq";
 
-    public static HornetQPersistenceConfig build(Path baseDir) {
+    private static HornetQPersistenceConfig build(BaseDataDir baseDir) {
         requireNonNull(baseDir, "baseDir");
         
         Path d = baseDir.resolve(RootDir);
@@ -31,10 +31,11 @@ public class DefaultHornetQPersistenceConfig
         
         return cfg;
     }
-    
+
     @Override
     public Stream<HornetQPersistenceConfig> readConfig() {
-        return Stream.of(build(Paths.get("")));
+        BaseDataDir baseDir = new BaseDataDir();
+        return Stream.of(build(baseDir));
     }
 
 }

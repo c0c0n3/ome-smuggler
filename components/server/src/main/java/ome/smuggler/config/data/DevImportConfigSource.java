@@ -1,12 +1,11 @@
 package ome.smuggler.config.data;
 
-import static java.util.Objects.requireNonNull;
-
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.core.types.ImportConfigReader;
 import ome.smuggler.core.types.ImportConfigSource;
 
@@ -15,11 +14,10 @@ import ome.smuggler.core.types.ImportConfigSource;
  */
 public class DevImportConfigSource implements ImportConfigSource {
 
-    private final Path baseDataDir;
+    private final BaseDataDir baseDataDir;
     
-    public DevImportConfigSource(Path baseDataDir) {
-        requireNonNull(baseDataDir, "baseDataDir");
-        this.baseDataDir = baseDataDir;
+    public DevImportConfigSource() {
+        this.baseDataDir = new BaseDataDir();
     }
     
     @Override
