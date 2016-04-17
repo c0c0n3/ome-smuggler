@@ -102,4 +102,18 @@ public class BaseDir extends Wrapper<Path> {
         }
     }
 
+    /**
+     * Resolves the given path as follows.
+     * If the argument is already an absolute path, then it is returned as is;
+     * otherwise it is resolved against this base directory.
+     * @param configuredPath a path in a configuration file.
+     * @return the resolved path.
+     * @throws IllegalArgumentException if the argument is {@code null} or 
+     * empty.
+     */
+    public Path resolveRequiredPath(String configuredPath) {
+        requireString(configuredPath, configuredPath);
+        return get().resolve(configuredPath);
+    }
+
 }
