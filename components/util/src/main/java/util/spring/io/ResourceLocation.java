@@ -1,5 +1,6 @@
 package util.spring.io;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static util.sequence.Arrayz.hasNulls;
 import static util.sequence.Arrayz.isNullOrZeroLength;
@@ -133,6 +134,16 @@ public class ResourceLocation extends AbstractWrapper<String> {
                              boolean absolutePath, 
                              Object...pathComponents) {
         location = build(scheme, absolutePath, pathComponents);
+    }
+    
+    /**
+     * Creates a new instance pointing to the specified resource.
+     * @param location the resource's location.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public ResourceLocation(URI location) {
+        requireNonNull(location, "location");
+        this.location = location.toString();
     }
     
     @Override
