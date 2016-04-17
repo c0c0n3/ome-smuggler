@@ -9,7 +9,7 @@ package ome.smuggler.config;
  */
 public class BaseDataDir extends BaseDir {
 
-    public static final String SysPropKey = "ome.smuggler.BaseDataDir";
+    public static final String SysPropKey = "ome.smuggler.DataDir";
 
     /**
      * Creates a new instance to read the directory value from the system
