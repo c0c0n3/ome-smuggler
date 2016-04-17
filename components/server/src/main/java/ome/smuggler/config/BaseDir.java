@@ -18,6 +18,8 @@ import util.object.Wrapper;
  * The base directory path is retrieved from the system properties if a property
  * value for a specified key exists; otherwise it will be the current working
  * directory, i.e. the value of "user.dir".
+ * Note that if the property value is set to a relative path, then that path
+ * will be resolved against the current working directory.
  */
 public class BaseDir extends Wrapper<Path> {
 
