@@ -51,7 +51,7 @@ public class Close extends BaseCommand implements Command {
             PermissionDeniedException, ServerError {
         client c = newClient();
         c.joinSession(sessionKey);
-        c.closeSession();
+        c.killSession();
 
         return ExitCode.Ok;
     }
