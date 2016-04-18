@@ -4,7 +4,11 @@ import Glacier2.CannotCreateSessionException;
 import Glacier2.PermissionDeniedException;
 import ome.cli.cmd.*;
 import omero.ServerError;
+import omero.api.ServiceFactoryPrx;
 import omero.client;
+import omero.model.Details;
+import omero.model.Session;
+import omero.sys.Principal;
 
 import java.io.PrintStream;
 import java.util.Map;
@@ -16,6 +20,10 @@ import static java.util.Objects.requireNonNull;
  * See {@link #main(String[]) main} method for how to execute this command.
  */
 public class Create extends BaseCommand implements Command {
+
+    private static String group(Session existingSession) {
+        return existingSession.getDetails().getGroup().getName().getValue();
+    }
 
     private static CommandParser<Create> parser() {
         return args -> {
@@ -67,14 +75,20 @@ public class Create extends BaseCommand implements Command {
     public ExitCode exec(PrintStream out) throws CannotCreateSessionException,
             PermissionDeniedException, ServerError {
         client c = newClient();
-        c.createSession();  // (1)
+        ServiceFactoryPrx serviceFactory = c.createSession();
+        serviceFactory.setSecurityPassword(password);
 
-        out.print(c.getSessionId());
+        Session initialSession = serviceFactory.getSessionService()
+                                .getSession(c.getSessionId());
+        Session newSession = serviceFactory.getSessionService()
+                            .createUserSession(0,
+                                    timeToIdle(initialSession),
+                                    group(initialSession));
+        c.killSession();  // close initial session.
+
+        out.print(newSession.getUuid().getValue());
 
         return ExitCode.Ok;
     }
-    /* TODO. (1) creates the session, but how to set the timeout without having
-     * to create a new session or join an existing one as done in create-from-
-     * existing command?
-     */
+
 }
