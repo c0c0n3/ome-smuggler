@@ -6,9 +6,7 @@ import ome.cli.cmd.*;
 import omero.ServerError;
 import omero.api.ServiceFactoryPrx;
 import omero.client;
-import omero.model.Details;
 import omero.model.Session;
-import omero.sys.Principal;
 
 import java.io.PrintStream;
 import java.util.Map;
