@@ -14,6 +14,8 @@ import java.io.PrintStream;
 
 /**
  * Command to create a new session from an existing one.
+ * A security exception will be raised if the existing session's user is not
+ * in the "sudo" group.
  * See {@link #main(String[]) main} method for how to execute this command.
  */
 public class CreateFromExisting extends BaseCommand implements Command {
