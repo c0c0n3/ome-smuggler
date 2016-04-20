@@ -30,7 +30,7 @@ import util.sequence.Arrayz;
 @RunWith(Theories.class)
 public class ImportKeepAliveSchedulerTest {
 
-    public static Duration interval = ImportConfigReader.DefaultKeepAliveInterval;
+    public static final Duration interval = ImportConfigReader.DefaultKeepAliveInterval;
     
     public static QueuedImport newImportRequest() {
         ImportInput data = new ImportInput(

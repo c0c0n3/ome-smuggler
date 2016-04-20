@@ -100,7 +100,7 @@ public class Streams {
         
         Iterator<X> ix = xs.iterator();
         Iterator<Y> iy = ys.iterator();
-        List<Z> zs = new ArrayList<Z>();
+        List<Z> zs = new ArrayList<>();
         
         while (ix.hasNext() && iy.hasNext()) {
             zs.add(f.apply(ix.next(), iy.next()));
@@ -120,7 +120,7 @@ public class Streams {
      * @throws NullPointerException if any argument is {@code null}.
      */
     public static <X, Y> Stream<Pair<X, Y>> zip(Stream<X> xs, Stream<Y> ys) {
-        return zipWith(Pair<X,Y>::new, xs, ys);
+        return zipWith(Pair::new, xs, ys);
     }
     
     /**
@@ -155,7 +155,7 @@ public class Streams {
         requireNonNull(ys, "ys");
         
         Iterator<Y> iy = ys.iterator();
-        List<Z> zs = new ArrayList<Z>();
+        List<Z> zs = new ArrayList<>();
         
         int index = 0;
         while (iy.hasNext()) {

@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import util.lambda.ActionE;
-
 
 public class ExceptionsActionTest {
 
@@ -17,7 +15,7 @@ public class ExceptionsActionTest {
     
     @Test(expected = NullPointerException.class)
     public void npeIfNullAction() {
-        runUnchecked((ActionE) null);
+        runUnchecked(null);
     }
     
     @Test(expected = IOException.class)

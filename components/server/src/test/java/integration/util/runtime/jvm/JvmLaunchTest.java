@@ -69,7 +69,7 @@ public class JvmLaunchTest {
         @SuppressWarnings("unchecked")
         ProgramArgument<String>[] appArgs = Stream
                                            .of(sysProps())
-                                           .map(p -> keyValueArgs(p))
+                                           .map(JvmLaunchTest::keyValueArgs)
                                            .flatMap(s -> s)
                                            .toArray(ProgramArgument[]::new);
         ProgramArgument<String> mainClass = 

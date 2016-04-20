@@ -34,7 +34,7 @@ public class SingleTokenParserAdapterTest {
     
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullFunctionE() {
-        new SingleTokenParserAdapter<>((FunctionE<String, Object>)null);
+        new SingleTokenParserAdapter<>(null);
     }
     
     @Test

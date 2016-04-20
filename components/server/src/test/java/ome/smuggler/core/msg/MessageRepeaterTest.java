@@ -55,9 +55,7 @@ public class MessageRepeaterTest {
                     return stopOrRepeat;
                 }, 
                 asStream(intervals), 
-                d -> { 
-                    exceededRedeliveryData = Optional.of(d); 
-                });
+                d -> exceededRedeliveryData = Optional.of(d));
     }
     
     private CountedSchedule newCountedSchedule(Integer deliveryCount) {

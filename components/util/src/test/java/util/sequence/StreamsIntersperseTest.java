@@ -22,7 +22,7 @@ public class StreamsIntersperseTest {
         array(), array("a"), array("a", "b"), array("a", "b", "c")
     };
     
-    private static Supplier<String> separator = () -> "/";
+    private static final Supplier<String> separator = () -> "/";
     
     private static String[] arrayIntersperse(String[] xs) {
         return op(String[]::new).intersperse(separator, xs);

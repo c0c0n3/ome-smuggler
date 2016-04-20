@@ -48,8 +48,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      */
     public static <T> boolean hasNulls(T[] ts) {
         if (!isNullOrZeroLength(ts)) {
-            for (int k = 0; k < ts.length; ++k) {
-                if (ts[k] == null) return true;
+            for (T t : ts) {
+                if (t == null) return true;
             }
         }
         return false;
@@ -80,7 +80,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         if (ts == null) return new ArrayList<>();
         
         ArrayList<T> ys = new ArrayList<>(ts.length);
-        for (int k = 0; k < ts.length; ++k) ys.add(ts[k]);
+        Collections.addAll(ys, ts);
         return ys;
     }
     
@@ -119,7 +119,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         Pair<X, Y>[] zs = newPairs(size);
         
         for (int k = 0; k < size; ++k) {
-            zs[k] = new Pair<X, Y>(xs[k], ys[k]);
+            zs[k] = new Pair<>(xs[k], ys[k]);
         }
         return zs;
     }
@@ -135,7 +135,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         Pair<Integer, X>[] zs = newPairs(xs.length);
         
         for (int k = 0; k < xs.length; ++k) {
-            zs[k] = new Pair<Integer, X>(k, xs[k]);
+            zs[k] = new Pair<>(k, xs[k]);
         }
         return zs;
     }
@@ -150,10 +150,10 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      * @throws NullPointerException if {@code generator} is {@code null}.
      */
     public static <T> Arrayz<T> op(IntFunction<T[]> generator) {
-        return new Arrayz<T>(generator);
+        return new Arrayz<>(generator);
     }
     
-    private IntFunction<A[]> generator;
+    private final IntFunction<A[]> generator;
     
     private Arrayz(IntFunction<A[]> generator) {
         requireNonNull(generator, "generator");
@@ -225,9 +225,9 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         requireNonNull(list, "list");
         
         ArrayList<A> filtered = new ArrayList<>(list.length);
-        for (int k = 0; k < list.length; ++k) {
-            if (p.test(list[k])) {
-                filtered.add(list[k]);
+        for (A x : list) {
+            if (p.test(x)) {
+                filtered.add(x);
             }
         }
         A[] result = generator.apply(filtered.size());

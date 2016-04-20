@@ -32,9 +32,9 @@ public enum JvmName {
                        .orElse(Java);
     }
     
-    private String commandName;
+    private final String commandName;
     
-    private JvmName(String commandName) {
+    JvmName(String commandName) {
         this.commandName = commandName;
     }
     

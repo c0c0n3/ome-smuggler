@@ -62,7 +62,7 @@ public class MonoidProviderTest {
     
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullSecondArg() {
-        new MonoidProvider<Integer>(sum, null);
+        new MonoidProvider<>(sum, null);
     }
     
 }

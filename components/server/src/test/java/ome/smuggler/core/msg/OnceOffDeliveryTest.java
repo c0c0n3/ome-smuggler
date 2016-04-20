@@ -37,9 +37,7 @@ public class OnceOffDeliveryTest {
                     consumedData = Optional.of(d);
                     return stopOrRepeat;
                 }, 
-                d -> { 
-                    exceededRedeliveryData = Optional.of(d); 
-                }); 
+                d -> exceededRedeliveryData = Optional.of(d));
         return new OnceOffSchedule<>(consumer);
     }
     

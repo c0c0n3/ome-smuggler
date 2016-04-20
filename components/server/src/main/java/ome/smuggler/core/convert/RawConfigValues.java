@@ -40,7 +40,7 @@ public class RawConfigValues {
     
     public static List<Duration> toDurationList(Long[] minutes) {
         return Stream.of(minutes == null ? new Long[0] : minutes)
-                     .map(ms -> toDuration(ms))
+                     .map(RawConfigValues::toDuration)
                      .collect(collectingAndThen(
                                  toList(), Collections::unmodifiableList));
     }

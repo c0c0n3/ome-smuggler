@@ -38,7 +38,7 @@ public enum Commands {
      */
     Import(ImportAdapter::main);
 
-    private Consumer<String[]> commandMain;
+    private final Consumer<String[]> commandMain;
 
     Commands(Consumer<String[]> commandMain) {
         this.commandMain = commandMain;

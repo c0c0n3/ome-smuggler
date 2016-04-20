@@ -8,7 +8,7 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import ome.smuggler.core.types.ImportLogPath;
@@ -29,7 +29,7 @@ public class ImportOutput {
     }
 
     private void output(String line) throws IOException {
-        List<String> content = Arrays.asList(line);
+        List<String> content = Collections.singletonList(line);
         Files.write(outputFile, content, CREATE, WRITE, APPEND);
     }
         

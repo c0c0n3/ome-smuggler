@@ -10,7 +10,7 @@ import util.config.ConfigProvider;
  */
 public class MailYmlFile implements ConfigProvider<MailConfig> {
 
-    public static String DeadMailDirRelPath = "mail/failed";
+    public static final String DeadMailDirRelPath = "mail/failed";
     
     @Override
     public Stream<MailConfig> readConfig() {

@@ -17,8 +17,6 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import io.undertow.UndertowOptions;
-import io.undertow.Undertow.Builder;
-import io.undertow.servlet.api.DeploymentInfo;
 import ome.smuggler.config.items.UndertowConfig;
 import util.config.ConfigProvider;
 
@@ -75,20 +73,15 @@ public class WebWiring extends WebMvcConfigurerAdapter {
         UndertowEmbeddedServletContainerFactory factory = 
                 new UndertowEmbeddedServletContainerFactory(port);
         
-        factory.addBuilderCustomizers(new UndertowBuilderCustomizer() {
-            @Override
-            public void customize(Builder builder) {  // (*)
-                builder.setServerOption(UndertowOptions.DECODE_URL, true);
-                builder.setServerOption(UndertowOptions.URL_CHARSET, 
-                                        StandardCharsets.UTF_8.name());
-            }
+        factory.addBuilderCustomizers((UndertowBuilderCustomizer) builder -> {  // (*)
+            builder.setServerOption(UndertowOptions.DECODE_URL, true);
+            builder.setServerOption(UndertowOptions.URL_CHARSET,
+                                    StandardCharsets.UTF_8.name());
         });
         
-        factory.addDeploymentInfoCustomizers(new UndertowDeploymentInfoCustomizer() {
-            @Override
-            public void customize(DeploymentInfo deployment) {  // (*)
-                deployment.setDefaultEncoding(StandardCharsets.UTF_8.name());
-            }
+        factory.addDeploymentInfoCustomizers(
+                (UndertowDeploymentInfoCustomizer) deployment -> {  // (*)
+            deployment.setDefaultEncoding(StandardCharsets.UTF_8.name());
         });
         
         return factory;

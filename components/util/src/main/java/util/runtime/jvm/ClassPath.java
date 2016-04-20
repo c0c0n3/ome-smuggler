@@ -7,6 +7,7 @@ import static util.string.Strings.isNullOrEmpty;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -21,7 +22,7 @@ public class ClassPath {
     public static final String Separator = File.pathSeparator;
     
     
-    private LinkedHashSet<Path> entries;
+    private final LinkedHashSet<Path> entries;
     
     /**
      * Creates a new {@link #isEmpty() empty} class path.
@@ -70,7 +71,7 @@ public class ClassPath {
     public ClassPath add(Stream<Path> cpEntries) {
         requireNonNull(cpEntries, "cpEntries");
         
-        cpEntries.map(p -> requireNonNull(p))
+        cpEntries.map(Objects::requireNonNull)
                  .map(Path::normalize)
                  .filter(p -> !isNullOrEmpty(p.toString()))
                  .forEachOrdered(entries::add);

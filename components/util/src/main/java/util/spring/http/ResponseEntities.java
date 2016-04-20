@@ -170,8 +170,7 @@ public class ResponseEntities {
             Function<E, ResponseEntity<Object>> errorGenerator) {
         requireNonNull(body, "body");
 
-        return body.either(error -> errorGenerator.apply(error), 
-                           result -> ResponseEntity.ok((Object)result));
+        return body.either(errorGenerator, ResponseEntity::ok);
     }
     
 }

@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class RequestCharEncodingWrapperTest {
     
     @Test
     public void getParameterNamesTriggersHook() {
-        RequestCharEncodingWrapper target = newWrapper(r -> r.getParameterNames());
+        RequestCharEncodingWrapper target = newWrapper(ServletRequest::getParameterNames);
         target.getParameterNames();
         
         assertTrue(hookCalled);
@@ -73,7 +74,7 @@ public class RequestCharEncodingWrapperTest {
     
     @Test
     public void getParameterMapTriggersHook() {
-        RequestCharEncodingWrapper target = newWrapper(r -> r.getParameterMap());
+        RequestCharEncodingWrapper target = newWrapper(ServletRequest::getParameterMap);
         target.getParameterMap();
         
         assertTrue(hookCalled);
@@ -82,7 +83,7 @@ public class RequestCharEncodingWrapperTest {
     
     @Test
     public void getInputStreamTriggersHook() throws IOException {
-        RequestCharEncodingWrapper target = newWrapper(r -> r.getInputStream());
+        RequestCharEncodingWrapper target = newWrapper(ServletRequest::getInputStream);
         target.getInputStream();
         
         assertTrue(hookCalled);
@@ -91,7 +92,7 @@ public class RequestCharEncodingWrapperTest {
     
     @Test
     public void getReaderTriggersHook() throws IOException {
-        RequestCharEncodingWrapper target = newWrapper(r -> r.getReader());
+        RequestCharEncodingWrapper target = newWrapper(ServletRequest::getReader);
         target.getReader();
         
         assertTrue(hookCalled);

@@ -21,7 +21,7 @@ import util.lambda.ConsumerE;
 public class TaskIdPathStoreTest {
 
     @Rule
-    public TemporaryFolder storeDir = new TemporaryFolder();
+    public final TemporaryFolder storeDir = new TemporaryFolder();
 
     private TaskFileStore<BaseStringId> target;
     

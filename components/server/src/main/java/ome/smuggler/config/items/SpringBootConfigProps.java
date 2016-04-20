@@ -38,7 +38,7 @@ public class SpringBootConfigProps {
     public static 
     Stream<JPropSetter<Boolean>> endpointsEnabled() {
         return Stream.of(ActuatorEndPointName.values())
-                     .map(name -> endpointEnabled(name));
+                     .map(SpringBootConfigProps::endpointEnabled);
     }
     
     public static 
@@ -49,7 +49,7 @@ public class SpringBootConfigProps {
     public static 
     Stream<JPropSetter<Boolean>> endpointsSensitive() {
         return Stream.of(ActuatorEndPointName.values())
-                     .map(name -> endpointSensitive(name));
+                     .map(SpringBootConfigProps::endpointSensitive);
     }
     
     public static JPropAccessor<String> managementAddress() {

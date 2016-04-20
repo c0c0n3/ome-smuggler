@@ -49,7 +49,7 @@ public class MailClientAdapter implements MailClient {
     private static void configureAuthentication(MailConfigSource config,
             String username, JavaMailSenderImpl mailSender, JProps mailProps) {
         mailSender.setUsername(username);
-        config.password().ifPresent(p -> mailSender.setPassword(p));
+        config.password().ifPresent(mailSender::setPassword);
         mailProps.set(authenticate(config.protocol()).with(true));
     }
     

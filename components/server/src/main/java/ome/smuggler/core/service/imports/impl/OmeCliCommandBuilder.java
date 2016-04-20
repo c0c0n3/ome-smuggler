@@ -20,7 +20,7 @@ import util.runtime.jvm.JvmCmdBuilder;
 public abstract class OmeCliCommandBuilder implements CommandBuilder {
 
     protected static ListProgramArgument<String> arg(String...tokens) {
-        return new ListProgramArgument<String>(asList(tokens));
+        return new ListProgramArgument<>(asList(tokens));
     }
     
     protected static <T> ListProgramArgument<String> optionalArg(

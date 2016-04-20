@@ -52,7 +52,8 @@ public class FifoResourceLoaderAdapter implements LociResourceLoader {
      */
     @Override
     public Optional<Resource> selectResource(ResourceLocation...loci) {
-        String[] xs = pruneNull(loci).map(l -> l.get()).toArray(String[]::new);
+        String[] xs = pruneNull(loci).map(ResourceLocation::get)
+                                     .toArray(String[]::new);
         return select(xs);
     }
     

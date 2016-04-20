@@ -5,6 +5,6 @@ package ome.smuggler.config.items;
  */
 public enum LogLevel {
 
-    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF;
+    TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
     
 }

@@ -13,8 +13,8 @@ import util.config.ConfigProvider;
  */
 public class ImportYmlFile implements ConfigProvider<ImportConfig> {
 
-    public static String RelImportLogDirPath = "import/log";
-    public static String RelFailedImportLogDirPath = "import/failed-log";
+    public static final String RelImportLogDirPath = "import/log";
+    public static final String RelFailedImportLogDirPath = "import/failed-log";
     
     @Override
     public Stream<ImportConfig> readConfig() {

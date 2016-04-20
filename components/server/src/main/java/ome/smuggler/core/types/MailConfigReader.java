@@ -66,8 +66,8 @@ public class MailConfigReader implements MailConfigSource {
         username = asOptional(config.getUsername());
         password = asOptional(config.getPassword());
         protocol = config.getUseSmtps() ? smtps : smtp;
-        skipServerCertificateValidation = smtps.equals(protocol) ? 
-                config.getSkipServerCertificateValidation() : false;
+        skipServerCertificateValidation = smtps.equals(protocol) &&
+                                    config.getSkipServerCertificateValidation();
         sysAdminAddress = parseOptionalEmail(config.getSysAdminEmail());
     }
     

@@ -23,10 +23,10 @@ import util.object.Identifiable;
 
 public class TaskFileStoreClient<T extends Identifiable> {
 
-    protected RestTemplate httpClient;
-    protected String rootPath;
-    protected Consumer<ResponseEntity<?>> assertCachingStrategy;
-    protected Function<String, T> newTaskId;
+    protected final RestTemplate httpClient;
+    protected final String rootPath;
+    protected final Consumer<ResponseEntity<?>> assertCachingStrategy;
+    protected final Function<String, T> newTaskId;
     
     private URI listUrl() {
         return url(rootPath);

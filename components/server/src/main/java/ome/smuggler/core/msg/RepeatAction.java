@@ -15,6 +15,6 @@ public enum RepeatAction {
      * A message consumer uses this flag to indicate the message has been
      * consumed fully and must not be re-delivered.
      */
-    Stop;
+    Stop
     
 }

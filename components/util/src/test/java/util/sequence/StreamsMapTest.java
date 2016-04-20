@@ -26,7 +26,7 @@ public class StreamsMapTest {
     public void mapWithPairIsZip(Integer[] list) {
         Stream<Integer> ts = Stream.of(list);
         BiFunction<Integer, Integer, Pair<Integer, Integer>> pair =
-                Pair<Integer, Integer>::new;
+                Pair::new;
         
         Pair<Integer, Integer>[] actual = map(pair, ts)
                                          .toArray(Arrayz::newPairs);
@@ -44,7 +44,7 @@ public class StreamsMapTest {
     
     @Test(expected = NullPointerException.class)
     public void throwIfNullStream() {
-        map(Pair<Integer, Byte>::new, null);
+        map(Pair::new, null);
     }
     
 }

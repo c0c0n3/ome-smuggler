@@ -20,12 +20,12 @@ import util.object.Wrapper;
 public class WrapperTest {
 
     @DataPoints
-    public static String[] values = array(null, "", "a", "ab");
+    public static final String[] values = array(null, "", "a", "ab");
     
     @SuppressWarnings("unchecked")
     @DataPoints
     public static Wrapper<String>[] wrappers = Stream.of(values)
-                                                     .map(Wrapper<String>::new)
+                                                     .map(Wrapper::new)
                                                      .skip(1)  // get rid of W(null)
                                                      .toArray(Wrapper[]::new);
     
@@ -75,7 +75,7 @@ public class WrapperTest {
         assumeTrue(w != null);  // (*)
         
         String wrappedValue = w.get();
-        assertThat(w.toString(), is(wrappedValue.toString()));
+        assertThat(w.toString(), is(wrappedValue));
     }
     /* (*) there's no null in wrappers, but JUnit kindly gives us one so that
      * our actual supply of wrappers = [null, w(""), w("a"), w("ab")]. WTH?!

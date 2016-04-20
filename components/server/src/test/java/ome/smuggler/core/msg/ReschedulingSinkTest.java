@@ -71,9 +71,7 @@ public class ReschedulingSinkTest implements Reschedulable<CountedSchedule> {
         actualMessagesSentOnLoopback= loopback.dequeue();
     
         assertThat(actualMessagesSentOnLoopback.size(), is(messageCap - 1));
-        actualMessagesSentOnLoopback.forEach(msg -> {
-            assertThat(msg.metadata().get(), is(msg.data())); 
-        });
+        actualMessagesSentOnLoopback.forEach(msg -> assertThat(msg.metadata().get(), is(msg.data())));
     }
     
     private void verifyScheduling(int messageCap) {

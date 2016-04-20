@@ -22,10 +22,10 @@ import ome.smuggler.run.RunnableApp;
 public abstract class ConfigFileTest<T> {
     
     @Rule
-    public OutputCapture generatedConfig = new OutputCapture();
+    public final OutputCapture generatedConfig = new OutputCapture();
     
     @Rule
-    public TemporaryFolder configDirUnderPwd = new TemporaryFolder(new File("./"));
+    public final TemporaryFolder configDirUnderPwd = new TemporaryFolder(new File("./"));
     
     protected abstract PriorityConfigProvider<T> getConfigProvider();
     

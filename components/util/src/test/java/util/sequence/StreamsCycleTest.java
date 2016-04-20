@@ -21,7 +21,7 @@ public class StreamsCycleTest {
     public static int[] times = new int[] { -1, 0, 1, 2, 3 };
     
     @DataPoints
-    public static Integer[][] list = new Integer[][] { 
+    public static final Integer[][] list = new Integer[][] {
         array(), array(1), array(1, 2), array(1, 2, 3)
     };
     

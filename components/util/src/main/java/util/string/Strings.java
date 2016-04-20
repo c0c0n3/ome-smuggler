@@ -126,9 +126,8 @@ public class Strings {
      */
     public static String readAsString(Readable source) throws IOException {
         requireNonNull(source, "source");
-        
-        Scanner reader = new Scanner(source);
-        try {
+
+        try (Scanner reader = new Scanner(source)) {
             reader.useDelimiter("\\A");
             String input = reader.hasNext() ? reader.next() : "";
             IOException maybeError = reader.ioException();
@@ -136,9 +135,6 @@ public class Strings {
                 throw maybeError;
             }
             return input;
-        }
-        finally {
-            reader.close();
         }
     }
     /* Adapted from:

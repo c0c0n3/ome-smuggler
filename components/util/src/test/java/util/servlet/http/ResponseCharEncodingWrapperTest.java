@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
@@ -46,7 +47,7 @@ public class ResponseCharEncodingWrapperTest {
     
     @Test
     public void getOutputStreamTriggersHook() throws IOException {
-        ResponseCharEncodingWrapper target = newWrapper(r -> r.getOutputStream());
+        ResponseCharEncodingWrapper target = newWrapper(ServletResponse::getOutputStream);
         target.getOutputStream();
         
         assertTrue(hookCalled);
@@ -55,7 +56,7 @@ public class ResponseCharEncodingWrapperTest {
     
     @Test
     public void getWriterTriggersHook() throws IOException {
-        ResponseCharEncodingWrapper target = newWrapper(r -> r.getWriter());
+        ResponseCharEncodingWrapper target = newWrapper(ServletResponse::getWriter);
         target.getWriter();
         
         assertTrue(hookCalled);

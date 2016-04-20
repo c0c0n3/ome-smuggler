@@ -86,7 +86,7 @@ public class BaseLogger implements LogService {
         requireNonNull(error, "error");
         
         warn(site, buf -> buf.print(error.toString()));
-        debug(site, buf -> error.printStackTrace(buf));
+        debug(site, error::printStackTrace);
     }
     
 }

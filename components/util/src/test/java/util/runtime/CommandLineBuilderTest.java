@@ -38,11 +38,11 @@ public class CommandLineBuilderTest {
     }
     
     private static CommandBuilder arg(String...tokens) {
-        return new ListProgramArgument<String>(asList(tokens));
+        return new ListProgramArgument<>(asList(tokens));
     }
     
     private static Stream<CommandBuilder> buildArgs(String[]...xs) {
-        return Stream.of(xs).map(tokens -> arg(tokens));
+        return Stream.of(xs).map(CommandLineBuilderTest::arg);
     }
     
     private static String[] concat(String[]...xs) {

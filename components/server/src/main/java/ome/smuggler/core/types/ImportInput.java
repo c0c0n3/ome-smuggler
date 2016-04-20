@@ -26,8 +26,8 @@ public class ImportInput {
     private Optional<String> description;    
     private Optional<DatasetId> datasetId;
     private Optional<ScreenId> screenId;
-    private List<TextAnnotation> textAnnotations;
-    private List<PositiveN> annotationIds;
+    private final List<TextAnnotation> textAnnotations;
+    private final List<PositiveN> annotationIds;
 
     public ImportInput(Email experimenterEmail, URI target, URI omero, 
                        String sessionKey) {
@@ -95,7 +95,7 @@ public class ImportInput {
     
     public ImportInput setDatasetId(Optional<DatasetId> id) {
         requireNonNull(id, "id");
-        id.ifPresent(x -> setDatasetId(x));
+        id.ifPresent(this::setDatasetId);
         return this;
     }
     
@@ -116,7 +116,7 @@ public class ImportInput {
 
     public ImportInput setScreenId(Optional<ScreenId> id) {
         requireNonNull(id, "id");
-        id.ifPresent(x -> setScreenId(x));
+        id.ifPresent(this::setScreenId);
         
         return this;
     }
@@ -141,7 +141,7 @@ public class ImportInput {
     
     public ImportInput addTextAnnotations(Stream<TextAnnotation> xs) {
         requireNonNull(xs, "xs");
-        xs.forEach(x -> addTextAnnotation(x));
+        xs.forEach(this::addTextAnnotation);
         
         return this;
     }
@@ -162,7 +162,7 @@ public class ImportInput {
     
     public ImportInput addAnnotationIds(Stream<PositiveN> xs) {
         requireNonNull(xs, "xs");
-        xs.forEach(x -> addAnnotationId(x));
+        xs.forEach(this::addAnnotationId);
         
         return this;
     }

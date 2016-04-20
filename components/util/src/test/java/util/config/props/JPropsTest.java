@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public class JPropsTest {
 
-    private static JPropAccessor<Boolean> boolProp = makeBool(key("p1"));
-    private static JPropAccessor<URI> uriProp = makeURI(key("p2"));
+    private static final JPropAccessor<Boolean> boolProp = makeBool(key("p1"));
+    private static final JPropAccessor<URI> uriProp = makeURI(key("p2"));
     
     private static JProps emptyProps() {
         return new JProps(new Properties());

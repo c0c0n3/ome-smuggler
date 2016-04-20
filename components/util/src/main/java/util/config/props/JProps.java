@@ -112,7 +112,7 @@ public class JProps {
      */
     public JProps removeAll(Stream<JPropSetter<?>> props) {
         requireNonNull(props, "props");
-        props.forEach(p -> remove(p));
+        props.forEach(this::remove);
         return this;
     }
     

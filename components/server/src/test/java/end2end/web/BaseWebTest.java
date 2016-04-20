@@ -28,11 +28,11 @@ public class BaseWebTest {
         UriComponentsBuilder builder = UriComponentsBuilder
                                       .fromUriString("http://localhost:8000/");
         String[] ys = Arrayz.op(String[]::new).intersperse(() -> "/", xs);
-        Arrays.asList(ys).forEach(y -> builder.path(y));
+        Arrays.asList(ys).forEach(builder::path);
         return builder.build().toUri();
     }
     
-    private static AtomicBoolean serverStarted = new AtomicBoolean(false);
+    private static final AtomicBoolean serverStarted = new AtomicBoolean(false);
     protected static Config config;
     
     @BeforeClass
@@ -50,7 +50,7 @@ public class BaseWebTest {
     /* NB JUnit may run tests concurrently.
      */
     
-    protected RestTemplate httpClient;
+    protected final RestTemplate httpClient;
     
     public BaseWebTest() {
         httpClient = new TestRestTemplate();

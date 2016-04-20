@@ -118,7 +118,7 @@ public class ValueParserFactory {
         return pairParser(stringParser(), positiveIntParser())
               .parse(host, port)
               .map(p -> String.format("omero://%s:%s/", p.fst(), p.snd()))
-              .bind(s -> uri(s));
+              .bind(ValueParserFactory::uri);
     }
     
     /**

@@ -52,7 +52,7 @@ public class CountedSchedule extends Schedule<PositiveN> {
     @Override
     public boolean equals(Object x) {
         if (x == this) return true;
-        return x instanceof CountedSchedule ? super.equals(x) : false;
+        return x instanceof CountedSchedule && super.equals(x);
     }
     
 }

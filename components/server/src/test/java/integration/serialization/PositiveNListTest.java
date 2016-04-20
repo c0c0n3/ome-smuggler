@@ -31,18 +31,18 @@ public class PositiveNListTest extends JsonWriteReadTest {
     @Test
     @SuppressWarnings("unchecked")
     public void deserializesMapsDueToTypeErasure() {
-        List<PositiveN> initialValue = Arrays.asList(posN(1));
+        List<PositiveN> initialValue = Collections.singletonList(posN(1));
         Class<List<PositiveN>> valueType = (Class<List<PositiveN>>) 
                                                 initialValue.getClass();
         List<PositiveN> readValue = writeThenRead(initialValue, valueType);
         
         assertThat(readValue, is(not(initialValue)));
         
-        LinkedTreeMap<String, Double> deserialized = 
-                new LinkedTreeMap<String, Double>();
+        LinkedTreeMap<String, Double> deserialized =
+                new LinkedTreeMap<>();
         deserialized.put("wrappedValue", 1.0);
         
-        assertThat(readValue, is(Arrays.asList(deserialized)));  // (*)
+        assertThat(readValue, is(Collections.singletonList(deserialized)));  // (*)
     }
     /* (*) Type erasure goodness!
      * So what's happening here? 

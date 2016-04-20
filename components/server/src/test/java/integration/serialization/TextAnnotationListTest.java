@@ -31,7 +31,7 @@ public class TextAnnotationListTest extends JsonWriteReadTest {
     @Test
     @SuppressWarnings("unchecked")
     public void deserializesMapsDueToTypeErasure() {
-        List<TextAnnotation> initialValue = Arrays.asList(anno("n", "t"));
+        List<TextAnnotation> initialValue = Collections.singletonList(anno("n", "t"));
         Class<List<TextAnnotation>> valueType = (Class<List<TextAnnotation>>) 
                                                 initialValue.getClass();
         List<TextAnnotation> readValue = writeThenRead(initialValue, valueType);
@@ -39,14 +39,14 @@ public class TextAnnotationListTest extends JsonWriteReadTest {
         assertThat(readValue, is(not(initialValue)));
         
         LinkedTreeMap<String, LinkedTreeMap<String, String>> deserialized =
-                new LinkedTreeMap<String, LinkedTreeMap<String, String>>();
-        LinkedTreeMap<String, String> deserializedAnno = 
-                new LinkedTreeMap<String, String>();
+                new LinkedTreeMap<>();
+        LinkedTreeMap<String, String> deserializedAnno =
+                new LinkedTreeMap<>();
         deserializedAnno.put("fst", "n");
         deserializedAnno.put("snd", "t");
         deserialized.put("wrappedValue", deserializedAnno);
         
-        assertThat(readValue, is(Arrays.asList(deserialized)));  // (*)
+        assertThat(readValue, is(Collections.singletonList(deserialized)));  // (*)
     }
     /* (*) Type erasure goodness!
      * So what's happening here? 

@@ -41,7 +41,7 @@ public class ArrayzNullsTest {
     public void pruneNull() {
         Arrayz<String> op = Arrayz.op(String[]::new);
         
-        assertThat(op.pruneNull((String[])null).length, is(0));
+        assertThat(op.pruneNull(null).length, is(0));
         assertThat(op.pruneNull(new String[0]).length, is(0));
         
         String[] pruned = op.pruneNull(Arrayz.array(null, "", null));

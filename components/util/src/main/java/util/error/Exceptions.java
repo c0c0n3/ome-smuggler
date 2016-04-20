@@ -33,7 +33,7 @@ public class Exceptions {
     public static RuntimeException throwAsIfUnchecked(Throwable t) {
         requireNonNull(t, "t");
                 
-        Exceptions.<RuntimeException> throwAs(t);
+        Exceptions.throwAs(t);
         return null;
     }
     
