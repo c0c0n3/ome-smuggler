@@ -2,6 +2,7 @@ package ome.smuggler.core.service.imports.impl;
 
 import ome.smuggler.core.service.log.BaseLogger;
 import ome.smuggler.core.service.log.LogService;
+import ome.smuggler.core.service.omero.impl.KeepAliveCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
 import util.object.Pair;

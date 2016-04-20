@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.imports.impl;
+package ome.smuggler.core.service.omero.impl;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;

@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.imports.impl;
+package ome.smuggler.core.service.omero.impl;
 
 import static ome.smuggler.core.types.ImportInputTest.makeNew;
 import static org.hamcrest.Matchers.is;

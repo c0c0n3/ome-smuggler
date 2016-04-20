@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import ome.smuggler.core.io.CommandRunner;
 import ome.smuggler.core.msg.RepeatAction;
 import ome.smuggler.core.service.imports.ImportProcessor;
+import ome.smuggler.core.service.omero.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.QueuedImport;
 
 
@@ -22,7 +23,7 @@ public class ImportRunner implements ImportProcessor {
         this.env = env;
     }
     
-    private int run(ImporterCommandBuilder cliOmeroImporter, QueuedImport task) 
+    private int run(ImporterCommandBuilder cliOmeroImporter, QueuedImport task)
             throws IOException, InterruptedException {
         CommandRunner runner = new CommandRunner(cliOmeroImporter);
         Path importTarget = env.importLogPathFor(task.getTaskId()).get(); 

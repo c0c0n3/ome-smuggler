@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import ome.smuggler.core.service.omero.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
 

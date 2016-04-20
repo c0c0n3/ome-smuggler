@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.imports.impl;
+package ome.smuggler.core.service.omero.impl;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;

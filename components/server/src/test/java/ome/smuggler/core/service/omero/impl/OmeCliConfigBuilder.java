@@ -1,4 +1,4 @@
-package ome.smuggler.core.service.imports.impl;
+package ome.smuggler.core.service.omero.impl;
 
 import ome.smuggler.config.data.DefaultOmeCliConfig;
 import ome.smuggler.config.items.OmeCliConfig;
