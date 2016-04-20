@@ -89,7 +89,6 @@ public class ServletCharEncoding {
     /**
      * Sets the request character encoding if the request doesn't have one.
      * @param r the request.
-     * @param defaultEncoding value to set if absent. 
      * @return {@code true} if the request had no encoding and the given default
      * was set; {@code false} otherwise.
      * @throws NullPointerException if any argument is {@code null}.

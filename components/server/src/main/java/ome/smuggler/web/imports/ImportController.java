@@ -67,7 +67,7 @@ public class ImportController {
      * acquired before hand; the corresponding OMERO session will be used to
      * import the data. However, the client can close its session as soon as
      * this web method returns.
-     * @param request details what image data to import.
+     * @param data details what image data to import.
      */
     @RequestMapping(method = POST, 
                     consumes = MediaType.APPLICATION_JSON_VALUE,

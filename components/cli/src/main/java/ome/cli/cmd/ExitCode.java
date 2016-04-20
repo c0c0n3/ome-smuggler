@@ -16,7 +16,7 @@ import Ice.DNSException;
  * a parse error in {@code ome.cli.Main} when the wrong command name or no
  * arguments are given.
  *
- * @see <a href="http://tldp.org/LDP/abs/html/exitcodes.html">Bash exit codes</a>.
+ * @see <a href="http://tldp.org/LDP/abs/html/exitcodes.html">Bash exit codes</a>
  */
 public enum ExitCode {
     

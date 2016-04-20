@@ -28,7 +28,8 @@ public class ImportRequest {
      * For now these are the only supported options, but, going forward, we will 
      * implement the means to resolve file locations across a network so that an 
      * import server may pull image data from multiple acquisition workstations.
-     * @see https://en.wikipedia.org/wiki/File_URI_scheme
+     * @see <a href="https://en.wikipedia.org/wiki/File_URI_scheme">File URI
+     * scheme</a>
      */
     public String targetUri;
     

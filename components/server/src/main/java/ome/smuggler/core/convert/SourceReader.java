@@ -12,7 +12,7 @@ public interface SourceReader<T> {
     /**
      * Reads {@code T}-value from the underlying data source.
      * @return the value read from the source.
-     * @throws Exeption if the value could not be read.
+     * @throws Exception if the value could not be read.
      */
     T read() throws Exception;
 

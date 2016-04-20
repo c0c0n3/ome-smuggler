@@ -235,7 +235,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     }
     
     /**
-     * Same as {@link Streams#intersperse(Object, Stream) Streams.intersperse} 
+     * Same as {@link Streams#intersperse(Supplier, Stream)} Streams.intersperse}
      * but operating on arrays.
      */
     public A[] intersperse(Supplier<A> sep, A[] list) {

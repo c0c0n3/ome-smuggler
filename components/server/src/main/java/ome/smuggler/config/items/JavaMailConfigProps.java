@@ -15,7 +15,7 @@ import util.config.props.JPropKey;
 /**
  * Accessors for Java Mail SMTP properties.
  * @see <a href="https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html">
- * Java Mail SMTP summary</a>.
+ * Java Mail SMTP summary</a>
  */
 public class JavaMailConfigProps {
     

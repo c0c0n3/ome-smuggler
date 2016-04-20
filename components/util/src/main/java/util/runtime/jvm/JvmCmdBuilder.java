@@ -64,7 +64,6 @@ public abstract class JvmCmdBuilder extends CommandLineBuilder {
      * property arguments.
      * Filters out properties having a {@code null} or empty key or having a
      * {@code null} value.
-     * @param props the properties to add.
      * @return itself for use in fluent API style.
      */
     public JvmCmdBuilder addCurrentSysProps() {

@@ -15,7 +15,7 @@ public abstract class AbstractWrapper<T> implements Supplier<T> {
      * values.
      * More precisely, call {@code U} the set obtained by the union of all 
      * {@code T} values ({@code null} included) with their corresponding 
-     * wrappers {@code W = { AbstractWrapper(t) | t in T } and consider the 
+     * wrappers {@code W = { AbstractWrapper(t) | t in T }} and consider the
      * function {@code f : U → T} defined by {@code f t = t} if {@code t in T}
      * or {@code f w = w.get()} if {@code w in W}. The equivalence enforced
      * by this method is the equivalence kernel of {@code f}.

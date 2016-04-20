@@ -89,7 +89,8 @@ public class JvmCmdFactory {
      * Attempts to build a an argument with the absolute path of executable of
      * the currently running JVM.
      * @return this JVM's path.
-     * @throws NoSuchElementException if the path could not be determined.
+     * @throws java.util.NoSuchElementException if the path could not be
+     * determined.
      */
     public static ProgramArgument<Path> thisJvm() {
         return JvmLocator.findCurrentJvmExecutable()

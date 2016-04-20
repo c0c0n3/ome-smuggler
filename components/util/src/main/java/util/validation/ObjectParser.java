@@ -21,9 +21,7 @@ public interface ObjectParser<T> {
     Either<String, T> parseNonNull(Stream<String> tokens);
     
     /**
-     * Parses a textual representation of a {@code T}-value. 
-     * @param value the input to parse, may be {@code null} or empty.
-     * @return either the parsed value (right) or a parse error message (left).
+     * Parses a textual representation of a {@code T}-value.
      * @param tokens the tokens that make up the state of a {@code T}-value,
      * typically {@code T}'s fields. Tokens are allowed to be {@code null} or 
      * empty.

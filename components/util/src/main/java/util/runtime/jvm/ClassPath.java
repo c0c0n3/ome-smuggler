@@ -49,8 +49,8 @@ public class ClassPath {
      * as a class path of {@code x:y:x} is equivalent to {@code x:y}.
      * Also, each entry will be normalized before appending; if it turns out
      * to be the empty path, then it will not be appended.
-     * @param xs the entries to add; they will be added in the given order from
-     * left to right.
+     * @param cpEntries the entries to add; they will be added in the given
+     * order from left to right.
      * @return itself to facilitate fluent API style.
      * @throws NullPointerException if the argument is {@code null} or any of 
      * its elements are {@code null}.
