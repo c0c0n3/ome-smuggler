@@ -6,7 +6,6 @@ import ome.smuggler.core.service.omero.impl.KeepAliveCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
 import util.object.Pair;
-import util.sequence.Streams;
 
 import java.io.PrintWriter;
 import java.util.function.Consumer;
