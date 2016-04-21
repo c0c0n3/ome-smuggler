@@ -1,13 +1,10 @@
 package ome.smuggler.config.wiring.imports;
 
-import ome.smuggler.core.types.OmeCliConfigReader;
-import ome.smuggler.core.types.OmeCliConfigSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import ome.smuggler.config.Profiles;
-import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
 import ome.smuggler.config.items.ImportKeepAliveQConfig;
@@ -18,7 +15,8 @@ import util.config.ConfigProvider;
 import util.config.ConfigReader;
 
 /**
- * Spring bean wiring of configuration items.
+ * Spring bean wiring of import configuration items for the {@link Profiles#Prod
+ * Prod} profile.
  */
 @Configuration
 @Profile(Profiles.Prod)
@@ -38,11 +36,6 @@ public class ImportConfigBeans {
     public ImportKeepAliveQConfig importKeepAliveQConfig(
             ConfigProvider<ImportKeepAliveQConfig> src) {
         return src.first();
-    }
-    
-    @Bean
-    public OmeCliConfigSource omeCliConfig(ConfigProvider<OmeCliConfig> src) {
-        return ConfigReader.newReader(src, OmeCliConfigReader::new).first();
     }
     
     @Bean
