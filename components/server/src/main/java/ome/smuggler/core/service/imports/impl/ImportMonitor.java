@@ -4,17 +4,13 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 
-import ome.smuggler.core.io.CommandRunner;
-import ome.smuggler.core.io.StreamOps;
 import ome.smuggler.core.msg.CountedSchedule;
 import ome.smuggler.core.service.imports.ImportTracker;
-import ome.smuggler.core.service.omero.impl.KeepAliveCommandBuilder;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportKeepAlive;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
 import ome.smuggler.core.types.Schedule;
-import util.object.Pair;
 
 /**
  * Implementation of the {@link ImportTracker import tracking} service.
