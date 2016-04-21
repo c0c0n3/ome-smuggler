@@ -42,7 +42,7 @@ public class KeepAliveLogger extends BaseLogger {
     @SafeVarargs
     private static Consumer<PrintWriter> writer(String header,
                                                 Stream<Pair<Object, Object>>...xs) {
-        return fieldsWriter(header, Streams.concat(xs));
+        return fieldsWriter(header, xs);
     }
 
     public KeepAliveLogger(LogService service) {

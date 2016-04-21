@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import util.object.Pair;
+import util.sequence.Streams;
 
 /**
  * Base class for loggers that extend the basic functionality of the 
@@ -39,13 +40,15 @@ public class BaseLogger implements LogService {
      * @return the consumer.
      * @throws NullPointerException if any argument is {@code null}.
      */
+    @SafeVarargs
     public static <T> Consumer<PrintWriter> fieldsWriter(String header,
-            Stream<Pair<Object, Object>> fields) {
+            Stream<Pair<Object, Object>>...fields) {
         requireNonNull(header, "header");
-        
+
         return buf -> {
             buf.println(header);
-            buf.println(fieldsToString(fields));
+            Stream<Pair<Object, Object>> fs = Streams.concat(fields);
+            buf.println(fieldsToString(fs));
         };
     }
     
