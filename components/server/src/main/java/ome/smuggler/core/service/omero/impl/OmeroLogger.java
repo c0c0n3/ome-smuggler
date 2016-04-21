@@ -5,9 +5,11 @@ import ome.smuggler.core.service.log.LogService;
 import util.object.Pair;
 import util.string.Strings;
 
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static util.object.Pair.pair;
+
 
 /**
  * Logging methods for the OMERO services.
@@ -19,6 +21,15 @@ public class OmeroLogger extends BaseLogger {
         return Stream.of(
                 pair("Command", cmd),
                 pair("Exit Code", exitCode));
+    }
+
+    private static Stream<Pair<Object, Object>> summary(OmeCliCommandBuilder cmd,
+                                                        int exitCode,
+                                                        String cmdOutput) {
+        return Stream.of(
+                pair("Command", cmd),
+                pair("Exit Code", exitCode),
+                pair("Command Output", cmdOutput));
     }
 
     private static Stream<Pair<Object, Object>> summary(OmeCliCommandBuilder cmd,
@@ -40,10 +51,17 @@ public class OmeroLogger extends BaseLogger {
                     summary(cmd, exitCode)));
     }
 
-    public void failure(OmeCliCommandBuilder cmd, int exitCode) {
+    public void failure(OmeCliCommandBuilder cmd, int exitCode, String cmdOutput) {
         error(cmd, fieldsWriter(
                 String.format("OMERO %s command failed.", cmd.commandName()),
-                summary(cmd, exitCode)));
+                summary(cmd, exitCode, cmdOutput)));
+    }
+
+    public void failure(OmeCliCommandBuilder cmd, int exitCode, Path outputFile) {
+        error(cmd, fieldsWriter(
+                String.format("OMERO %s command failed.", cmd.commandName()),
+                summary(cmd, exitCode,
+                        String.format("redirected to file -> %s", outputFile))));
     }
 
     public void failure(OmeCliCommandBuilder cmd, Exception e) {
