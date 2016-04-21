@@ -34,7 +34,10 @@ public class SessionManager implements SessionService {
 
     @Override
     public boolean close(URI omeroHostAndPort, String sessionKey) {
-        return false;
+        CloseCommandBuilder cmd = new CloseCommandBuilder(env.config(),
+                        omeroHostAndPort, sessionKey);
+        OmeCliCommandRunner runner = new OmeCliCommandRunner(env, cmd);
+        return runner.run();
     }
 
 }
