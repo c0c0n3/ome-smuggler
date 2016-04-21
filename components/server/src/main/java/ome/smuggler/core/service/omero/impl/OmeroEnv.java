@@ -2,6 +2,7 @@ package ome.smuggler.core.service.omero.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.types.OmeCliConfigSource;
 
 /**
@@ -19,12 +20,12 @@ public class OmeroEnv {
      * @param log the log service.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public OmeroEnv(OmeCliConfigSource config, OmeroLogger log) {
+    public OmeroEnv(OmeCliConfigSource config, LogService log) {
         requireNonNull(config, "config");
         requireNonNull(log, "log");
 
         this.config = config;
-        this.log = log;
+        this.log = new OmeroLogger(log);
     }
 
     /**
