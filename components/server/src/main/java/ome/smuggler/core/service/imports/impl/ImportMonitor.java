@@ -38,24 +38,13 @@ public class ImportMonitor implements ImportTracker {
     }
     
     private void pingOmero(QueuedImport task) {
-        KeepAliveCommandBuilder keepAlive = new KeepAliveCommandBuilder(
-                env.cliConfig(), task.getRequest());
-        CommandRunner cmd = new CommandRunner(keepAlive);
-        try {
-            Pair<Integer, String> output =
-                    cmd.exec(StreamOps::readLinesIntoString);
-            int exitCode = output.fst();
-            String cmdOutput = output.snd();
-
-            if (exitCode == 0) {
-                env.log().keepAlive().successful(task, exitCode, cmdOutput,
-                        keepAlive);
-            } else {
-                env.log().keepAlive().failed(task, exitCode, cmdOutput,
-                        keepAlive);
-            }
-        } catch (Exception e) {
-            env.log().keepAlive().failed(task, e);
+        boolean succeeded = env.session()
+                               .keepAlive(task.getRequest().getOmeroHost(),
+                                          task.getRequest().getSessionKey());
+        if (succeeded) {
+            env.log().keepAlive().successful(task);
+        } else {
+            env.log().keepAlive().failed(task);
         }
     }
     

@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
 
-import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.OmeCliConfigSource;
 import util.runtime.ListProgramArgument;
 import util.runtime.jvm.JvmCmdBuilder;
@@ -15,26 +14,31 @@ import util.runtime.jvm.JvmCmdBuilder;
  */
 public class KeepAliveCommandBuilder extends OmeCliCommandBuilder {
 
-    private final ImportInput importArgs;
+    private final URI omero;
+    private final String sessionKey;
     
     /**
      * Creates a new instance to build a command line from the given data.
      * @param config configuration for the OMERO CLI commands.
-     * @param importArgs details what to import.
+     * @param omeroServer host and port of the OMERO server to use.
+     * @param sessionKey the session ID of the session to keep alive.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public KeepAliveCommandBuilder(OmeCliConfigSource config, ImportInput importArgs) {
+    public KeepAliveCommandBuilder(OmeCliConfigSource config,
+                                   URI omeroServer,
+                                   String sessionKey) {
         super(config);
-        requireNonNull(importArgs, "importArgs");
+        requireNonNull(omeroServer, "omeroServer");
+        requireNonNull(sessionKey, "sessionKey");
         
-        this.importArgs = importArgs;
+        this.omero = omeroServer;
+        this.sessionKey = sessionKey;
     }
 
     private ListProgramArgument<String> serverAndKey() {
-        URI omero = importArgs.getOmeroHost();
-        return arg(omero.getHost(), 
+        return arg(omero.getHost(),
                    String.valueOf(omero.getPort()), 
-                   importArgs.getSessionKey());
+                   sessionKey);
     }
 
     @Override

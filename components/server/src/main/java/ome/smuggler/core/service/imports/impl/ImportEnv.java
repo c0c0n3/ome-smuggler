@@ -11,6 +11,7 @@ import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.service.omero.ImportService;
+import ome.smuggler.core.service.omero.SessionService;
 import ome.smuggler.core.types.*;
 
 /**
@@ -19,8 +20,8 @@ import ome.smuggler.core.types.*;
 public class ImportEnv {
     
     private final ImportConfigSource config;
+    private final SessionService session;
     private final ImportService importer;
-    private final OmeCliConfigSource cliConfig;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
     private final ChannelSource<ImportKeepAlive> keepAliveQueue;
@@ -29,7 +30,7 @@ public class ImportEnv {
     private final Optional<Email> sysAdminEmail; 
     private final ImportLogger log;
     
-    public ImportEnv(ImportConfigSource config, OmeCliConfigSource cliConfig,
+    public ImportEnv(ImportConfigSource config, SessionService session,
                      ImportService importer,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
@@ -39,7 +40,7 @@ public class ImportEnv {
             Optional<Email> sysAdminEmail,
             LogService logService) {
         requireNonNull(config, "config");
-        requireNonNull(cliConfig, "cliConfig");
+        requireNonNull(session, "session");
         requireNonNull(importer, "importer");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
@@ -50,7 +51,7 @@ public class ImportEnv {
         requireNonNull(logService, "logService");
         
         this.config = config;
-        this.cliConfig = cliConfig;
+        this.session = session;
         this.importer = importer;
         this.queue = queue;
         this.gcQueue = gcQueue;
@@ -65,8 +66,8 @@ public class ImportEnv {
         return config;
     }
     
-    public OmeCliConfigSource cliConfig() {
-        return cliConfig;
+    public SessionService session() {
+        return session;
     }
 
     public ImportService importer() {
