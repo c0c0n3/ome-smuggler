@@ -91,9 +91,13 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
      */
 
     @Override
+    protected String commandName() {
+        return "Import";
+    }
+
+    @Override
     protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
         return java
-               .addApplicationArgument(arg("Import"))
                .addApplicationArgument(server())
                .addApplicationArgument(name())
                .addApplicationArgument(description())

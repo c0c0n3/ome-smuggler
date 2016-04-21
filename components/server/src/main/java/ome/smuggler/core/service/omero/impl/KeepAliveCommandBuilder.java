@@ -38,10 +38,13 @@ public class KeepAliveCommandBuilder extends OmeCliCommandBuilder {
     }
 
     @Override
+    protected String commandName() {
+        return "SessionKeepAlive";
+    }
+
+    @Override
     protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
-        return java
-                .addApplicationArgument(arg("SessionKeepAlive"))
-                .addApplicationArgument(serverAndKey());
+        return java.addApplicationArgument(serverAndKey());
     }
 
 }

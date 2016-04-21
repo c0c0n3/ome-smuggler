@@ -39,6 +39,8 @@ public abstract class OmeCliCommandBuilder implements CommandBuilder {
         this.config = config;
     }
 
+    protected abstract String commandName();
+
     protected abstract JvmCmdBuilder assembleArguments(JvmCmdBuilder bareCommand);
 
     protected JarJvmArg jarFile() {
@@ -46,7 +48,8 @@ public abstract class OmeCliCommandBuilder implements CommandBuilder {
     }
 
     protected CommandBuilder assembleCommand() {
-        JvmCmdBuilder bareCommand = java(jarFile());
+        JvmCmdBuilder bareCommand = java(jarFile())
+                                   .addApplicationArgument(arg(commandName()));
         return assembleArguments(bareCommand);
     }
 
