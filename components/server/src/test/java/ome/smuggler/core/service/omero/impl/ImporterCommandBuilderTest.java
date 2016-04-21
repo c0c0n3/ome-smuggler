@@ -155,15 +155,5 @@ public class ImporterCommandBuilderTest {
         assertThat(xs[20], is("--annotation-link"));
         assertThat(xs[21], is("3"));
     }
-    
-    @Test
-    public void maskSessionKey() {
-        ImportInput args = makeNew();
-        String sessionKey = args.getSessionKey();
-        String cmd = new ImporterCommandBuilder(
-                            OmeCliConfigBuilder.config(), args).toString();
-        
-        assertThat(cmd, not(containsString(sessionKey)));
-    }
-    
+
 }

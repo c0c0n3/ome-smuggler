@@ -1,12 +1,9 @@
 package ome.smuggler.core.service.omero.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.List;
 
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.OmeCliConfigSource;
@@ -21,10 +18,6 @@ import util.runtime.jvm.JvmCmdBuilder;
  */
 public class ImporterCommandBuilder extends OmeCliCommandBuilder {
 
-    public static final String SessionKeySwitch = "-k";
-    public static final String MaskedSessionKey = "***";
-    
-    
     private final ImportInput importArgs;
     
     /**
@@ -44,8 +37,8 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     private ListProgramArgument<String> server() {
         URI omero = importArgs.getOmeroHost();
         return arg("-s", omero.getHost(), 
-                   "-p", String.valueOf(omero.getPort()), 
-                   SessionKeySwitch, importArgs.getSessionKey());
+                   "-p", String.valueOf(omero.getPort()),
+                   "-k", importArgs.getSessionKey());
     }
     
     private ListProgramArgument<String> name() {
@@ -106,18 +99,6 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
                .addApplicationArgument(textAnnotations())
                .addApplicationArgument(annotationIds())
                .addApplicationArgument(importTarget());
-    }
-    
-    @Override
-    public String toString() {
-        List<String> ts = tokens().collect(toList());
-        for (int k = 0; k < ts.size(); ++k) {
-            if (SessionKeySwitch.equals(ts.get(k)) && k + 1 < ts.size()) {
-                ts.set(k + 1, MaskedSessionKey);
-                break;
-            }
-        }
-        return ts.stream().collect(joining(" "));
     }
 
 }
