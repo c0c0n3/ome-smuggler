@@ -25,7 +25,7 @@ public class Importer implements ImportService {
     }
 
     @Override
-    public boolean importData(ImportInput data, Path importLog) {
+    public boolean run(ImportInput data, Path importLog) {
         ImporterCommandBuilder cliOmeroImporter =
                 new ImporterCommandBuilder(env.config(), data);
         OmeCliCommandRunner runner =

@@ -15,6 +15,6 @@ public interface ImportService {
      * @param importLog the file where to output the OMERO import log.
      * @return {@code true} if the command succeeded, {@code false} otherwise.
      */
-    boolean importData(ImportInput data, Path importLog);
+    boolean run(ImportInput data, Path importLog);
 
 }

@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-import ome.smuggler.core.service.omero.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportLogPath;
 import ome.smuggler.core.types.QueuedImport;
 
@@ -38,13 +37,13 @@ public class ImportOutput {
         output(queued(task));
     }
     
-    public void writeHeader(ImporterCommandBuilder importCommand)
+    public void writeHeader()
             throws IOException {
-        output(header(task, importCommand, outputFile));
+        output(header(task));
     }
     
-    public void writeFooter(boolean success, int exitStatus) throws IOException {
-        output(footer(success, exitStatus));
+    public void writeFooter(boolean success) throws IOException {
+        output(footer(success));
     }
     
     public void writeFooter(Exception e) {

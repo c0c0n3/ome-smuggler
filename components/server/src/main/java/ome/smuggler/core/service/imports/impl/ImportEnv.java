@@ -10,6 +10,7 @@ import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
+import ome.smuggler.core.service.omero.ImportService;
 import ome.smuggler.core.types.*;
 
 /**
@@ -18,6 +19,7 @@ import ome.smuggler.core.types.*;
 public class ImportEnv {
     
     private final ImportConfigSource config;
+    private final ImportService importer;
     private final OmeCliConfigSource cliConfig;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
@@ -28,6 +30,7 @@ public class ImportEnv {
     private final ImportLogger log;
     
     public ImportEnv(ImportConfigSource config, OmeCliConfigSource cliConfig,
+                     ImportService importer,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
             ChannelSource<ImportKeepAlive> keepAliveQueue,
@@ -37,6 +40,7 @@ public class ImportEnv {
             LogService logService) {
         requireNonNull(config, "config");
         requireNonNull(cliConfig, "cliConfig");
+        requireNonNull(importer, "importer");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
         requireNonNull(keepAliveQueue, "keepAliveQueue");
@@ -47,6 +51,7 @@ public class ImportEnv {
         
         this.config = config;
         this.cliConfig = cliConfig;
+        this.importer = importer;
         this.queue = queue;
         this.gcQueue = gcQueue;
         this.keepAliveQueue = keepAliveQueue;
@@ -63,7 +68,11 @@ public class ImportEnv {
     public OmeCliConfigSource cliConfig() {
         return cliConfig;
     }
-    
+
+    public ImportService importer() {
+        return importer;
+    }
+
     public ChannelSource<QueuedImport> queue() {
         return queue;
     }

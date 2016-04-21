@@ -1,5 +1,6 @@
 package ome.smuggler.config.wiring.imports;
 
+import ome.smuggler.core.service.omero.ImportService;
 import ome.smuggler.core.types.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,13 +40,15 @@ public class ImportServiceBeans {
     public ImportEnv importEnv(
             ImportConfigSource config, 
             OmeCliConfigSource cliConfig,
+            ImportService importer,
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
             ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
             MailConfigSource mailConfig) {
-        ImportEnv env = new ImportEnv(config, cliConfig, importSourceChannel, 
+        ImportEnv env = new ImportEnv(config, cliConfig, importer,
+                                      importSourceChannel,
                                       importGcSourceChannel, 
                                       importKeepAliveSourceChannel,
                                       failedImportLogStore, mail, 

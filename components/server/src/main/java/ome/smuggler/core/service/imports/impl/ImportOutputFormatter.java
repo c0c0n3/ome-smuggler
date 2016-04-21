@@ -3,12 +3,10 @@ package ome.smuggler.core.service.imports.impl;
 import static util.string.Strings.write;
 
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import ome.smuggler.core.service.omero.impl.ImporterCommandBuilder;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
 
@@ -63,24 +61,19 @@ public class ImportOutputFormatter {
         });
     }
     
-    public static String header(QueuedImport task,
-                                ImporterCommandBuilder importCommand,
-                                Path outputFile) {
+    public static String header(QueuedImport task) {
         return write(out -> {
             out.println("====================> Starting OMERO Import:");
             summary(out, task);
-            field(out, "Import Command", importCommand);
-            field(out, "Output File", outputFile);
             out.println("============================================");
         });
     }
     
-    public static String footer(boolean success, int exitStatus) {
+    public static String footer(boolean success) {
         return write(out -> {
             out.println();
             out.println("=================> OMERO Import Run Report:");
             succeeded(out, success);
-            field(out, "Exit Status", exitStatus);
             out.println("============================================");
         });
     }
