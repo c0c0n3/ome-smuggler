@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Profile;
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.items.ImportConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportKeepAliveQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.core.types.ImportConfigReader;
 import ome.smuggler.core.types.ImportConfigSource;
@@ -29,12 +28,6 @@ public class ImportConfigBeans {
     
     @Bean
     public ImportGcQConfig importGcQConfig(ConfigProvider<ImportGcQConfig> src) {
-        return src.first();
-    }
-    
-    @Bean
-    public ImportKeepAliveQConfig importKeepAliveQConfig(
-            ConfigProvider<ImportKeepAliveQConfig> src) {
         return src.first();
     }
     

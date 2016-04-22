@@ -44,10 +44,10 @@ public class ImportServiceBeans {
             ImportService importer,
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
-            ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
             MailConfigSource mailConfig) {
+        ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel = d -> {};
         ImportEnv env = new ImportEnv(config, session, importer,
                                       importSourceChannel,
                                       importGcSourceChannel, 

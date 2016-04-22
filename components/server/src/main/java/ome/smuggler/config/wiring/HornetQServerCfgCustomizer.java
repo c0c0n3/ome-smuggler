@@ -4,7 +4,6 @@ import static util.sequence.Arrayz.asMutableList;
 
 import ome.smuggler.config.items.HornetQPersistenceConfig;
 import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportKeepAliveQConfig;
 import ome.smuggler.config.items.ImportQConfig;
 import ome.smuggler.config.items.MailQConfig;
 
@@ -30,10 +29,7 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
     
     @Autowired
     private ImportGcQConfig importGcQ;
-    
-    @Autowired
-    private ImportKeepAliveQConfig importKeepAliveQ;
-    
+
     @Autowired
     private MailQConfig mailQ;
     
@@ -48,7 +44,7 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
     
     private void configureQueues(Configuration cfg) {
         cfg.setQueueConfigurations(
-                asMutableList(importQ, importGcQ, importKeepAliveQ, mailQ));
+                asMutableList(importQ, importGcQ, mailQ));
     }
     
     @Override
