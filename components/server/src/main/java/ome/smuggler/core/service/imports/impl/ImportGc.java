@@ -8,6 +8,7 @@ import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportLogFile;
 import ome.smuggler.core.types.QueuedImport;
 
+
 /**
  * Utility to clean up after an import.
  */
@@ -32,8 +33,10 @@ public class ImportGc {
         env.gcQueue().uncheckedSend(message(when, logFile));
     }
     
-    private void stopSessionKeepAlive(QueuedImport task) {
-        env.keepAliveQueue().uncheckedSend(stopKeepAliveMessage(task));    
+    private void cleanupSession(QueuedImport task) {
+        env.session().close(task.getRequest().getOmeroHost(),
+                            task.getRequest().getSessionKey());
+        env.keepAliveQueue().uncheckedSend(stopKeepAliveMessage(task));
     }
     
     /**
@@ -45,7 +48,7 @@ public class ImportGc {
         requireNonNull(task, "task");
         
         scheduleDeletion(task);
-        stopSessionKeepAlive(task);
+        cleanupSession(task);
     }
     
 }
