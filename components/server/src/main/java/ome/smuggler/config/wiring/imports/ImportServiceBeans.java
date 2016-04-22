@@ -47,11 +47,9 @@ public class ImportServiceBeans {
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
             MailConfigSource mailConfig) {
-        ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel = d -> {};
         ImportEnv env = new ImportEnv(config, session, importer,
                                       importSourceChannel,
-                                      importGcSourceChannel, 
-                                      importKeepAliveSourceChannel,
+                                      importGcSourceChannel,
                                       failedImportLogStore, mail, 
                                       mailConfig.sysAdminAddress(), 
                                       new LogAdapter());

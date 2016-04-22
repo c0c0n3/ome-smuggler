@@ -1,8 +1,6 @@
 package ome.smuggler.core.service.imports;
 
-import ome.smuggler.core.msg.Reschedulable;
 import ome.smuggler.core.types.ImportId;
-import ome.smuggler.core.types.ImportKeepAlive;
 import ome.smuggler.core.types.ImportLogPath;
 
 /**
@@ -12,7 +10,7 @@ import ome.smuggler.core.types.ImportLogPath;
  * requested import is finally run. As the import runs, the implementation 
  * makes available the file where the import output is being written.
  */
-public interface ImportTracker extends Reschedulable<ImportKeepAlive> {
+public interface ImportTracker {
 
     /**
      * Determines the path to the import log for a given import.

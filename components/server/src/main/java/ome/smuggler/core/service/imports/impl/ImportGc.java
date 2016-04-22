@@ -2,7 +2,6 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
-import static ome.smuggler.core.types.ImportKeepAlive.stopKeepAliveMessage;
 
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.ImportLogFile;
@@ -36,7 +35,6 @@ public class ImportGc {
     private void cleanupSession(QueuedImport task) {
         env.session().close(task.getRequest().getOmeroHost(),
                             task.getRequest().getSessionKey());
-        env.keepAliveQueue().uncheckedSend(stopKeepAliveMessage(task));
     }
     
     /**

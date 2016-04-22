@@ -24,7 +24,6 @@ public class ImportEnv {
     private final ImportService importer;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
-    private final ChannelSource<ImportKeepAlive> keepAliveQueue;
     private final TaskFileStore<ImportId> failedImportLogStore;
     private final MailRequestor mail;
     private final Optional<Email> sysAdminEmail; 
@@ -34,7 +33,6 @@ public class ImportEnv {
                      ImportService importer,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
-            ChannelSource<ImportKeepAlive> keepAliveQueue,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail,
             Optional<Email> sysAdminEmail,
@@ -44,7 +42,6 @@ public class ImportEnv {
         requireNonNull(importer, "importer");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
-        requireNonNull(keepAliveQueue, "keepAliveQueue");
         requireNonNull(failedImportLogStore, "failedImportLogStore");
         requireNonNull(mail, "mail");
         requireNonNull(sysAdminEmail, "sysAdminEmail");
@@ -55,7 +52,6 @@ public class ImportEnv {
         this.importer = importer;
         this.queue = queue;
         this.gcQueue = gcQueue;
-        this.keepAliveQueue = keepAliveQueue;
         this.failedImportLogStore = failedImportLogStore;
         this.mail = mail;
         this.sysAdminEmail = sysAdminEmail;
@@ -84,10 +80,6 @@ public class ImportEnv {
     
     public ImportGc garbageCollector() {
         return new ImportGc(this);
-    }
-    
-    public ChannelSource<ImportKeepAlive> keepAliveQueue() {
-        return keepAliveQueue;
     }
     
     public TaskFileStore<ImportId> failedImportLogStore() {
