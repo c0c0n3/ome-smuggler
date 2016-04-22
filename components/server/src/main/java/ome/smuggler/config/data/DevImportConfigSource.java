@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import ome.smuggler.config.BaseDataDir;
-import ome.smuggler.core.types.ImportConfigReader;
 import ome.smuggler.core.types.ImportConfigSource;
 
 /**
@@ -38,11 +37,6 @@ public class DevImportConfigSource implements ImportConfigSource {
     @Override
     public Path failedImportLogDir() {
         return baseDataDir.resolve(ImportYmlFile.RelFailedImportLogDirPath);
-    }
-
-    @Override
-    public Duration keepAliveInterval() {
-        return ImportConfigReader.DefaultKeepAliveInterval;
     }
 
 }

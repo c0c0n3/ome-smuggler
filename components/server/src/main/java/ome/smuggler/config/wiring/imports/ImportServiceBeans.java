@@ -44,14 +44,12 @@ public class ImportServiceBeans {
             ImportService importer,
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
-            ChannelSource<ImportKeepAlive> importKeepAliveSourceChannel,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
             MailConfigSource mailConfig) {
         ImportEnv env = new ImportEnv(config, session, importer,
                                       importSourceChannel,
-                                      importGcSourceChannel, 
-                                      importKeepAliveSourceChannel,
+                                      importGcSourceChannel,
                                       failedImportLogStore, mail, 
                                       mailConfig.sysAdminAddress(), 
                                       new LogAdapter());

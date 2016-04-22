@@ -16,14 +16,11 @@ import ome.smuggler.config.items.ImportConfig;
  * from an underlying {@link ImportConfig}.
  */
 public class ImportConfigReader implements ImportConfigSource {
-    
-    public static final Duration DefaultKeepAliveInterval = toDuration(5L);
-    
+
     private final Path importLogDir;
     private final Duration logRetentionPeriod;
     private final List<Duration> retryIntervals;
     private final Path failedImportLogDir;
-    private final Duration keepAliveInterval;
     
     /**
      * Creates a new instance.
@@ -41,8 +38,6 @@ public class ImportConfigReader implements ImportConfigSource {
         retryIntervals = toDurationList(config.getRetryIntervals());
         failedImportLogDir = base.resolveRequiredPath(
                                 config.getFailedImportLogDir());
-        keepAliveInterval = toDuration(config.getKeepAliveInterval(),
-                                       DefaultKeepAliveInterval);
     }
     
     @Override
@@ -63,11 +58,6 @@ public class ImportConfigReader implements ImportConfigSource {
     @Override
     public Path failedImportLogDir() {
         return failedImportLogDir;
-    }
-
-    @Override
-    public Duration keepAliveInterval() {
-        return keepAliveInterval;
     }
 
 }
