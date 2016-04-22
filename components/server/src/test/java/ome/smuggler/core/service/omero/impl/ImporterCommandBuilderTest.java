@@ -2,24 +2,25 @@ package ome.smuggler.core.service.omero.impl;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static ome.smuggler.core.service.omero.impl.OmeCliTestUtils.*;
 import static ome.smuggler.core.types.ImportInputTest.*;
 
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import ome.smuggler.core.types.ImportInput;
 
 import org.junit.Test;
 
 public class ImporterCommandBuilderTest {
-    
-    private static String[] tokenPgmArgs(ImportInput args) {
-        String[] whole = new ImporterCommandBuilder(
-                                        OmeCliConfigBuilder.config(), args)
-                        .tokens()
-                        .toArray(String[]::new);
-        return Arrays.copyOfRange(whole, 4, whole.length);
+
+    private static ImporterCommandBuilder newBuilder(ImportInput args) {
+        return new ImporterCommandBuilder(OmeCliConfigBuilder.config(), args);
     }
+
+    private static String[] tokenPgmArgs(ImportInput args) {
+        return commandArgs(newBuilder(args));
+    }
+
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFirstArgNull() {
@@ -30,7 +31,15 @@ public class ImporterCommandBuilderTest {
     public void ctorThrowsIfSecondArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null);
     }
-    
+
+    @Test
+    public void verifyCommandName() {
+        ImporterCommandBuilder target = newBuilder(makeNew());
+        String name = commandName(target);
+
+        assertThat(name, is("Import"));
+    }
+
     @Test
     public void minimalCommandLine() {
         String[] xs = tokenPgmArgs(makeNew());
