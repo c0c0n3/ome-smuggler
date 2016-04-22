@@ -10,7 +10,7 @@ import Ice.DNSException;
 
 /**
  * Enumerates the exit codes for session-related commands.
- * For the lack of better standards, we use adopt the Bash recommendations and
+ * For the lack of better standards, we adopt the Bash recommendations and
  * use {@code 0} for success and the range {@code 64 - 113} for errors. (This
  * happens to play well with C/C++ conventions too.) We reserve {@code 64} for
  * a parse error in {@code ome.cli.Main} when the wrong command name or no
