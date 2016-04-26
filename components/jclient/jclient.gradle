@@ -2,9 +2,24 @@ apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+repositories {
+    maven {
+        name 'Unidata'
+        url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases'
+    }
+    maven {
+        url 'http://artifacts.openmicroscopy.org/artifactory/maven/'
+    }
+}
+
 dependencies {
     compile 'org.apache.httpcomponents:httpclient:4.3.1'
     compile 'com.google.code.gson:gson:2.5'
+    compile (group: 'omero', name: 'blitz', version: '5.2.2-ice35-b17') {
+        exclude group: 'org.springframework.ldap', module: 'spring-ldap'
+        exclude group: 'org.testng', module: 'testng'
+        exclude group: 'hsqldb', module: 'hsqldb'
+    }
 }
 
 jar {
