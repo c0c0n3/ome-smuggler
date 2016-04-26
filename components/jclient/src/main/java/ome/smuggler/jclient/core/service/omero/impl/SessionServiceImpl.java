@@ -63,11 +63,4 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
-    public static void main(String[] args) {
-        ClientFactory cf = new ClientFactory(
-                "localhost", 4063, "tasty", "abc123", false);
-        SessionService svc = new SessionServiceImpl(cf);
-        String id = svc.create(152);
-        System.out.println(id);
-    }
 }
