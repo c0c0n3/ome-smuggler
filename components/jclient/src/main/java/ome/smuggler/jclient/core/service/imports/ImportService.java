@@ -20,10 +20,14 @@ public interface ImportService {
      * @param request details the import to run; if no session key is specified,
      *                this service will fill one in by creating a session with
      *                a timeout of {@link #ImportSessionTimeout}.
+     * @return the session key that will be used for the import. If the request
+     * specifies one, than that one will be returned; otherwise the one of the
+     * session this service created for the import. This is useful if the
+     * session needs to be reused for a subsequent import.
      * @throws NullPointerException if any argument is {@code null}.
      * @throws RuntimeException if a error occurs while performing the service
      * action.
      */
-    void enqueue(URI target, ImportRequest request);
+    String enqueue(URI target, ImportRequest request);
 
 }

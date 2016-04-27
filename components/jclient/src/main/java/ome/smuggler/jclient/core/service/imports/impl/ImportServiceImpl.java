@@ -29,7 +29,7 @@ public class ImportServiceImpl implements ImportService {
     }
 
     @Override
-    public void enqueue(URI target, ImportRequest request) {
+    public String enqueue(URI target, ImportRequest request) {
         requireNonNull(target, "target");
         requireNonNull(request, "request");
 
@@ -39,6 +39,8 @@ public class ImportServiceImpl implements ImportService {
         RestResource<ImportRequest> client =
                 ComponentsFactory.jsonResource(target);
         client.post(request);
+
+        return request.sessionKey;
     }
 
 }
