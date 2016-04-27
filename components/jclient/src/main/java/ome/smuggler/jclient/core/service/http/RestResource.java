@@ -12,30 +12,30 @@ public interface RestResource<T> {
      * @param resourceType the type of the object to deserialize the resource
      *                     into; generics are not supported.
      * @return the resource as an object.
-     * @throws RuntimeException If a connection or protocol error occurs or if
-     * the returned data could not be converted to an object.
+     * @throws RestResourceException If a connection or protocol error occurs or
+     * if the returned data could not be converted to an object.
      */
     T get(final Class<T> resourceType);
 
     /**
      * POST the resource.
      * @param resource the resource to POST.
-     * @throws RuntimeException If a connection or protocol error occurs or if
-     * the resource could not be serialized.
+     * @throws RestResourceException If a connection or protocol error occurs or
+     * if the resource could not be serialized.
      */
     void post(T resource);
 
     /**
      * PUT the resource.
      * @param resource the resource to PUT.
-     * @throws RuntimeException If a connection or protocol error occurs or if
-     * the resource could not be serialized.
+     * @throws RestResourceException If a connection or protocol error occurs or
+     * if the resource could not be serialized.
      */
     void put(T resource);
 
     /**
      * DELETE the resource.
-     * @throws RuntimeException If a connection or protocol error occurs.
+     * @throws RestResourceException If a connection or protocol error occurs.
      */
     void delete();
 

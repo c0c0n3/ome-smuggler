@@ -1,13 +1,13 @@
 package ome.smuggler.jclient.providers.http;
 
 import ome.smuggler.jclient.core.service.http.RestResource;
+import ome.smuggler.jclient.core.service.http.RestResourceException;
 
-import java.io.IOException;
 import java.net.URI;
 
 /**
  * Turns a {@link JsonResource} into a {@link RestResource} by wrapping errors
- * into runtime exceptions.
+ * into {@link RestResourceException}s.
  */
 public class JsonRestResourceAdapter<T> implements RestResource<T> {
 
@@ -26,17 +26,17 @@ public class JsonRestResourceAdapter<T> implements RestResource<T> {
     public T get(Class<T> resourceType) {
         try {
             return adaptee.get(resourceType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RestResourceException(e);
         }
     }
 
     @Override
-    public void post(final T resource) {
+    public void post(T resource) {
         try {
             adaptee.post(resource);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RestResourceException(e);
         }
     }
 
@@ -44,8 +44,8 @@ public class JsonRestResourceAdapter<T> implements RestResource<T> {
     public void put(T resource) {
         try {
             adaptee.put(resource);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RestResourceException(e);
         }
     }
 
@@ -53,8 +53,8 @@ public class JsonRestResourceAdapter<T> implements RestResource<T> {
     public void delete() {
         try {
             adaptee.delete();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RestResourceException(e);
         }
     }
 
