@@ -1,6 +1,8 @@
 package ome.smuggler.jclient.core.config;
 
 import ome.smuggler.jclient.core.service.http.RestResource;
+import ome.smuggler.jclient.core.service.imports.ImportService;
+import ome.smuggler.jclient.core.service.imports.impl.ImportServiceImpl;
 import ome.smuggler.jclient.core.service.omero.SessionService;
 import ome.smuggler.jclient.core.service.omero.impl.ClientFactory;
 import ome.smuggler.jclient.core.service.omero.impl.SessionServiceImpl;
@@ -29,6 +31,10 @@ public class ComponentsFactory {
         ClientFactory cf = new ClientFactory(host, port, username, password,
                 secure);
         return new SessionServiceImpl(cf);
+    }
+
+    public static ImportService importer(SessionService session) {
+        return new ImportServiceImpl(session);
     }
 
 }
