@@ -1,54 +1,79 @@
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-
-class Assembly {
+class Staging {
 
     File buildDir
-    Path baseDir, binDir, configDir, dataDir, libDir
+    Path baseDir, binDir, configDir, dataDir, libDir, logDir
 
-    Assembly(File buildDir) {
+    Staging(File buildDir) {
         this.buildDir = buildDir
-        baseDir = Paths.get(buildDir.absolutePath, 'assembly')
+        baseDir = Paths.get(buildDir.absolutePath, 'staging')
         binDir = baseDir.resolve('bin')
         configDir = baseDir.resolve('config')
         dataDir = baseDir.resolve('data')
         libDir = baseDir.resolve('lib')
+        logDir = baseDir.resolve('log')
     }
 
-    def mkdirs() {
-        Files.createDirectories(binDir)
-        Files.createDirectories(configDir)
-        Files.createDirectories(dataDir)
-        Files.createDirectories(libDir)
-    }
-
-    def copyJar(Project proj) {
-        def jarPath = Paths.get(
-                proj.tasks.findByName('jar').archivePath.absolutePath)
-        Files.copy(jarPath, libDir.resolve(jarPath.fileName))
+    def subdirs() {
+        [binDir, configDir, dataDir, libDir, logDir]
     }
 
 }
 
-ext.assembly = new Assembly(buildDir)
-/*
-task copyJars(type: Copy) << {
-    println project(':server').tasks.findByName('jar').archivePath
-    //from files( project(':server').tasks.findByName('jar').archivePath
-    //          , project(':cli').tasks.findByName('jar').archivePath
-    //          )
-    //into assembly.libDir
+ext.staging = new Staging(buildDir)
+
+task makeStagingDirs << {
+    staging.subdirs().each { p -> mkdir(p.toFile()) }
 }
-*/
-task assemble << { //(dependsOn: [':server:assemble', ':cli:assemble', 'clean']) << {
-    assembly.mkdirs()
-    assembly.copyJar(project(':server'))
-    assembly.copyJar(project(':cli'))
+
+task copyReadme(type: Copy) {
+    from 'src/README.md'
+    into staging.baseDir.toFile()
+}
+
+task copyLicense(type: Copy, dependsOn: makeStagingDirs) {
+    def p = Paths.get(rootProject.projectDir.absolutePath, 'LICENSE.md')
+    from p.toFile()
+    into staging.baseDir.toFile()
+}
+
+task copyJars(dependsOn: [makeStagingDirs, ':server:bootRepackage',
+                          ':cli:bootRepackage']) << {
+    copy {
+        from project(':server').jar.archivePath.absolutePath
+        from project(':cli').jar.archivePath.absolutePath
+        into staging.libDir.toFile()
+    }
+}
+
+task copyScripts(dependsOn: makeStagingDirs) << {
+    def m = [ '@lib.dir.name@' : staging.libDir
+            , '@jar.file.name@' : Paths.get(project(':server').jar.archivePath.absolutePath)
+            , '@config.dir.name@' : staging.configDir
+            , '@data.dir.name@' : staging.dataDir
+            , '@log.dir.name@' : staging.logDir
+            ]
+    copy {
+        from 'src/generic/'
+        include '*.template'
+        into staging.binDir.toFile()
+        rename { it - ~/\.template$/ }
+        filter { String line ->
+            m.inject(line, { r, e -> r.replaceAll(e.key, e.value.fileName.toString()) })
+        }
+    }
+}
+
+task release << {
+    description 'Releases generic and platform-specific server deployment bundles.'
+    println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> surprise, surpise..."
+    println version
+    println project(':server').jar.baseName
+    println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 }
 
 task clean << {
-    def p = Paths.get(buildDir.absolutePath)
-    Files.deleteIfExists(p)
+    delete(buildDir)
 }
