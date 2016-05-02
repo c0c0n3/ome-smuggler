@@ -1,9 +1,12 @@
 import static util.Filez.*
+import util.ReplacementMap
 import packager.Staging
+
 
 ext.staging = new Staging(buildDir)
 def serverJarFile() { toFile(project(':server').jar) }
 def cliJarFile() { toFile(project(':cli').jar) }
+
 
 task makeStagingDirs << {
     staging.subdirs().each { d -> mkdir(d) }
@@ -34,15 +37,13 @@ task copyScripts(dependsOn: makeStagingDirs) << {
             , '@config.dir.name@' : staging.configDir.name
             , '@data.dir.name@' : staging.dataDir.name
             , '@log.dir.name@' : staging.logDir.name
-            ]
+            ] as ReplacementMap
     copy {
         from 'src/generic/'
         include '*.template'
         into staging.binDir
         rename { it - ~/\.template$/ }
-        filter { String line ->
-            m.inject(line, { r, e -> r.replaceAll(e.key, e.value) })
-        }
+        filter m.&replaceAll
     }
 }
 
@@ -51,14 +52,21 @@ task releaseGenericZip(dependsOn: [copyReadme, copyLicense, copyJars,
 
 }
 
-task release << {
+task release (dependsOn: [releaseGenericZip]) {
+    group 'distribution'
     description 'Releases generic and platform-specific server deployment bundles.'
-    println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> surprise, surpise..."
-    println version
-    println project(':server').jar.baseName
-    println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    doLast {
+        println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> surprise, surpise..."
+        println version
+        println project(':server').jar.baseName
+        println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    }
 }
 
-task clean << {
-    delete(buildDir)
+task clean {
+    group 'build'
+    description 'Deletes the build directory.'
+    doLast {
+        delete(buildDir)
+    }
 }
