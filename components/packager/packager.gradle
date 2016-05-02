@@ -1,19 +1,17 @@
-import java.nio.file.Path
-import java.nio.file.Paths
+import static util.Filez.*
 
 class Staging {
 
-    File buildDir
-    Path baseDir, binDir, configDir, dataDir, libDir, logDir
+    File buildDir, baseDir, binDir, configDir, dataDir, libDir, logDir
 
     Staging(File buildDir) {
         this.buildDir = buildDir
-        baseDir = Paths.get(buildDir.absolutePath, 'staging')
-        binDir = baseDir.resolve('bin')
-        configDir = baseDir.resolve('config')
-        dataDir = baseDir.resolve('data')
-        libDir = baseDir.resolve('lib')
-        logDir = baseDir.resolve('log')
+        baseDir = toFile(buildDir, 'staging')
+        binDir = toFile(baseDir, 'bin')
+        configDir = toFile(baseDir, 'config')
+        dataDir = toFile(baseDir, 'data')
+        libDir = toFile(baseDir, 'lib')
+        logDir = toFile(baseDir, 'log')
     }
 
     def subdirs() {
@@ -23,47 +21,53 @@ class Staging {
 }
 
 ext.staging = new Staging(buildDir)
+def serverJarFile() { toFile(project(':server').jar) }
+def cliJarFile() { toFile(project(':cli').jar) }
 
 task makeStagingDirs << {
-    staging.subdirs().each { p -> mkdir(p.toFile()) }
+    staging.subdirs().each { d -> mkdir(d) }
 }
 
 task copyReadme(type: Copy) {
     from 'src/README.md'
-    into staging.baseDir.toFile()
+    into staging.baseDir
 }
 
 task copyLicense(type: Copy, dependsOn: makeStagingDirs) {
-    def p = Paths.get(rootProject.projectDir.absolutePath, 'LICENSE.md')
-    from p.toFile()
-    into staging.baseDir.toFile()
+    from toFile(rootProject.projectDir, 'LICENSE.md')
+    into staging.baseDir
 }
 
 task copyJars(dependsOn: [makeStagingDirs, ':server:bootRepackage',
                           ':cli:bootRepackage']) << {
     copy {
-        from project(':server').jar.archivePath.absolutePath
-        from project(':cli').jar.archivePath.absolutePath
-        into staging.libDir.toFile()
+        from serverJarFile()
+        from cliJarFile()
+        into staging.libDir
     }
 }
 
 task copyScripts(dependsOn: makeStagingDirs) << {
-    def m = [ '@lib.dir.name@' : staging.libDir
-            , '@jar.file.name@' : Paths.get(project(':server').jar.archivePath.absolutePath)
-            , '@config.dir.name@' : staging.configDir
-            , '@data.dir.name@' : staging.dataDir
-            , '@log.dir.name@' : staging.logDir
+    def m = [ '@lib.dir.name@' : staging.libDir.name
+            , '@jar.file.name@' : serverJarFile().name
+            , '@config.dir.name@' : staging.configDir.name
+            , '@data.dir.name@' : staging.dataDir.name
+            , '@log.dir.name@' : staging.logDir.name
             ]
     copy {
         from 'src/generic/'
         include '*.template'
-        into staging.binDir.toFile()
+        into staging.binDir
         rename { it - ~/\.template$/ }
         filter { String line ->
-            m.inject(line, { r, e -> r.replaceAll(e.key, e.value.fileName.toString()) })
+            m.inject(line, { r, e -> r.replaceAll(e.key, e.value) })
         }
     }
+}
+
+task releaseGenericZip(dependsOn: [copyReadme, copyLicense, copyJars,
+                                   copyScripts]) << {
+
 }
 
 task release << {
