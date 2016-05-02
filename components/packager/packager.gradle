@@ -4,15 +4,34 @@ import packager.Staging
 
 
 ext.staging = new Staging(buildDir)
+ext.releaseBundleBaseName = 'ome-smuggler'
+ext.releaseBundleVersion = '0.1.0'
+ext.releaseBundleClassifier = 'beta'
+
 def serverJarFile() { toFile(project(':server').jar) }
 def cliJarFile() { toFile(project(':cli').jar) }
+
+def configureBaseBundle(AbstractArchiveTask task) {
+    task.from staging.baseDir
+    task.into releaseBundleBaseName
+    task.includeEmptyDirs = true
+    task.destinationDir = buildDir
+    task.baseName = releaseBundleBaseName
+    task.version = releaseBundleVersion
+    task.classifier = releaseBundleClassifier
+}
+
+def configureGenericBundle(AbstractArchiveTask task) {
+    configureBaseBundle(task)
+    task.include '**/*.md', '**/*.sh', '**/*.bat', '**/*.jar'
+}
 
 
 task makeStagingDirs << {
     staging.subdirs().each { d -> mkdir(d) }
 }
 
-task copyReadme(type: Copy) {
+task copyReadme(type: Copy, dependsOn: makeStagingDirs) {
     from 'src/README.md'
     into staging.baseDir
 }
@@ -44,23 +63,25 @@ task copyScripts(dependsOn: makeStagingDirs) << {
         into staging.binDir
         rename { it - ~/\.template$/ }
         filter m.&replaceAll
+        fileMode 0755
     }
 }
 
-task releaseGenericZip(dependsOn: [copyReadme, copyLicense, copyJars,
-                                   copyScripts]) << {
-
+task releaseGenericZip(type: Zip) {
+    configureGenericBundle(releaseGenericZip)
 }
 
-task release (dependsOn: [releaseGenericZip]) {
+task releaseGenericTar(type: Tar) {
+    configureGenericBundle(releaseGenericTar)
+    compression = Compression.GZIP
+}
+
+task releaseGeneric(dependsOn: [copyReadme, copyLicense, copyJars, copyScripts,
+                                releaseGenericTar, releaseGenericZip])
+
+task release (dependsOn: [releaseGeneric]) {
     group 'distribution'
     description 'Releases generic and platform-specific server deployment bundles.'
-    doLast {
-        println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> surprise, surpise..."
-        println version
-        println project(':server').jar.baseName
-        println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    }
 }
 
 task clean {
