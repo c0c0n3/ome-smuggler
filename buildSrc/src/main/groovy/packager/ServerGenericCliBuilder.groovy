@@ -1,7 +1,5 @@
 package packager
 
-import java.nio.file.Path
-
 /**
  * Builds the arguments to pass to the java command for starting the server.
  * Use for the scripts in the "generic" distribution.
@@ -79,20 +77,4 @@ class ServerGenericCliBuilder {
         [config(), data(), log(), jar()].join(' ')
     }
 
-    /*
-    [ '@lib.dir.name@' : dirs.staging.libDir.name
-    , '@jar.file.name@' : serverJarFile().name
-    , '@config.dir.name@' : dirs.staging.configDir.name
-    , '@data.dir.name@' : dirs.staging.dataDir.name
-    , '@log.dir.name@' : dirs.staging.logDir.name
-    */
-    /*
-JAR="$APP_HOME/@lib.dir.name@/@jar.file.name@"
-CONFIG_DIR_OPT=-Dome.smuggler.ConfigDir="$APP_HOME/@config.dir.name@"
-DATA_DIR_OPT=-Dome.smuggler.DataDir="$APP_HOME/@data.dir.name@"
-LOG_DIR_OPT=-Dlogging.path="$APP_HOME/@log.dir.name@"
-
-JAVA_OPTS=$CONFIG_DIR_OPT $DATA_DIR_OPT $LOG_DIR_OPT
-exec "$JAVACMD" $JAVA_OPTS -jar $JAR "$@"
-     */
 }
