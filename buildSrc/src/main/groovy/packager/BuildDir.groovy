@@ -2,7 +2,9 @@ package packager
 
 import static util.Filez.*
 
-
+/**
+ * Defines the packager's build directory layout.
+ */
 class BuildDir {
 
     File rootDir, distDir

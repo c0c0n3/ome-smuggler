@@ -1,30 +1,17 @@
 import static util.Filez.*
-import util.ReplacementMap
-import packager.BuildDir
+import packager.*
+import util.*
 
 
 ext.dirs = new BuildDir(buildDir)
-ext.releaseBundleBaseName = 'ome-smuggler'
-ext.releaseBundleVersion = '0.1.0'
-ext.releaseBundleClassifier = 'beta'
+ext.bundle = new ReleaseBundle(dirs, new ReleaseInfo(
+                                [ baseName:   'ome-smuggler'
+                                , version:    '0.1.0'
+                                , classifier: 'beta'
+                                ]))
 
 def serverJarFile() { toFile(project(':server').jar) }
 def cliJarFile() { toFile(project(':cli').jar) }
-
-def configureBaseBundle(AbstractArchiveTask task) {
-    task.from dirs.staging.baseDir
-    task.into releaseBundleBaseName
-    task.includeEmptyDirs = true
-    task.destinationDir = dirs.distDir
-    task.baseName = releaseBundleBaseName
-    task.version = releaseBundleVersion
-    task.classifier = releaseBundleClassifier
-}
-
-def configureGenericBundle(AbstractArchiveTask task) {
-    configureBaseBundle(task)
-    task.include '**/*.md', '**/*.sh', '**/*.bat', '**/*.jar'
-}
 
 
 task makeBuildDirs << {
@@ -68,11 +55,11 @@ task copyScripts(dependsOn: makeBuildDirs) << {
 }
 
 task releaseGenericZip(type: Zip) {
-    configureGenericBundle(releaseGenericZip)
+    bundle.configureGeneric(releaseGenericZip)
 }
 
 task releaseGenericTar(type: Tar) {
-    configureGenericBundle(releaseGenericTar)
+    bundle.configureGeneric(releaseGenericTar)
     compression = Compression.GZIP
 }
 
