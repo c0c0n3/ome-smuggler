@@ -38,15 +38,22 @@ task copyJars(dependsOn: [makeBuildDirs, ':server:bootRepackage',
 }
 
 task copyScripts(dependsOn: makeBuildDirs) << {
-    def m = [ '@lib.dir.name@' : dirs.staging.libDir.name
-            , '@jar.file.name@' : serverJarFile().name
-            , '@config.dir.name@' : dirs.staging.configDir.name
-            , '@data.dir.name@' : dirs.staging.dataDir.name
-            , '@log.dir.name@' : dirs.staging.logDir.name
+    def m = [ '@server.args@' : ServerGenericCliBuilder
+                                .buildWindowsArgs(dirs, serverJarFile().name)
             ] as ReplacementMap
     copy {
         from 'src/generic/'
-        include '*.template'
+        include '*.bat.template'
+        into dirs.staging.binDir
+        rename { it - ~/\.template$/ }
+        filter m.&replaceAll
+    }
+
+    m['@server.args@'] = ServerGenericCliBuilder
+                        .buildUnixArgs(dirs, serverJarFile().name)
+    copy {
+        from 'src/generic/'
+        include '*.sh.template'
         into dirs.staging.binDir
         rename { it - ~/\.template$/ }
         filter m.&replaceAll

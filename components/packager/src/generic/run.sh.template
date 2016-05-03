@@ -58,10 +58,4 @@ Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
 
-JAR="$APP_HOME/@lib.dir.name@/@jar.file.name@"
-CONFIG_DIR_OPT=-Dome.smuggler.ConfigDir="$APP_HOME/@config.dir.name@"
-DATA_DIR_OPT=-Dome.smuggler.DataDir="$APP_HOME/@data.dir.name@"
-LOG_DIR_OPT=-Dlogging.path="$APP_HOME/@log.dir.name@"
-
-JAVA_OPTS=$CONFIG_DIR_OPT $DATA_DIR_OPT $LOG_DIR_OPT
-exec "$JAVACMD" $JAVA_OPTS -jar $JAR "$@"
+exec "$JAVACMD" @server.args@
