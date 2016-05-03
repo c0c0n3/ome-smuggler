@@ -14,7 +14,7 @@ class ReplacementMap<K, V> extends HashMap<K, V> {
      */
     String replaceAll(String x) {
         inject(x, { r, e ->
-            r.replaceAll(e.key.toString(), e.value.toString())
+            r.replace(e.key.toString(), e.value.toString())
         })
     }
 
