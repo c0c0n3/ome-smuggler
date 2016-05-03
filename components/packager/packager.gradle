@@ -1,9 +1,9 @@
 import static util.Filez.*
 import util.ReplacementMap
-import packager.Staging
+import packager.BuildDir
 
 
-ext.staging = new Staging(buildDir)
+ext.dirs = new BuildDir(buildDir)
 ext.releaseBundleBaseName = 'ome-smuggler'
 ext.releaseBundleVersion = '0.1.0'
 ext.releaseBundleClassifier = 'beta'
@@ -12,10 +12,10 @@ def serverJarFile() { toFile(project(':server').jar) }
 def cliJarFile() { toFile(project(':cli').jar) }
 
 def configureBaseBundle(AbstractArchiveTask task) {
-    task.from staging.baseDir
+    task.from dirs.staging.baseDir
     task.into releaseBundleBaseName
     task.includeEmptyDirs = true
-    task.destinationDir = buildDir
+    task.destinationDir = dirs.distDir
     task.baseName = releaseBundleBaseName
     task.version = releaseBundleVersion
     task.classifier = releaseBundleClassifier
@@ -27,40 +27,40 @@ def configureGenericBundle(AbstractArchiveTask task) {
 }
 
 
-task makeStagingDirs << {
-    staging.subdirs().each { d -> mkdir(d) }
+task makeBuildDirs << {
+    dirs.subdirs().each { d -> mkdir(d) }
 }
 
-task copyReadme(type: Copy, dependsOn: makeStagingDirs) {
+task copyReadme(type: Copy, dependsOn: makeBuildDirs) {
     from 'src/README.md'
-    into staging.baseDir
+    into dirs.staging.baseDir
 }
 
-task copyLicense(type: Copy, dependsOn: makeStagingDirs) {
+task copyLicense(type: Copy, dependsOn: makeBuildDirs) {
     from toFile(rootProject.projectDir, 'LICENSE.md')
-    into staging.baseDir
+    into dirs.staging.baseDir
 }
 
-task copyJars(dependsOn: [makeStagingDirs, ':server:bootRepackage',
+task copyJars(dependsOn: [makeBuildDirs, ':server:bootRepackage',
                           ':cli:bootRepackage']) << {
     copy {
         from serverJarFile()
         from cliJarFile()
-        into staging.libDir
+        into dirs.staging.libDir
     }
 }
 
-task copyScripts(dependsOn: makeStagingDirs) << {
-    def m = [ '@lib.dir.name@' : staging.libDir.name
+task copyScripts(dependsOn: makeBuildDirs) << {
+    def m = [ '@lib.dir.name@' : dirs.staging.libDir.name
             , '@jar.file.name@' : serverJarFile().name
-            , '@config.dir.name@' : staging.configDir.name
-            , '@data.dir.name@' : staging.dataDir.name
-            , '@log.dir.name@' : staging.logDir.name
+            , '@config.dir.name@' : dirs.staging.configDir.name
+            , '@data.dir.name@' : dirs.staging.dataDir.name
+            , '@log.dir.name@' : dirs.staging.logDir.name
             ] as ReplacementMap
     copy {
         from 'src/generic/'
         include '*.template'
-        into staging.binDir
+        into dirs.staging.binDir
         rename { it - ~/\.template$/ }
         filter m.&replaceAll
         fileMode 0755
