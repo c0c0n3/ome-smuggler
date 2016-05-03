@@ -6,7 +6,7 @@ import util.*
 ext.dirs = new BuildDir(buildDir)
 ext.bundle = new ReleaseBundle(dirs, new ReleaseInfo(
                                 [ baseName:   'ome-smuggler'
-                                , version:    '0.1.0'
+                                , version:    version
                                 , classifier: 'beta'
                                 ]))
 
