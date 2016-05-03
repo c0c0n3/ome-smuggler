@@ -12,6 +12,24 @@ ext.bundle = new ReleaseBundle(dirs, new ReleaseInfo(
 
 def serverJarFile() { toFile(project(':server').jar) }
 def cliJarFile() { toFile(project(':cli').jar) }
+def windowsCli() {
+    [ '@server.args@' : ServerGenericCliBuilder
+                        .buildWindowsArgs(dirs, serverJarFile().name)
+    ] as ReplacementMap
+}
+def unixCli() {
+    [ '@server.args@' : ServerGenericCliBuilder
+                        .buildUnixArgs(dirs, serverJarFile().name)
+    ] as ReplacementMap
+}
+
+
+configurations {
+    fetch
+}
+dependencies {
+    fetch 'com.sun.winsw:winsw:1.9:bin@exe'
+}
 
 
 task makeBuildDirs << {
@@ -38,26 +56,37 @@ task copyJars(dependsOn: [makeBuildDirs, ':server:bootRepackage',
 }
 
 task copyScripts(dependsOn: makeBuildDirs) << {
-    def m = [ '@server.args@' : ServerGenericCliBuilder
-                                .buildWindowsArgs(dirs, serverJarFile().name)
-            ] as ReplacementMap
     copy {
         from 'src/generic/'
         include '*.bat.template'
         into dirs.staging.binDir
         rename { it - ~/\.template$/ }
-        filter m.&replaceAll
+        filter windowsCli().&replaceAll
     }
-
-    m['@server.args@'] = ServerGenericCliBuilder
-                        .buildUnixArgs(dirs, serverJarFile().name)
     copy {
         from 'src/generic/'
         include '*.sh.template'
         into dirs.staging.binDir
         rename { it - ~/\.template$/ }
-        filter m.&replaceAll
+        filter unixCli().&replaceAll
         fileMode 0755
+    }
+}
+
+task copyWinService(dependsOn: makeBuildDirs) << {
+    def svcName = bundle.info.baseName
+    copy {
+        from configurations.fetch
+        include '*.exe'
+        into dirs.staging.binDir
+        rename { svcName + '.exe' }
+    }
+    copy {
+        from 'src/winsvc/'
+        include 'service.xml.template'
+        into dirs.staging.binDir
+        rename { svcName + '.xml' }
+        filter windowsCli().&replaceAll
     }
 }
 
@@ -73,7 +102,14 @@ task releaseGenericTar(type: Tar) {
 task releaseGeneric(dependsOn: [copyReadme, copyLicense, copyJars, copyScripts,
                                 releaseGenericTar, releaseGenericZip])
 
-task release (dependsOn: [releaseGeneric]) {
+task releaseWinServiceZip(type: Zip) {
+    bundle.configureWinService(releaseWinServiceZip)
+}
+
+task releaseWinService(dependsOn: [copyReadme, copyLicense, copyJars,
+                                   copyWinService, releaseWinServiceZip])
+
+task release (dependsOn: [releaseGeneric, releaseWinService]) {
     group 'distribution'
     description 'Releases generic and platform-specific server deployment bundles.'
 }
