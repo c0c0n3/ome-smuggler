@@ -34,7 +34,7 @@ class ReleaseBundle {
     def configureWinService(AbstractArchiveTask task) {
         configureBase(task)
         task.baseName = info.baseName + '-winsvc'
-        task.include '**/*.md', '**/*.exe', '**/*.xml', '**/*.jar'
+        task.include '**/*.md', '**/*.exe', '**/*.xml', '**/*.config', '**/*.jar'
     }
 
 }

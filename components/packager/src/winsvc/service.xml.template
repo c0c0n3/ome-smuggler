@@ -1,8 +1,0 @@
-<service>
-    <id>smuggler</id>
-    <name>OME Smuggler</name>
-    <description>This service provides OMERO background import functionality.</description>
-    <env name="APP_HOME" value="%BASE%"/>
-    <executable>java</executable>
-    <arguments>@server.args@</arguments>
-</service>
