@@ -12,9 +12,9 @@
     <priority>idle</priority>
     <logmode>rotate</logmode>
     <!-- uncomment this to specify server account or use /p option when
-      -- installing (e.g. ome-smuggler.exe install /p) to specify all the
-      -- below parameters interactively.
-      --
+         installing (e.g. ome-smuggler.exe install /p) to specify all the
+         below parameters interactively.
+
     <serviceaccount>
        <domain>YOURDOMAIN</domain>
        <user>useraccount</user>
