@@ -24,16 +24,13 @@ def unixCli() {
 }
 
 repositories {
-    maven {
-        url 'http://repo.jenkins-ci.org/releases'
-    }
-
+    jcenter()
 }
 configurations {
     fetch
 }
 dependencies {
-    fetch 'com.sun.winsw:winsw:1.17:bin@exe'
+    fetch 'com.sun.winsw:winsw:1.16:bin@exe'
 }
 
 
