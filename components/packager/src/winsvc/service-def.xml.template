@@ -9,7 +9,7 @@
     <env name="APP_HOME" value="%BASE%\.."/>
     <executable>java</executable>
     <arguments>@server.args@</arguments>
-    <priority>idle</priority>
+    <priority>normal</priority>
     <logmode>rotate</logmode>
     <!-- uncomment this to specify server account or use /p option when
          installing (e.g. ome-smuggler.exe install /p) to specify all the
