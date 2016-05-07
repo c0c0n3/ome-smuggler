@@ -26,10 +26,13 @@ public class Asserts {
     
     public static void assert204(ResponseEntity<?> response) {
         assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
-        assertThat(response.getHeaders().getContentLength(), is(0L));
+        assertThat(response.getHeaders().getContentLength(), is(-1L));  // (*)
         assertNull(response.getBody());
     }
-    
+    /* (*) -1 is returned when there's no content length header. The HTTP 1.1
+     * spec forbids 204 responses with a content length.
+     */
+
     public static void assert404(ResponseEntity<?> response) {
         assertThat(response.getStatusCode(), is(HttpStatus.NOT_FOUND));
     }

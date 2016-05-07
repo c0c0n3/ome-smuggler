@@ -21,8 +21,9 @@ public class ResponseEntities {
      * 204.
      * @return a new 204 response.
      */
-    public static ResponseEntity<?> _204() {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public static ResponseEntity<Void> _204() {
+        //return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
     
     /**

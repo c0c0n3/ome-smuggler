@@ -109,7 +109,7 @@ public abstract class TaskFileStoreAdapter<T extends Identifiable> {
      * @return a 204 response to the client.
      */
     @RequestMapping(method = DELETE, value = "{" + TaskIdPathVar + "}") 
-    public ResponseEntity<?> deleteFile(
+    public ResponseEntity<Void> deleteFile(
             @PathVariable(value=TaskIdPathVar) String taskId) {
         service().remove(taskIdFromString().apply(taskId)); 
         return _204();
