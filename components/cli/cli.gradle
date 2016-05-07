@@ -28,7 +28,9 @@ dependencies {
     }
 }
 
-mainClassName = 'ome.cli.Main'
+springBoot {
+    mainClass = 'ome.cli.Main'
+}
 
 jar {
     baseName = 'ome-cli'
