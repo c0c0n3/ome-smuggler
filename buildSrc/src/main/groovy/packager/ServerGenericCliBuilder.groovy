@@ -22,7 +22,7 @@ class ServerGenericCliBuilder {
         sysPropArg(configDirKey, path)
     }
 
-    static String datagDirArg(String path) {
+    static String dataDirArg(String path) {
         sysPropArg(dataDirKey, path)
     }
 
@@ -66,7 +66,7 @@ class ServerGenericCliBuilder {
     }
 
     String data() {
-        datagDirArg(path(dirs.staging.dataDir.name))
+        dataDirArg(path(dirs.staging.dataDir.name))
     }
 
     String log() {

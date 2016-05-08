@@ -1,0 +1,5 @@
+#
+# This file is sourced by the Spring Boot launch script which is embedded into
+# the server jar file. (Script starts at byte 0, then follows the actual jar.)
+#
+JAVA_OPTS=@server.args@

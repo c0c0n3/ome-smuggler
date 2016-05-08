@@ -29,6 +29,10 @@ configurations {
     compile.exclude module: "spring-boot-starter-tomcat"
 }
 
+springBoot {
+    executable = rootProject.makeExecutableServerJar
+}
+
 jar {
     baseName = 'ome-smuggler'
 }

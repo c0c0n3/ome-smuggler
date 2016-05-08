@@ -37,4 +37,10 @@ class ReleaseBundle {
         task.include '**/*.md', '**/*.exe', '**/*.xml', '**/*.config', '**/*.jar'
     }
 
+    def configureLinuxDaemon(AbstractArchiveTask task) {
+        configureBase(task)
+        task.baseName = info.baseName + '-linux-daemon'
+        task.include '**/*.md', dirs.staging.linuxDaemonDir.name + '/*'
+    }
+
 }

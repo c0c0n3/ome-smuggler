@@ -22,6 +22,10 @@ def unixCli() {
                         .buildUnixArgs(dirs, serverJarFile().name)
     ] as ReplacementMap
 }
+def linuxDaemonCli() {
+    [ '@server.args@' : new LinuxDaemonCliBuilder(bundle.info).build()
+    ] as ReplacementMap
+}
 
 repositories {
     jcenter()
@@ -73,6 +77,13 @@ task copyScripts(dependsOn: makeBuildDirs) << {
         filter unixCli().&replaceAll
         fileMode 0755
     }
+    copy {
+        from 'src/linux-daemon/'
+        include '*.template'
+        into dirs.staging.linuxDaemonDir
+        rename { it - ~/\.template$/ }
+        filter linuxDaemonCli().&replaceAll
+    }
 }
 
 task copyWinService(dependsOn: makeBuildDirs) << {
@@ -98,24 +109,43 @@ task copyWinService(dependsOn: makeBuildDirs) << {
     }
 }
 
-task releaseGenericZip(type: Zip) {
-    bundle.configureGeneric(releaseGenericZip)
+task makeGenericZip(type: Zip) {
+    bundle.configureGeneric(makeGenericZip)
 }
 
-task releaseGenericTar(type: Tar) {
-    bundle.configureGeneric(releaseGenericTar)
+task makeGenericTar(type: Tar) {
+    bundle.configureGeneric(makeGenericTar)
     compression = Compression.GZIP
 }
 
 task releaseGeneric(dependsOn: [copyReadme, copyLicense, copyJars, copyScripts,
-                                releaseGenericTar, releaseGenericZip])
+                                makeGenericTar, makeGenericZip])
 
-task releaseWinServiceZip(type: Zip) {
-    bundle.configureWinService(releaseWinServiceZip)
+task makeWinServiceZip(type: Zip) {
+    bundle.configureWinService(makeWinServiceZip)
 }
 
 task releaseWinService(dependsOn: [copyReadme, copyLicense, copyJars,
-                                   copyWinService, releaseWinServiceZip])
+                                   copyWinService, makeWinServiceZip])
+
+task repackageLinuxDaemonJars(dependsOn: copyJars) << {
+    rootProject.makeExecutableServerJar = true
+    project(':server').bootRepackage.execute()
+    copy {
+        from serverJarFile()
+        from cliJarFile()
+        into dirs.staging.linuxDaemonDir
+    }
+}
+
+task makeLinuxDaemonTar(type: Tar) {
+    bundle.configureLinuxDaemon(makeLinuxDaemonTar)
+    compression = Compression.GZIP
+}
+
+task releaseLinuxDaemon(dependsOn: [copyReadme, copyLicense, copyScripts,
+                                    repackageLinuxDaemonJars,
+                                    makeLinuxDaemonTar])
 
 task release (dependsOn: [releaseGeneric, releaseWinService]) {
     group 'distribution'
@@ -129,3 +159,18 @@ task clean {
         delete(buildDir)
     }
 }
+
+/*
+task t {
+    println '>>>>>>>>>>>>>>>>>>>>>>>>>>>> WTF'
+    println rootProject.executableServerJar
+    rootProject.executableServerJar = true
+    println rootProject.executableServerJar
+    println '>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+}
+*/
+/*
+task t(dependsOn: ':server:bootRepackage') {
+    rootProject.makeExecutableServerJar = true
+}
+*/

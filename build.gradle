@@ -8,6 +8,8 @@ allprojects {
     }
 }
 
+ext.makeExecutableServerJar = false
+
 buildscript {
     repositories {
         mavenCentral()

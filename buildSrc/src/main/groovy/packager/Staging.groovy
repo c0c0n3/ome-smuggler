@@ -9,7 +9,8 @@ import static util.Filez.*
  */
 class Staging {
 
-    File buildDir, baseDir, binDir, configDir, dataDir, libDir, logDir
+    File buildDir, baseDir, binDir, configDir, dataDir, libDir, logDir,
+            linuxDaemonDir
 
     Staging(File buildDir) {
         this.buildDir = buildDir
@@ -19,10 +20,11 @@ class Staging {
         dataDir = toFile(baseDir, 'data')
         libDir = toFile(baseDir, 'lib')
         logDir = toFile(baseDir, 'log')
+        linuxDaemonDir = toFile(baseDir, 'linux-daemon')
     }
 
     def subdirs() {
-        [binDir, configDir, dataDir, libDir, logDir]
+        [binDir, configDir, dataDir, libDir, logDir, linuxDaemonDir]
     }
 
 }
