@@ -29,12 +29,22 @@ configurations {
     compile.exclude module: "spring-boot-starter-tomcat"
 }
 
-springBoot {
-    executable = rootProject.makeExecutableServerJar
-}
+ext.mainClassName = 'ome.smuggler.Main'
+ext.jarBaseName = 'ome-smuggler'
 
 jar {
-    baseName = 'ome-smuggler'
+    baseName = jarBaseName
+}
+
+task exeJar(type: Jar) {  // must have same 'from', 'include', etc as jar task!
+    baseName = jarBaseName
+    extension = 'exe.jar'
+    from sourceSets.main.output
+}
+
+task unixFullyExecJar(type: BootRepackage, dependsOn: exeJar) {
+    withJarTask = exeJar
+    executable = true
 }
 
 test {  // added by java plugin, but says 'Runs the unit tests.'
