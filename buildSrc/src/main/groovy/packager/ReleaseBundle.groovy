@@ -41,6 +41,7 @@ class ReleaseBundle {
         configureBase(task)
         task.baseName = info.baseName + '-linux-daemon'
         task.include '**/*.md', dirs.staging.linuxDaemonDir.name + '/*'
+        task.includeEmptyDirs = false
     }
 
 }
