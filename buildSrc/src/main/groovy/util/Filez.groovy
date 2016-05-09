@@ -36,4 +36,13 @@ class Filez {
         toFile(task.archivePath)
     }
 
+    /**
+     * Extracts the file name without extension from the given file.
+     * @param pathname the file.
+     * @return the file name without extension.
+     */
+    static String nameWithoutExtension(File pathname) {
+        pathname.name.replaceFirst('[.][^.]+$', '')
+    }
+
 }
