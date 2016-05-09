@@ -9,22 +9,19 @@ import static util.Filez.*
  */
 class Staging {
 
-    File buildDir, baseDir, binDir, configDir, dataDir, libDir, logDir,
-            linuxDaemonDir
+    File buildDir, baseDir, linuxDaemonDir
+    GenericDirLayout generic, winsvc
 
     Staging(File buildDir) {
         this.buildDir = buildDir
         baseDir = toFile(buildDir, 'staging')
-        binDir = toFile(baseDir, 'bin')
-        configDir = toFile(baseDir, 'config')
-        dataDir = toFile(baseDir, 'data')
-        libDir = toFile(baseDir, 'lib')
-        logDir = toFile(baseDir, 'log')
+        generic = new GenericDirLayout(toFile(baseDir, 'generic'))
+        winsvc = new GenericDirLayout(toFile(baseDir, 'winsvc'))
         linuxDaemonDir = toFile(baseDir, 'linux-daemon')
     }
 
     def subdirs() {
-        [binDir, configDir, dataDir, libDir, logDir, linuxDaemonDir]
+        generic.subdirs() + winsvc.subdirs() + [linuxDaemonDir]
     }
 
 }

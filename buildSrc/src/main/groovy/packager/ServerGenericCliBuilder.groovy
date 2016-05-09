@@ -58,19 +58,19 @@ class ServerGenericCliBuilder {
     }
 
     String jar() {
-        jarArg(path(dirs.staging.libDir.name) + separator + serverJarName)
+        jarArg(path(dirs.staging.generic.libDir.name) + separator + serverJarName)
     }
 
     String config() {
-        configDirArg(path(dirs.staging.configDir.name))
+        configDirArg(path(dirs.staging.generic.configDir.name))
     }
 
     String data() {
-        dataDirArg(path(dirs.staging.dataDir.name))
+        dataDirArg(path(dirs.staging.generic.dataDir.name))
     }
 
     String log() {
-        logDirArg(path(dirs.staging.logDir.name))
+        logDirArg(path(dirs.staging.generic.logDir.name))
     }
 
     String build() {

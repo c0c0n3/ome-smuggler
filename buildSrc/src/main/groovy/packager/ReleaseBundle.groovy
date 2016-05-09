@@ -17,8 +17,8 @@ class ReleaseBundle {
     }
 
     def configureBase(AbstractArchiveTask task) {
-        task.from dirs.staging.baseDir
         task.into info.baseName
+        task.include '**/*'
         task.includeEmptyDirs = true
         task.destinationDir = dirs.distDir
         task.baseName = info.baseName
@@ -28,20 +28,19 @@ class ReleaseBundle {
 
     def configureGeneric(AbstractArchiveTask task) {
         configureBase(task)
-        task.include '**/*.md', '**/*.sh', '**/*.bat', '**/*.jar'
+        task.from dirs.staging.generic.baseDir
     }
 
     def configureWinService(AbstractArchiveTask task) {
         configureBase(task)
+        task.from dirs.staging.winsvc.baseDir
         task.baseName = info.baseName + '-winsvc'
-        task.include '**/*.md', '**/*.exe', '**/*.xml', '**/*.config', '**/*.jar'
     }
 
     def configureLinuxDaemon(AbstractArchiveTask task) {
         configureBase(task)
+        task.from dirs.staging.linuxDaemonDir
         task.baseName = info.baseName + '-linux-daemon'
-        task.include '**/*.md', dirs.staging.linuxDaemonDir.name + '/*'
-        task.includeEmptyDirs = false
     }
 
 }

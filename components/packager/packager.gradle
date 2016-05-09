@@ -1,7 +1,4 @@
-import static util.Filez.*
 import packager.*
-import util.*
-
 
 ext.dirs = new BuildDir(buildDir)
 ext.bundle = new ReleaseBundle(dirs, new ReleaseInfo(
@@ -13,20 +10,7 @@ ext.bundle = new ReleaseBundle(dirs, new ReleaseInfo(
 def serverJarFile() { toFile(project(':server').jar) }
 def serverExeJarFile () { toFile(project(':server').exeJar) }
 def cliJarFile() { toFile(project(':cli').jar) }
-def windowsCli() {
-    [ '@server.args@' : ServerGenericCliBuilder
-                        .buildWindowsArgs(dirs, serverJarFile().name)
-    ] as ReplacementMap
-}
-def unixCli() {
-    [ '@server.args@' : ServerGenericCliBuilder
-                        .buildUnixArgs(dirs, serverJarFile().name)
-    ] as ReplacementMap
-}
-def linuxDaemonCli() {
-    [ '@server.args@' : new LinuxDaemonCliBuilder(bundle.info).build()
-    ] as ReplacementMap
-}
+
 
 repositories {
     jcenter()
@@ -43,110 +27,9 @@ task makeBuildDirs << {
     dirs.subdirs().each { d -> mkdir(d) }
 }
 
-task copyReadme(type: Copy, dependsOn: makeBuildDirs) {
-    from 'src/README.md'
-    into dirs.staging.baseDir
-}
-
-task copyLicense(type: Copy, dependsOn: makeBuildDirs) {
-    from toFile(rootProject.projectDir, 'LICENSE.md')
-    into dirs.staging.baseDir
-}
-
-task copyJars(dependsOn: [makeBuildDirs, ':server:bootRepackage',
-                          ':server:unixFullyExecJar', ':cli:bootRepackage']) << {
-    copy {
-        from serverJarFile()
-        from cliJarFile()
-        into dirs.staging.libDir
-    }
-    copy {
-        from serverExeJarFile()
-        into dirs.staging.linuxDaemonDir
-        fileMode 0755
-    }
-    copy {
-        from cliJarFile()
-        into dirs.staging.linuxDaemonDir
-    }
-}
-
-task copyScripts(dependsOn: makeBuildDirs) << {
-    copy {
-        from 'src/generic/'
-        include '*.bat.template'
-        into dirs.staging.binDir
-        rename { it - ~/\.template$/ }
-        filter windowsCli().&replaceAll
-    }
-    copy {
-        from 'src/generic/'
-        include '*.sh.template'
-        into dirs.staging.binDir
-        rename { it - ~/\.template$/ }
-        filter unixCli().&replaceAll
-        fileMode 0755
-    }
-    copy {
-        from 'src/linux-daemon/'
-        include '*.template'
-        into dirs.staging.linuxDaemonDir
-        rename {
-            nameWithoutExtension(serverExeJarFile()) + '.conf'
-        }
-        filter linuxDaemonCli().&replaceAll
-    }
-}
-
-task copyWinService(dependsOn: makeBuildDirs) << {
-    def svcName = bundle.info.baseName
-    copy {
-        from configurations.fetch
-        include '*.exe'
-        into dirs.staging.binDir
-        rename { svcName + '.exe' }
-    }
-    copy {
-        from 'src/winsvc/'
-        include 'service-def.xml.template'
-        into dirs.staging.binDir
-        rename { svcName + '.xml' }
-        filter windowsCli().&replaceAll
-    }
-    copy {
-        from 'src/winsvc/'
-        include 'service-runtime.xml'
-        into dirs.staging.binDir
-        rename { svcName + '.exe.config' }
-    }
-}
-
-task makeGenericZip(type: Zip) {
-    bundle.configureGeneric(makeGenericZip)
-}
-
-task makeGenericTar(type: Tar) {
-    bundle.configureGeneric(makeGenericTar)
-    compression = Compression.GZIP
-}
-
-task releaseGeneric(dependsOn: [copyReadme, copyLicense, copyJars, copyScripts,
-                                makeGenericTar, makeGenericZip])
-
-task makeWinServiceZip(type: Zip) {
-    bundle.configureWinService(makeWinServiceZip)
-}
-
-task releaseWinService(dependsOn: [copyReadme, copyLicense, copyJars,
-                                   copyWinService, makeWinServiceZip])
-
-task makeLinuxDaemonTar(type: Tar) {
-    bundle.configureLinuxDaemon(makeLinuxDaemonTar)
-    compression = Compression.GZIP
-}
-
-task releaseLinuxDaemon(dependsOn: [copyReadme, copyLicense, copyJars,
-                                    copyScripts, makeLinuxDaemonTar])
+apply from: 'src/generic/generic.gradle'
+apply from: 'src/linux-daemon/linux-daemon.gradle'
+apply from: 'src/winsvc/winsvc.gradle'
 
 task release(dependsOn: [releaseGeneric, releaseWinService, releaseLinuxDaemon]) {
     group 'distribution'
