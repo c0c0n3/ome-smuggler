@@ -1,8 +1,6 @@
 package packager
 
-import static ServerGenericCliBuilder.sysPropArg
-import static ServerGenericCliBuilder.configDirArg
-import static ServerGenericCliBuilder.dataDirArg
+import static ServerGenericCliBuilder.logDirArg
 
 /**
  * Builds the arguments to pass to the java command for starting the Spring Boot
@@ -11,11 +9,21 @@ import static ServerGenericCliBuilder.dataDirArg
  */
 class LinuxDaemonCliBuilder {
 
-    static final String logFilePathKey = 'logging.file'
+    static final String configDirVar = 'SMUGGLER_CONFIGDIR'
+    static final String dataDirVar = 'SMUGGLER_DATADIR'
 
-    static String logFileArg(String path) {
-        sysPropArg(logFilePathKey, path)
+    static String envVar(String name, String value) {
+        String.format('%s="%s"', name, value)
     }
+
+    static String configDirVar(String value) {
+        envVar(configDirVar, value)
+    }
+
+    static String dataDirVar(String value) {
+        envVar(dataDirVar, value)
+    }
+
 
     ReleaseInfo info
 
@@ -23,20 +31,28 @@ class LinuxDaemonCliBuilder {
         this.info = info
     }
 
+    String suggestedConfig() {
+        configDirVar('/etc/opt/' + info.baseName + '.d')
+    }
+
     String config() {
-        configDirArg('/etc/opt/' + info.baseName + '.d')
+        configDirVar('config')
     }
 
     String data() {
-        dataDirArg('/var/opt/' + info.baseName)
+        dataDirVar('data')
+    }
+
+    String suggestedData() {
+        dataDirVar('/var/opt/' + info.baseName)
     }
 
     String log() {
-        logFileArg('/var/log/' + info.baseName + '.log')
+        logDirArg('log')
     }
 
-    String build() {
-        [config(), data(), log()].join(' ')
+    String suggestedLog() {
+        logDirArg('/var/log/' + info.baseName)
     }
 
 }

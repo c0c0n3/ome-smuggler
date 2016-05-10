@@ -6,7 +6,13 @@ import util.*
 def serverExeJarFile () { toFile(project(':server').exeJar) }
 def cliJarFile() { toFile(project(':cli').jar) }
 def linuxDaemonCli() {
-    [ '@server.args@' : new LinuxDaemonCliBuilder(bundle.info).build()
+    def builder = new LinuxDaemonCliBuilder(bundle.info)
+    [ '@suggested.data.dir@'     : builder.suggestedData()
+    , '@server.data.dir@'        : builder.data()
+    , '@suggested.config.dir@'   : builder.suggestedConfig()
+    , '@server.config.dir@'      : builder.config()
+    , '@suggested.logging.path@' : builder.suggestedLog()
+    , '@server.logging.path@'    : builder.log()
     ] as ReplacementMap
 }
 
