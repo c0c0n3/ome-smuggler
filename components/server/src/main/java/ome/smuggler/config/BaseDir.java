@@ -1,7 +1,6 @@
 package ome.smuggler.config;
 
 import static java.util.Objects.requireNonNull;
-import static util.string.Strings.asOptional;
 import static util.string.Strings.isNullOrEmpty;
 import static util.string.Strings.requireString;
 
@@ -9,35 +8,55 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import util.object.Wrapper;
+import util.string.Strings;
 
 /**
  * Path to a directory used as a base for {@link #resolve(String) resolving} 
  * paths in configuration files.
- * The base directory path is retrieved from the system properties if a property
- * value for a specified key exists; otherwise it will be the current working
- * directory, i.e. the value of "user.dir".
- * Note that if the property value is set to a relative path, then that path
- * will be resolved against the current working directory.
+ * The base directory path will be set to:
+ * <ol>
+ *     <li>the value of a specified system property, if the property exists
+ *     and its value is a string of length greater than {@code 0}; otherwise
+ *     </li>
+ *     <li>the value of a specified environment variable, if such variable
+ *     exists and its value is a string of length greater than {@code 0};
+ *     otherwise</li>
+ *     <li>the current working directory, i.e. the value of "user.dir".</li>
+ * </ol>
+ * Note that if the property or environment variable value is set to a relative
+ * path, then that path will be resolved against the current working directory.
  */
 public class BaseDir extends Wrapper<Path> {
 
     /**
      * Looks up the path associated to the specified key in the system 
-     * properties. If no value is found for the key, the current working
-     * directory is returned.
+     * properties. If no value is found for the key, the specified environment
+     * variable is used instead. If no value is found for this variable either,
+     * the current working directory is returned.
      * @param key the system property key.
+     * @param varName the name of the environment variable.
      * @return the path.
-     * @throws IllegalArgumentException if the argument is {@code null} or
+     * @throws IllegalArgumentException if any argument is {@code null} or
      * empty.
      */
-    public static Path lookup(String key) {
+    public static Path lookup(String key, String varName) {
         requireString(key, "key");
-        
-        String dir = asOptional(System.getProperty(key))
-                    .orElse(System.getProperty("user.dir"));
-        return Paths.get(dir);
+        requireString(varName, "varName");
+
+        return Stream.of(System.getProperty(key),
+                         System.getenv(varName),
+                         System.getProperty("user.dir"),
+                         ".")
+                .map(Strings::asOptional)
+                .map(maybe -> maybe.map(Paths::get))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .get()
+                .get();
     }
     
     /**
@@ -75,14 +94,16 @@ public class BaseDir extends Wrapper<Path> {
     }
 
     /**
-     * Creates a new instance from the system property having the specified key.
-     * If no such a property exists, then the current working directory is
-     * used instead.
-     * @param sysPropKey the system property key.
-     * @throws IllegalArgumentException if the key is {@code null} or empty.
+     * Creates a new instance using the path returned by the
+     * {@link #lookup(String, String) lookup} method.
+     * @param sysPropKey the system property key to pass to the
+     *                   {@link #lookup(String, String) lookup} method.
+     * @param envVarName the name of the environment variable to pass to the
+     *                   {@link #lookup(String, String) lookup} method.
+     * @throws IllegalArgumentException if any argument is {@code null} or empty.
      */
-    public BaseDir(String sysPropKey) {
-        super(lookup(sysPropKey));
+    public BaseDir(String sysPropKey, String envVarName) {
+        super(lookup(sysPropKey, envVarName));
     }
 
     /**

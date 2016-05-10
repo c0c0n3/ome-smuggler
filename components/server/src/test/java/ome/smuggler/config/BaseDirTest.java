@@ -13,7 +13,7 @@ public class BaseDirTest {
     private static final String key = "non-existing";
     
     private static BaseDir newBaseDir() {
-        return new BaseDir(key);
+        return new BaseDir(key, key);
     }
     
     private static void setProp(Path dir) {
