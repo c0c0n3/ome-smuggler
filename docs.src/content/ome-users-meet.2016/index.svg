@@ -12,7 +12,7 @@
    viewBox="0 0 1024 768"
    id="svg9493"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.91+devel+osxmenu r12898"
    sodipodi:docname="index.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -24,16 +24,16 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-maximized="1"
+     inkscape:window-maximized="0"
      inkscape:showpageshadow="false"
      borderlayer="true"
      id="namedview9495"
-     inkscape:cx="493.16656"
+     inkscape:cx="375.66656"
      inkscape:cy="302.35421"
-     inkscape:window-width="1920"
-     inkscape:window-height="1056"
+     inkscape:window-width="1080"
+     inkscape:window-height="675"
      inkscape:window-x="0"
-     inkscape:window-y="24">
+     inkscape:window-y="23">
     <inkscape:grid
        type="xygrid"
        color="#b5357b"
@@ -80,7 +80,7 @@
          id="g16425">
         <g
            id="g16427"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path16429"
@@ -656,7 +656,7 @@
          id="g16657"
          transform="matrix(-1,0,0,1,638.06108,0)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g16659">
           <path
              inkscape:connector-curvature="0"
@@ -906,11 +906,11 @@
            inkscape:connector-curvature="0" />
       </g>
       <g
-         transform="matrix(-1,0,0,-1,638.06108,-187.75687)"
+         transform="rotate(180,319.03054,-93.878435)"
          id="g16759">
         <g
            id="g16761"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path16763"
@@ -1162,7 +1162,7 @@
          id="g16861"
          transform="matrix(1,0,0,-1,1e-6,-187.75687)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g16863">
           <path
              inkscape:connector-curvature="0"
@@ -1416,7 +1416,7 @@
          id="g16963">
         <g
            id="g16965"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path16967"
@@ -1666,9 +1666,9 @@
       </g>
       <g
          id="g17065"
-         transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)">
+         transform="rotate(120,318.77716,-92.605089)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g17067">
           <path
              inkscape:connector-curvature="0"
@@ -2632,7 +2632,7 @@
           <g
              id="g15818">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g15560">
               <path
                  inkscape:connector-curvature="0"
@@ -3210,7 +3210,7 @@
              id="g15870">
             <g
                id="g15872"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path15874"
@@ -3460,9 +3460,9 @@
           </g>
           <g
              id="g15972"
-             transform="matrix(-1,0,0,-1,638.06108,-187.75687)">
+             transform="rotate(180,319.03054,-93.878435)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g15974">
               <path
                  inkscape:connector-curvature="0"
@@ -3716,7 +3716,7 @@
              id="g16074">
             <g
                id="g16076"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path16078"
@@ -3968,7 +3968,7 @@
              id="g16176"
              transform="matrix(0.50000001,0.86602541,0.86602541,-0.50000001,239.73749,-414.97676)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g16178">
               <path
                  inkscape:connector-curvature="0"
@@ -4218,11 +4218,11 @@
                inkscape:connector-curvature="0" />
           </g>
           <g
-             transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)"
+             transform="rotate(120,318.77716,-92.605089)"
              id="g16278">
             <g
                id="g16280"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path16282"
@@ -4735,7 +4735,7 @@
       <g
          id="g10911">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g10913">
           <path
              inkscape:connector-curvature="0"
@@ -5313,7 +5313,7 @@
          id="g11143">
         <g
            id="g11145"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path11147"
@@ -5563,9 +5563,9 @@
       </g>
       <g
          id="g11245"
-         transform="matrix(-1,0,0,-1,638.06108,-187.75687)">
+         transform="rotate(180,319.03054,-93.878435)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g11247">
           <path
              inkscape:connector-curvature="0"
@@ -5819,7 +5819,7 @@
          id="g11347">
         <g
            id="g11349"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path11351"
@@ -6071,7 +6071,7 @@
          id="g11449"
          transform="matrix(0.50000001,0.86602541,0.86602541,-0.50000001,239.73749,-414.97676)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g11451">
           <path
              inkscape:connector-curvature="0"
@@ -6321,11 +6321,11 @@
            inkscape:connector-curvature="0" />
       </g>
       <g
-         transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)"
+         transform="rotate(120,318.77716,-92.605089)"
          id="g11551">
         <g
            id="g11553"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path11555"
@@ -7289,7 +7289,7 @@
              id="g11941">
             <g
                id="g11943"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path11945"
@@ -7865,7 +7865,7 @@
              id="g12173"
              transform="matrix(-1,0,0,1,638.06108,0)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g12175">
               <path
                  inkscape:connector-curvature="0"
@@ -8115,11 +8115,11 @@
                inkscape:connector-curvature="0" />
           </g>
           <g
-             transform="matrix(-1,0,0,-1,638.06108,-187.75687)"
+             transform="rotate(180,319.03054,-93.878435)"
              id="g12275">
             <g
                id="g12277"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path12279"
@@ -8371,7 +8371,7 @@
              id="g12377"
              transform="matrix(1,0,0,-1,1e-6,-187.75687)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g12379">
               <path
                  inkscape:connector-curvature="0"
@@ -8625,7 +8625,7 @@
              id="g12479">
             <g
                id="g12481"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path12483"
@@ -8875,9 +8875,9 @@
           </g>
           <g
              id="g12581"
-             transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)">
+             transform="rotate(120,318.77716,-92.605089)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g12583">
               <path
                  inkscape:connector-curvature="0"
@@ -9402,7 +9402,7 @@
       <g
          id="g9973">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g9975">
           <path
              inkscape:connector-curvature="0"
@@ -9980,7 +9980,7 @@
          id="g10206">
         <g
            id="g10208"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path10210"
@@ -10230,9 +10230,9 @@
       </g>
       <g
          id="g10308"
-         transform="matrix(-1,0,0,-1,638.06108,-187.75687)">
+         transform="rotate(180,319.03054,-93.878435)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g10310">
           <path
              inkscape:connector-curvature="0"
@@ -10486,7 +10486,7 @@
          id="g10410">
         <g
            id="g10412"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path10414"
@@ -10738,7 +10738,7 @@
          id="g10512"
          transform="matrix(0.50000001,0.86602541,0.86602541,-0.50000001,239.73749,-414.97676)">
         <g
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+           transform="rotate(60,315.76248,-93.700968)"
            id="g10514">
           <path
              inkscape:connector-curvature="0"
@@ -10988,11 +10988,11 @@
            inkscape:connector-curvature="0" />
       </g>
       <g
-         transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)"
+         transform="rotate(120,318.77716,-92.605089)"
          id="g10614">
         <g
            id="g10616"
-           transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+           transform="rotate(60,315.76248,-93.700968)">
           <path
              style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
              id="path10618"
@@ -11956,7 +11956,7 @@
              id="g11004">
             <g
                id="g11006"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path11008"
@@ -12532,7 +12532,7 @@
              id="g11236"
              transform="matrix(-1,0,0,1,638.06108,0)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g11238">
               <path
                  inkscape:connector-curvature="0"
@@ -12782,11 +12782,11 @@
                inkscape:connector-curvature="0" />
           </g>
           <g
-             transform="matrix(-1,0,0,-1,638.06108,-187.75687)"
+             transform="rotate(180,319.03054,-93.878435)"
              id="g11338">
             <g
                id="g11340"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path11342"
@@ -13038,7 +13038,7 @@
              id="g11440"
              transform="matrix(1,0,0,-1,1e-6,-187.75687)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g11442">
               <path
                  inkscape:connector-curvature="0"
@@ -13292,7 +13292,7 @@
              id="g11542">
             <g
                id="g11544"
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)">
+               transform="rotate(60,315.76248,-93.700968)">
               <path
                  style="opacity:1;fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.99999994;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
                  id="path11546"
@@ -13542,9 +13542,9 @@
           </g>
           <g
              id="g11644"
-             transform="matrix(-0.5,0.8660254,-0.8660254,-0.5,397.96738,-414.97675)">
+             transform="rotate(120,318.77716,-92.605089)">
             <g
-               transform="matrix(0.5,0.8660254,-0.8660254,0.5,76.733821,-320.30881)"
+               transform="rotate(60,315.76248,-93.700968)"
                id="g11646">
               <path
                  inkscape:connector-curvature="0"
