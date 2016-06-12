@@ -31,11 +31,51 @@ There are also three sneaky configuration items that determine the directory
 layout used by Smuggler during its operation. They belong in their own group
 but there's no corresponding file for it.
 
+
 Directory Layout
 ----------------
-You specify
-what values to use for any of them through Java properties on the command
-line or through environment variables
+Smuggler uses three directories during his operation
+
+* *Configuration directory*. Where you can put your configuration. Files in
+here override jar-embedded configuration as explained earlier.
+* *Data directory*. Where Smuggler keeps each bit of data related to task
+processing: persistent queues, import and mail recovery data, etc.
+* *Log directory*. Guess what! Smuggler writes what he's up to in here: log
+files.
+
+Smuggler doesn't read or write any data outside of these directories. That's
+all he needs. All these directories default to the current working directory
+of Smuggler's process, but you can easily change them to something else: set
+any directory's path with either a Java property on the command line or use
+an environment variable. If you specify both, the Java property wins and the
+value in the environment is ignored. Here are the property and variable names
+
+* *Configuration directory*. Use `ome.smuggler.ConfigDir` (Java prop) or
+`SMUGGLER_CONFIGDIR` (environment).
+* *Data directory*. Use `ome.smuggler.DataDir` (Java prop) or `SMUGGLER_DATADIR`
+(environment). If the directory you specify doesn't exist, it'll be created.
+* *Log directory*. Use `logging.path` (Java prop) or `LOG_PATH` (environment).
+(This setting comes from the underlying Spring Boot framework.)
+If the directory you specify doesn't exist, it'll be created.
+
+<div class="pull-quote">
+###### Security
+Smuggler needs to be able to access all the above directories as well as
+having read/write permissions for their contents. Besides the admin, only
+the user you run Smuggler with should have access to these directories.
+In fact, OMERO session keys are kept in the HornetQ queue; also, depending
+on your set up, the mail configuration may contain an account password.
+Additionally, if the data directory doesn't exist and you want Smuggler
+to create it for you, then the Smuggler user must be able to access the
+parent directory and write to it. Ditto for the log directory. You may be
+better off creating these directories yourself so that Smuggler doesn't
+need to have any rights on the corresponding parent directories.
+And as you're at it, why not secure Smuggler's jar files as well? Ideally,
+you'd make them read-only and accessible to the Smuggler user only. You
+could even go a step further and make them immutable, e.g. using something
+like `chattr +i`.
+</div>
+
 
 Embedded Configuration
 ----------------------
@@ -49,7 +89,7 @@ Git repo run
 
     ./gradlew assemble :packager:release
 
-(use `gradlew.bat` on Windows.) The files you've just edited are now
+(use `gradlew.bat` on Windows.) The files you've just edited are now embedded
 into the server jar file contained in each and every distribution bundle
 generated in
 
@@ -63,10 +103,6 @@ configuration directory and restart the server; these files will take
 precedence over the ones you've embedded, so the configuration the server
 will use is that of the files in the configuration directory.
 
-
--- note config dir, will refer to it as "your config dir"
--- note for config changes to take effect, bounce smugs.
--- note: can change built-in config: server/src/... and /buildSrc/...
 
 HTTP
 ----
@@ -141,10 +177,6 @@ with the following content:
 in `build.gradle`.)
 
 
-
-- mention: data dir will be created if not exist. but smugs will need r/w perm
-    on parent dir. you may want to enforce more stringent access control and
-    create data dir yourself so that smugs doesn't need r/w perm on parent.
-- mention: tweak built-in config files to avoid having config on target machine
-- mention: generate config through runners
-- mention: internal config look at config package
+OMERO Session Timeout
+---------------------
+- stop-gap solution!
