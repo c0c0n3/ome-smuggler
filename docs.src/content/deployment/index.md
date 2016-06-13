@@ -14,7 +14,8 @@ the background, asynchronously in a server process. You can run the server
 as standalone on any OS, as a service on Windows, or as a daemon on Linux.
 For each of these options we have a corresponding distribution bundle but we
 haven't set up yet a repository with binary distributions so you'll have to
-build the bundles from source and then install them on your target machine.
+build the bundles from source before you can install them on your target
+machine.
 
 <div class="pull-quote">
 ###### Build Requirements
