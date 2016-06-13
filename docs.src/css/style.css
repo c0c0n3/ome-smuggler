@@ -197,6 +197,12 @@ h2 {
     font-weight: 600;
 }
 
+h3 {
+    font-size: 1.1em;
+    font-variant: small-caps;
+    font-weight: 600;
+}
+
 h6 {
     font-variant: small-caps;
 }
