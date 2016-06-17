@@ -20,3 +20,11 @@ mention: log dir won't grow huge over time as logs are rotated.
 
 mention: data dir shouldn't grow huge over time as long as sys admin deletes
 failed tasks after resolving the issues that caused the failure.
+
+mention: security. most endpoints enabled by default. may want to disable
+some (e.g. shutdown, env) or configure password protected access.
+
+
+* import failure, mail failure: methods + output description
+* actuator endpoints -> refer to manual
+* spring boot admin
