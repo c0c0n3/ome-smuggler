@@ -147,7 +147,7 @@ $ curl \
 What you get back in this case is a plain text email message you could
 pipe straight into a program like `sendmail` to send it again. As for
 the imports, after you've sent the message, there's no reason to keep it
-around any longer. Tell Smuggler `DELETE` it then, e.g.
+around any longer. Tell Smuggler to `DELETE` it then, e.g.
 
 ~~~ {.bash}
 $ curl -X DELETE \
@@ -157,23 +157,20 @@ $ curl -X DELETE \
 
 Smuggler's Logs
 ---------------
+Smuggler uses the logging facility that comes with Spring Boot without
+any customisation. Pretty much the run of the mill logging you'd expect
+for a Java app. Read about it in the Spring Boot [docs][boot-logging],
+if you need to. The log files go in the [configured][config] log directory
+and are rotated, so they sort of take care of themselves---i.e. the log
+directory won't grow huge over time.
 
-----
-
-mention: on windows, the wrapper's own output goes in the bin dir; also the
-wrapper logs start up & shutdown events to the windows event log (look here
-for start up issues). all the rest goes in log/spring.log. Not optimal, but
-didn't have time to sort this out. ideally, important events should also be
-written to the windows event log as this is what a sys admin would look at.
-(logging on the machine to see spring.log is just going to be a pain in the
-backside if you have deployed smugs on many machines...may fix this in the
-future!)
-
-mention: log dir won't grow huge over time as logs are rotated.
-
-mention: data dir shouldn't grow huge over time as long as sys admin deletes
-failed tasks after resolving the issues that caused the failure.
-
+<p class="side-note">
+Ideally Smuggler should log to native logging facilities (e.g. Event Logs
+on Windows) to make a sys admin's life a bit easier.
+On this note, if you're going to deploy Smuggler on many different boxes,
+getting hold of logs on each box may become a pain in the neck. I hear
+you, but have no time to improve on this at the moment!
+</p>
 
 
 
@@ -182,5 +179,7 @@ failed tasks after resolving the issues that caused the failure.
     "Spring Boot Actuator Reference"
 [boot-admin]: https://github.com/codecentric/spring-boot-admin
     "Spring Boot Admin"
+[boot-logging]: http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/boot-features-logging.html
+    "Spring Boot Logging"
 [config]: configuration.html
     "Configuration"
