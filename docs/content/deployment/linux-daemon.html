@@ -65,7 +65,8 @@ No, not an evil spirit. Rather a wicked “fully executable” jar to run Smuggl
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /opt
 $ <span class="kw">sudo</span> chown smuggler:smuggler ome-smuggler</code></pre></div>
 <p>And as we’re at it, let’s raise the security bar even more:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> chmod 500 ome-smuggler/ome-smuggler-*.exe.jar
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> chmod 700 ome-smuggler
+$ <span class="kw">sudo</span> chmod 500 ome-smuggler/ome-smuggler-*.exe.jar
 $ <span class="kw">sudo</span> chmod 400 ome-smuggler/ome-cli-*.jar
 $ <span class="kw">sudo</span> chattr +i ome-smuggler/*.jar</code></pre></div>
 <p>Over and above these basic things, you should also do whatever additional hardening advised by your system security guidelines.</p>

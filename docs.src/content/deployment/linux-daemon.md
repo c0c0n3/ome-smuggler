@@ -58,6 +58,7 @@ $ sudo chown smuggler:smuggler ome-smuggler
 And as we're at it, let's raise the security bar even more:
 
 ~~~ {.bash}
+$ sudo chmod 700 ome-smuggler
 $ sudo chmod 500 ome-smuggler/ome-smuggler-*.exe.jar
 $ sudo chmod 400 ome-smuggler/ome-cli-*.jar
 $ sudo chattr +i ome-smuggler/*.jar
