@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+ * Adapted from: https://github.com/c0c0n3/c0c0n3.github.io/blob/master/index.html
+ * (commit: https://github.com/c0c0n3/c0c0n3.github.io/commit/7bc099eb27309ee19b9bff5b8fcd0fc2985f3623) 
+-->
+<html lang="en">
+<head>
+  <title>Monitoring</title>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" type="text/css" href="http://necolas.github.io/normalize.css/latest/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Alegreya" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Kaushan+Script" />
+  <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/zenburn-highlighter.css" />
+  
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><em>smuggler</em></li>
+    <li><a href="../../content/index.html">home</a></li>
+    <li><a href="https://github.com/c0c0n3/ome-smuggler">github</a></li>
+    <li><a href="../../content/navigation.svg">site navigation</a></li>
+  </ul>
+</nav>
+
+<header>
+  <section id="header">
+    <h1 id="title">Monitoring</h1>
+
+    <p id="slogan">keep an eye on this guy!</p>
+
+  </section>
+</header>
+
+<main>
+  <section id="content">
+  <p class="intro">
+Smuggler comes both with general-purpose and specialised monitoring interfaces.
+</p>
+<p>Being a Spring Boot app, Smuggler has a general-purpose (remote) monitoring facility provided by the <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html" title="Spring Boot Actuator Reference">Spring Boot Actuator</a> that gives you access to lots of info about system’s and JVM’s status as detailed below. Generally useful stuff, but still tells you nothing about imports that may have gone haywire. So Smuggler has additional HTTP endpoints that let you find out about and manage failed tasks. And of course, like any other self-respecting app, Smuggler always writes what he’s up to in a plain-text, old-school log file. Read on to see what’s available.</p>
+<h2 id="actuator-endpoints">Actuator Endpoints</h2>
+<p>On start up, Smuggler enables the following Actuator endpoints: <code>autoconfig</code>, <code>beans</code>, <code>configprops</code>, <code>dump</code>, <code>env</code>, <code>health</code>, <code>info</code>, <code>metrics</code>, <code>mappings</code>, <code>shutdown</code>, <code>trace</code>. All of them are available both as HTTP services and though JMX. (If all this tells you nothing, try eyeballing the Actuator’s <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html" title="Spring Boot Actuator Reference">docs</a>…) You could whip together simple scripts to query the HTTP endpoints and hook the output into into your existing monitoring infrastructure, if you have one. If you don’t, you could instead monitor Smuggler using a JMX client. Or you could roll out something like <a href="https://github.com/codecentric/spring-boot-admin" title="Spring Boot Admin">Spring Boot Admin</a> to aggregate monitoring info from all your Smuggler instances into a shiny Web dashboard.</p>
+<div class="pull-quote">
+<h6 id="security">Security</h6>
+<p>You may want to disable some endpoints (e.g. <code>shutdown</code>, <code>env</code>) and/or configure password protected access.</p>
+</div>
+<h2 id="smugglers-own-endpoints">Smuggler’s Own Endpoints</h2>
+<p>If an import fails, Smuggler will retry it a few times (depending on your <a href="configuration.html" title="Configuration">configuration</a>) before giving up. If it’s a permanent failure, the sys admin should get a love letter from Smuggler: an email with the failed import ID so that someone can try to work out the cause of that failure. Once the issue has been resolved, the failed import log should be deleted. (Smuggler only deletes the logs of successful imports, but keeps around the ones of imports that failed permanently.) Speaking of emails. The sending of an email may obviously fail too—e.g. mail server’s down. When that happens, Smuggler will attempt to send it again for a <a href="configuration.html" title="Configuration">configurable</a> number of times before giving up and putting the message in the dead mail box. As for permanently failed imports, you can see what’s inside the dead mail box, resend yourself, and then delete messages. In fact Smuggler lets you monitor and manage both failed imports and dead mail over HTTP.</p>
+<h3 id="failed-imports">Failed Imports</h3>
+<p>To get a list of imports that failed permanently, do a <code>GET</code> on <code>/ome/failed/import</code> with an <code>Accept</code> header of <code>application/json</code>. For example, using <code>curl</code></p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+       http://localhost:8000/ome/failed/import</code></pre></div>
+<p>Smuggler will respond with a JSON array, for example</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/import/740f848c&quot;</span><span class="ot">,</span>
+ <span class="st">&quot;/ome/failed/import/6ea82ae4&quot;</span><span class="ot">]</span></code></pre></div>
+<p>If you get back an empty array (<code>[]</code>), then all is well, no import failed. Otherwise, for each failed import, you’ll get a corresponding path in the returned array—the last element in the path is the import ID, if you’re wondering. Use that path to fetch the failed import’s log file and find out what went wrong with the import. You do this with a plain <code>GET</code>, for example using <code>curl</code></p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> \
+  http://localhost:8000/ome/failed/import/6ea82ae4</code></pre></div>
+<p>What you get back in this case is not JSON, but plain text (specifically a <code>Content-Type</code> of <code>text/plain; charset=UTF-8</code>). After you’ve worked out the issue that caused the import to fail, there’s no reason to keep the log file around anymore. So you should tell Smuggler to get rid of it using the HTTP <code>DELETE</code> method as in the below <code>curl</code> command</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -X DELETE \
+  http://localhost:8000/ome/failed/import/6ea82ae4</code></pre></div>
+<p>If you now ask again Smuggler to list the failed imports,</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+       http://localhost:8000/ome/failed/import</code></pre></div>
+<p>you’ll see that the import log you’ve just <code>DELETE</code>d is not in the returned array anymore</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/import/740f848c&quot;</span><span class="ot">]</span></code></pre></div>
+<p>In fact, Smuggler deleted the file from its data directory. Note that if you don’t delete failed logs yourself (after working out the cause of failure though!), no one else will as Smuggler would happily keep them indefinitely and return them in the list of failed imports. Besides wasting disk space, this can be confusing as you may happen to look again at a log file of an old issue that you worked out ages ago…</p>
+<h3 id="failed-emails">Failed Emails</h3>
+<p>To get a list of emails that failed to send permanently, do a <code>GET</code> on <code>/ome/failed/mail</code> with an <code>Accept</code> header of <code>application/json</code>. For example, using <code>curl</code></p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+       http://localhost:8000/ome/failed/mail</code></pre></div>
+<p>Smuggler will respond with a JSON array, for example</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/mail/6bb4995d&quot;</span><span class="ot">]</span></code></pre></div>
+<p>As you may have guessed already, the failed mail interface works exactly the same as that for failed imports. So an empty array (<code>[]</code>) means all is well. Otherwise, for each failed email, you’ll get a corresponding path you can use to <code>GET</code> the email message as in</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> \
+  http://localhost:8000/ome/failed/mail/6bb4995d</code></pre></div>
+<p>What you get back in this case is a plain text email message you could pipe straight into a program like <code>sendmail</code> to send it again. As for the imports, after you’ve sent the message, there’s no reason to keep it around any longer. Tell Smuggler to <code>DELETE</code> it then, e.g.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -X DELETE \
+  http://localhost:8000/ome/failed/mail/6bb4995d</code></pre></div>
+<h2 id="smugglers-logs">Smuggler’s Logs</h2>
+<p>Smuggler uses the logging facility that comes with Spring Boot without any customisation. Pretty much the run of the mill logging you’d expect for a Java app. Read about it in the Spring Boot <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/boot-features-logging.html" title="Spring Boot Logging">docs</a>, if you need to. The log files go in the <a href="configuration.html" title="Configuration">configured</a> log directory and are rotated, so they sort of take care of themselves—i.e. the log directory won’t grow huge over time.</p>
+<p class="side-note">
+Ideally Smuggler should log to native logging facilities (e.g. Event Logs on Windows) to make a sys admin’s life a bit easier. On this note, if you’re going to deploy Smuggler on many different boxes, getting hold of logs on each box may become a pain in the neck. I hear you, but have no time to improve on this at the moment!
+</p>
+  </section>
+</main>  
+
+<footer>
+  <section id="footer">
+    <p>
+      <a href="../../content/index.html">home</a> • 
+      <a href="https://github.com/c0c0n3/ome-smuggler">github</a> • 
+      <a href="../../content/navigation.svg">site navigation</a>
+    </p>
+    <p>generated with <a href="https://jaspervdj.be/hakyll/">Hakyll</a> •  
+      <a href="https://github.com/c0c0n3/ome-smuggler/tree/gh-pages">source code</a>
+    </p> 
+    <!-- TODO fonts; legal? -->
+  </section>
+</footer>
+  
+</body>
+</html>

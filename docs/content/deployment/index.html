@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--
+ * Adapted from: https://github.com/c0c0n3/c0c0n3.github.io/blob/master/index.html
+ * (commit: https://github.com/c0c0n3/c0c0n3.github.io/commit/7bc099eb27309ee19b9bff5b8fcd0fc2985f3623) 
+-->
+<html lang="en">
+<head>
+  <title>Deployment</title>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" type="text/css" href="http://necolas.github.io/normalize.css/latest/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Alegreya" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Kaushan+Script" />
+  <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../../css/zenburn-highlighter.css" />
+  
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><em>smuggler</em></li>
+    <li><a href="../../content/index.html">home</a></li>
+    <li><a href="https://github.com/c0c0n3/ome-smuggler">github</a></li>
+    <li><a href="../../content/navigation.svg">site navigation</a></li>
+  </ul>
+</nav>
+
+<header>
+  <section id="header">
+    <h1 id="title">Deployment</h1>
+
+    <p id="slogan">where the rubber meets the road!</p>
+
+  </section>
+</header>
+
+<main>
+  <section id="content">
+  <p class="intro">
+Even though Smuggler is still a toddler, he can safely run OMERO imports without tripping! Thrill-seekers wanting to make this happen can have a look at the deployment instructions below.
+</p>
+<p>Smuggler accepts HTTP requests to run OMERO imports and carries them out in the background, asynchronously in a server process. You can run the server as standalone on any OS, as a service on Windows, or as a daemon on Linux. For each of these options we have a corresponding distribution bundle but we haven’t set up yet a repository with binary distributions so you’ll have to build the bundles from source before you can install them on your target machine.</p>
+<div class="pull-quote">
+<h6 id="build-requirements">Build Requirements</h6>
+<p>You’ll need to have the Java 8 JDK installed on the box where you build.</p>
+<h6 id="runtime-requirements">Runtime Requirements</h6>
+<p>To run the server on your target machine you’ll only need the Java 8 Runtime (JRE), not the whole JDK.</p>
+</div>
+<p>If you haven’t done it yet, head over to our <a href="https://github.com/c0c0n3/ome-smuggler" title="Smuggler on GitHub">GitHub repo</a> and clone it to your build machine or just download the repo’s master branch as a ZIP file.</p>
+<h2 id="building-the-distribution-bundles">Building the Distribution Bundles</h2>
+<p>Once you have the Smuggler’s repo on your build machine, start a terminal in the repo’s root directory. Then run the below command to do a full build and package the distributions:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./gradlew</span> build :packager:release</code></pre></div>
+<p>Ya, that works for Unix-like OS’s (e.g. OS X, Linux); in the unfortunate event you’re on Windows, replace <code>./gradlew</code> with <code>gradlew.bat</code>. If the build was successful, you should see the distribution bundles in the <code>packager</code>’s own build directory</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> components/packager/build/distributions/
+<span class="kw">ome-smuggler-0.1.0-beta.tgz</span>  ome-smuggler-0.1.0-beta.zip
+<span class="kw">ome-smuggler-linux-daemon-0.1.0-beta.tgz</span>
+<span class="kw">ome-smuggler-winsvc-0.1.0-beta.zip</span></code></pre></div>
+<p>The version numbers may be different by the time you read this, but you probably knew that already. The two files on the first output line both contain the generic standalone server, on the second line you can see the Linux daemon tarball, whereas the Windows service zip is on the third line. Pick your poison!</p>
+<h2 id="installing-running-smuggler">Installing &amp; Running Smuggler</h2>
+<p>What distribution to use? Well, they all come with the same stuffing but each has its own dressing. (Nope, I’m not applying for <em>MasterChef</em>.) In fact, the server is exactly the same for all distributions but each of them comes with configuration tweaks and scripts to make it fit for its purpose:</p>
+<ul>
+<li><a href="generic-distribution.html" title="Generic Distribution">Generic Distribution</a>. Unpack &amp; run on any OS. Perfect if you just want to try Smuggler out. You’ll need a login session to run the server though. You could whip together your own wrapper scripts to make it run as a service on your platform but it may be easier to use one of the distributions below instead.</li>
+<li><a href="linux-daemon.html" title="Linux Daemon">Linux Daemon</a>. Lets you run Smuggler either as a System V (<code>init</code>) daemon or <code>systemd</code> service on Linux.</li>
+<li><a href="windows-service.html" title="Windows Service">Windows Service</a>. A native wrapper to run Smuggler as a Windows service. Comes with a CLI installer.</li>
+<li><em>DIY</em>. None of the above doable? Well, you could roll up your sleeves and try <a href="generic-distribution.html#hacking" title="Generic Distribution - Hacking">customising</a> the generic distribution. (It’s actually not as hard as it sounds!)</li>
+</ul>
+<p>Once you’ve decided what distribution to use, click on the corresponding link above to find out about distribution-specific installation and launch instructions. Additionally, you may want to have a read through the <a href="configuration.html" title="Configuration">configuration</a> section to see how you can tweak Smuggler to your liking, Sir. Oh, and as you’re at it, why not read the section about server <a href="monitoring.html" title="Monitoring">monitoring</a> too? Well, just in case you care about ensuring Smuggler always runs smoothly. As the French say, <em>bon courage!</em> (That’s “good luck” I think, literally “good courage”.)</p>
+  </section>
+</main>  
+
+<footer>
+  <section id="footer">
+    <p>
+      <a href="../../content/index.html">home</a> • 
+      <a href="https://github.com/c0c0n3/ome-smuggler">github</a> • 
+      <a href="../../content/navigation.svg">site navigation</a>
+    </p>
+    <p>generated with <a href="https://jaspervdj.be/hakyll/">Hakyll</a> •  
+      <a href="https://github.com/c0c0n3/ome-smuggler/tree/gh-pages">source code</a>
+    </p> 
+    <!-- TODO fonts; legal? -->
+  </section>
+</footer>
+  
+</body>
+</html>
