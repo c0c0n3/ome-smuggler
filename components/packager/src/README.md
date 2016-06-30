@@ -4,7 +4,7 @@ A Web-based work queue to run tasks on behalf of OMERO clients.
 
 Installation and configuration instructions at: 
 
-* [TODO](TODO)
+* [http://c0c0n3.github.io/ome-smuggler/docs/content/deployment/](http://c0c0n3.github.io/ome-smuggler/docs/content/deployment/)
 
 For further information visit the documentation site:
 
