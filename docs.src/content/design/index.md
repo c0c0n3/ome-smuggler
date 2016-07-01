@@ -111,7 +111,7 @@ obviously up for debate...
 
 
 
-[_42]: https://en.wikipedia.org/wiki/42_(number)#Hitchhiker.27s_Guide_to_the_Galaxy
+[_42]: https://en.wikipedia.org/wiki/42_(number)#Popular_culture
   "The Answer to the Ultimate Question of Life, the Universe, and Everything"
 [abject-oriented]: http://typicalprogrammer.com/abject-oriented/
   "Introduction to Abject-Oriented Programming"

@@ -4,27 +4,78 @@ slogan: hold tight!
 ---
 
 <p class="intro">
-Meet <em>Smuggler</em> on the run! Build from scratch and then run the server
-to smuggle some images into OMERO. There's going to be some <em>Smuggler</em>
+Meet *Smuggler* on the run! Build from scratch and then run the server
+to smuggle some images into OMERO. There's going to be some *Smuggler*
 action coming your way, so buckle up and take a deep breath. Off we go!
 </p>
+
 
 Setting the Stage
 -----------------
 Download or clone from [GitHub](https://github.com/c0c0n3/ome-smuggler).
-Then build it (requires Java 8):
+Then do a full build and package the distributions (requires the Java 8
+JDK):
 
 ~~~ {.bash}
 $ cd ome-smuggler/
-$ ./gradlew clean build
+$ ./gradlew build :packager:release
 ~~~
 
-Override built-in configuration to delete import status updates after one minute
-and to not retry failed imports:
+Ya, that works for Unix-like OS's (e.g. OS X, Linux); in the unfortunate event
+you're on Windows, replace `./gradlew` with `gradlew.bat`. If the build was
+successful, you should see the distribution bundles in the `packager`'s own
+build directory
 
 ~~~ {.bash}
-$ cp src/main/resources/config/import.yml ./
-$ emacs import.yml
+$ ls components/packager/build/distributions/
+ome-smuggler-0.1.0-beta.tgz  ome-smuggler-0.1.0-beta.zip
+...
+~~~
+
+The version numbers may be different by the time you read this, but you
+probably knew that already. Anyway, you'll see there are several files
+in there. That's because we have generic and platform-specific bundles.
+We're going to use the generic bundle listed above; extract it somewhere
+
+~~~ {.bash}
+$ tar xzf com*/p*/b*/dist*/ome-smuggler-0.1.0-beta.tgz -C /tmp
+~~~
+
+On Windows you could use the zip file instead. The bundle's contents
+will be extracted in an `ome-smuggler` directory. If you want to find
+out more about distros and deployment look over [here][deployment].
+In the meantime, to make our life easier, we're going to lift some
+test scripts from the source base and stash them into the extracted
+directory.
+
+~~~ {.bash}
+$ cp -r components/server/src/test/scripts/http-import \
+        /tmp/ome-smuggler/
+$ cd /tmp/ome-smuggler/http-import/
+$ ls
+    ...
+$ chmod +x get delete
+$ chmod +x request-import list-failed-imports
+$ chmod +x list-failed-mail
+~~~
+
+These are just convenience scripts using `curl` to interact with Smuggler
+over HTTP. You may have noticed an additional file, `min-import.json`:
+this is JSON to request an import; if you're going to configure the mail
+service---see below---you should replace the nonsensical email address
+in there with yours to get love letters from Smuggler.
+
+
+Configuration
+-------------
+We're going to tweak Smuggler to delete import status updates after one
+minute and to not retry failed imports.
+
+~~~ {.bash}
+$ cd /tmp/ome-smuggler
+$ java -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.ImportYmlGen > config/import.yml
+$ emacs config/import.yml
 ~~~
 
 Change as below, then save.
@@ -34,23 +85,16 @@ logRetentionMinutes: 1
 retryIntervals: []
 ~~~
 
-(If you want to play around with the import configuration, read [this][import-config].)
-Now we need to bring in the OMERO libraries; Smuggler expects to find them in
-the `ome-lib` directory in the current directory. (Though it can be configured
-to be wherever you like.) You can copy the `jar` files over from your local
-Insight or OMERO `libs` directory, e.g.
+If you want to play around with the import options or find out more about
+how to generate configuration files, read the [configuration][config]
+section. But you may want to configure the sending of email notifications.
+For that, you can also generate the configuration file and then tweak it
+as explained in the [configuration][config] section.
 
 ~~~ {.bash}
-$ mkdir -p ome-lib
-$ cp /opt/OMERO.insight-5.1.2-ice35-b45-linux/libs/*.jar ome-lib/
-~~~
-
-You should configure the sending of email notifications---details [here][mail-config].
-For that, you can copy the default configuration file in the current
-directory and then tweak it:
-
-~~~ {.bash}
-$ cp src/main/resources/config/mail.yml ./
+$ java -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.MailYmlGen > config/mail.yml
+$ emacs config/mail.yml
 ~~~
 
 <p class="side-note">
@@ -60,46 +104,44 @@ the sake of this whirlwind tour. But Smuggler tracks mail failures too and
 allows you to recover, if that makes you feel better.
 </p>
 
-Running the Server
-------------------
-We're ready to run the server. (Java 8 required.) In the `ome-smuggler` root
-directory
+Smuggler's HTTP port is 8000 by default. If another server has taken that
+port already, you'll have to change Smuggler's. That's easy too.
 
 ~~~ {.bash}
-$ java -jar build/libs/ome-smuggler-0.1.0.jar
+$ java -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.UndertowYmlGen > config/undertow.yml
+$ emacs config/undertow.yml
 ~~~
 
-Keep it running in the foreground so you can see what's going on. In any case,
-terminal output is also saved in `ome-smuggler.log` in the current directory.
+Just change the port number to something else than 8000, then save.
 
-<div class="side-note">
-###### Default Port
-Smuggler's HTTP port is 8000 by default. You can change this by copying 
-`undertow.yml` from `src/main/resources/config/` to the directory from
-which you started Smuggler and edit the copied file to change the port
-number. Then restart Smuggler.
-</div>
+
+Running the Server
+------------------
+We're ready to run the server. (Java 8 JRE required.) Open a terminal and
+go to the directory where you extracted the distribution bundle. You'll
+find Unix and Windows start up scripts in the `bin` directory; run the
+one for your platform. For example on Linux or OS X:
+
+~~~ {.bash}
+$ cd /tmp/ome-smuggler
+$ bin/run.sh
+~~~
+
+Keep it running in the foreground so you can see what's going on. (Terminal
+output is also saved in `log/spring.log`.) At the end of this whirlwind tour
+you'll want to shut the server down; just hit `Ctrl+c`.
+
 
 Making an Import fail
 ---------------------
-Why? Because this workflow touches most of the available functionality. First
+Why? Because this workflow touches most of the available functionality.
+So on to requesting an import that will fail! Open up another terminal
+and go to the directory where we saved the test scripts earlier so we
+can request an import:
 
 ~~~ {.bash}
-$ cd src/test/scripts/http-import/
-$ ls
-    ...
-$ chmod +x get delete
-$ chmod +x request-import list-failed-imports
-$ chmod +x list-failed-mail
-~~~
-
-These are just convenience scripts using `curl` to interact with Smuggler over
-HTTP. You may have noticed an additional file, `min-import.json`: this is JSON
-to request an import; if you configured the mail service, you should replace
-the nonsensical email address in there with yours to get love letters from
-Smuggler. So on to requesting an import that will fail
-
-~~~ {.bash}
+$ cd /tmp/ome-smuggler/http-import/
 $ ./request-import min-import.json 
 ~~~
     
@@ -114,7 +156,7 @@ and its body should be something like
 ~~~
 
 The absolute path above specifies where to get status updates for the import
-you've just requested. Status updates will be available for at least a minute
+you've just requested. Status updates will be available for at least one minute
 after the import has been executed---this is the import log retention period
 we configured earlier. Copy and paste the returned path and run the `get`
 script to fetch status updates
@@ -175,7 +217,7 @@ tracked, so all you should see in the response body is
 
 On failure, Smuggler sends a notification email to both the user who requested
 the import (see contents of `min-import.json`) and the system administrator---
-assuming you [configured one][mail-config]. If you didn't configured the mail
+assuming you [configured one][config]. If you didn't configured the mail
 service earlier, then the sending of emails will fail, after a couple of days
 of trying though---as per default configuration. On giving up sending, Smuggler
 stores the failed email messages and lets you manage them through its REST API
@@ -206,16 +248,18 @@ Copy and paste the session key into `my-import.json`, then
 ~~~ {.bash}
 $ ./request-import my-import.json
 ~~~
-    
-###### Note
-Your OMERO session will expire in 10 minutes. Smuggler needs an active session
-to run the import; if no other imports are queued, then this is not a problem
-as your request will be serviced shortly after being put on the queue. I have
-some experimental code to keep the session alive while the import sits on the
-queue, but haven't merged the code in.
+
+Use the returned URL to poll Smuggler for status updates as we've done
+earlier. After Smuggler has shovelled your data into OMERO, you should
+log into OMERO (with the same account you've used above to create the
+session key) and check the images you've just imported are there.
 
 
 
-[import-config]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/ImportConfig.java
-[import-request]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/web/imports/ImportRequest.java
-[mail-config]: https://github.com/c0c0n3/ome-smuggler/blob/master/src/main/java/ome/smuggler/config/items/MailConfig.java
+
+[config]: /content/deployment/configuration.html
+    "Configuration"
+[deployment]: /content/deployment/index.html
+    "Deployment"
+[import-request]: /server-javadoc/ome/smuggler/web/imports/ImportRequest.html
+    "ImportRequest Class"

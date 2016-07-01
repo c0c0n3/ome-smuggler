@@ -4,7 +4,7 @@ slogan: imports images on the sly
 ---
 
 <p class="intro">
-<em>Smuggler</em> is a Web-based work queue to shovel images into
+*Smuggler* is a Web-based work queue to shovel images into
 [OMERO][omero]. Still rough but coming alive: soon he'll learn how to interact
 properly with OMERO and, with a bit of luck, tackle many other data processing
 tasks.
@@ -31,13 +31,19 @@ To help the techies, Smuggler comes with a full-blown management &amp;
 monitoring interface, available both over HTTP and JMX.
 
 <p class="pull-quote">
-Oh, I should mention this site is intended as a <em>programmer's notebook</em>,
+Oh, I should mention this site is intended as a *programmer's notebook*,
 hence the relaxed and colloquial style of writing.
 Unless you're a programmer interested in joining development, you're unlikely
 to find anything interesting here. Rather check out the [OME Web site][ome].
 Or maybe you're just a bot prowling the interwebs...then go ahead and knock
 yourself out!
 </p>
+
+Feel adventurous? You can [deploy][deployment] Smuggler quite easily. But
+bear in mind you're trying out a tech preview at this stage, so please be
+safe and wear a crash helmet.
+Also, why not take our [whirlwind tour][whirlwind-tour] to see Smuggler
+in action?
 
 
 Hacking
@@ -73,24 +79,26 @@ to do next.
 
 About the Name
 --------------
-<em>Smuggler</em>. Really?! Why?! Well, if you've read about [how the project
+*Smuggler*. Really?! Why?! Well, if you've read about [how the project
 started][use-cases-history-section], you know our users at MRI have to pay
 for the time they're logged on any acquisition workstation; if an OMERO import
 happens within a login session, you pay for the time it takes to run the import.
 But we love our users and want to save them some money. So we've come up with
 this mechanism to import image goodies into OMERO sneakily, outside of login
-sessions, without paying MRI session duties...we're <em>smuggling</em> data
+sessions, without paying MRI session duties...we're *smuggling* data
 into OMERO!
 
 <p class="side-note">
-<em>Smuggler</em> is obviously just a codename. We'll come up with a proper,
-dignified product name when we release. How about <em>OMERO.Smuggler</em>?
-Uh? No? <em>OMERO.Runner</em>? Okay, fine, got it, don't shout...
+*Smuggler* is obviously just a codename. We'll come up with a proper,
+dignified product name when we release. How about *OMERO.Smuggler* ?
+Uh? No? *OMERO.Runner* ? Okay, fine, got it, don't shout...
 </p>
 
 
 
 
+[deployment]: deployment/index.html
+    "Deployment"
 [design]: design/index.html
   "Design"
 [ome]: http://www.openmicroscopy.org/
