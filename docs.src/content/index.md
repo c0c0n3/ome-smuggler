@@ -39,6 +39,14 @@ Or maybe you're just a bot prowling the interwebs...then go ahead and knock
 yourself out!
 </p>
 
+If a picture is worth a thousand words, how many words are worth five
+pictures? Hope at least most of the above description of how Smuggler
+works. So here are some slides to turn words into figures.
+
+<div class="diagram" id="components" src="examples/smugs-as-proxy/1.svg">
+See how Smuggler works as an import proxy.<br/>
+Navigation: click on arrows? :-)</div>
+
 Feel adventurous? You can [deploy][deployment] Smuggler quite easily. But
 bear in mind you're trying out a tech preview at this stage, so please be
 safe and wear a crash helmet.
