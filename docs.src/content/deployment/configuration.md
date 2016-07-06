@@ -162,7 +162,7 @@ Smuggler comes with an embedded Undertow HTTP server. The items in this
 group specify how to configure it.
 
 * *File*: `undertow.yml`
-* *Bean*: [ome.smuggler.config.items.UndertowConfig](/server-javadoc/ome/smuggler/config/items/UndertowConfig.html)
+* *Bean*: [ome.smuggler.config.items.UndertowConfig](../../../javadoc/server/ome/smuggler/config/items/UndertowConfig.html)
 * *Defaults*: `ome.smuggler.config.data.UndertowYmlFile`
 * *Command*: `ome.smuggler.run.UndertowYmlGen`
 
@@ -172,7 +172,7 @@ Options to specify how to handle imports, e.g. retries, import logs
 retention period.
 
 * *File*: `import.yml`
-* *Bean*: [ome.smuggler.config.items.ImportConfig](/server-javadoc/ome/smuggler/config/items/ImportConfig.html)
+* *Bean*: [ome.smuggler.config.items.ImportConfig](../../../javadoc/server/ome/smuggler/config/items/ImportConfig.html)
 * *Defaults*: `ome.smuggler.config.data.ImportYmlFile`
 * *Command*: `ome.smuggler.run.ImportYmlGen`
 
@@ -182,7 +182,7 @@ Mail settings such as SMTP or SMTPS agent to use, mail sending account,
 etc.
 
 * *File*: `mail.yml`
-* *Bean*: [ome.smuggler.config.items.MailConfig](/server-javadoc/ome/smuggler/config/items/MailConfig.html)
+* *Bean*: [ome.smuggler.config.items.MailConfig](../../../javadoc/server/ome/smuggler/config/items/MailConfig.html)
 * *Defaults*: `ome.smuggler.config.data.MailYmlFile`
 * *Command*: `ome.smuggler.run.MailYmlGen`
 

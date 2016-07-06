@@ -20,7 +20,9 @@ Directories Layout
 The docs sources (markdown, SVG, CSS, templates) go in `docs.src`; the app
 to generate the docs is in `docs.build`; the `docs` directory is where the
 generated output goes. The hierarchy of the output files mirrors that of
-the input sources.
+the input sources. Additionally, we have a `javadoc` directory where we
+keep the JavaDoc generated with the Gradle build script. For now we manually
+copy the files over from the Gradle build directory. (The horror!)
 
 Bootstrap
 ---------

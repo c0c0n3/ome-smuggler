@@ -261,5 +261,5 @@ session key) and check the images you've just imported are there.
     "Configuration"
 [deployment]: /content/deployment/index.html
     "Deployment"
-[import-request]: /server-javadoc/ome/smuggler/web/imports/ImportRequest.html
+[import-request]: ../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html
     "ImportRequest Class"
