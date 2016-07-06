@@ -96,11 +96,18 @@ least until I get out of the way!) Thing is, we're planning to use Smuggler
 for a whole bunch of tasks where a message-based architecture seems a good
 fit.
 
-<p class="pull-quote">
 Smuggler is in a sense an exploration of a [reactive systems][reactive]
 architecture in the context of the OMERO ecosystem and integration of
-heterogeneous software. Ours is just *one* architecture, others are
-possible too and eventually we may give them a shot.
+heterogeneous software. Have a look at the slides below for a quick
+overview.
+
+<div class="diagram" id="smugs-as-reactive-sys" src="smugs-as-reactive-sys/1.svg">
+Smuggler as a reactive system.<br/>
+Navigation: click on arrows? :-)</div>
+
+<p class="pull-quote">
+Ours is just *one* architecture, others are possible too and eventually
+we may give them a shot.
 </p>
 
 To find out more about our plans, have a quick read through the [Condensed

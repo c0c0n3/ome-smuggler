@@ -41,9 +41,9 @@ yourself out!
 
 If a picture is worth a thousand words, how many words are worth five
 pictures? Hope at least most of the above description of how Smuggler
-works. So here are some slides to turn words into figures.
+works. So here are five slides to turn words into figures.
 
-<div class="diagram" id="components" src="examples/smugs-as-proxy/1.svg">
+<div class="diagram" id="smugs-as-proxy" src="examples/smugs-as-proxy/1.svg">
 See how Smuggler works as an import proxy.<br/>
 Navigation: click on arrows? :-)</div>
 
