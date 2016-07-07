@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+ * Adapted from: https://github.com/c0c0n3/c0c0n3.github.io/blob/master/index.html
+ * (commit: https://github.com/c0c0n3/c0c0n3.github.io/commit/7bc099eb27309ee19b9bff5b8fcd0fc2985f3623) 
+-->
+<html lang="en">
+<head>
+  <title>JavaDoc</title>
+  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" type="text/css" href="http://necolas.github.io/normalize.css/latest/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Alegreya" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Kaushan+Script" />
+  <link rel="stylesheet" type="text/css" href="../css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../css/zenburn-highlighter.css" />
+  
+</head>
+
+<body>
+
+<nav>
+  <ul>
+    <li><em>smuggler</em></li>
+    <li><a href="../content/index.html">home</a></li>
+    <li><a href="https://github.com/c0c0n3/ome-smuggler">github</a></li>
+    <li><a href="../content/navigation.svg">site navigation</a></li>
+  </ul>
+</nav>
+
+<header>
+  <section id="header">
+    <h1 id="title">JavaDoc</h1>
+
+    <p id="slogan">freshly squeezed from the code</p>
+
+  </section>
+</header>
+
+<main>
+  <section id="content">
+  <p class="intro">
+So ya, we’ve written the Java code docs too. See below.
+</p>
+<p>The bits and pieces that make up Smuggler’s Java code base are arranged in four top-level components each in its own directory under the root <code>components</code> directory. Each of them is a Gradle sub-project and so we have generated JavaDocs for each one separately. You can find below the links to each JavaDoc.</p>
+<ul>
+<li><a href="../../javadoc/server/index.html" title="Server Component's JavaDoc">Server</a>. This component provides a Web-based work queue to run tasks on behalf of OMERO clients.</li>
+<li><a href="../../javadoc/cli/index.html" title="CLI Component's JavaDoc">CLI</a>. Command line tool to run OMERO library code.</li>
+<li><a href="../../javadoc/jclient/index.html" title="JClient Component's JavaDoc">JClient</a>. Simple Java 7 client to interact with Smuggler.</li>
+<li><a href="../../javadoc/util/index.html" title="Util Component's JavaDoc">Util</a>. A general-purpose library, totally independent of Smuggler and reusable across projects.</li>
+</ul>
+<p>Keep in mind we mainly documented public methods and interfaces. That is, <em>what</em> functionality is provided. If you want to understand the <em>how</em>—i.e. how a component or a class works behind the scenes with its private and protected methods—then there’s no real substitute for reading the source. But we tried real hard to keep the code as clean and modular as possible. For example, methods rarely have more than ten lines of code in their bodies and the majority of classes are pretty small, usually well below one hundred lines of (actual) code. Also, you’ll find lots of additional notes (non-javadoc, just plain text) in the source to explain the tricky bits.</p>
+  </section>
+</main>  
+
+<footer>
+  <section id="footer">
+    <p>
+      <a href="../content/index.html">home</a> • 
+      <a href="https://github.com/c0c0n3/ome-smuggler">github</a> • 
+      <a href="../content/navigation.svg">site navigation</a>
+    </p>
+    <p>generated with <a href="https://jaspervdj.be/hakyll/">Hakyll</a> •  
+      <a href="https://github.com/c0c0n3/ome-smuggler/tree/gh-pages">source code</a>
+    </p> 
+    <!-- TODO fonts; legal? -->
+  </section>
+</footer>
+  
+</body>
+</html>
