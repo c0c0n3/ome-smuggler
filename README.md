@@ -21,7 +21,7 @@ You're welcome to fork the repo and submit a pull request.
 If you're planning to do open-heart surgery, you may find it useful to read the
 developer docs over here:
 
-* [http://c0c0n3.github.io/ome-smuggler/docs/content/](http://c0c0n3.github.io/ome-smuggler/docs/content/)
+* [http://c0c0n3.github.io/ome-smuggler/](http://c0c0n3.github.io/ome-smuggler/)
 
 And by the way, if you're looking for the docs sources, we keep the whole lot
 in the `gh-pages` branch:
