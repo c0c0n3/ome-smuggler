@@ -30,13 +30,28 @@ public interface CommandBuilder {
      * @return a new command having a sequence of tokens given by this sequence
      * followed by that of {@code other}.
      * @throws NullPointerException if the argument is {@code null}.
-     * @see EmptyCommandBuilder
+     * @see #empty() empty
      */
     default CommandBuilder join(CommandBuilder other) {
         requireNonNull(other, "other");
         return () -> Stream.concat(tokens(), other.tokens());
     }
-    
+
+    /**
+     * Convenience {@link CommandBuilder} that produces an empty sequence of
+     * tokens.
+     * <p>
+     * <em>Note</em>.
+     * Command builders form a monoid under the "join token lists" operation;
+     * this class represents the monoid's identity.
+     * </p>
+     * @return the empty command builder.
+     * @see #join(CommandBuilder) join
+     */
+    static CommandBuilder empty() {
+        return Stream::empty;
+    }
+
 }
 /* NOTE. Quoting & escaping.
  * When and how should token be quoted and what characters should be escaped?

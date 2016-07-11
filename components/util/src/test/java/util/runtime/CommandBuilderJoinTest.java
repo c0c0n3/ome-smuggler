@@ -26,7 +26,7 @@ public class CommandBuilderJoinTest {
     @Theory
     public void emptyBuilderAsLeftIdentity(String[] xs) {
         CommandBuilder z = newBuilder(xs);
-        CommandBuilder id = new EmptyCommandBuilder();
+        CommandBuilder id = CommandBuilder.empty();
         CommandBuilder joined = z.join(id);
 
         String[] actual = joined.tokens().toArray(String[]::new);
@@ -36,7 +36,7 @@ public class CommandBuilderJoinTest {
     @Theory
     public void emptyBuilderAsRightIdentity(String[] xs) {
         CommandBuilder x = newBuilder(xs);
-        CommandBuilder id = new EmptyCommandBuilder();
+        CommandBuilder id = CommandBuilder.empty();
         CommandBuilder joined = id.join(x);
 
         String[] actual = joined.tokens().toArray(String[]::new);
