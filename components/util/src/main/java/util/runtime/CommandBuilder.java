@@ -1,5 +1,7 @@
 package util.runtime;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.stream.Stream;
 
 /**
@@ -16,6 +18,24 @@ public interface CommandBuilder {
      * @throws IllegalStateException if the argument hasn't been set yet.
      */
     Stream<String> tokens();  // see note at bottom of file
+
+    /**
+     * Makes a new command by appending the sequence of tokens in {@code other}
+     * to this sequence.
+     * <p><em>Note</em>.
+     * Command builders form a monoid under the "join token lists" operation;
+     * this method basically gives you the monoid's multiplication.
+     * </p>
+     * @param other the other sequence of tokens.
+     * @return a new command having a sequence of tokens given by this sequence
+     * followed by that of {@code other}.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @see EmptyCommandBuilder
+     */
+    default CommandBuilder join(CommandBuilder other) {
+        requireNonNull(other, "other");
+        return () -> Stream.concat(tokens(), other.tokens());
+    }
     
 }
 /* NOTE. Quoting & escaping.

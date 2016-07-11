@@ -45,7 +45,7 @@ public class CommandLineBuilderTest {
         return Stream.of(xs).map(CommandLineBuilderTest::arg);
     }
     
-    private static String[] concat(String[]...xs) {
+    public static String[] concat(String[]...xs) {
         return Stream.of(xs)
                      .map(Stream::of)
                      .flatMap(x -> x)
