@@ -19,6 +19,7 @@ import util.runtime.jvm.JvmCmdBuilder;
 public class ImporterCommandBuilder extends OmeCliCommandBuilder {
 
     private final ImportInput importArgs;
+    private final CommandBuilder niceCommand;
     
     /**
      * Creates a new instance to build a command line from the given data.
@@ -27,11 +28,14 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
      * @throws NullPointerException if any argument is {@code null}.
      */
     public ImporterCommandBuilder(OmeCliConfigSource config,
-                                  ImportInput importArgs) {
+                                  ImportInput importArgs,
+                                  CommandBuilder niceCommand) {
         super(config);
         requireNonNull(importArgs, "importArgs");
+        requireNonNull(niceCommand, "niceCommand");
         
         this.importArgs = importArgs;
+        this.niceCommand = niceCommand;
     }
     
     private ListProgramArgument<String> server() {
@@ -83,22 +87,26 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
      * read files from FTP or HTTP... 
      */
 
+    private JvmCmdBuilder buildJavaCommandLine(JvmCmdBuilder java) {
+        return java
+                .addApplicationArgument(server())
+                .addApplicationArgument(name())
+                .addApplicationArgument(description())
+                .addApplicationArgument(datasetId())
+                .addApplicationArgument(screenId())
+                .addApplicationArgument(textAnnotations())
+                .addApplicationArgument(annotationIds())
+                .addApplicationArgument(importTarget());
+    }
+
     @Override
     protected String commandName() {
         return "Import";
     }
 
     @Override
-    protected JvmCmdBuilder assembleArguments(JvmCmdBuilder java) {
-        return java
-               .addApplicationArgument(server())
-               .addApplicationArgument(name())
-               .addApplicationArgument(description())
-               .addApplicationArgument(datasetId())
-               .addApplicationArgument(screenId())
-               .addApplicationArgument(textAnnotations())
-               .addApplicationArgument(annotationIds())
-               .addApplicationArgument(importTarget());
+    protected CommandBuilder assembleArguments(JvmCmdBuilder java) {
+        return niceCommand.join(buildJavaCommandLine(java));
     }
 
 }

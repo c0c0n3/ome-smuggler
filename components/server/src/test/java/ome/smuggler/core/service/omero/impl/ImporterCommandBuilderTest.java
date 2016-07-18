@@ -10,11 +10,13 @@ import java.nio.file.Paths;
 import ome.smuggler.core.types.ImportInput;
 
 import org.junit.Test;
+import util.runtime.CommandBuilder;
 
 public class ImporterCommandBuilderTest {
 
     private static ImporterCommandBuilder newBuilder(ImportInput args) {
-        return new ImporterCommandBuilder(OmeCliConfigBuilder.config(), args);
+        return new ImporterCommandBuilder(OmeCliConfigBuilder.config(),
+                args, CommandBuilder.empty());
     }
 
     private static String[] tokenPgmArgs(ImportInput args) {
@@ -24,12 +26,19 @@ public class ImporterCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFirstArgNull() {
-        new ImporterCommandBuilder(null, makeNew());
+        new ImporterCommandBuilder(null, makeNew(), CommandBuilder.empty());
     }
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
-        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null);
+        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null,
+                CommandBuilder.empty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ctorThrowsIfThirdArgNull() {
+        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
+                null);
     }
 
     @Test

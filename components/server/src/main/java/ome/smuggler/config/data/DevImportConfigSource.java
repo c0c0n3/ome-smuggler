@@ -7,6 +7,7 @@ import java.util.List;
 
 import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.core.types.ImportConfigSource;
+import util.runtime.CommandBuilder;
 
 /**
  * Dev import settings.
@@ -37,6 +38,11 @@ public class DevImportConfigSource implements ImportConfigSource {
     @Override
     public Path failedImportLogDir() {
         return baseDataDir.resolve(ImportYmlFile.RelFailedImportLogDirPath);
+    }
+
+    @Override
+    public CommandBuilder niceCommand() {
+        return CommandBuilder.empty();
     }
 
 }

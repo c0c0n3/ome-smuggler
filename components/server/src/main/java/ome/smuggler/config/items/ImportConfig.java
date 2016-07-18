@@ -34,6 +34,19 @@ import java.util.Objects;
  *  will have to explicitly delete it after resolving the issue that caused 
  *  the failure.
  *  </li>
+ *  <li>{@link #setNiceCommand(String) Nice command}.
+ *  Optional command to use to set the priority of processes that run OMERO
+ *  imports. If specified, this string will be prepended to the command used
+ *  to spawn any process that runs an import. On Unix-like platforms you could
+ *  use the {@code nice} utility; e.g. {@code nice -n 10}. As for Windows, you
+ *  could use <a href="https://github.com/c0c0n3/winice">winice</a> with the
+ *  the exact same command you would use for Unix. Or you could use a similar
+ *  program, e.g. {@code nice} from the GNU Core Utils for Windows or even a
+ *  GUI like <a href="http://www.nirsoft.net/utils/advanced_run.html">
+ *  AdvancedRun</a>. Whatever you do, do <em>not</em> use the Windows shell
+ *  (as in e.g. {@code cmd /c start /belownormal /wait /b}) because it just
+ *  doesn't work nicely when called from Java.
+ *  </li>
  * </ul>
  */
 public class ImportConfig {
@@ -45,6 +58,7 @@ public class ImportConfig {
     private Long logRetentionMinutes;
     private Long[] retryIntervals;
     private String failedImportLogDir;
+    private String niceCommand;
 
     public String getImportLogDir() {
         return importLogDir;
@@ -78,6 +92,14 @@ public class ImportConfig {
         this.failedImportLogDir = failedImportLogDir;
     }
 
+    public String getNiceCommand() {
+        return niceCommand;
+    }
+
+    public void setNiceCommand(String niceCommand) {
+        this.niceCommand = niceCommand;
+    }
+
     @Override
     public int hashCode() {
         return toString().hashCode();
@@ -97,8 +119,9 @@ public class ImportConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s",
-                importLogDir, failedImportLogDir, logRetentionMinutes, xs);
+        return String.format("%s | %s | %s | %s | %s",
+                importLogDir, failedImportLogDir, logRetentionMinutes, xs,
+                niceCommand);
     }
     
 }

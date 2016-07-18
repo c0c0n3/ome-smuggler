@@ -41,7 +41,7 @@ public abstract class OmeCliCommandBuilder implements CommandBuilder {
 
     protected abstract String commandName();
 
-    protected abstract JvmCmdBuilder assembleArguments(JvmCmdBuilder bareCommand);
+    protected abstract CommandBuilder assembleArguments(JvmCmdBuilder bareCommand);
 
     protected JarJvmArg jarFile() {
         return new JarJvmArg(config.omeCliJar());

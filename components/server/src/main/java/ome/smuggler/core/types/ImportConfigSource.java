@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.List;
 
 import ome.smuggler.config.items.ImportConfig;
+import util.runtime.CommandBuilder;
 
 /**
  * Provides read-only, type-safe access to the import configuration.
@@ -32,4 +33,11 @@ public interface ImportConfigSource {
      */
     Path failedImportLogDir();
 
+    /**
+     * Optional command to use to set the priority of processes that run OMERO
+     * imports.
+     * @return the configured command or empty if not found in the
+     * configuration file.
+     */
+    CommandBuilder niceCommand();
 }

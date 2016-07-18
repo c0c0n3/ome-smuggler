@@ -1,6 +1,7 @@
 package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.convert.RawConfigValues.toCommand;
 import static ome.smuggler.core.convert.RawConfigValues.toDuration;
 import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
 
@@ -10,6 +11,8 @@ import java.util.List;
 
 import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.config.items.ImportConfig;
+import util.runtime.CommandBuilder;
+
 
 /**
  * Implements {@link ImportConfigSource} by extracting and validating values 
@@ -21,6 +24,7 @@ public class ImportConfigReader implements ImportConfigSource {
     private final Duration logRetentionPeriod;
     private final List<Duration> retryIntervals;
     private final Path failedImportLogDir;
+    private final CommandBuilder niceCommand;
     
     /**
      * Creates a new instance.
@@ -38,6 +42,7 @@ public class ImportConfigReader implements ImportConfigSource {
         retryIntervals = toDurationList(config.getRetryIntervals());
         failedImportLogDir = base.resolveRequiredPath(
                                 config.getFailedImportLogDir());
+        niceCommand = toCommand(config.getNiceCommand());
     }
     
     @Override
@@ -58,6 +63,11 @@ public class ImportConfigReader implements ImportConfigSource {
     @Override
     public Path failedImportLogDir() {
         return failedImportLogDir;
+    }
+
+    @Override
+    public CommandBuilder niceCommand() {
+        return niceCommand;
     }
 
 }
