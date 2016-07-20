@@ -52,6 +52,12 @@ task copyWinService(dependsOn: makeBuildDirs) << {
         into dirs.staging.winsvc.binDir
         rename { svcName + '.exe.config' }
     }
+    copy {
+        from 'src/winsvc/'
+        include 'winice*.exe'
+        into dirs.staging.winsvc.binDir
+        rename { 'nice.exe' }
+    }
 }
 
 task makeWinServiceZip(type: Zip) {
