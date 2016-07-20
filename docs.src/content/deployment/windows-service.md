@@ -23,7 +23,9 @@ Unzip the distribution bundle. You should see an `ome-smuggler` directory
 with license and README files as well as the following sub-directories
 
 * `bin`: contains the Windows service wrapper (`ome-smuggler.exe`) along
-with the wrapper's own configuration files.
+with the wrapper's own configuration files. There's also [winice][winice]
+(`nice.exe`) in here; you can use it to run imports with a Windows scheduling
+priority---[see below][advanced-config-section].
 * `config`: where to put your configuration files; initially empty.
 * `data`: files Smuggler generates as part of his operation; initially empty.
 * `lib`: the entirety of Java byte-code that makes up the Smuggler app.
@@ -76,7 +78,8 @@ Advanced Configuration
 You have many more options to tweak the way Smuggler works, just have a read
 through the [configuration][config] section to see what's available. Over and
 above that, there are some configuration settings specific to the Windows
-service wrapper that you can change by editing `bin\ome-smuggler.xml`.
+service wrapper that you can change by editing `bin\ome-smuggler.xml` and
+that we list below.
 
 ###### Java Command
 The wrapper launches Smuggler using the `java` command in the system `PATH`.
@@ -95,6 +98,23 @@ tag: `Idle`, `BelowNormal`, `Normal`, `AboveNormal`, `High`, `RealTime`.
 But we don't recommend using `Idle` or `BelowNormal` as they make the
 service unresponsive. More about priorities [here][priority-enum] and
 over [here][win-scheduling] too.
+
+And as we're speaking of priorities, keep in mind you can fine-tune import
+runs. In fact, each import runs in a separate process that inherits the
+scheduling priority of its parent, the Smuggler service. But you can override
+this in the import configuration with your own command to set the priority.
+For your convenience, you'll find a `nice.exe` in the `bin` directory that
+works pretty much like the Unix `nice`. Here's an example line you could
+add to your import configuration file.
+
+~~~ {.yaml}
+niceCommand: nice -n 10
+~~~
+
+Because the service automatically adds the `bin` directory to its `PATH`,
+you can call `nice.exe` without specifying the full path. If you use your
+own command, you may have to specify the full path though. (But ya, you
+knew that.)
 
 
 Windows Service Installation
@@ -171,11 +191,15 @@ but not running).
 
 
 
+[advanced-config-section]: #advanced-configuration
+    "Advanced Configuration"
 [config]: configuration.html
     "Configuration"
 [priority-enum]: https://msdn.microsoft.com/en-us/library/system.diagnostics.processpriorityclass(v=vs.110).aspx
     "ProcessPriorityClass Enumeration"
 [win-scheduling]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms685100(v=vs.85).aspx
     "Scheduling Priorities"
+[winice]: https://github.com/c0c0n3/winice
+    "winice"
 [winsw]: https://github.com/kohsuke/winsw
     "winsw"
