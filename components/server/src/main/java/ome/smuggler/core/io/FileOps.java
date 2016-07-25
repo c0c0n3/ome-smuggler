@@ -176,15 +176,21 @@ public class FileOps {
      * @param target the file to rewrite.
      * @param f the filter to use.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws Exception if an I/O or any other kind of error occurs.
+     * @throws Exception if an I/O or any other kind of error occurs; the
+     * exception is caught and masked as unchecked.
      */
-    public static void rewrite(Path target, StreamFilter f) throws Exception {
-        Path output = Files.createTempFile(UUID.randomUUID().toString(), null);
+    public static void rewrite(Path target, StreamFilter f) {
+        Path output = null;
         try {
+            output = Files.createTempFile(UUID.randomUUID().toString(), null);
             filter(target, output, f);
             copy(output, target);
+        } catch (Exception e) {
+            throwAsIfUnchecked(e);
         } finally {
-            delete(output);
+            if (output != null) {
+                delete(output);
+            }
         }
     }
 
@@ -196,10 +202,10 @@ public class FileOps {
      * @param to the destination file.
      * @param f the filter to use.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws Exception if an I/O or any other kind of error occurs.
+     * @throws Exception if an I/O or any other kind of error occurs; the
+     * exception is caught and masked as unchecked.
      */
-    public static void filter(Path from, Path to, StreamFilter f)
-            throws Exception {
+    public static void filter(Path from, Path to, StreamFilter f) {
         requireNonNull(from, "from");
         requireNonNull(to, "to");
         requireNonNull(f, "f");
@@ -209,6 +215,8 @@ public class FileOps {
              OutputStream out = new BufferedOutputStream(
                      Files.newOutputStream(to))) {  // (*)
             f.processE(in, out);
+        } catch (Exception e) {
+            throwAsIfUnchecked(e);
         }
     }
     /* (*) The JavaDoc of the method states that it will truncate and overwrite
