@@ -5,19 +5,19 @@ import static util.error.Exceptions.runUnchecked;
 import static util.error.Exceptions.throwAsIfUnchecked;
 import static util.error.Exceptions.unchecked;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.types.Nat;
 import util.lambda.ConsumerE;
+
 
 /**
  * Utility methods for file operations.
@@ -63,6 +63,7 @@ public class FileOps {
      * of the file.
      * @param to where to copy the data.
      * @return the number of bytes actually copied.
+     * @throws NullPointerException if any argument is {@code null}.
      * @throws IOException if an I/O error occurs.
      */
     public static long transfer(Path from, Nat howManyBytes, OutputStream to) 
@@ -133,6 +134,7 @@ public class FileOps {
      * Calls {@link Files#createDirectories(Path, java.nio.file.attribute.FileAttribute...)
      * Files.createDirectories()} re-throwing any exception without wrapping. 
      * @param p the path containing the directories to create.
+     * @throws NullPointerException if the argument is {@code null}.
      */
     public static void ensureDirectory(Path p) {
         requireNonNull(p, "p");
@@ -146,6 +148,7 @@ public class FileOps {
      * If the file already exists, it will be overwritten. 
      * @param file path to the file to create and write.
      * @param writer writes the file contents.
+     * @throws NullPointerException if any argument is {@code null}.
      * @throws IOException if an I/O error occurs; the exception is caught and
      * masked as unchecked.
      */
@@ -167,5 +170,48 @@ public class FileOps {
     /* (*) The JavaDoc of the method states that it will truncate and overwrite 
      * an existing file, or create the file if it doesn't initially exist.
      */
-    
+
+    /**
+     * Uses a filter to rewrite the content of the specified file.
+     * @param target the file to rewrite.
+     * @param f the filter to use.
+     * @throws NullPointerException if any argument is {@code null}.
+     * @throws Exception if an I/O or any other kind of error occurs.
+     */
+    public static void rewrite(Path target, StreamFilter f) throws Exception {
+        Path output = Files.createTempFile(UUID.randomUUID().toString(), null);
+        try {
+            filter(target, output, f);
+            copy(output, target);
+        } finally {
+            delete(output);
+        }
+    }
+
+    /**
+     * Uses a filter to read data from a source file and write a new destination
+     * file. If the destination file exists, it will be overwritten with the
+     * filter's output.
+     * @param from the source file.
+     * @param to the destination file.
+     * @param f the filter to use.
+     * @throws NullPointerException if any argument is {@code null}.
+     * @throws Exception if an I/O or any other kind of error occurs.
+     */
+    public static void filter(Path from, Path to, StreamFilter f)
+            throws Exception {
+        requireNonNull(from, "from");
+        requireNonNull(to, "to");
+        requireNonNull(f, "f");
+
+        try (InputStream in = new BufferedInputStream(
+                Files.newInputStream(from));
+             OutputStream out = new BufferedOutputStream(
+                     Files.newOutputStream(to))) {  // (*)
+            f.processE(in, out);
+        }
+    }
+    /* (*) The JavaDoc of the method states that it will truncate and overwrite
+     * an existing file, or create the file if it doesn't initially exist.
+     */
 }
