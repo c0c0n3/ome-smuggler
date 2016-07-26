@@ -4,11 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static util.sequence.Arrayz.isNullOrZeroLength;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +53,38 @@ public class Strings {
         out.flush();
         
         return buffer.toString();
+    }
+
+    /**
+     * Gives a {@link Consumer} a {@link PrintWriter} to write some text to the
+     * specified destination {@link OutputStream}.
+     * @param destination where the data will be written to.
+     * @param writer the consumer that will produce the text.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static void write(OutputStream destination,
+                             Consumer<PrintWriter> writer) {
+        requireNonNull(destination, "destination");
+        requireNonNull(writer, "writer");
+
+        PrintWriter out = new PrintWriter(destination);
+        writer.accept(out);
+        out.flush();
+    }
+
+    /**
+     * Writes the given content to the specified destination stream.
+     * This method uses the {@link PrintWriter#print(String) PrintWriter's
+     * print} method to write the content string. In particular the {@code null}
+     * string is output as "null".
+     * @param destination where the data will be written to.
+     * @param content the data to write; if {@code null} or empty nothing will
+     *                be written to the destination steam.
+     * @throws NullPointerException if the destination argument is {@code null}.
+     */
+    public static void write(OutputStream destination, String content) {
+        requireNonNull(destination, "destination");
+        write(destination, writer -> writer.print(content));
     }
     
     /**
