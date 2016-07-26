@@ -2,14 +2,12 @@ package util.error;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import util.lambda.ActionE;
-import util.lambda.ConsumerE;
-import util.lambda.FunctionE;
-import util.lambda.SupplierE;
+import util.lambda.*;
 import util.object.Either;
 
 /**
@@ -71,7 +69,17 @@ public class Exceptions {
     public static <T> Consumer<T> unchecked(ConsumerE<T> mayThrowChecked) {
         return mayThrowChecked;
     }
-    
+
+    /**
+     * Convenience up-cast so that an exception-throwing lambda can be used
+     * in place of a normal one.
+     * @param mayThrowChecked value to up-cast.
+     * @return the up-cast input.
+     */
+    public static <T, U> BiConsumer<T, U> unchecked(BiConsumerE<T, U> mayThrowChecked) {
+        return mayThrowChecked;
+    }
+
     /**
      * Convenience up-cast so that an exception-throwing lambda can be used
      * in place of a normal one.
