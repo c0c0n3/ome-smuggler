@@ -8,10 +8,12 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import ome.smuggler.core.io.FileOps;
+import ome.smuggler.core.io.StreamFilter;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.types.TaskIdPath;
 import util.lambda.ConsumerE;
 import util.object.Identifiable;
+
 
 /**
  * A {@link TaskFileStore} based on {@link TaskIdPath}.
@@ -64,7 +66,18 @@ public class TaskIdPathStore<T extends Identifiable>
     public void add(T taskId, Path contentSource) {
         FileOps.copy(contentSource, pathFor(taskId));    
     }
-    
+
+    @Override
+    public void replace(T taskId, StreamFilter filter) {
+        requireNonNull(taskId, "taskId");
+        requireNonNull(filter, "filter");
+        if (!listTaskIds().anyMatch(taskId::equals)) {
+            throw new IllegalArgumentException("no such taskId: " + taskId.id());
+        }
+
+        FileOps.rewrite(pathFor(taskId), filter);
+    }
+
     public Path storeDir() {
         return storeDir;
     }

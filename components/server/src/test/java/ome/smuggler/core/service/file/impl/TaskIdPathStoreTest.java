@@ -121,5 +121,19 @@ public class TaskIdPathStoreTest {
         assertThat(target.listTaskIds().count(), is(1L));
         assertThat(target.listTaskIds().findFirst().get(), is(taskId2));
     }
-    
+
+    @Test
+    public void replaceFileContent() throws IOException {
+        BaseStringId taskId = addNewTaskIdFileToStore();
+        String replacement = "new";
+        target.replace(taskId, currentValue -> {
+            assertThat(currentValue, is(taskId.get()));
+            return replacement;
+        });
+        target.replace(taskId, currentValue -> {
+            assertThat(currentValue, is(replacement));
+            return "";
+        });
+    }
+
 }

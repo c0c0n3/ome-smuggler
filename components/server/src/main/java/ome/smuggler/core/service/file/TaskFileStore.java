@@ -1,13 +1,18 @@
 package ome.smuggler.core.service.file;
 
+import static util.string.Strings.write;
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import ome.smuggler.core.io.StreamFilter;
+import ome.smuggler.core.io.StringFilter;
 import util.lambda.ConsumerE;
+import util.lambda.FunctionE;
 import util.object.Identifiable;
+
 
 /**
  * Manages a directory containing files associated to {@link Identifiable} task 
@@ -60,10 +65,7 @@ public interface TaskFileStore<T extends Identifiable> {
      * runtime exception and re-thrown as is.
      */
     default void add(T taskId, String content) {
-        add(taskId, out -> {
-            PrintStream writer = new PrintStream(out);
-            writer.print(content);
-        });
+        add(taskId, out -> write(out, content));
     }
     
     /**
@@ -78,5 +80,41 @@ public interface TaskFileStore<T extends Identifiable> {
      * runtime exception and re-thrown as is.
      */
     void add(T taskId, Path contentSource);
-    
+
+    /**
+     * Uses a {@code filter} function to replace the content of the file
+     * associated to the specified task.
+     * @param taskId identifies the task.
+     * @param filter gets passed the current content of the file and produces
+     *               the new file content.
+     * @throws NullPointerException if any argument is {@code null}.
+     * @throws IllegalArgumentException if there's no file associated to the
+     * specified task.
+     * @throws Exception if an I/O or any other kind of error occurs; the
+     * exception is masked as runtime exception and re-thrown as is.
+     * @see #replace(Identifiable, FunctionE)
+     */
+    void replace(T taskId, StreamFilter filter);
+
+    /**
+     * Uses a {@code setter} function to replace the content of the file
+     * associated to the specified task.
+     * This method reads the entire file content into memory as a string {@code
+     * s} using the default character encoding, calls {@code setter} with {@code
+     * s} as an argument, and overrides the old file contents with the returned
+     * string.
+     * @param taskId identifies the task.
+     * @param setter gets passed the current content of the file and produces
+     *               the new file content.
+     * @throws NullPointerException if any argument is {@code null}.
+     * @throws IllegalArgumentException if there's no file associated to the
+     * specified task.
+     * @throws Exception if an I/O or any other kind of error occurs; the
+     * exception is masked as runtime exception and re-thrown as is.
+     * @see #replace(Identifiable, StreamFilter)
+     */
+    default void replace(T taskId, FunctionE<String, String> setter) {
+        replace(taskId, new StringFilter(setter));
+    }
+
 }
