@@ -40,7 +40,7 @@ public class ImportBatchTest {
 
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullImports1() {
-        new ImportBatch(Stream.of(null));
+        new ImportBatch(Stream.of(null, null));
     }
 
     @Test (expected = NullPointerException.class)
