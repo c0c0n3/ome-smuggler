@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import util.object.Identifiable;
 
 public class IdentifiableTest {
 
