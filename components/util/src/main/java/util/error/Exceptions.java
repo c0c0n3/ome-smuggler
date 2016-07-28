@@ -99,7 +99,20 @@ public class Exceptions {
     public static <T, R> Function<T, R> unchecked(FunctionE<T, R> mayThrowChecked) {
         return mayThrowChecked;
     }
-    
+
+    /**
+     * Converts an action into a {@link Runnable} by masking any raised
+     * exception as a runtime exception and rethrowing it as is.
+     * @param target the action to convert.
+     * @return an adapter that makes the target action work as a
+     * {@link Runnable}.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static Runnable unchecked(ActionE target) {
+        requireNonNull(target, "target");
+        return () -> runUnchecked(target);
+    }
+
     /**
      * Runs the given action, re-throwing any exception without wrapping. 
      * @param mayThrowChecked the action to run.
