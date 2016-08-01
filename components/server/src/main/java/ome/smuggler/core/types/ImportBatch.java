@@ -2,12 +2,10 @@ package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import util.object.Pair;
@@ -20,7 +18,7 @@ import util.object.Pair;
 public class ImportBatch {
 
     private final ImportBatchId batchId;
-    private final List<QueuedImport> imports;
+    private final Set<QueuedImport> imports;
 
 
     /**
@@ -35,7 +33,7 @@ public class ImportBatch {
 
         batchId = new ImportBatchId();
         imports = xs.map(x -> new QueuedImport(new ImportId(), x))
-                    .collect(toList());
+                    .collect(toSet());
 
         if (imports.size() == 0) {
             throw new IllegalArgumentException("no imports");
