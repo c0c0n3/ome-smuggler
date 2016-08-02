@@ -6,6 +6,7 @@ import static util.error.Exceptions.throwAsIfUnchecked;
 import java.io.IOException;
 
 import ome.smuggler.core.service.imports.ImportRequestor;
+import ome.smuggler.core.types.ImportBatchId;
 import ome.smuggler.core.types.ImportId;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.QueuedImport;
@@ -31,7 +32,7 @@ public class ImportTrigger implements ImportRequestor {
 
     @Override
     public ImportId enqueue(ImportInput request) {
-        ImportId taskId = new ImportId();
+        ImportId taskId = new ImportId(new ImportBatchId());
         QueuedImport task = new QueuedImport(taskId, request);
         
         notifyQueued(task);

@@ -53,7 +53,7 @@ public class ImportBatchStatusTest {
     }
 
     private QueuedImport importNotInBatch() {
-        return new QueuedImport(new ImportId(),
+        return new QueuedImport(new ImportId(new ImportBatchId()),
                                 ImportBatchTest.makeNewImportInput());
     }
 

@@ -32,7 +32,7 @@ public class ImportBatch {
         requireNonNull(xs, "xs");
 
         batchId = new ImportBatchId();
-        imports = xs.map(x -> new QueuedImport(new ImportId(), x))
+        imports = xs.map(x -> new QueuedImport(new ImportId(batchId), x))
                     .collect(toSet());
 
         if (imports.size() == 0) {
