@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.file.KeyValueStore;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.log.LogService;
 import ome.smuggler.core.service.mail.MailRequestor;
@@ -24,6 +25,7 @@ public class ImportEnv {
     private final ImportService importer;
     private final ChannelSource<QueuedImport> queue;
     private final SchedulingSource<ImportLogFile> gcQueue;
+    private final KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore;
     private final TaskFileStore<ImportId> failedImportLogStore;
     private final MailRequestor mail;
     private final Optional<Email> sysAdminEmail; 
@@ -33,6 +35,7 @@ public class ImportEnv {
                      ImportService importer,
             ChannelSource<QueuedImport> queue, 
             SchedulingSource<ImportLogFile> gcQueue,
+            KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail,
             Optional<Email> sysAdminEmail,
@@ -42,6 +45,7 @@ public class ImportEnv {
         requireNonNull(importer, "importer");
         requireNonNull(queue, "queue");
         requireNonNull(gcQueue, "gcQueue");
+        requireNonNull(batchStore, "batchStore");
         requireNonNull(failedImportLogStore, "failedImportLogStore");
         requireNonNull(mail, "mail");
         requireNonNull(sysAdminEmail, "sysAdminEmail");
@@ -52,6 +56,7 @@ public class ImportEnv {
         this.importer = importer;
         this.queue = queue;
         this.gcQueue = gcQueue;
+        this.batchStore = batchStore;
         this.failedImportLogStore = failedImportLogStore;
         this.mail = mail;
         this.sysAdminEmail = sysAdminEmail;
@@ -81,7 +86,11 @@ public class ImportEnv {
     public ImportGc garbageCollector() {
         return new ImportGc(this);
     }
-    
+
+    public KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore() {
+        return batchStore;
+    }
+
     public TaskFileStore<ImportId> failedImportLogStore() {
         return failedImportLogStore;
     }
@@ -109,6 +118,7 @@ public class ImportEnv {
     public void ensureDirectories() {
         ensureDirectory(config().importLogDir());
         ensureDirectory(config().failedImportLogDir());
+        ensureDirectory(config().batchStatusDbDir());
     }
     
 }

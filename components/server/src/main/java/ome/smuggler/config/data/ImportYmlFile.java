@@ -15,6 +15,7 @@ public class ImportYmlFile implements ConfigProvider<ImportConfig> {
 
     public static final String RelImportLogDirPath = "import/log";
     public static final String RelFailedImportLogDirPath = "import/failed-log";
+    public static final String RelBatchStatusDbDirPath = "import/db/batch-status";
     
     @Override
     public Stream<ImportConfig> readConfig() {
@@ -23,7 +24,8 @@ public class ImportYmlFile implements ConfigProvider<ImportConfig> {
         cfg.setFailedImportLogDir(RelFailedImportLogDirPath);
         cfg.setLogRetentionMinutes(Duration.ofDays(15).toMinutes());
         cfg.setRetryIntervals(new Long[] { 10L, 10L, 120L, 1440L, 1440L, 1440L });
-        
+        cfg.setBatchStatusDbDir(RelBatchStatusDbDirPath);
+
         return Stream.of(cfg);
     }
     

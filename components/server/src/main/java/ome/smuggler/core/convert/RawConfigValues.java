@@ -25,7 +25,14 @@ import util.runtime.ListProgramArgument;
  * types.
  */
 public class RawConfigValues {
-    
+
+    public static PositiveN toPositiveN(Long configValue,
+                                        PositiveN defaultValue) {
+        return configValue == null || configValue == 0 ?
+                defaultValue :
+                PositiveN.of(configValue);  // NB throws if value <= 0
+    }
+
     public static Path toPath(String path) {
         requireString(path, "path");
         return Paths.get(path);

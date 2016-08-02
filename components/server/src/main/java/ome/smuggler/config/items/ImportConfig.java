@@ -47,6 +47,16 @@ import java.util.Objects;
  *  (as in e.g. {@code cmd /c start /belownormal /wait /b}) because it just
  *  doesn't work nicely when called from Java.
  *  </li>
+ *  <li>{@link #setBatchStatusDbDir(String) Batch status DB directory path}.
+ *  Path to the directory where to keep the files of the batch status DB.
+ *  This DB stores data to keep track of progress of a running import batch.
+ *  Directories in the path will be created if needed.
+ *  </li>
+ *  <li>{@link #setBatchStatusDbLockStripes(Long) Number of lock stripes for
+ *  the batch status DB}.
+ *  Optional number of lock stripes the DB should use to control parallel access
+ *  to the data. If specified, it has to be a positive integer.
+ *  </li>
  * </ul>
  */
 public class ImportConfig {
@@ -59,6 +69,8 @@ public class ImportConfig {
     private Long[] retryIntervals;
     private String failedImportLogDir;
     private String niceCommand;
+    private String batchStatusDbDir;
+    private Long batchStatusDbLockStripes;
 
     public String getImportLogDir() {
         return importLogDir;
@@ -100,6 +112,22 @@ public class ImportConfig {
         this.niceCommand = niceCommand;
     }
 
+    public String getBatchStatusDbDir() {
+        return batchStatusDbDir;
+    }
+
+    public void setBatchStatusDbDir(String batchStatusDbDir) {
+        this.batchStatusDbDir = batchStatusDbDir;
+    }
+
+    public Long getBatchStatusDbLockStripes() {
+        return batchStatusDbLockStripes;
+    }
+
+    public void setBatchStatusDbLockStripes(Long batchStatusDbLockStripes) {
+        this.batchStatusDbLockStripes = batchStatusDbLockStripes;
+    }
+
     @Override
     public int hashCode() {
         return toString().hashCode();
@@ -119,8 +147,9 @@ public class ImportConfig {
     @Override
     public String toString() {
         String xs = Arrays.toString(retryIntervals);
-        return String.format("%s | %s | %s | %s | %s",
+        return String.format("%s | %s | %s | %s | %s | %s | %s",
                 importLogDir, failedImportLogDir, logRetentionMinutes, xs,
+                batchStatusDbDir, batchStatusDbLockStripes,
                 niceCommand);
     }
     

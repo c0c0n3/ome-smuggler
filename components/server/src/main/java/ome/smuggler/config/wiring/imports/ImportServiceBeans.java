@@ -1,8 +1,13 @@
 package ome.smuggler.config.wiring.imports;
 
+import ome.smuggler.core.service.file.KeyValueStore;
+import ome.smuggler.core.service.file.impl.KeyValueFileStore;
+import ome.smuggler.core.service.file.impl.TSafeKeyValueStore;
 import ome.smuggler.core.service.omero.ImportService;
 import ome.smuggler.core.service.omero.SessionService;
 import ome.smuggler.core.types.*;
+import ome.smuggler.providers.json.JsonInputStreamReader;
+import ome.smuggler.providers.json.JsonOutputStreamWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,18 +43,35 @@ public class ImportServiceBeans {
     }
 
     @Bean
+    public KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore(
+            ImportConfigSource config) {
+        TaskFileStore<ImportBatchId> backingStore = new TaskIdPathStore<>(
+                config.batchStatusDbDir(),
+                ImportBatchId::new);
+        KeyValueStore<ImportBatchId, ImportBatchStatus> store =
+                new KeyValueFileStore<>(
+                        backingStore,
+                        new JsonInputStreamReader<>(ImportBatchStatus.class),
+                        new JsonOutputStreamWriter<>());
+        return new TSafeKeyValueStore<>(store,
+                                        config.batchStatusDbLockStripes());
+    }
+
+    @Bean
     public ImportEnv importEnv(
             ImportConfigSource config,
             SessionService session,
             ImportService importer,
             ChannelSource<QueuedImport> importSourceChannel,
             SchedulingSource<ImportLogFile> importGcSourceChannel,
+            KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
             MailConfigSource mailConfig) {
         ImportEnv env = new ImportEnv(config, session, importer,
                                       importSourceChannel,
                                       importGcSourceChannel,
+                                      batchStore,
                                       failedImportLogStore, mail, 
                                       mailConfig.sysAdminAddress(), 
                                       new LogAdapter());

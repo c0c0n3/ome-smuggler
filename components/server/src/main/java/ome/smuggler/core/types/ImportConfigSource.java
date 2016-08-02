@@ -14,6 +14,13 @@ import util.runtime.CommandBuilder;
 public interface ImportConfigSource {
 
     /**
+     * Default number of lock stripes to use with the import batch status
+     * key-value store.
+     * @see #batchStatusDbLockStripes()
+     */
+    PositiveN DefaultBatchStatusDbLockStripes = PositiveN.of(64);
+
+    /**
      * @return path to the directory where to keep import logs.
      */
     Path importLogDir();
@@ -40,4 +47,19 @@ public interface ImportConfigSource {
      * configuration file.
      */
     CommandBuilder niceCommand();
+
+    /**
+     * @return path to the directory where to keep the files of the import
+     * batch status key-value store.
+     */
+    Path batchStatusDbDir();
+
+    /**
+     * Optional number of lock stripes to use with the import batch status
+     * key-value store.
+     * @return the configured number or a default value if none is found in the
+     * configuration file.
+     */
+    PositiveN batchStatusDbLockStripes();
+
 }

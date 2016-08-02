@@ -1,9 +1,7 @@
 package ome.smuggler.core.types;
 
 import static java.util.Objects.requireNonNull;
-import static ome.smuggler.core.convert.RawConfigValues.toCommand;
-import static ome.smuggler.core.convert.RawConfigValues.toDuration;
-import static ome.smuggler.core.convert.RawConfigValues.toDurationList;
+import static ome.smuggler.core.convert.RawConfigValues.*;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -25,6 +23,8 @@ public class ImportConfigReader implements ImportConfigSource {
     private final List<Duration> retryIntervals;
     private final Path failedImportLogDir;
     private final CommandBuilder niceCommand;
+    private final Path batchStatusDbDir;
+    private final PositiveN batchStatusDbLockStripes;
     
     /**
      * Creates a new instance.
@@ -43,6 +43,11 @@ public class ImportConfigReader implements ImportConfigSource {
         failedImportLogDir = base.resolveRequiredPath(
                                 config.getFailedImportLogDir());
         niceCommand = toCommand(config.getNiceCommand());
+        batchStatusDbDir = base.resolveRequiredPath(
+                                config.getBatchStatusDbDir());
+        batchStatusDbLockStripes = toPositiveN(
+                config.getBatchStatusDbLockStripes(),
+                DefaultBatchStatusDbLockStripes);
     }
     
     @Override
@@ -68,6 +73,16 @@ public class ImportConfigReader implements ImportConfigSource {
     @Override
     public CommandBuilder niceCommand() {
         return niceCommand;
+    }
+
+    @Override
+    public Path batchStatusDbDir() {
+        return batchStatusDbDir;
+    }
+
+    @Override
+    public PositiveN batchStatusDbLockStripes() {
+        return batchStatusDbLockStripes;
     }
 
 }

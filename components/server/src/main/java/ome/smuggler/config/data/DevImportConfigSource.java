@@ -7,6 +7,7 @@ import java.util.List;
 
 import ome.smuggler.config.BaseDataDir;
 import ome.smuggler.core.types.ImportConfigSource;
+import ome.smuggler.core.types.PositiveN;
 import util.runtime.CommandBuilder;
 
 /**
@@ -43,6 +44,16 @@ public class DevImportConfigSource implements ImportConfigSource {
     @Override
     public CommandBuilder niceCommand() {
         return CommandBuilder.empty();
+    }
+
+    @Override
+    public Path batchStatusDbDir() {
+        return baseDataDir.resolve(ImportYmlFile.RelBatchStatusDbDirPath);
+    }
+
+    @Override
+    public PositiveN batchStatusDbLockStripes() {
+        return DefaultBatchStatusDbLockStripes;
     }
 
 }
