@@ -1,11 +1,14 @@
 package util.error;
 
 import static java.util.Objects.requireNonNull;
+import static util.sequence.Arrayz.hasNulls;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import util.lambda.*;
 import util.object.Either;
@@ -124,6 +127,43 @@ public class Exceptions {
         } catch (Exception e) {
             throwAsIfUnchecked(e);
         }
+    }
+
+    /**
+     * Runs each action and catches any thrown exception.
+     * Exceptions are collected in the returned stream in the same order in
+     * which actions are passed in to this method. If an action doesn't throw,
+     * then the corresponding element in the returned stream will be the
+     * empty optional.
+     * @param xs the actions to run.
+     * @return any exception occurred in the same order in which the actions
+     * arguments were specified.
+     * @throws NullPointerException if the actions array or any of its elements
+     * is {@code null}.
+     */
+    public static Stream<Optional<Throwable>> runAndCatch(ActionE...xs) {
+        if (xs == null || hasNulls(xs)) {
+            throw new NullPointerException("null action(s)");
+        }
+        return Stream.of(xs)
+                     .map(x -> {
+                         try {
+                             x.run();
+                             return Optional.empty();
+                         } catch (Throwable t) {
+                             return Optional.of(t);
+                         }
+                     });
+    }
+
+    /**
+     * Runs each action, swallowing any thrown {@link Throwable}.
+     * @param xs the actions to run.
+     * @throws NullPointerException if the actions array or any of its elements
+     * is {@code null}.
+     */
+    public static void runAndSwallow(ActionE...xs) {
+        runAndCatch(xs);
     }
     
     /**
