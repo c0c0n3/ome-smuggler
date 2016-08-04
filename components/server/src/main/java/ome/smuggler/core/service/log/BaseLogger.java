@@ -2,8 +2,10 @@ package ome.smuggler.core.service.log;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static util.error.Exceptions.runAndSwallow;
 
 import java.io.PrintWriter;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -51,31 +53,56 @@ public class BaseLogger implements LogService {
             buf.println(fieldsToString(fs));
         };
     }
-    
+
+
     private final LogService service;
-    
+
+    /**
+     * Creates a new instance.
+     * @param service the underlying log service.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
     public BaseLogger(LogService service) {
+        requireNonNull(service, "service");
         this.service = service;
+    }
+
+    private void log(BiConsumer<Object, Consumer<PrintWriter>> logger,
+                     Object site,
+                     Consumer<PrintWriter> messageWriter) {
+        requireNonNull(logger, "logger");
+        requireNonNull(site, "site");
+        requireNonNull(messageWriter, "messageWriter");
+
+        try {
+            logger.accept(site, messageWriter);
+        } catch (Throwable t) {
+            runAndSwallow(() -> {
+                System.err.println("unexpected exception while logging:");
+                System.err.println(t.toString());
+                t.printStackTrace(System.err);
+            });
+        }
     }
 
     @Override
     public void debug(Object site, Consumer<PrintWriter> messageWriter) {
-        service.debug(site, messageWriter);
+        log(service::debug, site, messageWriter);
     }
     
     @Override
     public void info(Object site, Consumer<PrintWriter> messageWriter) {
-        service.info(site, messageWriter);
+        log(service::info, site, messageWriter);
     }
 
     @Override
     public void warn(Object site, Consumer<PrintWriter> messageWriter) {
-        service.warn(site, messageWriter);
+        log(service::warn, site, messageWriter);
     }
 
     @Override
     public void error(Object site, Consumer<PrintWriter> messageWriter) {
-        service.error(site, messageWriter);
+        log(service::error, site, messageWriter);
     }
 
     /**

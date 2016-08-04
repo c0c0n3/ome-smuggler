@@ -5,6 +5,9 @@ import java.util.function.Consumer;
 
 /**
  * Defines the functionality that our services need to log messages.
+ * All methods have to make sure that if an exception occurs when writing the
+ * log message to the target logging facility, then it is swallowed and printed
+ * to {@code stderr}.
  */
 public interface LogService {
 
