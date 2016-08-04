@@ -16,13 +16,13 @@ import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.file.impl.TaskIdPathStore;
 import ome.smuggler.core.service.imports.FailedImportHandler;
-import ome.smuggler.core.service.imports.ImportLogDisposer;
+import ome.smuggler.core.service.imports.ImportDisposer;
 import ome.smuggler.core.service.imports.ImportProcessor;
 import ome.smuggler.core.service.imports.ImportRequestor;
 import ome.smuggler.core.service.imports.ImportTracker;
 import ome.smuggler.core.service.imports.impl.ImportEnv;
 import ome.smuggler.core.service.imports.impl.ImportFailureHandler;
-import ome.smuggler.core.service.imports.impl.ImportLogDeleteAction;
+import ome.smuggler.core.service.imports.impl.ImportDisposeAction;
 import ome.smuggler.core.service.imports.impl.ImportMonitor;
 import ome.smuggler.core.service.imports.impl.ImportRunner;
 import ome.smuggler.core.service.imports.impl.ImportTrigger;
@@ -63,7 +63,7 @@ public class ImportServiceBeans {
             SessionService session,
             ImportService importer,
             ChannelSource<QueuedImport> importSourceChannel,
-            SchedulingSource<ImportLogFile> importGcSourceChannel,
+            SchedulingSource<ProcessedImport> importGcSourceChannel,
             KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail, 
@@ -90,8 +90,8 @@ public class ImportServiceBeans {
     }
 
     @Bean
-    public ImportLogDisposer importLogDisposer() {
-        return new ImportLogDeleteAction();
+    public ImportDisposer importLogDisposer(ImportEnv env) {
+        return new ImportDisposeAction(env);
     }
 
     @Bean

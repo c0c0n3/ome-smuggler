@@ -18,8 +18,4 @@ public class ImportLogPath extends TaskIdPath {
         super(importLogDir, taskId);
     }
 
-    public ImportLogFile file() {
-        return new ImportLogFile(this);
-    }
-    
 }

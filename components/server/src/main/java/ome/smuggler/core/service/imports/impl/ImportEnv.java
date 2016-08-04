@@ -24,7 +24,7 @@ public class ImportEnv {
     private final SessionService session;
     private final ImportService importer;
     private final ChannelSource<QueuedImport> queue;
-    private final SchedulingSource<ImportLogFile> gcQueue;
+    private final SchedulingSource<ProcessedImport> gcQueue;
     private final KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore;
     private final TaskFileStore<ImportId> failedImportLogStore;
     private final MailRequestor mail;
@@ -34,7 +34,7 @@ public class ImportEnv {
     public ImportEnv(ImportConfigSource config, SessionService session,
                      ImportService importer,
             ChannelSource<QueuedImport> queue, 
-            SchedulingSource<ImportLogFile> gcQueue,
+            SchedulingSource<ProcessedImport> gcQueue,
             KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore,
             TaskFileStore<ImportId> failedImportLogStore,
             MailRequestor mail,
@@ -79,7 +79,7 @@ public class ImportEnv {
         return queue;
     }
     
-    public SchedulingSource<ImportLogFile> gcQueue() {
+    public SchedulingSource<ProcessedImport> gcQueue() {
         return gcQueue;
     }
     

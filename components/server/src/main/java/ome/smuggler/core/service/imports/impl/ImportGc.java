@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static ome.smuggler.core.msg.ChannelMessage.message;
 
 import ome.smuggler.core.types.FutureTimepoint;
-import ome.smuggler.core.types.ImportLogFile;
+import ome.smuggler.core.types.ProcessedImport;
 import ome.smuggler.core.types.QueuedImport;
 
 
@@ -27,9 +27,9 @@ public class ImportGc {
     }
 
     private void scheduleDeletion(QueuedImport task) {
-        ImportLogFile logFile = env.importLogPathFor(task.getTaskId()).file();
         FutureTimepoint when = env.importLogRetentionFromNow();
-        env.gcQueue().uncheckedSend(message(when, logFile));
+        ProcessedImport processedTask = new ProcessedImport(task);
+        env.gcQueue().uncheckedSend(message(when, processedTask));
     }
     
     private void cleanupSession(QueuedImport task) {
