@@ -56,12 +56,11 @@ public class ExceptionsActionTest {
         runAndCatch(() -> {}, null);
     }
 
-    @SuppressWarnings("unchecked")
+    @Test
     public void runAndCatchReturnsExceptionsInInputOrder() {
-        Optional<Throwable>[] collected = (Optional<Throwable>[])
+        Optional<Throwable>[] collected =
             runAndCatch(() -> {}, () -> throwWith("1"), () -> {},
-                        () -> throwWith("3"), this::actionWithException)
-            .toArray(Optional[]::new);
+                        () -> throwWith("3"), this::actionWithException);
 
         assertThat(collected.length, is(5));
 

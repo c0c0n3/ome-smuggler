@@ -131,17 +131,19 @@ public class Exceptions {
 
     /**
      * Runs each action and catches any thrown exception.
-     * Exceptions are collected in the returned stream in the same order in
-     * which actions are passed in to this method. If an action doesn't throw,
-     * then the corresponding element in the returned stream will be the
-     * empty optional.
+     * Exceptions are collected in the returned array {@code r} in the same
+     * order in which actions {@code xs} are passed in to this method, i.e.
+     * {@code r[k]} corresponds to {@code xs[k]} for {@code k = 0, ...,
+     * xs.length}. If an action doesn't throw, then the corresponding element
+     * in the returned array will be the empty optional.
      * @param xs the actions to run.
      * @return any exception occurred in the same order in which the actions
      * arguments were specified.
      * @throws NullPointerException if the actions array or any of its elements
      * is {@code null}.
      */
-    public static Stream<Optional<Throwable>> runAndCatch(ActionE...xs) {
+    @SuppressWarnings("unchecked")
+    public static Optional<Throwable>[] runAndCatch(ActionE...xs) {
         if (xs == null || hasNulls(xs)) {
             throw new NullPointerException("null action(s)");
         }
@@ -153,7 +155,8 @@ public class Exceptions {
                          } catch (Throwable t) {
                              return Optional.of(t);
                          }
-                     });
+                     })
+                     .toArray(Optional[]::new);
     }
 
     /**
