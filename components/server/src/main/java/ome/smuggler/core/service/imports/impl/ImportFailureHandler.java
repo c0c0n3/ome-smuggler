@@ -30,11 +30,9 @@ public class ImportFailureHandler implements FailedImportHandler {
         requireNonNull(task, "task");
         
         try {
-            env.log().importPermanentFailure(task);
-            env.garbageCollector().run(task);
             storeAsFailedImport(task);
         } finally {
-            new ImportOutcomeNotifier(env, task).tellFailure();
+            Finaliser.onFailure(env, task);
         }
     }
 

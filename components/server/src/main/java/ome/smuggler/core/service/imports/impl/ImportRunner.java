@@ -31,27 +31,21 @@ public class ImportRunner implements ImportProcessor {
 
         ImportLogPath importLog = env.importLogPathFor(task.getTaskId());
         ImportOutput output = new ImportOutput(importLog, task);
-        
+
         RepeatAction action = Repeat;
         try {
             output.writeHeader();
             boolean succeeded = env.importer()
                                    .run(task.getRequest(), importLog.get());
             output.writeFooter(succeeded);
-            
+
             if (succeeded) {
-                new ImportOutcomeNotifier(env, task).tellSuccess();
-                
-                env.log().importSuccessful(task);
+                Finaliser.onSuccess(env, task);
                 action = Stop;
-            } 
+            }
         } catch (Exception e) {
             output.writeFooter(e);
             env.log().transientError(this, e);
-        } finally {
-            if (Stop.equals(action)) {
-                env.garbageCollector().run(task);
-            }
         }
         return action;
     }
