@@ -112,7 +112,7 @@ public class BaseLogger implements LogService {
      * @param error the error that was caught.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public void transientError(Object site, Exception error) {
+    public void transientError(Object site, Throwable error) {
         requireNonNull(error, "error");
         
         warn(site, buf -> buf.print(error.toString()));
