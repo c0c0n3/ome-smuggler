@@ -3,8 +3,10 @@ package ome.smuggler.core.service.log;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static util.error.Exceptions.runAndSwallow;
+import static util.sequence.Streams.pruneNull;
 
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -118,5 +120,24 @@ public class BaseLogger implements LogService {
         warn(site, buf -> buf.print(error.toString()));
         debug(site, error::printStackTrace);
     }
-    
+
+    /**
+     * Logs a warning containing a summary of the error and a debug message
+     * with the entire exception's stack trace for each non-empty optional
+     * in the list.
+     * @param site where the error was detected.
+     * @param maybeE errors that were caught, possibly none. If the array is
+     *               {@code null}, nothing is logged. Any {@code null} or
+     *               empty element will be skipped.
+     * @throws NullPointerException if the site argument is {@code null}.
+     */
+    @SafeVarargs
+    final public void transientError(Object site, Optional<Throwable>...maybeE) {
+        requireNonNull(site, "site");
+
+        pruneNull(maybeE).filter(Optional::isPresent)
+                         .map(Optional::get)
+                         .forEach(t -> transientError(site, t));
+    }
+
 }
