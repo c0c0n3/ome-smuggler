@@ -1,7 +1,6 @@
 package ome.smuggler.config.wiring.imports;
 
 import ome.smuggler.core.types.ProcessedImport;
-import ome.smuggler.core.types.QueuedImport;
 import org.hornetq.api.core.HornetQException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
