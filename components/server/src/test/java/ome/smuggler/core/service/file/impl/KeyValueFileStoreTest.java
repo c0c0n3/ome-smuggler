@@ -69,6 +69,34 @@ public class KeyValueFileStoreTest {
         assertThat(actualValue, is(value + 1));
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void modifyThrowsIfNoValueAssociatedToKey() {
+        BaseStringId key = new BaseStringId();
+        Path storedValue = store.pathFor(key);
+        assertFalse(Files.exists(storedValue));
+
+        target.modify(key, x -> x);
+    }
+
+    @Test
+    public void getValue() throws Exception {
+        BaseStringId key = new BaseStringId();
+        int value = 123;
+        target.put(key, value);
+
+        int actualValue = target.get(key);
+        assertThat(actualValue, is(value));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void getThrowsIfNoValueAssociatedToKey() {
+        BaseStringId key = new BaseStringId();
+        Path storedValue = store.pathFor(key);
+        assertFalse(Files.exists(storedValue));
+
+        target.get(key);
+    }
+
     @Test
     public void removeValue() throws Exception {
         BaseStringId key = new BaseStringId();
@@ -77,6 +105,15 @@ public class KeyValueFileStoreTest {
 
         Path storedValue = store.pathFor(key);
         assertFalse(Files.exists(storedValue));
+    }
+
+    @Test
+    public void removeDoesNothingIfNoValueAssociatedToKey() {
+        BaseStringId key = new BaseStringId();
+        Path storedValue = store.pathFor(key);
+        assertFalse(Files.exists(storedValue));
+
+        target.remove(key);
     }
 
     @Test (expected = NullPointerException.class)
@@ -119,6 +156,11 @@ public class KeyValueFileStoreTest {
     @Test (expected = NullPointerException.class)
     public void removeThrowsIfNullKey() {
         target.remove(null);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void getThrowsIfNullKey() {
+        target.get(null);
     }
 
 }

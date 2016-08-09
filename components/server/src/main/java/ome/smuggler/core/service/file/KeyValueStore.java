@@ -1,6 +1,7 @@
 package ome.smuggler.core.service.file;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import util.object.Identifiable;
@@ -23,6 +24,27 @@ public interface KeyValueStore<K extends Identifiable, V> {
      * runtime exception and re-thrown as is.
      */
     void put(K key, V value);
+
+    /**
+     * Gets the value associated to the specified key.
+     * @param key identifies the mapping.
+     * @return the value.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IllegalArgumentException if no value is associated to the given
+     * key.
+     * @throws IOException if an I/O error occurs; the exception is masked as
+     * runtime exception and re-thrown as is.
+     */
+    default V get(K key) {
+        AtomicReference<V> holder = new AtomicReference<>();  // (*)
+        modify(key, v -> {
+            holder.set(v);
+            return v;
+        });
+        return holder.get();
+    }
+    // (*) using it out of convenience as a value holder, nothing to do with
+    // concurrency.
 
     /**
      * Updates the value associated to the specified key.
