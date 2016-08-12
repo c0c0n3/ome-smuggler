@@ -82,13 +82,17 @@ public class ImportEnv {
     public SchedulingSource<ProcessedImport> gcQueue() {
         return gcQueue;
     }
-    
-    public ImportGc garbageCollector() {
-        return new ImportGc(this);
+
+    public Finaliser finaliser() {
+        return new Finaliser(this);
     }
 
     public KeyValueStore<ImportBatchId, ImportBatchStatus> batchStore() {
         return batchStore;
+    }
+
+    public BatchManager batchManager() {
+        return new BatchManager(this);
     }
 
     public TaskFileStore<ImportId> failedImportLogStore() {

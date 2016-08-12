@@ -16,7 +16,7 @@ public class ProcessedImportTest extends JsonWriteReadTest {
         QueuedImport task =
                 new QueuedImport(new ImportId(new ImportBatchId()),
                         ImportInputTest.makeNew());
-        ProcessedImport initialValue = new ProcessedImport(task);
+        ProcessedImport initialValue = ProcessedImport.succeeded(task);
         Class<ProcessedImport> valueType = (Class<ProcessedImport>)
                 initialValue.getClass();
         TypeToken<ProcessedImport> typeToken = new TypeToken<ProcessedImport>(){};

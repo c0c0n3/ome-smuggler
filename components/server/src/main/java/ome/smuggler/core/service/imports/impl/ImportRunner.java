@@ -40,7 +40,7 @@ public class ImportRunner implements ImportProcessor {
             output.writeFooter(succeeded);
 
             if (succeeded) {
-                Finaliser.onSuccess(env, task);
+                env.finaliser().onSuccess(task);
                 action = Stop;
             }
         } catch (Exception e) {

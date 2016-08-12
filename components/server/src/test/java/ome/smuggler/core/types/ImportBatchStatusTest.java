@@ -3,6 +3,7 @@ package ome.smuggler.core.types;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+import static ome.smuggler.core.types.ProcessedImport.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +21,20 @@ public class ImportBatchStatusTest {
 
     static final int numImports = 4;
 
+    static ProcessedImport importNotInBatch() {
+        QueuedImport qi = new QueuedImport(new ImportId(new ImportBatchId()),
+                ImportBatchTest.makeNewImportInput());
+        return succeeded(qi);
+    }
+
     static void markCompletions(ImportBatchStatus status,
                                 int nSuccess, int nFails) {
         status.batch().imports().limit(nSuccess)
-                .forEach(status::addToSucceeded);
+                .map(ProcessedImport::succeeded)
+                .forEach(status::addToCompleted);
         status.batch().imports().skip(nSuccess).limit(nFails)
-                .forEach(status::addToFailed);
+                .map(ProcessedImport::failed)
+                .forEach(status::addToCompleted);
     }
 
     static boolean isPartition(int x, int y) {
@@ -43,6 +52,11 @@ public class ImportBatchStatusTest {
 
     private ImportBatchStatus target;
 
+
+    private QueuedImport firstImportInBatch() {
+        return target.batch().imports().findFirst().get();
+    }
+
     @Before
     public void setup() {
         String[] files = IntStream.rangeClosed(1, numImports)
@@ -50,11 +64,6 @@ public class ImportBatchStatusTest {
                                   .toArray(String[]::new);
         ImportBatch batch = ImportBatchTest.makeNew(files);
         target = new ImportBatchStatus(batch);
-    }
-
-    private QueuedImport importNotInBatch() {
-        return new QueuedImport(new ImportId(new ImportBatchId()),
-                                ImportBatchTest.makeNewImportInput());
     }
 
     void assertSuccessAndFailSetsAreDisjoint(int nSuccess, int nFails) {
@@ -89,62 +98,86 @@ public class ImportBatchStatusTest {
         assertSuccessAndFailSetsAreDisjoint(nSuccess, nFails);
     }
 
+    @Theory
+    public void allSucceededImpliesAllProcessed(int nSuccess, int nFails) {
+        assumeTrue(isPartition(nSuccess, nFails));
+        assumeTrue(nFails == 0);
+
+        markCompletions(target, nSuccess, nFails);
+
+        assertTrue(target.allSucceeded());
+        assertTrue(target.allProcessed());
+    }
+
+    @Theory
+    public void allProcessedDontImplyAllSucceeded(int nSuccess, int nFails) {
+        assumeTrue(isPartition(nSuccess, nFails));
+        assumeTrue(nFails > 0);
+
+        markCompletions(target, nSuccess, nFails);
+
+        assertFalse(target.allSucceeded());
+        assertTrue(target.allProcessed());
+    }
+
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullArg() {
         new ImportBatchStatus(null);
     }
 
     @Test (expected = NullPointerException.class)
-    public void addToSucceededThrowsIfNullArg() {
-        target.addToSucceeded(null);
+    public void addToCompletedThrowsIfNullArg() {
+        target.addToCompleted(null);
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void addToSucceededThrowsIfImportNotInBatch() {
-        target.addToSucceeded(importNotInBatch());
+    public void addToCompletedThrowsIfImportNotInBatch() {
+        target.addToCompleted(importNotInBatch());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void addToSucceededThrowsIfImportAlreadyAddedToFailed() {
-        QueuedImport qi = target.batch().imports().findFirst().get();
-        target.addToFailed(qi);
-        target.addToSucceeded(qi);
+        QueuedImport qi = firstImportInBatch();
+        try {
+            target.addToCompleted(failed(qi));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+        target.addToCompleted(succeeded(qi));
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void addToFailedThrowsIfImportAlreadyAddedToSucceeded() {
+        QueuedImport qi = firstImportInBatch();
+        try {
+            target.addToCompleted(succeeded(qi));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+        target.addToCompleted(failed(qi));
+    }
+
+    @Test
     public void canReAddSameImportToSucceededSet() {
-        QueuedImport qi = target.batch().imports().findFirst().get();
-        target.addToSucceeded(qi);
-        target.addToSucceeded(qi);
+        QueuedImport qi = firstImportInBatch();
+        target.addToCompleted(succeeded(qi));
+        target.addToCompleted(succeeded(qi));
 
         assertThat(target.succeeded().size(), is(1));
         assertThat(target.failed().size(), is(0));
         assertTrue(target.succeeded().contains(qi));
     }
 
-    @Test (expected = NullPointerException.class)
-    public void addToFailedThrowsIfNullArg() {
-        target.addToFailed(null);
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void addToFailedThrowsIfImportNotInBatch() {
-        target.addToFailed(importNotInBatch());
-    }
-
-    @Test (expected = IllegalArgumentException.class)
-    public void addToFailedThrowsIfImportAlreadyAddedToSucceeded() {
-        QueuedImport qi = target.batch().imports().findFirst().get();
-        target.addToSucceeded(qi);
-        target.addToFailed(qi);
-    }
-
+    @Test
     public void canReAddSameImportToFailedSet() {
-        QueuedImport qi = target.batch().imports().findFirst().get();
-        target.addToFailed(qi);
-        target.addToFailed(qi);
+        QueuedImport qi = firstImportInBatch();
+        target.addToCompleted(failed(qi));
+        target.addToCompleted(failed(qi));
 
         assertThat(target.failed().size(), is(1));
         assertThat(target.succeeded().size(), is(0));
         assertTrue(target.failed().contains(qi));
     }
+
 }

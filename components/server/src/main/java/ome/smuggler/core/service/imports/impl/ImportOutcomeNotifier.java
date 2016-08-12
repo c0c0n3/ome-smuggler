@@ -2,36 +2,80 @@ package ome.smuggler.core.service.imports.impl;
 
 import static java.util.Objects.requireNonNull;
 
+import ome.smuggler.core.types.Email;
+import ome.smuggler.core.types.ImportBatchStatus;
 import ome.smuggler.core.types.PlainTextMail;
-import ome.smuggler.core.types.QueuedImport;
 
+/**
+ * Triggers the sending of import outcome notification emails.
+ * One email will go out to the user who requested the import. The email is just
+ * a one-liner success notification message if the batch succeeded. Otherwise
+ * the email contains a detailed list of the files that were imported
+ * successfully and a list of those that failed. In the case of failure, this
+ * same email is also sent to the system administrator, as long as one was
+ * configured.
+ */
 public class ImportOutcomeNotifier {
 
     private final ImportEnv env;
-    private final QueuedImport task;
-    
-    public ImportOutcomeNotifier(ImportEnv env, QueuedImport task) {
+    private final ImportBatchStatus outcome;
+    private final ImportMailFormatter formatter;
+
+    /**
+     * Creates a new instance.
+     * @param env the import environment.
+     * @param outcome the import batch state after all its imports have been
+     *                processed.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public ImportOutcomeNotifier(ImportEnv env, ImportBatchStatus outcome) {
         requireNonNull(env, "env");
-        requireNonNull(task, "task");
+        requireNonNull(outcome, "outcome");
         
         this.env = env;
-        this.task = task;
+        this.outcome = outcome;
+        this.formatter = new ImportMailFormatter(outcome);
     }
-    
-    public void tellSuccess() {
-        PlainTextMail message = ImportMailFormatter.successMessage(task);
+
+    private Email experimenterEmail() {
+        return outcome.batch()
+                      .imports()
+                      .findFirst()
+                      .get()                    // (1)
+                      .getRequest()
+                      .getExperimenterEmail();  // (2)
+    }
+    /* NOTES.
+     * 1. It's not possible to construct an ImportBatch with no imports---ctor
+     * throws if no imports are passed in.
+     * 2. Assuming all the imports in the batch are for the same user.
+     * We could easily drop this assumption and group imports by user and
+     * then send a report email for each user. But I'll leave this for
+     * Smuggler v2 as it's not needed for now.
+     */
+
+    private void notifyUserWhoRequestedImport() {
+        PlainTextMail message = formatter.buildMailMessage(
+                                                outcome.allSucceeded(),
+                                                experimenterEmail());
         env.mail().enqueue(message);
     }
-    
-    public void tellFailure() {
-        PlainTextMail message = ImportMailFormatter.failureMessage(task);
-        env.mail().enqueue(message);
-        
-        if (env.sysAdminEmail().isPresent()) {
-            message = ImportMailFormatter.sysAdminFailureMessage(task, 
+
+    private void notifySysAdminOnFailure() {
+        if (!outcome.allSucceeded() && env.sysAdminEmail().isPresent()) {
+            PlainTextMail message = formatter.buildMailMessage(
+                                                    false,
                                                     env.sysAdminEmail().get());
             env.mail().enqueue(message);
         }
     }
-    
+
+    /**
+     * Triggers the sending of import outcome notification emails.
+     */
+    public void notifyOutcome() {
+        notifyUserWhoRequestedImport();
+        notifySysAdminOnFailure();
+    }
+
 }

@@ -1,5 +1,7 @@
 package integration.serialization;
 
+import static ome.smuggler.core.types.ProcessedImport.*;
+
 import java.util.stream.Stream;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,8 +21,10 @@ public class ImportBatchStatusTest extends JsonWriteReadTest {
                     in2 = ImportInputTest.makeNew();
         ImportBatch batch = new ImportBatch(Stream.of(in1, in2));
         ImportBatchStatus initialValue = new ImportBatchStatus(batch);
-        initialValue.addToFailed(batch.imports().findFirst().get());
-        initialValue.addToFailed(batch.imports().skip(1).findFirst().get());
+        initialValue.addToCompleted(
+                succeeded(batch.imports().findFirst().get()));
+        initialValue.addToCompleted(
+                failed(batch.imports().skip(1).findFirst().get()));
 
         Class<ImportBatchStatus> valueType = (Class<ImportBatchStatus>)
                 initialValue.getClass();

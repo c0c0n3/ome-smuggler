@@ -1,32 +1,23 @@
 package ome.smuggler.config.wiring.imports;
 
-import ome.smuggler.core.service.file.KeyValueStore;
-import ome.smuggler.core.service.file.impl.KeyValueFileStore;
-import ome.smuggler.core.service.file.impl.TSafeKeyValueStore;
-import ome.smuggler.core.service.omero.ImportService;
-import ome.smuggler.core.service.omero.SessionService;
-import ome.smuggler.core.types.*;
-import ome.smuggler.providers.json.JsonInputStreamReader;
-import ome.smuggler.providers.json.JsonOutputStreamWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
+import ome.smuggler.core.service.file.KeyValueStore;
 import ome.smuggler.core.service.file.TaskFileStore;
+import ome.smuggler.core.service.file.impl.KeyValueFileStore;
+import ome.smuggler.core.service.file.impl.TSafeKeyValueStore;
 import ome.smuggler.core.service.file.impl.TaskIdPathStore;
-import ome.smuggler.core.service.imports.FailedImportHandler;
-import ome.smuggler.core.service.imports.ImportDisposer;
-import ome.smuggler.core.service.imports.ImportProcessor;
-import ome.smuggler.core.service.imports.ImportRequestor;
-import ome.smuggler.core.service.imports.ImportTracker;
-import ome.smuggler.core.service.imports.impl.ImportEnv;
-import ome.smuggler.core.service.imports.impl.ImportFailureHandler;
-import ome.smuggler.core.service.imports.impl.ImportDisposeAction;
-import ome.smuggler.core.service.imports.impl.ImportMonitor;
-import ome.smuggler.core.service.imports.impl.ImportRunner;
-import ome.smuggler.core.service.imports.impl.ImportTrigger;
+import ome.smuggler.core.service.imports.*;
+import ome.smuggler.core.service.imports.impl.*;
 import ome.smuggler.core.service.mail.MailRequestor;
+import ome.smuggler.core.service.omero.ImportService;
+import ome.smuggler.core.service.omero.SessionService;
+import ome.smuggler.core.types.*;
+import ome.smuggler.providers.json.JsonInputStreamReader;
+import ome.smuggler.providers.json.JsonOutputStreamWriter;
 import ome.smuggler.providers.log.LogAdapter;
 
 /**
@@ -90,11 +81,6 @@ public class ImportServiceBeans {
     }
 
     @Bean
-    public ImportDisposer importLogDisposer(ImportEnv env) {
-        return new ImportDisposeAction(env);
-    }
-
-    @Bean
     public FailedImportHandler failedImportHandler(ImportEnv env) {
         return new ImportFailureHandler(env);
     }
@@ -102,6 +88,17 @@ public class ImportServiceBeans {
     @Bean
     public ImportTracker importTracker(ImportEnv env) {
         return new ImportMonitor(env);
+    }
+
+    @Bean
+    public ImportFinaliser importFinaliser(ImportEnv env) {
+        return new Finaliser(env);
+    }
+
+    @Bean
+    public FailedFinalisationHandler failedImportFinalisationHandler(
+            ImportEnv env) {
+        return new FinaliserFailureHandler(env);
     }
 
 }
