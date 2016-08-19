@@ -94,7 +94,7 @@ public class Finaliser implements ImportFinaliser {
         return handlerFor(task.status()).consume(task);
     }
 
-    private ImportFinaliser handlerFor(ImportFinalisationPhase status) {
+    protected ImportFinaliser handlerFor(ImportFinalisationPhase status) {
         switch (status) {
             case BatchStillInProgress:                   // (1, 2, 3)
                 return new BatchUpdateHandler(env);

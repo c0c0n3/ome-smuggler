@@ -17,6 +17,24 @@ import ome.smuggler.core.types.PlainTextMail;
  */
 public class ImportOutcomeNotifier {
 
+    /**
+     * Picks the email of an unspecified import request.
+     * @param status the batch status.
+     * @return the email.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static Email findAnyEmail(ImportBatchStatus status) {
+        requireNonNull(status, "status");
+        return status.batch()
+                     .imports()
+                     .findFirst()
+                     .get()                    // (*)
+                     .getRequest()
+                     .getExperimenterEmail();
+    }
+    // (*) It's not possible to construct an ImportBatch with no imports---ctor
+    // throws if no imports are passed in.
+
     private final ImportEnv env;
     private final ImportBatchStatus outcome;
     private final ImportMailFormatter formatter;
@@ -38,17 +56,9 @@ public class ImportOutcomeNotifier {
     }
 
     private Email experimenterEmail() {
-        return outcome.batch()
-                      .imports()
-                      .findFirst()
-                      .get()                    // (1)
-                      .getRequest()
-                      .getExperimenterEmail();  // (2)
+        return findAnyEmail(outcome);
     }
-    /* NOTES.
-     * 1. It's not possible to construct an ImportBatch with no imports---ctor
-     * throws if no imports are passed in.
-     * 2. Assuming all the imports in the batch are for the same user.
+    /* NOTE. Assuming all the imports in the batch are for the same user.
      * We could easily drop this assumption and group imports by user and
      * then send a report email for each user. But I'll leave this for
      * Smuggler v2 as it's not needed for now.

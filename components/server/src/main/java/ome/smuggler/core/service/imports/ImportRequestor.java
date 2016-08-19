@@ -44,6 +44,7 @@ public interface ImportRequestor {
      * import run, for example to get some feedback on progress.
      * @throws NullPointerException if the stream or any of its elements is
      * {@code null}.
+     * @throws IllegalArgumentException if the stream is empty.
      */
     ImportBatch enqueue(Stream<ImportInput> requests);
     

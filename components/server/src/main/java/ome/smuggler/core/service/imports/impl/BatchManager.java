@@ -29,6 +29,7 @@ public class BatchManager {
      * @return the new batch.
      * @throws NullPointerException if the stream or any of its elements is
      * {@code null}.
+     * @throws IllegalArgumentException if the stream is empty.
      */
     protected ImportBatch createBatchFor(Stream<ImportInput> requests) {
         requireNonNull(requests, "requests");
