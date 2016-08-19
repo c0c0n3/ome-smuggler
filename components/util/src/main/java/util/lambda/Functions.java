@@ -1,5 +1,7 @@
 package util.lambda;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.Function;
 
 /**
@@ -16,5 +18,17 @@ public class Functions {
     public static <X, K> Function<X, K> constant(K c) {
         return x -> c;
     }
-    
+
+    /**
+     * Applies a function to an argument to produce a result.
+     * @param f the function.
+     * @param x the argument.
+     * @return {@code f} of {@code x}.
+     * @throws NullPointerException if the function argument is {@code null}.
+     */
+    public static <X, Y> Y apply(Function<X, Y> f, X x) {
+        requireNonNull(f, "f");
+        return f.apply(x);
+    }
+
 }
