@@ -14,20 +14,17 @@ public interface ImportService {
     int ImportSessionTimeout = 86400 * 7;
 
     /**
-     * Adds an import request to the import proxy's queue and returns
-     * immediately. The proxy will then execute the import asynchronously.
-     * @param target the URL of the import proxy where to post the request.
-     * @param request details the import to run; if no session key is specified,
-     *                this service will fill one in by creating a session with
-     *                a timeout of {@link #ImportSessionTimeout}.
-     * @return the session key that will be used for the import. If the request
-     * specifies one, than that one will be returned; otherwise the one of the
-     * session this service created for the import. This is useful if the
-     * session needs to be reused for a subsequent import.
+     * Adds import requests to the import proxy's queue and returns immediately.
+     * The proxy will then execute the import asynchronously.
+     * @param target the URL of the import proxy where to post the requests.
+     * @param request each details an import to run. If some of the requests
+     *                have no session key, this service will fill one in by
+     *                creating a session with a timeout of {@link
+     *                #ImportSessionTimeout}. This session key will then be
+     *                shared by all the requests that don't have one.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws RuntimeException if a error occurs while performing the service
-     * action.
+     * @throws RuntimeException if a error occurs while submitting the requests.
      */
-    String enqueue(URI target, ImportRequest request);
+    void enqueue(URI target, ImportRequest...request);
 
 }

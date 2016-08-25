@@ -29,18 +29,23 @@ public class ImportServiceImpl implements ImportService {
     }
 
     @Override
-    public String enqueue(URI target, ImportRequest request) {
+    public void enqueue(URI target, ImportRequest...request) {
         requireNonNull(target, "target");
         requireNonNull(request, "request");
 
-        if (request.sessionKey == null || request.sessionKey.isEmpty()) {
-            request.sessionKey = session.create(ImportSessionTimeout);
+        String newSessionKey = null;
+        for (ImportRequest r : request) {
+            requireNonNull(r, "request");
+            if (r.sessionKey == null || r.sessionKey.isEmpty()) {
+                if (newSessionKey == null) {
+                    newSessionKey = session.create(ImportSessionTimeout);
+                }
+                r.sessionKey = newSessionKey;
+            }
         }
-        RestResource<ImportRequest> client =
+        RestResource<ImportRequest[]> client =
                 ComponentsFactory.jsonResource(target);
         client.post(request);
-
-        return request.sessionKey;
     }
 
 }
