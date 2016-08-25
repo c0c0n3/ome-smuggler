@@ -16,5 +16,11 @@ public class ImportResponse {
      * will not be available anymore and clients will receive a 404.
      */
     public String statusUri;
+
+    /**
+     * URI pointing to the data to import that was submitted in the {@link
+     * ImportRequest}.
+     */
+    public String targetUri;
     
 }

@@ -18,11 +18,21 @@ public class Error {
      * reason.
      */
     public static <R> Either<Error, R> error(String reason) {
-        Error e = new Error();
-        e.reason = reason;
-        return left(e);
+        return left(new Error(reason));
     }
-    
+
+    /**
+     * Empty constructor for (de-)serialisation.
+     */
+    public Error() { }
+
+    /**
+     * Convenience constructor to set the reason for the error.
+     * @param reason what went wrong.
+     */
+    public Error(String reason) {
+        this.reason = reason;
+    }
 
     /**
      * Details what went wrong.

@@ -37,7 +37,9 @@ import util.validation.Validator;
 public class ImportRequestValidator implements Validator<Error, ImportRequest> {
 
     public static final int DefaultOmeroPort = 4064;
-    
+
+    private ImportRequest request;
+
     private Either<String, Email> email;
     private Either<String, URI> target;
     private Either<String, URI> omero;
@@ -121,6 +123,7 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     
     @Override
     public Either<Error, ImportRequest> validate(ImportRequest r) {
+        request = r;
         if (r != null) {
             parseResults = new ArrayList<>();
             
@@ -138,7 +141,11 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     }
 
     // util getters to use *only* in case validation succeeds
-    
+
+    public ImportRequest getRequest() {
+        return request;
+    }
+
     public Email getEmail() {
         return email.getRight();
     }

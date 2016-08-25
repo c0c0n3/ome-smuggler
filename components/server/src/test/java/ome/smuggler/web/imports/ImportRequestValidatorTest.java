@@ -33,13 +33,7 @@ public class ImportRequestValidatorTest {
     @Before
     public void setup() {
         validator = new ImportRequestValidator();
-        
-        minValidInput = new ImportRequest();
-        minValidInput.experimenterEmail = "e@edu";
-        minValidInput.targetUri = "/some/file";
-        minValidInput.omeroHost = "omero";
-        minValidInput.omeroPort = "1234";
-        minValidInput.sessionKey = "sesh";
+        minValidInput = Utils.newImportRequest(0);
     }
     
     @Test

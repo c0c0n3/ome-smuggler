@@ -56,11 +56,13 @@ public class VerifyImportTest extends BaseWebTest {
     }
     
     private ImportId requestImport(ImportRequest req) {
-        ResponseEntity<ImportResponse> postImportResponse = 
-                post(url(ImportController.ImportUrl), req, ImportResponse.class);
+        ResponseEntity<ImportResponse[]> postImportResponse =
+                post(url(ImportController.ImportUrl),
+                     new ImportRequest[] { req },
+                     ImportResponse[].class);
         assert200(postImportResponse);
         return statusUpdateClient.taskIdFromUrl(
-                postImportResponse.getBody().statusUri);
+                postImportResponse.getBody()[0].statusUri);
     }
     
     private void canGetStatusUpdate(ImportId taskId, ImportRequest requested) {

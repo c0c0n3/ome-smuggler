@@ -49,8 +49,7 @@ public class ImportRequest {
      * Mandatory field to identify the OMERO session to use for the import.
      * The client must acquire a session before submitting an import request as
      * this server will never accept user names and passwords to run an import.
-     * The client can close the session as soon as this import request is 
-     * submitted to this web server.
+     * The server will take care of closing the session.
      */
     public String sessionKey;
     
