@@ -146,20 +146,32 @@ $ ./request-import min-import.json
 ~~~
     
 This simply POSTs a JSON-encoded import request to upload a non-existing image
-to a non-existing OMERO sever. No wonder it should fail. To see how to build
-an import request, look [here][import-request].
+(`my/file`) to a non-existing OMERO sever. No wonder it should fail.
 The response should be a 200 (import request accepted and queued for execution)
 and its body should be something like
 
 ~~~ {.json}
-{"statusUri":"/ome/import/740f848c-7099-461e-a988-563eecaeccba"}
+[{
+ "statusUri":"/ome/import/740f848c-7099-461e-a988-563eecaeccba",
+ "targetUri":"file:///abs/path/to/my/file"
+ }]
 ~~~
 
-The absolute path above specifies where to get status updates for the import
-you've just requested. Status updates will be available for at least one minute
-after the import has been executed---this is the import log retention period
-we configured earlier. Copy and paste the returned path and run the `get`
-script to fetch status updates
+<div class="pull-quote">
+###### Import Interface
+Want to dig deeper? [This javadoc][import-controller] explains how the REST
+import interface works. You'll see that Smuggler lets you POST more than one
+one [import request][import-request] at the same time and gives you back an
+[import response][import-response] for each request you POST'ed. But here
+we're keeping things simple: we only POST one import and so get back one
+import response.
+</div>
+
+The absolute path of the `statusUri` above specifies where to get status
+updates for the import you've just requested. Status updates will be available
+for at least one minute after the import has been executed---this is the
+import log retention period we configured earlier. Copy and paste the returned
+path and run the `get` script to fetch status updates
 
 ~~~ {.bash}
 $ ./get /ome/import/740f848c-7099-461e-a988-563eecaeccba
@@ -217,7 +229,7 @@ tracked, so all you should see in the response body is
 
 On failure, Smuggler sends a notification email to both the user who requested
 the import (see contents of `min-import.json`) and the system administrator---
-assuming you [configured one][config]. If you didn't configured the mail
+assuming you [configured one][config]. If you didn't configure the mail
 service earlier, then the sending of emails will fail, after a couple of days
 of trying though---as per default configuration. On giving up sending, Smuggler
 stores the failed email messages and lets you manage them through its REST API
@@ -230,8 +242,11 @@ send them off.
 Success Scenario
 ----------------
 All you need to make an image trek into OMERO is to POST a request for existing
-data to an existing OMERO server. Create a new file `my-import.json` taking
-`min-import.json` as an example and referring to [this specification][import-request].
+data to an existing OMERO server. (Uh, kinda obvious?)
+Create a new file `my-import.json` taking `min-import.json` as an example and
+fill out the required fields for an import request as documented by [this
+specification][import-request]. (Oh, if you're looking for the Web method spec,
+it's [here][import-controller].)
 You will need a valid session key to go in the file; to obtain one, use the
 OMERO CLI as shown below:
 
@@ -261,5 +276,9 @@ session key) and check the images you've just imported are there.
     "Configuration"
 [deployment]: /content/deployment/index.html
     "Deployment"
+[import-controller]: ../../../javadoc/server/ome/smuggler/web/imports/ImportController.html
+    "ImportController Class"
 [import-request]: ../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html
     "ImportRequest Class"
+[import-response]: ../../../javadoc/server/ome/smuggler/web/imports/ImportResponse.html
+    "ImportResponse Class"
