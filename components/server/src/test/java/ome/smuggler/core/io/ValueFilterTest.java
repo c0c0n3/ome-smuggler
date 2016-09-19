@@ -13,9 +13,12 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 import java.io.*;
+import java.util.function.Function;
 
 @RunWith(Theories.class)
 public class ValueFilterTest {
+
+    private static Function<InputStream, Integer> dummyReader = constant(1);
 
     @DataPoints
     public static String[] inputs = array("", "a", "ab");
@@ -52,27 +55,25 @@ public class ValueFilterTest {
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfNullWriter() {
-        ValueFilter<Integer> target =
-            new ValueFilter<>(constant(1), null, identity());
+        new ValueFilter<>(dummyReader, null, identity());
     }
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfNullSetter() {
-        ValueFilter<Integer> target =
-            new ValueFilter<>(constant(1), (out, v) -> {}, null);
+        new ValueFilter<>(dummyReader, (out, v) -> {}, null);
     }
 
     @Test(expected = NullPointerException.class)
     public void processThrowsIfNullInStream() {
         ValueFilter<Integer> target =
-                new ValueFilter<>(constant(1), (out, v) -> {}, null);
+                new ValueFilter<>(dummyReader, (out, v) -> {}, null);
         target.process(null, new ByteArrayOutputStream());
     }
 
     @Test(expected = NullPointerException.class)
     public void processThrowsIfNullOutStream() {
         ValueFilter<Integer> target =
-                new ValueFilter<>(constant(1), (out, v) -> {}, null);
+                new ValueFilter<>(dummyReader, (out, v) -> {}, null);
         target.process(new ByteArrayInputStream(new byte[2]), null);
     }
 
