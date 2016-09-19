@@ -52,12 +52,14 @@ public class ValueFilterTest {
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfNullWriter() {
-        new ValueFilter<>(constant(1), null, identity());
+        ValueFilter<Integer> target =
+            new ValueFilter<>(constant(1), null, identity());
     }
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfNullSetter() {
-        new ValueFilter<>(constant(1), (out, v) -> {}, null);
+        ValueFilter<Integer> target =
+            new ValueFilter<>(constant(1), (out, v) -> {}, null);
     }
 
     @Test(expected = NullPointerException.class)
