@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/c0c0n3/ome-smuggler.svg?branch=master)](https://travis-ci.org/c0c0n3/ome-smuggler)
+
+
 OME Smuggler
 ============
 Sneakily imports image goodies into OMERO without paying MRI session duties.
