@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/c0c0n3/ome-smuggler.svg?branch=master)](https://travis-ci.org/c0c0n3/ome-smuggler)
+[![Coverage Status](https://coveralls.io/repos/github/c0c0n3/ome-smuggler/badge.svg?branch=master)](https://coveralls.io/github/c0c0n3/ome-smuggler?branch=master)
 
 
 OME Smuggler
