@@ -4,6 +4,9 @@ targetCompatibility = 1.8
 
 apply plugin: 'spring-boot'
 
+apply plugin: 'jacoco'
+
+
 repositories {
     maven {
         url "http://repository.jboss.org/nexus/content/groups/public"
@@ -63,3 +66,11 @@ task test2(type: Test) {
     description 'Runs the unit and integration tests but leaves end to end tests out.'
     exclude '**/end2end/**'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
