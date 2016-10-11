@@ -313,6 +313,25 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         
         return joined;
     }
+
+    /**
+     * Same as {@link Streams#unpair(Stream)} Streams.unpair} but operating on
+     * arrays.
+     * @throws NullPointerException if the argument or any of its elements is
+     * {@code null}.
+     */
+    public A[] unpair(Pair<A, A>[] list) {
+        requireNonNull(list, "list");
+        A[] flattened = generator.apply(list.length * 2);
+
+        for (int k = 0; k < list.length; ++k) {
+            requireNonNull(list[k], "null pair");
+
+            flattened[2*k] = list[k].fst();
+            flattened[2*k + 1] = list[k].snd();
+        }
+        return flattened;
+    }
     
 }
 /* So here's a riddle:

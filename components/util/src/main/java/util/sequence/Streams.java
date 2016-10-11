@@ -302,5 +302,30 @@ public class Streams {
         }
         return ps.stream();
     }
+
+    /**
+     * Flattens the given stream of pairs in encounter order.
+     * For example (pseudo code): {@code unpair [(1, null), (3, 4), (5, null)] =
+     * [1, null, 3, 4, 5, null]}. Note that if the stream contains a {@code
+     * null} {@link Pair}, then an exception is thrown. However, any {@code
+     * null} within a {@link Pair} will be put in the right place, no exception
+     * is thrown.
+     * @param xs the input pairs.
+     * @return the flattened stream.
+     * @throws NullPointerException if the argument or any of its pair objects
+     * is {@code null}.
+     */
+    public static <T> Stream<T> unpair(Stream<Pair<T, T>> xs) {
+        requireNonNull(xs, "xs");
+
+        ArrayList<T> ys = new ArrayList<>();
+        xs.forEach(p -> {
+            requireNonNull(p, "null pair");
+
+            ys.add(p.fst());
+            ys.add(p.snd());
+        });
+        return ys.stream();
+    }
     
 }

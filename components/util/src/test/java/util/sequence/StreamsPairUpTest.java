@@ -4,8 +4,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static util.sequence.Arrayz.array;
 import static util.sequence.Streams.pairUp;
+import static util.sequence.Streams.unpair;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -33,17 +33,8 @@ public class StreamsPairUpTest {
                      .toArray(Long[]::new);
     }
 
-    private static <T> Stream<T> flatten(Stream<Pair<T, T>> ps, int sz) {
-        ArrayList<T> xs = new ArrayList<>();
-        ps.forEach(p -> {
-            xs.add(p.fst());
-            xs.add(p.snd());
-        });
-        return xs.stream().limit(sz);
-    }
-
     private static Long[] backToArray(Stream<Pair<Long, Long>> ps, int sz) {
-        return flatten(ps, sz).toArray(Long[]::new);
+        return unpair(ps).limit(sz).toArray(Long[]::new);
     }
 
     @Theory
