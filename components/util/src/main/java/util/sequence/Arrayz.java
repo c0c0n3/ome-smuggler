@@ -140,7 +140,27 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         return zs;
     }
     // ya, could've used zip to avoid duplication, but this is more efficient.
-    
+
+    /**
+     * Same as {@link Streams#pairUp(Stream)} Streams.pairUp} but operating on
+     * arrays.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <X> Pair<X, X>[] pairUp(X[] xs) {
+        requireNonNull(xs, "xs");
+
+        int largestEvenSize = xs.length - xs.length % 2;
+        Pair<X, X>[] ps = newPairs(largestEvenSize / 2 + xs.length % 2);
+        for (int k = 0; k < largestEvenSize; k += 2) {
+            ps[k/2] = new Pair<>(xs[k], xs[k + 1]);
+        }
+        if (largestEvenSize < xs.length) {
+            ps[ps.length - 1] = new Pair<>(xs[xs.length - 1], null);
+        }
+
+        return ps;
+    }
+
     /**
      * Access to instance operations that require a way to instantiate arrays.
      * Example: {@code op(Long[]::new).cycle(2, arrayOfLongs)}.

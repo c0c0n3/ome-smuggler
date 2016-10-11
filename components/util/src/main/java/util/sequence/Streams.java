@@ -275,5 +275,32 @@ public class Streams {
         requireNonNull(xs, "xs");
         return Stream.of(xs).flatMap(identity());
     }
+
+    /**
+     * Collects the items of the given <em>finite</em> stream into pairs.
+     * Items are paired up in encounter order and if there's an odd number of
+     * them, the second element of the last pair will be {@code null}.
+     * For example (pseudo code): {@code pairUp [1, null, 3, 4, 5] = [
+     * (1, null), (3, 4), (5, null)]}. (Note that any {@code null} input item
+     * will be put in the right place, no exception is thrown.)
+     * @param xs the input items.
+     * @return the input items collected into pairs.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <T> Stream<Pair<T,T>> pairUp(Stream<T> xs) {
+        requireNonNull(xs, "xs");
+
+        List<Pair<T, T>> ps = new ArrayList<>();
+        List<T> ts = asList(xs);
+        int largestEvenSize = ts.size() - ts.size() % 2;
+        for (int k = 0; k < largestEvenSize; k += 2) {
+            Pair<T, T> p = new Pair<>(ts.get(k), ts.get(k + 1));
+            ps.add(p);
+        }
+        if (largestEvenSize < ts.size()) {
+            ps.add(new Pair<>(ts.get(largestEvenSize), null));
+        }
+        return ps.stream();
+    }
     
 }
