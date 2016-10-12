@@ -1,7 +1,6 @@
 package ome.smuggler.core.service.omero.impl;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 import static util.runtime.jvm.JvmCmdFactory.java;
 import static util.sequence.Arrayz.asList;
 
@@ -60,7 +59,7 @@ public abstract class OmeCliCommandBuilder implements CommandBuilder {
 
     @Override
     public String toString() {
-        return tokens().collect(joining(" "));
+        return new OmeCliCommandPrinter(this).print();
     }
 
 }

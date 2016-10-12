@@ -51,4 +51,10 @@ public class KeepAliveCommandBuilder extends OmeCliCommandBuilder {
         return java.addApplicationArgument(serverAndKey());
     }
 
+    @Override
+    public String toString() {
+        int sessionKeyIndex = (int)tokens().count() - 1;
+        return new OmeCliCommandPrinter(this).printMasking(sessionKeyIndex);
+    }
+
 }

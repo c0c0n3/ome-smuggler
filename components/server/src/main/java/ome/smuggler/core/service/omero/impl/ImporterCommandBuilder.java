@@ -18,6 +18,8 @@ import util.runtime.jvm.JvmCmdBuilder;
  */
 public class ImporterCommandBuilder extends OmeCliCommandBuilder {
 
+    private static final String SessionKeyOpt = "-k";
+
     private final ImportInput importArgs;
     private final CommandBuilder niceCommand;
     
@@ -42,7 +44,7 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
         URI omero = importArgs.getOmeroHost();
         return arg("-s", omero.getHost(), 
                    "-p", String.valueOf(omero.getPort()),
-                   "-k", importArgs.getSessionKey());
+                   SessionKeyOpt, importArgs.getSessionKey());
     }
     
     private ListProgramArgument<String> name() {
@@ -107,6 +109,11 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     @Override
     protected CommandBuilder assembleArguments(JvmCmdBuilder java) {
         return niceCommand.join(buildJavaCommandLine(java));
+    }
+
+    @Override
+    public String toString() {
+        return new OmeCliCommandPrinter(this).printMasking(SessionKeyOpt);
     }
 
 }
