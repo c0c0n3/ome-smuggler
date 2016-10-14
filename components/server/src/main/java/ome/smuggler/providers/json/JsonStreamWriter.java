@@ -5,14 +5,14 @@ import static java.util.Objects.requireNonNull;
 import java.io.Writer;
 import java.util.function.Function;
 
-import util.lambda.BiConsumerE;
+import ome.smuggler.core.convert.SinkWriter;
 
 
 /**
  * Serialises {@code T}-values as JSON into a stream of type {@code S}.
  * @see JsonStreamReader
  */
-public class JsonStreamWriter<S, T> implements BiConsumerE<S, T> {
+public class JsonStreamWriter<T, S> implements SinkWriter<T, S> {
 
     private final Function<S, Writer> toWriter;
 
@@ -34,12 +34,13 @@ public class JsonStreamWriter<S, T> implements BiConsumerE<S, T> {
      * output to the stream.
      */
     @Override
-    public void acceptE(S out, T value) throws Exception {
+    public void write(S out, T value) throws Exception {
         requireNonNull(out, "out");
+        requireNonNull(value, "value");
 
         Writer sink = toWriter.apply(out);
-        JsonSinkWriter<T> writer = new JsonSinkWriter<>(sink);
-        writer.write(value);
+        JsonSinkWriter<T> writer = new JsonSinkWriter<>();
+        writer.write(sink, value);
         sink.flush();
     }
 

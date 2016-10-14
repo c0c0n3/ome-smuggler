@@ -3,6 +3,7 @@ package integration.serialization;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -19,24 +20,24 @@ public class JsonWriteReadTest {
 
     protected <T> void write(T valueToWrite) {
         StringWriter sink = new StringWriter();
-        SinkWriter<T> writer = new JsonSinkWriter<>(sink);
+        SinkWriter<T, Appendable> writer = new JsonSinkWriter<>();
         
-        writer.uncheckedWrite(valueToWrite);
+        writer.uncheckedWrite(sink, valueToWrite);
         serializedData = sink.toString();
     }
     
     protected <T> T read(Class<T> valueType) {
         StringReader source = new StringReader(serializedData);
-        SourceReader<T> reader = new JsonSourceReader<>(valueType, source);
+        SourceReader<Reader, T> reader = new JsonSourceReader<>(valueType);
         
-        return reader.uncheckedRead();
+        return reader.uncheckedRead(source);
     }
     
     protected <T> T read(TypeToken<T> valueType) {
         StringReader source = new StringReader(serializedData);
-        SourceReader<T> reader = new JsonSourceReader<>(valueType, source);
+        SourceReader<Reader, T> reader = new JsonSourceReader<>(valueType);
         
-        return reader.uncheckedRead();
+        return reader.uncheckedRead(source);
     }
     
     protected <T> T writeThenRead(T valueToWrite, Class<T> valueType) {

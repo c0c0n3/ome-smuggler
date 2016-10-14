@@ -1,5 +1,9 @@
 package ome.smuggler.config.wiring.imports;
 
+import ome.smuggler.core.convert.SinkWriter;
+import ome.smuggler.core.convert.SourceReader;
+import ome.smuggler.providers.json.JsonInputStreamReader;
+import ome.smuggler.providers.json.JsonOutputStreamWriter;
 import org.hornetq.api.core.HornetQException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +20,23 @@ import ome.smuggler.providers.q.DequeueTask;
 import ome.smuggler.providers.q.QChannelFactory;
 import ome.smuggler.providers.q.ServerConnector;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * Singleton beans for HornetQ client resources that have to be shared and
  * reused. 
  */
 @Configuration
 public class ImportGcQBeans {
+
+    private SinkWriter<ProcessedImport, OutputStream> serializer() {
+        return new JsonOutputStreamWriter<>();
+    }
+
+    private SourceReader<InputStream, ProcessedImport> deserializer() {
+        return new JsonInputStreamReader<>(ProcessedImport.class);
+    }
 
     @Bean
     public QChannelFactory<ProcessedImport> importGcChannelFactory(
@@ -33,7 +48,7 @@ public class ImportGcQBeans {
     @Bean
     public SchedulingSource<ProcessedImport> importGcSourceChannel(
             QChannelFactory<ProcessedImport> factory) throws HornetQException {
-        return factory.buildSchedulingSource();
+        return factory.buildSchedulingSource(serializer());
     }
     
     @Bean
@@ -47,7 +62,9 @@ public class ImportGcQBeans {
                         finaliser,
                         importConfig.retryIntervals(),
                         failureHandler);
-        return factory.buildReschedulableSink(consumer, ProcessedImport.class);
+        return factory.buildReschedulableSink(consumer,
+                                              serializer(),
+                                              deserializer());
     }
 
 }

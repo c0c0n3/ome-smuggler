@@ -20,14 +20,13 @@ public class ScheduleTaskTest extends BaseSendTest {
         when(msgToQueue.putLongProperty(anyString(), anyLong()))
         .thenReturn(msgToQueue);
         
-        return new ScheduleTask<>(connector);
+        return new ScheduleTask<>(connector, (v, s) -> {});
     }
     
     @Test
     public void sendMessage() throws HornetQException {
         newTask().asDataSource().uncheckedSend("msg");
-        
-        verify(msgBody).writeUTF(any());
+
         verify(producer).send(msgToQueue);
     }
     
@@ -41,13 +40,17 @@ public class ScheduleTaskTest extends BaseSendTest {
         verify(msgToQueue).putLongProperty(
                 eq(Message.HDR_SCHEDULED_DELIVERY_TIME.toString()), 
                 eq(expectedSchedule));
-        verify(msgBody).writeUTF(any());
         verify(producer).send(msgToQueue);
     }
     
     @Test (expected = NullPointerException.class)
-    public void throwIfCtorArgNull() throws HornetQException {
-        new ScheduleTask<>(null);
+    public void throwIfCtorArg1Null() throws HornetQException {
+        new ScheduleTask<>(null, (v, s) -> {});
     }
-    
+
+    @Test (expected = NullPointerException.class)
+    public void throwIfCtorArg2Null() throws HornetQException {
+        new ScheduleTask<>(connector, null);
+    }
+
 }

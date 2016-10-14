@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @see JsonInputStreamReader
  */
 public class JsonOutputStreamWriter<T>
-        extends JsonStreamWriter<OutputStream, T> {
+        extends JsonStreamWriter<T, OutputStream> {
 
     private static Writer toWriter(OutputStream out, Charset encoding) {
         requireNonNull(out, "out");
