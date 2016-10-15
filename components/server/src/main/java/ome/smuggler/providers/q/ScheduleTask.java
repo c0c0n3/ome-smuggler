@@ -6,11 +6,14 @@ import static ome.smuggler.core.types.FutureTimepoint.now;
 import static ome.smuggler.providers.q.Messages.durableMessage;
 import static ome.smuggler.providers.q.Messages.setScheduledDeliveryTime;
 
+import ome.smuggler.core.convert.SinkWriter;
 import org.hornetq.api.core.HornetQException;
 
 import ome.smuggler.core.msg.ChannelMessage;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.types.FutureTimepoint;
+
+import java.io.OutputStream;
 
 /**
  * Enqueues a message that will only be delivered to consumers at a specified
@@ -22,12 +25,15 @@ public class ScheduleTask<T> implements SchedulingSource<T> {
     
     /**
      * Creates a new instance.
-     * @param queue provides access to the queue on which to put messages. 
+     * @param queue provides access to the queue on which to put messages.
+     * @param serializer serialises the message data, a {@code T}-value.
      * @throws HornetQException if a queue producer could not be created.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public ScheduleTask(QueueConnector queue) throws HornetQException {
-        this.channel = new EnqueueTask<>(queue);
+    public ScheduleTask(QueueConnector queue,
+                        SinkWriter<T, OutputStream> serializer)
+            throws HornetQException {
+        this.channel = new EnqueueTask<>(queue, serializer);
     }
     
     /**

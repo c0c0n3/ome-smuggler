@@ -2,8 +2,12 @@ package ome.smuggler.providers.q;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.function.Function;
 
+import ome.smuggler.core.convert.SinkWriter;
+import ome.smuggler.core.convert.SourceReader;
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.core.config.CoreQueueConfiguration;
@@ -42,9 +46,10 @@ public class QChannelFactory<T> {
         return new QueueConnector(qConfig, connector.getSession());
     }
     
-    public ChannelSource<T> buildSource() throws HornetQException {
+    public ChannelSource<T> buildSource(SinkWriter<T, OutputStream> serializer)
+            throws HornetQException {
         MessageSource<Function<QueueConnector, ClientMessage>, T> task = // (*) 
-                new EnqueueTask<>(queue());
+                new EnqueueTask<>(queue(), serializer);
         return task.asDataSource();  
     }
     /* (*) If the ascended Java masters had blessed us with a slightly less
@@ -60,54 +65,65 @@ public class QChannelFactory<T> {
      *      return new EnqueueTask<QueuedImport>(q).asDataSource();
      */
     
-    public SchedulingSource<T> buildSchedulingSource() throws HornetQException {
-        return new ScheduleTask<>(queue());  
+    public SchedulingSource<T> buildSchedulingSource(
+            SinkWriter<T, OutputStream> serializer) throws HornetQException {
+        return new ScheduleTask<>(queue(), serializer);
     }
     
-    public MessageSource<CountedSchedule, T> buildCountedScheduleSource()
+    public MessageSource<CountedSchedule, T> buildCountedScheduleSource(
+            SinkWriter<T, OutputStream> serializer)
             throws HornetQException {
-        return new CountedScheduleTask<>(queue());
+        return new CountedScheduleTask<>(queue(), serializer);
     }
     
-    public DequeueTask<T> buildSink(ChannelSink<T> consumer, 
-            Class<T> messageType) throws HornetQException {
-        return new DequeueTask<>(queue(), consumer, messageType, true);
+    public DequeueTask<T> buildSink(ChannelSink<T> consumer,
+                                    SourceReader<InputStream, T> deserializer)
+            throws HornetQException {
+        return new DequeueTask<>(queue(), consumer, deserializer, true);
     }
     
-    public DequeueTask<T> buildSink(ChannelSink<T> consumer, 
-            Class<T> messageType, boolean redeliverOnCrash) 
+    public DequeueTask<T> buildSink(ChannelSink<T> consumer,
+                                    SourceReader<InputStream, T> deserializer,
+                                    boolean redeliverOnCrash)
                     throws HornetQException {
-        return new DequeueTask<>(queue(), consumer, messageType, 
+        return new DequeueTask<>(queue(), consumer, deserializer,
                                  redeliverOnCrash);
     }
     
     public DequeueTask<T> buildCountedScheduleSink(
-            MessageSink<CountedSchedule, T> consumer, Class<T> messageType) 
+            MessageSink<CountedSchedule, T> consumer,
+            SourceReader<InputStream, T> deserializer)
                     throws HornetQException {
-        return new DequeueTask<>(queue(), new CountedScheduleSink<>(consumer),
-                                 messageType, true);
+        CountedScheduleSink<T> sink = new CountedScheduleSink<>(consumer);
+        return new DequeueTask<>(queue(), sink, deserializer, true);
     }
     
     public DequeueTask<T> buildCountedScheduleSink(
-            MessageSink<CountedSchedule, T> consumer, Class<T> messageType,
+            MessageSink<CountedSchedule, T> consumer,
+            SourceReader<InputStream, T> deserializer,
             boolean redeliverOnCrash) 
                     throws HornetQException {
-        return new DequeueTask<>(queue(), new CountedScheduleSink<>(consumer),
-                                 messageType, redeliverOnCrash);
+        CountedScheduleSink<T> sink = new CountedScheduleSink<>(consumer);
+        return new DequeueTask<>(queue(), sink, deserializer, redeliverOnCrash);
     }
     
-    public DequeueTask<T> buildReschedulableSink(Reschedulable<T> consumer, 
-            Class<T> messageType) throws HornetQException {
-        return buildReschedulableSink(consumer, messageType, true);
+    public DequeueTask<T> buildReschedulableSink(
+            Reschedulable<T> consumer,
+            SinkWriter<T, OutputStream> serializer,
+            SourceReader<InputStream, T> deserializer) throws HornetQException {
+        return buildReschedulableSink(consumer, serializer, deserializer, true);
     }
     
-    public DequeueTask<T> buildReschedulableSink(Reschedulable<T> consumer, 
-            Class<T> messageType, boolean redeliverOnCrash) 
+    public DequeueTask<T> buildReschedulableSink(
+            Reschedulable<T> consumer,
+            SinkWriter<T, OutputStream> serializer,
+            SourceReader<InputStream, T> deserializer,
+            boolean redeliverOnCrash)
                     throws HornetQException {
         MessageSource<CountedSchedule, T> loopback = 
-                buildCountedScheduleSource();
+                buildCountedScheduleSource(serializer);
         ReschedulingSink<T> sink = new ReschedulingSink<>(consumer, loopback);
-        return buildCountedScheduleSink(sink, messageType, redeliverOnCrash);
+        return buildCountedScheduleSink(sink, deserializer, redeliverOnCrash);
     }
-    
+
 }

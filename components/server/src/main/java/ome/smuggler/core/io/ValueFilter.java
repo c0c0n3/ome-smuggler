@@ -1,10 +1,12 @@
 package ome.smuggler.core.io;
 
+import ome.smuggler.core.convert.SinkWriter;
+import ome.smuggler.core.convert.SourceReader;
+
 import static java.util.Objects.requireNonNull;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 
@@ -16,8 +18,8 @@ import java.util.function.Function;
  */
 public class ValueFilter<T> implements StreamFilter {
 
-    private final Function<InputStream, T> reader;
-    private final BiConsumer<OutputStream, T> writer;
+    private final SourceReader<InputStream, T> reader;
+    private final SinkWriter<T, OutputStream> writer;
     private final Function<T, T> setter;
 
     /**
@@ -28,8 +30,8 @@ public class ValueFilter<T> implements StreamFilter {
      *               serialise to the output stream.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public ValueFilter(Function<InputStream, T> reader,
-                       BiConsumer<OutputStream, T> writer,
+    public ValueFilter(SourceReader<InputStream, T> reader,
+                       SinkWriter<T, OutputStream> writer,
                        Function<T, T> setter) {
         requireNonNull(reader, "reader");
         requireNonNull(writer, "writer");
@@ -45,9 +47,9 @@ public class ValueFilter<T> implements StreamFilter {
         requireNonNull(in, "in");
         requireNonNull(out, "out");
 
-        T oldValue = reader.apply(in);
+        T oldValue = reader.read(in);
         T newValue = setter.apply(oldValue);
-        writer.accept(out, newValue);
+        writer.write(out, newValue);
     }
 
 }

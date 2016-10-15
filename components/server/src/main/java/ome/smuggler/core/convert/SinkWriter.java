@@ -1,31 +1,32 @@
 package ome.smuggler.core.convert;
 
-import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.unchecked;
 
 /**
- * Writes a value to a data sink, typically the body of a message to put on a 
- * queue. 
+ * Writes a value {@code V} to a data sink {@code S}.
+ * For example, {@code S} could be an output stream and the value {@code V}
+ * could be serialised into the stream. Or {@code V} could be the body of a
+ * message to put on a queue {@code S}.
  * @see SourceReader
  */
-public interface SinkWriter<T> {
+public interface SinkWriter<T, S> {
 
     /**
-     * Writes a value to the underlying data sink.
+     * Writes a value to a data sink.
+     * @param sink where to write the value to.
      * @param value the data to write.
-     * @throws NullPointerException if the argument is {@code null}.
+     * @throws NullPointerException if any of the arguments is {@code null}.
      * @throws Exception if the data could not be written to the sink.
      */
-    void write(T value) throws Exception;
+    void write(S sink, T value) throws Exception;
     
     /**
-     * Calls the {@link #write(Object) write} method converting any checked 
-     * exception into an unchecked one that will bubble up without requiring
-     * a {@code throws} clause on this method.
+     * Calls the {@link #write(Object, Object)} write} method converting any
+     * checked exception into an unchecked one that will bubble up without
+     * requiring a {@code throws} clause on this method.
      */
-    default void uncheckedWrite(T value) {
-        requireNonNull(value, "value");
-        unchecked(this::write).accept(value);
+    default void uncheckedWrite(S sink, T value) {
+        unchecked(this::write).accept(sink, value);
     }
     
 }

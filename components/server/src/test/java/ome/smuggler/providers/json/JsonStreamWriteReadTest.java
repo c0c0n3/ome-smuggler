@@ -14,12 +14,12 @@ public class JsonStreamWriteReadTest {
     public static <T> T writeThenRead(T value) {
         JsonOutputStreamWriter<T> writer = new JsonOutputStreamWriter<>();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writer.accept(out, value);
+        writer.uncheckedWrite(out, value);
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         JsonInputStreamReader<T> reader =
                 new JsonInputStreamReader<>((Class<T>)value.getClass());
-        return reader.apply(in);
+        return reader.uncheckedRead(in);
     }
 
 

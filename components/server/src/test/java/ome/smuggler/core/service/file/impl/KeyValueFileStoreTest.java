@@ -2,7 +2,6 @@ package ome.smuggler.core.service.file.impl;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static util.error.Exceptions.unchecked;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import ome.smuggler.core.convert.SinkWriter;
+import ome.smuggler.core.convert.SourceReader;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,21 +30,19 @@ public class KeyValueFileStoreTest {
     private KeyValueStore<BaseStringId, Integer> target;
 
 
-    private Integer reader(InputStream in) throws Exception {
-        return in.read();
+    private SourceReader<InputStream, Integer> reader() {
+        return InputStream::read;
     }
 
-    private void writer(OutputStream out, Integer v) throws Exception {
-        out.write(v);
+    private SinkWriter<Integer, OutputStream> writer() {
+        return OutputStream::write; //(out, v) -> out.write(v);
     }
 
     @Before
     public void setup() {
         Path p = Paths.get(storeDir.getRoot().getPath());
         store = new TaskIdPathStore<>(p, BaseStringId::new);
-        target = new KeyValueFileStore<>(store,
-                                         unchecked(this::reader),
-                                         unchecked(this::writer));
+        target = new KeyValueFileStore<>(store, reader(), writer());
     }
 
     @Test
@@ -118,19 +117,17 @@ public class KeyValueFileStoreTest {
 
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullStore() {
-        new KeyValueFileStore<>(null,
-                                unchecked(this::reader),
-                                unchecked(this::writer));
+        new KeyValueFileStore<>(null, reader(), writer());
     }
 
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullReader() {
-        new KeyValueFileStore<>(store, null, unchecked(this::writer));
+        new KeyValueFileStore<>(store, null, writer());
     }
 
     @Test (expected = NullPointerException.class)
     public void ctorThrowsIfNullWriter() {
-        new KeyValueFileStore<>(store, unchecked(this::reader), null);
+        new KeyValueFileStore<>(store, reader(), null);
     }
 
     @Test (expected = NullPointerException.class)

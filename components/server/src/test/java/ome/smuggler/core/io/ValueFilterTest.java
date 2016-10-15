@@ -3,9 +3,9 @@ package ome.smuggler.core.io;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static java.util.function.Function.identity;
-import static util.lambda.Functions.constant;
 import static util.sequence.Arrayz.array;
 
+import ome.smuggler.core.convert.SourceReader;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
@@ -13,12 +13,11 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 import java.io.*;
-import java.util.function.Function;
 
 @RunWith(Theories.class)
 public class ValueFilterTest {
 
-    private static Function<InputStream, Integer> dummyReader = constant(1);
+    private static SourceReader<InputStream, Integer> dummyReader = in -> 1;
 
     @DataPoints
     public static String[] inputs = array("", "a", "ab");

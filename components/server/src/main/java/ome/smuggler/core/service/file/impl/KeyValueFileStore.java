@@ -4,9 +4,10 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import ome.smuggler.core.convert.SinkWriter;
+import ome.smuggler.core.convert.SourceReader;
 import ome.smuggler.core.io.ValueFilter;
 import ome.smuggler.core.service.file.TaskFileStore;
 import ome.smuggler.core.service.file.KeyValueStore;
@@ -22,8 +23,8 @@ public class KeyValueFileStore<K extends Identifiable, V>
     implements KeyValueStore<K, V> {
 
     private final TaskFileStore<K> store;
-    private final Function<InputStream, V> reader;
-    private final BiConsumer<OutputStream, V> writer;
+    private final SourceReader<InputStream, V> reader;
+    private final SinkWriter<V, OutputStream> writer;
 
     /**
      * Creates a new instance.
@@ -32,8 +33,8 @@ public class KeyValueFileStore<K extends Identifiable, V>
      * @param writer serialises to the output stream.
      */
     public KeyValueFileStore(TaskFileStore<K> store,
-                             Function<InputStream, V> reader,
-                             BiConsumer<OutputStream, V> writer) {
+                             SourceReader<InputStream, V> reader,
+                             SinkWriter<V, OutputStream> writer) {
         requireNonNull(store, "store");
         requireNonNull(reader, "reader");
         requireNonNull(writer, "writer");
@@ -48,7 +49,7 @@ public class KeyValueFileStore<K extends Identifiable, V>
         requireNonNull(key, "key");
         requireNonNull(value, "value");
 
-        store.add(key, out -> writer.accept(out, value));
+        store.add(key, out -> writer.write(out, value));
     }
 
     @Override

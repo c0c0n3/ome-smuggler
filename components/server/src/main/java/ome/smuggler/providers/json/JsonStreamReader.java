@@ -5,14 +5,14 @@ import static java.util.Objects.requireNonNull;
 import java.io.Reader;
 import java.util.function.Function;
 
-import util.lambda.FunctionE;
+import ome.smuggler.core.convert.SourceReader;
 
 /**
  * Reads JSON from a stream of type {@code S} and de-serialises it as a
  * {@code T}-value.
  * @see JsonStreamWriter
  */
-public class JsonStreamReader<S, T> implements FunctionE<S, T> {
+public class JsonStreamReader<S, T> implements SourceReader<S, T> {
 
     private final Class<T> valueType;
     private final Function<S, Reader> toReader;
@@ -41,12 +41,12 @@ public class JsonStreamReader<S, T> implements FunctionE<S, T> {
      * converting JSON into an object.
      */
     @Override
-    public T applyE(S in) throws Exception {
+    public T read(S in) throws Exception {
         requireNonNull(in, "in");
 
         Reader source = toReader.apply(in);
-        JsonSourceReader<T> reader = new JsonSourceReader<>(valueType, source);
-        return reader.read();
+        JsonSourceReader<T> reader = new JsonSourceReader<>(valueType);
+        return reader.read(source);
     }
 
 }

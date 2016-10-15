@@ -10,25 +10,22 @@ import ome.smuggler.core.convert.SinkWriter;
 /**
  * Serializes an object into JSON and writes the serialized data to a sink.
  */
-public class JsonSinkWriter<T> implements SinkWriter<T> {
+public class JsonSinkWriter<T> implements SinkWriter<T, Appendable> {
 
     private final Gson mapper;
-    private final Appendable sink;
     
     /**
-     * Creates a new instance to serialize data into the specified consumer.
-     * @param sink accepts the serialized data.
-     * @throws NullPointerException if the argument is {@code null}.
+     * Creates a new instance.
      */
-    public JsonSinkWriter(Appendable sink) {
-        requireNonNull(sink, "sink");
-        
+    public JsonSinkWriter() {
         this.mapper = new Gson();
-        this.sink = sink;
     }
     
     @Override
-    public void write(T body) throws JsonIOException {
+    public void write(Appendable sink, T body) throws JsonIOException {
+        requireNonNull(sink, "sink");
+        requireNonNull(body, "body");
+
         mapper.toJson(body, sink);
     }
 
