@@ -7,6 +7,7 @@ import static util.error.Exceptions.unchecked;
 import javax.crypto.KeyGenerator;
 import java.io.*;
 import java.security.Key;
+import java.util.Base64;
 
 /**
  * Factory methods for security {@link Key}s.
@@ -27,7 +28,7 @@ public class CryptoKeyFactory {
     }
 
     /**
-     * Serialises a key into a given stream.
+     * Serialises a key into a given stream using Base64 encoding.
      * @param key the key to serialise.
      * @param out the destination stream to write the data to.
      * @throws NullPointerException if any argument is {@code null}.
@@ -41,7 +42,8 @@ public class CryptoKeyFactory {
         requireNonNull(out, "out");
 
         runUnchecked(() -> {
-            try (ObjectOutputStream s = new ObjectOutputStream(out)) {
+            try (OutputStream b64 = Base64.getEncoder().wrap(out);
+                 ObjectOutputStream s = new ObjectOutputStream(b64)) {
                 s.writeObject(key);
                 s.flush();
             }
@@ -49,7 +51,7 @@ public class CryptoKeyFactory {
     }
 
     /**
-     * De-serialises a key from a given stream.
+     * De-serialises a key from a given Base64-encoded stream.
      * @param in contains the key object as serialised by the {@link
      * #exportKey(Key, OutputStream) export} method.
      * @return the key object read from the stream.
@@ -66,7 +68,8 @@ public class CryptoKeyFactory {
         requireNonNull(in, "in");
 
         return unchecked(() -> {
-            try (ObjectInputStream s = new ObjectInputStream(in)) {
+            try (InputStream b64 = Base64.getDecoder().wrap(in);
+                 ObjectInputStream s = new ObjectInputStream(b64)) {
                 return (Key) s.readObject();
             }
         }).get();
