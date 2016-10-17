@@ -4,11 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static util.error.Exceptions.throwAsIfUnchecked;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -63,6 +59,33 @@ public class StreamOps {
     public static String readLinesIntoString(InputStream input) {
         String sep = System.lineSeparator();
         return readLines(input, lines -> lines.collect(joining(sep)));
+    }
+
+    /**
+     * Reads the whole input stream into a byte array.
+     * @param input the data to read.
+     * @return all the bytes from the input stream.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IOException if an I/O error occurs; the exception is masked as
+     * a runtime exception and thrown as is without wrapping.
+     */
+    public static byte[] readAll(InputStream input) {
+        requireNonNull(input, "input");
+
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        try (BufferedInputStream in = new BufferedInputStream(input)) {
+            int bytesRead;
+            byte[] buf = new byte[4*1024];
+
+            while ((bytesRead = in.read(buf, 0, buf.length)) != -1) {
+                data.write(buf, 0, bytesRead);
+            }
+
+            return data.toByteArray();
+        } catch (IOException e) {
+            throwAsIfUnchecked(e);
+            return null;  // never reached, keeps compiler happy tho.
+        }
     }
 
     /**
