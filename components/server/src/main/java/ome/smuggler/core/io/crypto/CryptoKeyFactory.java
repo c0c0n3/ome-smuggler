@@ -3,6 +3,7 @@ package ome.smuggler.core.io.crypto;
 import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.runUnchecked;
 import static util.error.Exceptions.unchecked;
+import static util.string.Strings.readAsString;
 
 import javax.crypto.KeyGenerator;
 import java.io.*;
@@ -73,6 +74,25 @@ public class CryptoKeyFactory {
                 return (Key) s.readObject();
             }
         }).get();
+    }
+
+    /**
+     * Generates a new key and serialises it using Base64 encoding.
+     * This method combines {@link #generateKey(CryptoAlgoSpec) generateKey}
+     * and {@link #exportKey(Key, OutputStream) exportKey}, capturing the
+     * output in a string.
+     * @param algo the algorithm to use.
+     * @return the serialised and Base64-encoded key.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static String exportNewKey(CryptoAlgoSpec algo) {
+        Key key = generateKey(algo);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        exportKey(key, out);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+
+        return unchecked(() -> readAsString(in)).get();
     }
 
 }

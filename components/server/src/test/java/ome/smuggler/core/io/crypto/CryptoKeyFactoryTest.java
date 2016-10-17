@@ -1,5 +1,6 @@
 package ome.smuggler.core.io.crypto;
 
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.junit.Assert.*;
 import static ome.smuggler.core.io.crypto.CryptoKeyFactory.*;
@@ -12,6 +13,8 @@ import org.junit.runner.RunWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
 
@@ -39,6 +42,24 @@ public class CryptoKeyFactoryTest {
                           deserializedKey.getEncoded());
     }
 
+    @Theory
+    public void canImportKeyExportedToString(CryptoAlgoSpec algo) {
+        byte[] exported = exportNewKey(algo).getBytes(StandardCharsets.UTF_8);
+        Key key = importKey(new ByteArrayInputStream(exported));
+
+        CipherFactory crypto = new CipherFactory(algo, key);
+        CryptoSinkWriter<byte[]> encryptionFilter =
+                new CryptoSinkWriter<>(crypto, OutputStream::write);
+
+        byte[] input = new byte[] { 10 };
+        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        encryptionFilter.uncheckedWrite(sink, input);
+        byte[] encrypted = sink.toByteArray();
+
+        assertThat(encrypted.length, greaterThan(0));
+        assertThat(encrypted[0], is(not(input[0])));
+    }
+
     @Test (expected = NullPointerException.class)
     public void generateKeyThrowsIfNullAlgo() {
         generateKey(null);
@@ -57,6 +78,11 @@ public class CryptoKeyFactoryTest {
     @Test (expected = NullPointerException.class)
     public void importKeyThrowsIfNullStream() {
         importKey(null);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void exportNewKeyThrowsIfNullAlgo() {
+        exportNewKey(null);
     }
 
 }
