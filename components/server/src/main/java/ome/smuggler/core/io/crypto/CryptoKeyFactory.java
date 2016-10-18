@@ -54,6 +54,25 @@ public class CryptoKeyFactory {
     }
 
     /**
+     * Serialises a key into a string using Base64 encoding.
+     * This method simply calls {@link #exportKey(Key, OutputStream) exportKey},
+     * capturing the output in a string.
+     * @param key the key to serialise.
+     * @return the serialised and Base64-encoded key.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static String exportKey(Key key) {
+        requireNonNull(key, "key");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        exportKey(key, out);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+
+        return unchecked(() -> readAsString(in)).get();
+    }
+
+
+    /**
      * De-serialises a key from a given Base64-encoded stream.
      * @param in contains the key object as serialised by the {@link
      * #exportKey(Key, OutputStream) export} method.
@@ -111,12 +130,7 @@ public class CryptoKeyFactory {
      */
     public static String exportNewKey(CryptoAlgoSpec algo) {
         Key key = generateKey(algo);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        exportKey(key, out);
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-
-        return unchecked(() -> readAsString(in)).get();
+        return exportKey(key);
     }
 
 }

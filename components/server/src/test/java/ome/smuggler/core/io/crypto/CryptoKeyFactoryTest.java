@@ -100,4 +100,9 @@ public class CryptoKeyFactoryTest {
         exportNewKey(null);
     }
 
+    @Test (expected = NullPointerException.class)
+    public void exportKeyToStringThrowsIfNullKey() {
+        exportKey(null);
+    }
+
 }
