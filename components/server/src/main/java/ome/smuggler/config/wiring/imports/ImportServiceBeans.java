@@ -1,8 +1,10 @@
 package ome.smuggler.config.wiring.imports;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import ome.smuggler.config.wiring.crypto.SerializationFactory;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.SchedulingSource;
 import ome.smuggler.core.service.file.KeyValueStore;
@@ -16,8 +18,6 @@ import ome.smuggler.core.service.mail.MailRequestor;
 import ome.smuggler.core.service.omero.ImportService;
 import ome.smuggler.core.service.omero.SessionService;
 import ome.smuggler.core.types.*;
-import ome.smuggler.providers.json.JsonInputStreamReader;
-import ome.smuggler.providers.json.JsonOutputStreamWriter;
 import ome.smuggler.providers.log.LogAdapter;
 
 /**
@@ -25,6 +25,9 @@ import ome.smuggler.providers.log.LogAdapter;
  */
 @Configuration
 public class ImportServiceBeans {
+
+    @Autowired
+    private SerializationFactory sf;
 
     @Bean
     public TaskFileStore<ImportId> failedImportLogStore(
@@ -42,8 +45,8 @@ public class ImportServiceBeans {
         KeyValueStore<ImportBatchId, ImportBatchStatus> store =
                 new KeyValueFileStore<>(
                         backingStore,
-                        new JsonInputStreamReader<>(ImportBatchStatus.class),
-                        new JsonOutputStreamWriter<>());
+                        sf.deserializer(ImportBatchStatus.class),
+                        sf.serializer());
         return new TSafeKeyValueStore<>(store,
                                         config.batchStatusDbLockStripes());
     }
