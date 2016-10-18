@@ -4,9 +4,11 @@ import static java.util.Objects.requireNonNull;
 import static util.error.Exceptions.runUnchecked;
 import static util.error.Exceptions.unchecked;
 import static util.string.Strings.readAsString;
+import static util.string.Strings.requireString;
 
 import javax.crypto.KeyGenerator;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 
@@ -74,6 +76,28 @@ public class CryptoKeyFactory {
                 return (Key) s.readObject();
             }
         }).get();
+    }
+
+    /**
+     * De-serialises a key from a given Base64-encoded string.
+     * @param encodedKey contains the key object as serialised by the {@link
+     * #exportKey(Key, OutputStream) export} method.
+     * @return the key object read from the stream.
+     * @throws NullPointerException if the argument is {@code null}.
+     * @throws IOException if an error occurs while reading from the string;
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping.
+     * @throws ClassNotFoundException if an error occurs while instantiating
+     * the key object; the exception is masked as a runtime exception and thrown
+     * as is without wrapping.
+     * @see #exportKey(Key, OutputStream)
+     * @see #exportNewKey(CryptoAlgoSpec)
+     */
+    public static Key importKey(String encodedKey) {
+        requireString(encodedKey, "encodedKey");
+
+        byte[] data = encodedKey.getBytes(StandardCharsets.UTF_8);
+        return importKey(new ByteArrayInputStream(data));
     }
 
     /**

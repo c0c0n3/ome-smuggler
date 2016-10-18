@@ -11,10 +11,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.security.Key;
 
 
@@ -33,6 +30,19 @@ public class CryptoKeyFactoryTest {
         return importKey(serialized);
     }
 
+    private static void assertCanEncrypt(CipherFactory crypto) {
+        CryptoSinkWriter<byte[]> encryptionFilter =
+                new CryptoSinkWriter<>(crypto, OutputStream::write);
+
+        byte[] input = new byte[] { 10 };
+        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        encryptionFilter.uncheckedWrite(sink, input);
+        byte[] encrypted = sink.toByteArray();
+
+        assertThat(encrypted.length, greaterThan(0));
+        assertThat(encrypted[0], is(not(input[0])));
+    }
+
     @Theory
     public void serializeThenDeserializeIsIdentity(CryptoAlgoSpec algo) {
         Key initialKey = generateKey(algo);
@@ -44,20 +54,10 @@ public class CryptoKeyFactoryTest {
 
     @Theory
     public void canImportKeyExportedToString(CryptoAlgoSpec algo) {
-        byte[] exported = exportNewKey(algo).getBytes(StandardCharsets.UTF_8);
-        Key key = importKey(new ByteArrayInputStream(exported));
+        String exported = exportNewKey(algo);
+        Key key = importKey(exported);
 
-        CipherFactory crypto = new CipherFactory(algo, key);
-        CryptoSinkWriter<byte[]> encryptionFilter =
-                new CryptoSinkWriter<>(crypto, OutputStream::write);
-
-        byte[] input = new byte[] { 10 };
-        ByteArrayOutputStream sink = new ByteArrayOutputStream();
-        encryptionFilter.uncheckedWrite(sink, input);
-        byte[] encrypted = sink.toByteArray();
-
-        assertThat(encrypted.length, greaterThan(0));
-        assertThat(encrypted[0], is(not(input[0])));
+        assertCanEncrypt(new CipherFactory(algo, key));
     }
 
     @Test (expected = NullPointerException.class)
@@ -77,7 +77,22 @@ public class CryptoKeyFactoryTest {
 
     @Test (expected = NullPointerException.class)
     public void importKeyThrowsIfNullStream() {
-        importKey(null);
+        importKey((InputStream) null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void importKeyThrowsIfNullString() {
+        importKey((String) null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void importKeyThrowsIfEmptyString() {
+        importKey("");
+    }
+
+    @Test (expected = IOException.class)
+    public void importKeyThrowsIfStringContentNotBase64() {
+        importKey("not base 64");
     }
 
     @Test (expected = NullPointerException.class)
