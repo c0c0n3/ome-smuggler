@@ -28,6 +28,14 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
                        .orElse(false);
     }
 
+    private String maskSensitiveData(String message) {
+        return message.replaceAll("sessionKey.{3,10}", "sessionKey:•");
+    }
+    /* NOTE. Despicable me! Come up with something better!
+     * What if the sessionKey field is renamed? What if...well, don't get me
+     * started on listing the 10,000 drawbacks of this cheap hack!
+     */
+
     @Override
     protected boolean shouldLog(HttpServletRequest request) {
         return isImportRequest(request) || logger.isDebugEnabled();
@@ -36,7 +44,7 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
     @Override
     protected void beforeRequest(HttpServletRequest request, String message) {
         if (isImportRequest(request)) {
-            logger.info(message);
+            logger.info(maskSensitiveData(message));
         }
         logger.debug(message);
     }
@@ -44,7 +52,7 @@ public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
     @Override
     protected void afterRequest(HttpServletRequest request, String message) {
         if (isImportRequest(request)) {
-            logger.info(message);
+            logger.info(maskSensitiveData(message));
         }
         logger.debug(message);
     }
