@@ -65,12 +65,18 @@ There are configuration options you can tweak to make Smuggler suit your environ
 <li><em>Data directory</em>. Use <code>ome.smuggler.DataDir</code> (Java prop) or <code>SMUGGLER_DATADIR</code> (environment). If the directory you specify doesn’t exist, it’ll be created.</li>
 <li><em>Log directory</em>. Use <code>logging.path</code> (Java prop) or <code>LOG_PATH</code> (environment). (This setting comes from the underlying Spring Boot framework.) If the directory you specify doesn’t exist, it’ll be created.</li>
 </ul>
-<div class="pull-quote">
-<h6 id="security">Security</h6>
+<h2 id="security">Security</h2>
+<p>If you need to protect Smuggler from the meanies, there are a number of things we think you can do. Probably you can come up with more or spot a vulnerability we haven’t thought of; if you do, please let us know!</p>
+<h6 id="file-system">File System</h6>
 <p>Smuggler needs to be able to access all the above directories as well as having read/write permissions for their contents. Besides the sys admin, only the user you run Smuggler with should have access to these directories. In fact, OMERO session keys are kept in the HornetQ queue; also, depending on your set up, the mail configuration may contain an account password.</p>
 <p>If the data directory doesn’t exist and you want Smuggler to create it for you, then the Smuggler user must be able to access the parent directory and write to it. Ditto for the log directory. You may be better off creating these directories yourself so that Smuggler doesn’t need to have any rights on the corresponding parent directories.</p>
 <p>And as you’re at it, why not secure Smuggler’s jar files as well? Ideally, you’d make them read-only and accessible to the Smuggler user only. You could even go a step further and make them immutable, e.g. using something like <code>chattr +i</code>.</p>
-</div>
+<h6 id="data-encryption">Data Encryption</h6>
+<p>Like I said some sensitive data will end up being stored in Smuggler’s data directory, but only for the time it takes to process a message in the queue. (For example, after Smuggler has fully processed an OMERO import task, he deletes the corresponding session key from the data directory.) In any case, you have an option to encrypt sensitive data; look at the <a href="#encryption">encryption</a> configuration group below.</p>
+<h6 id="https">Https</h6>
+<p>Speaking of encryption, you can turn that on for HTTP traffic too. In fact, you can configure Smuggler’s embedded Undertow server to use TLS just like explained in the <a href="#spring">Spring</a> configuration group below.</p>
+<h6 id="access-control">Access Control</h6>
+<p>Right. Here’s the sore point. Smuggler doesn’t enforce access control to his Web API at the moment. This means anyone could potentially see an import log and delete it through the Web API, provided they have somehow managed to get their filthy hands on the corresponding import ID. Probably not a big deal as things stand now, but surely worth mentioning. Another thing you may care about is the <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html" title="Spring Boot Actuator Reference">Spring Boot Actuator</a>. It’s enabled by default (see <a href="#spring">Spring</a> section below) to provide a hell of a lot of stats about Smuggler and the box he’s running on. Generally quite useful, but these stats may give away more info about your box then you want an attacker to know. You have two options here: disable the Actuator endpoints or enforce access control to them. To find out how, have a read through the Spring Boot Actuator <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html" title="Spring Boot Actuator Reference">docs</a>.</p>
 <h2 id="embedded-configuration">Embedded Configuration</h2>
 <p>You can easily embed your configuration into Smuggler’s jar file in two steps. First, edit any of the files in your local Git repo under</p>
 <pre><code>    components/server/src/main/resources/config/</code></pre>
@@ -95,6 +101,15 @@ $ <span class="kw">java</span> -jar components/server/build/libs/ome-smuggler-*.
 <li><em>Defaults</em>. Fully qualified name of the Java class holding the group’s default configuration settings. Look at the code to see how to specify your own settings in a type-safe way, as explained earlier.</li>
 <li><em>Command</em>. Fully qualified name of the Java class that generates the group’s configuration file. Use it to output a configuration file when doing the configuration in Java. (The type-safe way, as explained earlier.)</li>
 </ul>
+<h3 id="encryption">Encryption</h3>
+<p>You can turn on encryption of sensitive data that’s temporarily stored in the data directory. The items in this group let you do that.</p>
+<ul>
+<li><em>File</em>: <code>crypto.yml</code></li>
+<li><em>Bean</em>: <a href="../../../javadoc/server/ome/smuggler/config/items/CryptoConfig.html">ome.smuggler.config.items.CryptoConfig</a></li>
+<li><em>Defaults</em>: <code>ome.smuggler.config.data.CryptoYmlFile</code></li>
+<li><em>Command</em>: <code>ome.smuggler.run.CryptoYmlGen</code></li>
+</ul>
+<p>Every time you run <code>CryptoYmlGen</code>, you’ll get a fresh encryption key. Before replacing an old key with a new one, you should make sure there are no messages waiting in the queue, cos Smuggler won’t be able to read them if you change the key!</p>
 <h3 id="http">Http</h3>
 <p>Smuggler comes with an embedded Undertow HTTP server. The items in this group specify how to configure it.</p>
 <ul>
@@ -127,6 +142,12 @@ $ <span class="kw">java</span> -jar components/server/build/libs/ome-smuggler-*.
 <li><em>Defaults</em>: <code>ome.smuggler.config.data.SpringBootAppPropsFile</code></li>
 <li><em>Command</em>: <code>ome.smuggler.run.SpringBootPropsGen</code></li>
 </ul>
+<p>Other than the props you can generate with the above command, you can add any other Spring props to the file. For example, one way to make Undertow use HTTPS (HTTP + TLS) is to add these lines:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">server.ssl.key-store</span>=smuggler-keystore.jks
+<span class="kw">server.ssl.key-store-password</span>=changeit
+<span class="kw">server.ssl.key-password</span>=changeit
+<span class="kw">server.ssl.key-alias</span>=smuggler</code></pre></div>
+<p>In this example, you have a Java key store file named <code>smuggler-keystore.jks</code> containing a certificate for TLS ops that can be looked up using a key alias of <code>smuggler</code>. Both access to the store and to the key is password-protected. Because we specified no SSL port, the only port through which clients can talk to Smuggler is that specified in the <a href="#http">Undertow</a> configuration and communication through that port will be TLS-protected. You can find more about TLS Spring configuration <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-configure-ssl" title="Spring Boot - How to configure SSL">over here</a>. If you want to generate a key store with a self-signed cert in it, look for the TLS test scripts in Smuggler’s code (<code>server</code> component). But, like, you know, self-signed certs are only good for testing…</p>
 <h2 id="other-settings">Other Settings</h2>
 <p>There are some other internal configuration settings that are not exposed as they’re mainly useful for development—e.g. using in-memory instead of persistent message queues. If you’re curious, have a look at the classes in the <code>ome.smuggler.config.items</code> package. Also, one thing you’ll need to do if you want to debug the server in your IDE is to specify the location of the <code>ome-cli</code> jar as it defaults to the same directory containing the server jar—see the <code>OmeCliConfig</code> class for the details. To do that, stick an <code>ome-cli.yml</code> file in <code>components/server/</code> (or whichever directory your IDE uses as the current working directory for debugging the server component) with the following content:</p>
 <div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">omeCliJarPath:</span> ../cli/build/libs/ome-cli-0.1.0.jar</code></pre></div>
