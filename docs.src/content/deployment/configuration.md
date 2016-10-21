@@ -58,8 +58,14 @@ value in the environment is ignored. Here are the property and variable names
 (This setting comes from the underlying Spring Boot framework.)
 If the directory you specify doesn't exist, it'll be created.
 
-<div class="pull-quote">
-###### Security
+
+Security
+--------
+If you need to protect Smuggler from the meanies, there are a number of 
+things we think you can do. Probably you can come up with more or spot a
+vulnerability we haven't thought of; if you do, please let us know!
+
+###### File System
 Smuggler needs to be able to access all the above directories as well as
 having read/write permissions for their contents. Besides the sys admin,
 only the user you run Smuggler with should have access to these directories.
@@ -76,7 +82,33 @@ And as you're at it, why not secure Smuggler's jar files as well? Ideally,
 you'd make them read-only and accessible to the Smuggler user only. You
 could even go a step further and make them immutable, e.g. using something
 like `chattr +i`.
-</div>
+
+###### Data Encryption
+Like I said some sensitive data will end up being stored in Smuggler's
+data directory, but only for the time it takes to process a message in the 
+queue. (For example, after Smuggler has fully processed an OMERO import 
+task, he deletes the corresponding session key from the data directory.)
+In any case, you have an option to encrypt sensitive data; look at the
+[encryption](#encryption) configuration group below.
+
+###### Https
+Speaking of encryption, you can turn that on for HTTP traffic too. In fact,
+you can configure Smuggler's embedded Undertow server to use TLS just like 
+explained in the [Spring](#spring) configuration group below.
+
+###### Access Control
+Right. Here's the sore point. Smuggler doesn't enforce access control to
+his Web API at the moment. This means anyone could potentially see an import
+log and delete it through the Web API, provided they have somehow managed 
+to get their filthy hands on the corresponding import ID. Probably not a 
+big deal as things stand now, but surely worth mentioning. Another thing 
+you may care about is the [Spring Boot Actuator][booty-actuator]. It's
+enabled by default (see [Spring](#spring) section below) to provide a 
+hell of a lot of stats about Smuggler and the box he's running on. 
+Generally quite useful, but these stats may give away more info about your
+box then you want an attacker to know. You have two options here: disable
+the Actuator endpoints or enforce access control to them. To find out how,
+have a read through the Spring Boot Actuator [docs][booty-actuator].
 
 
 Embedded Configuration
@@ -157,6 +189,20 @@ group's configuration file. Use it to output a configuration file when
 doing the configuration in Java. (The type-safe way, as explained earlier.)
 
 
+### Encryption
+You can turn on encryption of sensitive data that's temporarily stored in
+the data directory. The items in this group let you do that.
+
+* *File*: `crypto.yml`
+* *Bean*: [ome.smuggler.config.items.CryptoConfig](../../../javadoc/server/ome/smuggler/config/items/CryptoConfig.html)
+* *Defaults*: `ome.smuggler.config.data.CryptoYmlFile`
+* *Command*: `ome.smuggler.run.CryptoYmlGen`
+
+Every time you run `CryptoYmlGen`, you'll get a fresh encryption key. Before
+replacing an old key with a new one, you should make sure there are no messages
+waiting in the queue, cos Smuggler won't be able to read them if you change the
+key!
+
 ### Http
 Smuggler comes with an embedded Undertow HTTP server. The items in this
 group specify how to configure it.
@@ -198,6 +244,28 @@ here as Spring, by default, expects this file name.)
 `ome.smuggler.config.items.SpringBootConfigProps` class.
 * *Defaults*: `ome.smuggler.config.data.SpringBootAppPropsFile`
 * *Command*: `ome.smuggler.run.SpringBootPropsGen`
+
+Other than the props you can generate with the above command, you can add
+any other Spring props to the file. For example, one way to make Undertow 
+use HTTPS (HTTP + TLS) is to add these lines:
+
+~~~ {.bash}
+server.ssl.key-store=smuggler-keystore.jks
+server.ssl.key-store-password=changeit
+server.ssl.key-password=changeit
+server.ssl.key-alias=smuggler
+~~~
+
+In this example, you have a Java key store file named `smuggler-keystore.jks`
+containing a certificate for TLS ops that can be looked up using a key alias
+of `smuggler`. Both access to the store and to the key is password-protected.
+Because we specified no SSL port, the only port through which clients can
+talk to Smuggler is that specified in the [Undertow](#http) configuration
+and communication through that port will be TLS-protected.
+You can find more about TLS Spring configuration [over here][booty-ssl].
+If you want to generate a key store with a self-signed cert in it, look for
+the TLS test scripts in Smuggler's code (`server` component). But, like,
+you know, self-signed certs are only good for testing...
 
 
 Other Settings
@@ -256,3 +324,6 @@ concocting a solution with the friendly OMElings...
 
 [booty-actuator]: http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html
     "Spring Boot Actuator Reference"
+[booty-ssl]: http://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-configure-ssl
+    "Spring Boot - How to configure SSL"
+    
