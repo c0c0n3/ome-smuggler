@@ -3,6 +3,7 @@ package ome.smuggler.core.service.omero.impl;
 import ome.smuggler.core.service.omero.SessionService;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -49,6 +50,14 @@ public class SessionManager implements SessionService {
                         omeroHostAndPort, sessionKey);
         OmeCliCommandRunner runner = new OmeCliCommandRunner(env, cmd);
         return runner.run();
+    }
+
+    @Override
+    public Optional<String> createAndKeepAlive(URI omeroHostAndPort,
+                                               String username,
+                                               String password,
+                                               Duration howLong) {
+        return null;
     }
 
 }
