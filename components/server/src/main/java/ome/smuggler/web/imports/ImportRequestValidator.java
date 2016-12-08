@@ -17,11 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import ome.smuggler.core.types.DatasetId;
-import ome.smuggler.core.types.Email;
-import ome.smuggler.core.types.PositiveN;
-import ome.smuggler.core.types.ScreenId;
-import ome.smuggler.core.types.TextAnnotation;
+import ome.smuggler.core.types.*;
 import ome.smuggler.web.Error;
 import util.object.Either;
 import util.validation.Validator;
@@ -35,8 +31,6 @@ import util.validation.Validator;
  * provided by this class. 
  */
 public class ImportRequestValidator implements Validator<Error, ImportRequest> {
-
-    public static final int DefaultOmeroPort = 4064;
 
     private ImportRequest request;
 
@@ -54,7 +48,7 @@ public class ImportRequestValidator implements Validator<Error, ImportRequest> {
     
     private void applyDefaults(ImportRequest r) {
         if (isNullOrEmpty(r.omeroPort)) {
-            r.omeroPort = "" + DefaultOmeroPort;
+            r.omeroPort = OmeroDefault.Port.toString();
         }
     }
     
