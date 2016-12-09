@@ -10,6 +10,7 @@ import static util.validation.ParserFactory.stringParser;
 import static util.validation.ParserFactory.uriParser;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.function.Function;
 
 import util.object.Either;
@@ -129,6 +130,17 @@ public class ValueParserFactory {
      */
     public static Either<String, String> string(String value) {
         return stringParser().parse(value);
+    }
+
+    /**
+     * Parses the string representation of a positive integer as a {@link
+     * Duration} in milliseconds.
+     * @param value a string representation of a positive.
+     * @return either a (right) value or an error message (left) detailing why
+     * the value could not be instantiated.
+     */
+    public static Either<String, Duration> millis(String value) {
+        return positiveInt(value).map(PositiveN::get).map(Duration::ofMillis);
     }
     
     /**
