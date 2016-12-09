@@ -57,7 +57,11 @@ public class SessionManager implements SessionService {
                                                String username,
                                                String password,
                                                Duration howLong) {
-        return null;
+        return create(omeroHostAndPort, username, password)
+               .map(
+                    sessionKey -> sessionKey
+                    // TODO post msg on keep-alive q!!!
+               );
     }
 
 }
