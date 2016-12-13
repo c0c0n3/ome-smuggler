@@ -8,7 +8,10 @@ package ome.smuggler.config.items;
  * specified, then the jar is assumed to be located in the same directory as
  * Smuggler's jar and have a name starting with the {@link #setOmeCliJarPrefix(String)
  * configured prefix} unless such prefix is {@code null} or empty, in which case
- * it defaults to {@link #DefaultOmeCliJarPrefix}.
+ * it defaults to {@link #DefaultOmeCliJarPrefix}. The only other setting this
+ * class holds is that of the OMERO session keep-alive interval (in minutes)
+ * which is an internal setting for the time being; it's optional and defaults
+ * to {@link ome.smuggler.core.types.OmeroDefault#SessionKeepAliveInterval}.
  */
 public class OmeCliConfig {
     /* NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
@@ -19,6 +22,7 @@ public class OmeCliConfig {
 
     private String omeCliJarPath;
     private String omeCliJarPrefix;
+    private Long sessionKeepAliveInterval;
 
 
     public String getOmeCliJarPath() {
@@ -35,6 +39,14 @@ public class OmeCliConfig {
 
     public void setOmeCliJarPrefix(String omeCliJarPrefix) {
         this.omeCliJarPrefix = omeCliJarPrefix;
+    }
+
+    public Long getSessionKeepAliveInterval() {
+        return sessionKeepAliveInterval;
+    }
+
+    public void setSessionKeepAliveInterval(Long sessionKeepAliveInterval) {
+        this.sessionKeepAliveInterval = sessionKeepAliveInterval;
     }
 
 }

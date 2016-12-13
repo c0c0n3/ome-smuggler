@@ -23,4 +23,12 @@ public class OmeroDefaultTest {
         assertThat(actual, is(specifiedInComments));
     }
 
+    @Test
+    public void sessionKeepAliveIntervalIsHalfOfSessionTimeout() {
+        long expected = OmeroDefault.SessionTimeout.toMillis() / 2 ;
+        long actual = OmeroDefault.SessionKeepAliveInterval.toMillis();
+
+        assertThat(actual, is(expected));
+    }
+
 }

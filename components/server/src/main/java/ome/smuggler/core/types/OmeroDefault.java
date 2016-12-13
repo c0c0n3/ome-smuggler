@@ -16,4 +16,13 @@ public class OmeroDefault {
      * Default OMERO session timeout: 10 minutes.
      */
     public static final Duration SessionTimeout = Duration.ofMinutes(10);
+
+    /**
+     * Default OMERO session keep-alive interval: half of the {@link
+     * #SessionTimeout default session timeout}. This is the value that
+     * most OMERO clients use by default.
+     */
+    public static final Duration SessionKeepAliveInterval =
+            SessionTimeout.dividedBy(2);
+
 }
