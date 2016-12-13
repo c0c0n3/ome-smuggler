@@ -1,5 +1,7 @@
 package integration.serialization;
 
+import static ome.smuggler.core.types.FutureTimepoint.now;
+
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ public class QueuedOmeroKeepAliveTest extends JsonWriteReadTest {
     @SuppressWarnings("unchecked")
     public void serializeAndDeserialize() {
         QueuedOmeroKeepAlive initialValue =
-                new QueuedOmeroKeepAlive(URI.create("h:1"), "sesh");
+                new QueuedOmeroKeepAlive(URI.create("h:1"), "sesh", now());
         Class<QueuedOmeroKeepAlive> valueType = (Class<QueuedOmeroKeepAlive>)
                 initialValue.getClass();
         TypeToken<QueuedOmeroKeepAlive> typeToken =
