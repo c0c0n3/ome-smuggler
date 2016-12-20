@@ -29,7 +29,7 @@ public class SessionKeepAliveHandler
      * @param service the session service.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    protected SessionKeepAliveHandler(OmeroEnv env, SessionService service) {
+    public SessionKeepAliveHandler(OmeroEnv env, SessionService service) {
         requireNonNull(env, "env");
         requireNonNull(service, "service");
 

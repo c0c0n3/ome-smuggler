@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import ome.smuggler.config.items.OmeCliConfig;
+import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.CountedSchedule;
 import ome.smuggler.core.service.omero.SessionService;
 import ome.smuggler.core.types.FutureTimepoint;
@@ -20,12 +21,17 @@ import org.junit.Test;
 
 public class SessionKeepAliveHandlerTest {
 
+    interface SessionQ extends ChannelSource<QueuedOmeroKeepAlive> {}
+
+
     private static OmeroEnv mockEnv() {
         OmeCliConfig cfg = new OmeCliConfig();
         cfg.setOmeCliJarPath("no-where");
         OmeCliConfigReader reader = new OmeCliConfigReader(cfg);
 
-        return new OmeroEnv(reader, mock(OmeroLogger.class));
+        return new OmeroEnv(reader,
+                            mock(SessionQ.class),
+                            mock(OmeroLogger.class));
     }
 
     private static SessionService mockService(boolean successOrFailure) {
