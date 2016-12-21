@@ -1,12 +1,15 @@
 package ome.smuggler.core.service.omero.impl;
 
-import ome.smuggler.core.service.omero.SessionService;
+import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
 import java.time.Duration;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
+import ome.smuggler.core.service.omero.SessionService;
+import ome.smuggler.core.types.FutureTimepoint;
+import ome.smuggler.core.types.QueuedOmeroKeepAlive;
+
 
 /**
  * Implements the {@link SessionService}.
@@ -23,6 +26,19 @@ public class SessionManager implements SessionService {
         requireNonNull(env, "env");
 
         this.env = env;
+    }
+
+    private String enqueueFirstKeepAlive(URI omeroHostAndPort,
+                                         String sessionKey,
+                                         Duration howLong) {
+        FutureTimepoint whenToStopKeepAlive = new FutureTimepoint(howLong);
+        QueuedOmeroKeepAlive msg = new QueuedOmeroKeepAlive(
+                omeroHostAndPort,
+                sessionKey,
+                whenToStopKeepAlive);
+        env.sessionQ().uncheckedSend(msg);
+
+        return sessionKey;
     }
 
     @Override
@@ -57,11 +73,11 @@ public class SessionManager implements SessionService {
                                                String username,
                                                String password,
                                                Duration howLong) {
+
         return create(omeroHostAndPort, username, password)
-               .map(
-                    sessionKey -> sessionKey
-                    // TODO post msg on keep-alive q!!!
-               );
+               .map(sessionKey -> enqueueFirstKeepAlive(omeroHostAndPort,
+                                                        sessionKey,
+                                                        howLong));
     }
 
 }
