@@ -1,31 +1,21 @@
 package ome.smuggler.jclient.providers.http;
 
-import ome.smuggler.jclient.providers.json.JsonSinkWriter;
-import ome.smuggler.jclient.providers.json.JsonSourceReader;
-import org.apache.http.HttpEntity;
+import static java.util.Objects.requireNonNull;
+import static ome.smuggler.jclient.providers.http.JsonEntity.toEntity;
+import static ome.smuggler.jclient.providers.http.JsonResponseHandlers.*;
+
+import java.io.IOException;
+import java.net.URI;
+
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
-import static java.util.Objects.requireNonNull;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.net.URI;
 
 /**
  * A simple HTTP client to operate on resources represented as JSON and encoded
@@ -45,53 +35,6 @@ public class JsonResource<T> {
     }
     // (*) ContentType.APPLICATION_JSON is constructed with a charset of UTF-8.
 
-    private static void assert2xx(HttpResponse response)
-            throws HttpResponseException {
-        StatusLine statusLine = response.getStatusLine();
-        if (statusLine.getStatusCode() >= 300) {
-            String detail = null;
-            try {
-                String body = EntityUtils.toString(response.getEntity());
-                detail = String.format("[%s] %s",
-                                        statusLine.getReasonPhrase(), body);
-            } catch (Exception e) {
-                detail = statusLine.getReasonPhrase();
-            }
-            throw new HttpResponseException(statusLine.getStatusCode(), detail);
-        }
-    }
-
-    private static HttpEntity fetchEntity(HttpResponse response)
-            throws ClientProtocolException {
-        HttpEntity entity = response.getEntity();
-        if (entity == null) {
-            throw new ClientProtocolException("Response contains no entity.");
-        }
-        return entity;
-    }
-
-    private static ContentType ensureJsonContent(HttpEntity entity)
-            throws ClientProtocolException {
-        ContentType type = ContentType.get(entity);
-        String expected = ContentType.APPLICATION_JSON     // (1)
-                                     .toString()
-                                     .replace(" ", "");    // (2)
-        if (type == null) {
-            throw new ClientProtocolException("Unspecified content type.");
-        }
-        String actual = type.toString().replace(" ", "");  // (2)
-        if (!expected.equalsIgnoreCase(actual)) {
-            throw new ClientProtocolException(
-                    String.format("Invalid content type: %s", actual));
-        }
-        return type;
-    }
-    /* (1) It's constructed with a charset of UTF-8, so when string-ified it
-     * becomes: "application/json; charset=utf-8".
-     * (2) Make sure these two are considered equal (note the extra space):
-     * "application/json;charset=utf-8", "application/json; charset=utf-8"
-     */
-
 
     private final URI target;
     private final CloseableHttpClient client;
@@ -108,40 +51,6 @@ public class JsonResource<T> {
         this.client = HttpClients.createDefault();
     }
 
-    private StringEntity toEntity(T resource) {
-        StringWriter sink = new StringWriter();
-        new JsonSinkWriter<>(sink).write(resource);
-        String serializedResource = sink.toString();
-        return new StringEntity(serializedResource,
-                                ContentType.APPLICATION_JSON);  // (*)
-    }
-    // (*) It's constructed with a charset of UTF-8.
-
-    private T fromEntity(HttpEntity resource, Class<T> resourceType)
-            throws IOException {
-        ContentType type = ensureJsonContent(resource);
-        Reader source = new InputStreamReader(
-                resource.getContent(), type.getCharset());
-        return new JsonSourceReader<>(resourceType, source).read();
-    }
-
-    private T handleGet(HttpResponse response, Class<T> resourceType)
-            throws IOException {
-        assert2xx(response);
-        HttpEntity entity = fetchEntity(response);
-        return fromEntity(entity, resourceType);
-    }
-
-    private ResponseHandler<T> ignoreResponseBodyHandler() {
-        return new ResponseHandler<T>() {
-            @Override
-            public T handleResponse(HttpResponse response) throws IOException {
-                assert2xx(response);
-                return null;
-            }
-        };
-    }
-
     /**
      * GET the resource.
      * @param resourceType the type of the JSON object; generics are not
@@ -151,15 +60,10 @@ public class JsonResource<T> {
      * @throws RuntimeException if the returned JSON could not be converted to
      * an object.
      */
-    public T get(final Class<T> resourceType) throws IOException {
+    public T get(Class<T> resourceType) throws IOException {
         HttpGet get = new HttpGet(target);
         acceptJsonOnly(get);
-        return client.execute(get, new ResponseHandler<T>() {
-            @Override
-            public T handleResponse(HttpResponse response) throws IOException {
-                return handleGet(response, resourceType);
-            }
-        });
+        return client.execute(get, readResponseBodyHandler(resourceType));
     }
 
     /**
@@ -173,6 +77,21 @@ public class JsonResource<T> {
         acceptJsonOnly(post);
         post.setEntity(toEntity(resource));
         client.execute(post, ignoreResponseBodyHandler());
+    }
+
+    /**
+     * POST the resource and reads a response.
+     * @param resource the resource to POST.
+     * @param responseType the type of the JSON object; generics are not
+     *                     supported.
+     * @throws IOException If a connection or protocol error occurs.
+     * @throws RuntimeException if the resource could not be serialized to JSON.
+     */
+    public <R> R post(T resource, Class<R> responseType) throws IOException {
+        HttpPost post = new HttpPost(target);
+        acceptJsonOnly(post);
+        post.setEntity(toEntity(resource));
+        return client.execute(post, readResponseBodyHandler(responseType));
     }
 
     /**

@@ -1,66 +1,30 @@
 package ome.smuggler.jclient.core.service.omero.impl;
 
-import Glacier2.CannotCreateSessionException;
-import Glacier2.PermissionDeniedException;
-import ome.smuggler.jclient.core.service.omero.OmeroException;
-import ome.smuggler.jclient.core.service.omero.SessionService;
-import omero.ServerError;
-import omero.api.ServiceFactoryPrx;
-import omero.client;
-import omero.model.Session;
-
 import static java.util.Objects.requireNonNull;
+
+import java.net.URI;
+
+import ome.smuggler.jclient.core.config.ComponentsFactory;
+import ome.smuggler.jclient.core.service.dto.omero.CreateSessionRequest;
+import ome.smuggler.jclient.core.service.dto.omero.CreateSessionResponse;
+import ome.smuggler.jclient.core.service.http.RestResource;
+import ome.smuggler.jclient.core.service.omero.SessionService;
+
 
 /**
  * Implements the {@link SessionService}.
  */
 public class SessionServiceImpl implements SessionService {
 
-    private static String group(Session existingSession) {
-        return existingSession.getDetails().getGroup().getName().getValue();
-    }
-
-    private static long timeToIdle(int timeoutInSeconds) {
-        return timeoutInSeconds * 1000L;
-    }
-
-    private final ClientFactory factory;
-
-    /**
-     * Creates a new instance.
-     * @param factory the factory to create OMERO clients.
-     * @throws NullPointerException if the argument is {@code null}.
-     */
-    public SessionServiceImpl(ClientFactory factory) {
-        requireNonNull(factory, "factory");
-
-        this.factory = factory;
-    }
-
-    private String doCreate(int timeout) throws CannotCreateSessionException,
-            PermissionDeniedException, ServerError {
-        client c = factory.newClient();
-        ServiceFactoryPrx serviceFactory = c.createSession();
-        serviceFactory.setSecurityPassword(factory.password());
-
-        Session initialSession = serviceFactory.getSessionService()
-                .getSession(c.getSessionId());
-        Session newSession = serviceFactory.getSessionService()
-                .createUserSession(0,
-                        timeToIdle(timeout),
-                        group(initialSession));
-        c.killSession();  // close initial session.
-
-        return newSession.getUuid().getValue();
-    }
-
     @Override
-    public String create(int timeout) throws OmeroException {
-        try {
-            return doCreate(timeout);
-        } catch (Exception e) {
-            throw new OmeroException(e);
-        }
+    public CreateSessionResponse create(URI target,
+                                        CreateSessionRequest request) {
+        requireNonNull(target, "target");
+        requireNonNull(request, "request");
+
+        RestResource<CreateSessionRequest> client =
+                ComponentsFactory.jsonResource(target);
+        return client.post(request, CreateSessionResponse.class);
     }
 
 }
