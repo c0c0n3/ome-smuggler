@@ -30,3 +30,4 @@ ome.smuggler.run
 ome.smuggler.web
 ome.smuggler.web.imports
 ome.smuggler.web.mail
+ome.smuggler.web.omero

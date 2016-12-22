@@ -1,9 +1,12 @@
 ome.smuggler.jclient.core.config
 ome.smuggler.jclient.core.convert
+ome.smuggler.jclient.core.service.dto.imports
+ome.smuggler.jclient.core.service.dto.omero
 ome.smuggler.jclient.core.service.http
 ome.smuggler.jclient.core.service.imports
 ome.smuggler.jclient.core.service.imports.impl
 ome.smuggler.jclient.core.service.omero
 ome.smuggler.jclient.core.service.omero.impl
+ome.smuggler.jclient.frontend
 ome.smuggler.jclient.providers.http
 ome.smuggler.jclient.providers.json
