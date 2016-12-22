@@ -2,6 +2,7 @@ package ome.smuggler.config.wiring.omero;
 
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.items.OmeCliConfig;
+import ome.smuggler.config.items.OmeroSessionQConfig;
 import ome.smuggler.core.types.OmeCliConfigReader;
 import ome.smuggler.core.types.OmeCliConfigSource;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,12 @@ public class OmeroConfigBeans {
     @Bean
     public OmeCliConfigSource omeCliConfig(ConfigProvider<OmeCliConfig> src) {
         return ConfigReader.newReader(src, OmeCliConfigReader::new).first();
+    }
+
+    @Bean
+    public OmeroSessionQConfig omeroSessionQConfig(
+            ConfigProvider<OmeroSessionQConfig> src) {
+        return src.first();
     }
 
 }

@@ -2,10 +2,7 @@ package ome.smuggler.config.wiring;
 
 import static util.sequence.Arrayz.asMutableList;
 
-import ome.smuggler.config.items.HornetQPersistenceConfig;
-import ome.smuggler.config.items.ImportGcQConfig;
-import ome.smuggler.config.items.ImportQConfig;
-import ome.smuggler.config.items.MailQConfig;
+import ome.smuggler.config.items.*;
 
 import org.hornetq.core.config.Configuration;
 import org.hornetq.core.server.JournalType;
@@ -32,6 +29,9 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
 
     @Autowired
     private MailQConfig mailQ;
+
+    @Autowired
+    private OmeroSessionQConfig omeroSessionQ;
     
     private void configurePersistence(Configuration cfg) {
         cfg.setPersistenceEnabled(params.isPersistenceEnabled());
@@ -44,7 +44,7 @@ public class HornetQServerCfgCustomizer implements HornetQConfigurationCustomize
     
     private void configureQueues(Configuration cfg) {
         cfg.setQueueConfigurations(
-                asMutableList(importQ, importGcQ, mailQ));
+                asMutableList(importQ, importGcQ, mailQ, omeroSessionQ));
     }
     
     @Override

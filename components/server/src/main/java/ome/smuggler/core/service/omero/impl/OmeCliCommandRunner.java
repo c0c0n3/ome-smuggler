@@ -6,6 +6,7 @@ import util.lambda.FunctionE;
 import util.object.Pair;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static util.object.Pair.pair;
@@ -45,13 +46,16 @@ public class OmeCliCommandRunner {
         env.log().failure(cmd, outcome.fst(), outcome.snd());
     }
 
-    private <T> boolean doRun(FunctionE<CommandRunner, Pair<Integer, T>> spawn,
-                              Consumer<Pair<Integer, T>> cmdFailureLogger) {
+    private <T> Optional<T> doRun(
+            FunctionE<CommandRunner, Pair<Integer, T>> spawn,
+            Consumer<Pair<Integer, T>> cmdFailureLogger) {
         int status = -1;
+        T result = null;
         CommandRunner runner = new CommandRunner(cmd);
         try {
             Pair<Integer, T> outcome = spawn.apply(runner);
             status = outcome.fst();
+            result = outcome.snd();
 
             if (succeeded(status)) {
                 env.log().success(cmd, status);
@@ -61,7 +65,8 @@ public class OmeCliCommandRunner {
         } catch (Exception e) {
             env.log().failure(cmd, e);
         }
-        return succeeded(status);
+        return succeeded(status) ? Optional.ofNullable(result)
+                                 : Optional.empty();
     }
 
     /**
@@ -74,7 +79,8 @@ public class OmeCliCommandRunner {
         return doRun(runner -> {
             int status = runner.exec(outputFile);
             return pair(status, outputFile);
-        }, this::logFailure);
+        }, this::logFailure)
+        .isPresent();
     }
 
     /**
@@ -82,6 +88,14 @@ public class OmeCliCommandRunner {
      * @return {@code true} if the command succeeded, {@code false} otherwise.
      */
     public boolean run() {
+        return runAndCollectOutput().isPresent();
+    }
+
+    /**
+     * Runs the command collecting any output in a result string.
+     * @return the result string if the command succeeded, empty otherwise.
+     */
+    public Optional<String> runAndCollectOutput() {
         return doRun(runner -> runner.exec(StreamOps::readLinesIntoString),
                      this::logFailureWithOutput);
     }

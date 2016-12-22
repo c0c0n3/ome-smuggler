@@ -7,6 +7,7 @@ import static util.sequence.Arrayz.array;
 import org.junit.Before;
 import org.junit.Test;
 
+import ome.smuggler.core.types.OmeroDefault;
 import ome.smuggler.web.Error;
 import util.object.Either;
 
@@ -73,7 +74,7 @@ public class ImportRequestValidatorTest {
         
         assertSuccess(r);
         assertThat(r.omeroPort, 
-                   is("" + ImportRequestValidator.DefaultOmeroPort));
+                   is(OmeroDefault.Port.toString()));
     }
     
     @Test

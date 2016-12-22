@@ -15,7 +15,7 @@ public interface RestResource<T> {
      * @throws RestResourceException If a connection or protocol error occurs or
      * if the returned data could not be converted to an object.
      */
-    T get(final Class<T> resourceType);
+    T get(Class<T> resourceType);
 
     /**
      * POST the resource.
@@ -24,6 +24,17 @@ public interface RestResource<T> {
      * if the resource could not be serialized.
      */
     void post(T resource);
+
+    /**
+     * POST the resource.
+     * @param resource the resource to POST.
+     * @param responseType the type of the object to deserialize the response
+     *                     into; generics are not supported.
+     * @return the server response.
+     * @throws RestResourceException If a connection or protocol error occurs or
+     * if the resource could not be serialized.
+     */
+    <R> R post(T resource, Class<R> responseType);
 
     /**
      * PUT the resource.

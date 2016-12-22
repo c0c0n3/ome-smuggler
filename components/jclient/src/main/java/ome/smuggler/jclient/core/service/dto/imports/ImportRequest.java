@@ -1,4 +1,4 @@
-package ome.smuggler.jclient.core.service.imports;
+package ome.smuggler.jclient.core.service.dto.imports;
 
 /**
  * Web clients use instances of this class to request an import.

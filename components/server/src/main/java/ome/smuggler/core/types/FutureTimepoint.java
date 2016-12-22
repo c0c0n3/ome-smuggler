@@ -47,4 +47,15 @@ public class FutureTimepoint extends Wrapper<Duration> {
         super(timepoint(timeSpanFromNow));
     }
 
+    /**
+     * Is this time point still in the future?
+     * An instance of this class is always instantiated with a future time
+     * point, but the passing of time will eventually make the initial time
+     * point in the past. This method tests for this condition.
+     * @return {@code true} for yes, {@code false} for no.
+     */
+    public boolean isStillInTheFuture() {
+        return now().get().compareTo(this.get()) < 0;
+    }
+
 }

@@ -41,6 +41,15 @@ public class JsonRestResourceAdapter<T> implements RestResource<T> {
     }
 
     @Override
+    public <R> R post(T resource, Class<R> responseType) {
+        try {
+            return adaptee.post(resource, responseType);
+        } catch (Exception e) {
+            throw new RestResourceException(e);
+        }
+    }
+
+    @Override
     public void put(T resource) {
         try {
             adaptee.put(resource);

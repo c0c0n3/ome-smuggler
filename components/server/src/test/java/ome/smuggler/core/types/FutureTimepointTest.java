@@ -34,5 +34,19 @@ public class FutureTimepointTest {
         
         assertThat(now.compareTo(earlier), greaterThanOrEqualTo(0));
     }
+
+    @Test
+    public void canTellWhenIsStillInTheFuture() {
+        FutureTimepoint later = new FutureTimepoint(Duration.ofMinutes(1));
+
+        assertTrue(later.isStillInTheFuture());
+    }
+
+    @Test
+    public void canTellWhenIsInThePast() {
+        FutureTimepoint earlier = FutureTimepoint.now();
+
+        assertFalse(earlier.isStillInTheFuture());
+    }
     
 }

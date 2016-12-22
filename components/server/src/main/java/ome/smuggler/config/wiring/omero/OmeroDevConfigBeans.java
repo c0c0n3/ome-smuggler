@@ -3,6 +3,7 @@ package ome.smuggler.config.wiring.omero;
 
 import ome.smuggler.config.Profiles;
 import ome.smuggler.config.items.OmeCliConfig;
+import ome.smuggler.config.items.OmeroSessionQConfig;
 import ome.smuggler.core.types.OmeCliConfigReader;
 import ome.smuggler.core.types.OmeCliConfigSource;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,12 @@ import util.config.ConfigProvider;
 @Configuration
 @Profile(Profiles.Dev)
 public class OmeroDevConfigBeans {
+
+    @Bean
+    public OmeroSessionQConfig omeroSessionQConfig(
+            ConfigProvider<OmeroSessionQConfig> src) {
+        return src.first();
+    }
 
     @Bean
     public OmeCliConfigSource omeCliConfig(ConfigProvider<OmeCliConfig> src) {

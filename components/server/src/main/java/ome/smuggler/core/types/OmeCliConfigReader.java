@@ -7,9 +7,11 @@ import util.runtime.jvm.ClassPathLocator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+import static ome.smuggler.core.convert.RawConfigValues.toDuration;
 import static util.string.Strings.isNullOrEmpty;
 
 /**
@@ -60,6 +62,7 @@ public class OmeCliConfigReader implements OmeCliConfigSource {
     }
     
     private final Path omeCliJar;
+    private final Duration sessionKeepAliveInterval;
 
     /**
      * Creates a new instance to read the given configuration.
@@ -70,11 +73,19 @@ public class OmeCliConfigReader implements OmeCliConfigSource {
         requireNonNull(config, "config");
 
         omeCliJar = jarPath(config);
+        sessionKeepAliveInterval =
+                toDuration(config.getSessionKeepAliveInterval(),
+                           OmeroDefault.SessionKeepAliveInterval);
     }
 
     @Override
     public Path omeCliJar() {
         return omeCliJar;
+    }
+
+    @Override
+    public Duration sessionKeepAliveInterval() {
+        return sessionKeepAliveInterval;
     }
 
 }
