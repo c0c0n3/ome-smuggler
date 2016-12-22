@@ -16,7 +16,7 @@ public class SimpleImport implements Runnable {
         URI sessionProxyBaseUrl = URI.create("http://localhost:8000");
         URI importProxyBaseUrl = URI.create("http://localhost:8000");
         String username = "tasty";
-        String password = "abc123";
+        String password = "*****";
 
         return new ImporterConfig(sessionProxyBaseUrl, importProxyBaseUrl,
                                   username, password);
@@ -24,8 +24,8 @@ public class SimpleImport implements Runnable {
 
     private ImportRequest request() {
         ImportRequest request = new ImportRequest();
-        request.experimenterEmail = "andrea.falconi@igh.cnrs.fr";  // "tasty.tests@igh.cnrs.fr"
-        request.targetUri = "/home/falconi/playground/test-images/SP8_40x_Cy5.tif";  //"/home/tasty/test-images/SP8_40x_Cy5.tif"
+        request.experimenterEmail = "tasty.tests@igh.cnrs.fr";
+        request.targetUri = "/home/tasty/test-images/SP8_40x_Cy5.tif";
         request.omeroHost = "localhost";
 
         return request;
