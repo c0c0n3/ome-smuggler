@@ -83,6 +83,9 @@ you'd make them read-only and accessible to the Smuggler user only. You
 could even go a step further and make them immutable, e.g. using something
 like `chattr +i`.
 
+Finally, remember that the account you run Smuggler with has to have read
+access to the files your users want to import.
+
 ###### Data Encryption
 Like I said some sensitive data will end up being stored in Smuggler's
 data directory, but only for the time it takes to process a message in the 
@@ -312,8 +315,19 @@ Also note that clients can create a session with a timeout up to ten times
 longer than the current value of `omero.sessions.timeout`. (You do this by
 specifying a time-to-idle to the `createUserSession` method.)
 
+But this setting results in long sessions for *every* OMERO client, not
+just Smuggler. If, as a sys admin, this doesn't make you sleep tight at
+night (security anyone?), you could instead use a Smuggler instance as
+an OMERO session keep-alive server. In this kind of deployment, clients
+that want to import data first open a session using Smuggler's session
+Web service, telling Smuggler to keep the session alive for a period of
+time that should be enough to make sure the session is still valid later
+on when Smuggler actually attempts the import. Then the client tells 
+(possibly another instance of) Smuggler to queue an import using that 
+session.
+
 <div class="pull-quote">
-###### Stopgap Solution!
+###### Stopgap Solutions!
 The plan for the future is to use a session-independent, long-lived token
 that OMERO would accept to run a specific import. In fact, we're busy
 concocting a solution with the friendly OMElings...

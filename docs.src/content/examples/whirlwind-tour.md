@@ -247,18 +247,11 @@ Create a new file `my-import.json` taking `min-import.json` as an example and
 fill out the required fields for an import request as documented by [this
 specification][import-request]. (Oh, if you're looking for the Web method spec,
 it's [here][import-controller].)
-You will need a valid session key to go in the file; to obtain one, use the
-OMERO CLI as shown below:
-
-~~~ {.bash}
-$ omero login
-Server: [localhost:4064]
-Username: [root] your-user
-Password: your-pass
-Created session 44ecfba2-9266-422e-87e8-cd3604c64c64   (...)
-~~~
-
-Copy and paste the session key into `my-import.json`, then
+You will need a valid session key to go in the file; to get one, you can use 
+the OMERO CLI we all know and love (command: `omero login`) or, if you fancy 
+more Smuggler action, use Smuggler's very own [session service][session-controller] 
+as explained in the section below. Either way, once you have a session key, 
+copy and paste it into `my-import.json`, then
 
 ~~~ {.bash}
 $ ./request-import my-import.json
@@ -268,6 +261,21 @@ Use the returned URL to poll Smuggler for status updates as we've done
 earlier. After Smuggler has shovelled your data into OMERO, you should
 log into OMERO (with the same account you've used above to create the
 session key) and check the images you've just imported are there.
+
+### Omero Sessions
+Smuggler has a Web method you can use to open OMERO sessions. (REST API
+documented [here][session-controller].) The functionality is similar to
+that of the OMERO CLI but Smuggler can keep your freshly minted session
+alive for a period of time you specify. Yup, you could also use Smuggler
+as a session keep-alive server! (Handy for running OMERO background tasks
+like, uh, well, you know, an import?)
+
+For an example of how to call this session Web method, look at the
+scripts in this source directory:
+
+~~~ {.bash}
+$ ls components/server/src/test/scripts/http-omero
+~~~
 
 
 
@@ -282,3 +290,6 @@ session key) and check the images you've just imported are there.
     "ImportRequest Class"
 [import-response]: ../../../javadoc/server/ome/smuggler/web/imports/ImportResponse.html
     "ImportResponse Class"
+[session-controller]: ../../../javadoc/server/ome/smuggler/web/omero/SessionController.html
+    "SessionController Class"
+    
