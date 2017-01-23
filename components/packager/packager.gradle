@@ -23,8 +23,10 @@ dependencies {
 }
 
 
-task makeBuildDirs << {
-    dirs.subdirs().each { d -> mkdir(d) }
+task makeBuildDirs {
+    doLast {
+        dirs.subdirs().each { d -> mkdir(d) }
+    }
 }
 
 apply from: 'src/generic/generic.gradle'

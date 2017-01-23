@@ -23,40 +23,44 @@ task copyWinsvcLicense(type: Copy, dependsOn: makeBuildDirs) {
 }
 
 task copyWinsvcJars(dependsOn:
-        [makeBuildDirs, ':server:bootRepackage', ':cli:bootRepackage']) << {
-    copy {
-        from serverJarFile()
-        from cliJarFile()
-        into dirs.staging.winsvc.libDir
+        [makeBuildDirs, ':server:bootRepackage', ':cli:bootRepackage']) {
+    doLast {
+        copy {
+            from serverJarFile()
+            from cliJarFile()
+            into dirs.staging.winsvc.libDir
+        }
     }
 }
 
-task copyWinService(dependsOn: makeBuildDirs) << {
-    def svcName = bundle.info.baseName
-    copy {
-        from configurations.fetch
-        include '*.exe'
-        into dirs.staging.winsvc.binDir
-        rename { svcName + '.exe' }
-    }
-    copy {
-        from 'src/winsvc/'
-        include 'service-def.xml.template'
-        into dirs.staging.winsvc.binDir
-        rename { svcName + '.xml' }
-        filter windowsCli().&replaceAll
-    }
-    copy {
-        from 'src/winsvc/'
-        include 'service-runtime.xml'
-        into dirs.staging.winsvc.binDir
-        rename { svcName + '.exe.config' }
-    }
-    copy {
-        from 'src/winsvc/'
-        include 'winice*.exe'
-        into dirs.staging.winsvc.binDir
-        rename { 'nice.exe' }
+task copyWinService(dependsOn: makeBuildDirs) {
+    doLast {
+        def svcName = bundle.info.baseName
+        copy {
+            from configurations.fetch
+            include '*.exe'
+            into dirs.staging.winsvc.binDir
+            rename { svcName + '.exe' }
+        }
+        copy {
+            from 'src/winsvc/'
+            include 'service-def.xml.template'
+            into dirs.staging.winsvc.binDir
+            rename { svcName + '.xml' }
+            filter windowsCli().&replaceAll
+        }
+        copy {
+            from 'src/winsvc/'
+            include 'service-runtime.xml'
+            into dirs.staging.winsvc.binDir
+            rename { svcName + '.exe.config' }
+        }
+        copy {
+            from 'src/winsvc/'
+            include 'winice*.exe'
+            into dirs.staging.winsvc.binDir
+            rename { 'nice.exe' }
+        }
     }
 }
 

@@ -28,29 +28,33 @@ task copyGenericLicense(type: Copy, dependsOn: makeBuildDirs) {
 }
 
 task copyGenericJars(dependsOn:
-        [makeBuildDirs, ':server:bootRepackage', ':cli:bootRepackage']) << {
-    copy {
-        from serverJarFile()
-        from cliJarFile()
-        into dirs.staging.generic.libDir
+        [makeBuildDirs, ':server:bootRepackage', ':cli:bootRepackage']) {
+    doLast {
+        copy {
+            from serverJarFile()
+            from cliJarFile()
+            into dirs.staging.generic.libDir
+        }
     }
 }
 
-task copyGenericScripts(dependsOn: makeBuildDirs) << {
-    copy {
-        from 'src/generic/'
-        include '*.bat.template'
-        into dirs.staging.generic.binDir
-        rename { it - ~/\.template$/ }
-        filter windowsCli().&replaceAll
-    }
-    copy {
-        from 'src/generic/'
-        include '*.sh.template'
-        into dirs.staging.generic.binDir
-        rename { it - ~/\.template$/ }
-        filter unixCli().&replaceAll
-        fileMode 0755
+task copyGenericScripts(dependsOn: makeBuildDirs) {
+    doLast {
+        copy {
+            from 'src/generic/'
+            include '*.bat.template'
+            into dirs.staging.generic.binDir
+            rename { it - ~/\.template$/ }
+            filter windowsCli().&replaceAll
+        }
+        copy {
+            from 'src/generic/'
+            include '*.sh.template'
+            into dirs.staging.generic.binDir
+            rename { it - ~/\.template$/ }
+            filter unixCli().&replaceAll
+            fileMode 0755
+        }
     }
 }
 
