@@ -24,6 +24,9 @@ dependencies {
     compile("org.hornetq:hornetq-jms-server")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-mail")
+    compile("de.codecentric:spring-boot-admin-server-ui:1.2.3")
+    compile("de.codecentric:spring-boot-admin-server:1.2.3")
+    compile("de.codecentric:spring-boot-admin-starter-client:1.2.3")
     
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
