@@ -24,12 +24,30 @@ dependencies {
     compile("org.hornetq:hornetq-jms-server")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile("org.springframework.boot:spring-boot-starter-mail")
-    compile("de.codecentric:spring-boot-admin-server-ui:1.2.3")
-    compile("de.codecentric:spring-boot-admin-server:1.2.3")
-    compile("de.codecentric:spring-boot-admin-starter-client:1.2.3")
-    
+
+    if (project.hasProperty('with-springboot-admin')) {  // (*)
+        compile("de.codecentric:spring-boot-admin-server-ui:1.2.3")
+        compile("de.codecentric:spring-boot-admin-server:1.2.3")
+        compile("de.codecentric:spring-boot-admin-starter-client:1.2.3")
+    } else {
+        sourceSets.main.java.exclude "ome/smuggler/run/SpringBootAdminServer.java"
+    }
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
+/* (*) SpringBoot Admin support.
+ * By default we don't compile it in. If you want it, you have to set the
+ * with-springboot-admin build prop either on the command line, e.g.
+ *
+ *     $ ./gradlew -Pwith-springboot-admin build
+ *
+ * or in a prop file. The 'spring-boot-admin-starter-client' lib auto-configures
+ * a SpringBoot Admin client if it finds a 'spring.boot.admin.url' in the app
+ * props file. Our default config (SpringBootAppPropsFile) sets this prop so
+ * if you build with SpringBoot Admin support the server app will also run a
+ * SpringBoot Admin client to push monitoring data to the configured SpringBoot
+ * Admin server.
+ */
 
 configurations {
     compile.exclude module: "spring-boot-starter-tomcat"
