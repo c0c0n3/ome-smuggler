@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source openmicroscopy/components/blitz/target/generated/resources/Classpath.sh
 

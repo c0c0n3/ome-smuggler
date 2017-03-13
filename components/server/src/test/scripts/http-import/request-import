@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 importData=@$1
 importUrl=http://localhost:8000/ome/import
