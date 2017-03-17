@@ -15,6 +15,7 @@ import ome.smuggler.core.types.QueuedImport;
 public class ImportRunner implements ImportProcessor {
 
     private final ImportEnv env;
+    private final ImportErrorNotifier err;
 
     /**
      * Creates a new instance.
@@ -23,8 +24,9 @@ public class ImportRunner implements ImportProcessor {
     public ImportRunner(ImportEnv env) {
         requireNonNull(env, "env");
         this.env = env;
+        this.err = new ImportErrorNotifier(env);
     }
-    
+
     @Override
     public RepeatAction consume(QueuedImport task) {
         env.log().importStart(task);
@@ -42,10 +44,13 @@ public class ImportRunner implements ImportProcessor {
             if (succeeded) {
                 env.finaliser().onSuccess(task);
                 action = Stop;
+            } else {
+                err.notifyFailure(task);
             }
         } catch (Exception e) {
             output.writeFooter(e);
             env.log().transientError(this, e);
+            err.notifyFailure(task, e);
         }
         return action;
     }

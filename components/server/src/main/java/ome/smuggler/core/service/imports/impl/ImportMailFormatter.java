@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.joining;
 import static util.sequence.Arrayz.array;
 import static util.sequence.Streams.concat;
 
-import java.net.InetAddress;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -13,6 +12,7 @@ import ome.smuggler.core.types.Email;
 import ome.smuggler.core.types.ImportBatchStatus;
 import ome.smuggler.core.types.PlainTextMail;
 import ome.smuggler.core.types.QueuedImport;
+import util.network.Hostname;
 
 /**
  * Builds email messages to notify users and sys admins of the processing
@@ -20,7 +20,7 @@ import ome.smuggler.core.types.QueuedImport;
  */
 public class ImportMailFormatter {
 
-    private static final String CRLF = "\r\n";
+    public static final String CRLF = "\r\n";
 
     private static final String SuccessSubject = "OMERO import succeeded";
     private static final String SuccessMessage =
@@ -31,13 +31,13 @@ public class ImportMailFormatter {
     }
 
     private static String successMessage() {
-        return String.format(SuccessMessage, hostname());
+        return String.format(SuccessMessage, Hostname.lookup());
     }
 
     private static final String FailureSubject = "Failed OMERO import [ref. %s]";
     private static final String FailureMessagePart1 =
             "Some of your image data on %s failed to import into OMERO. " +
-            "Please contact your OMERO administrator.";
+            "Please contact your imaging facility staff.";
     private static final String[] FailureMessagePart2 = array(
             "",
             "FAILED. The following files have failed to import.",
@@ -55,21 +55,13 @@ public class ImportMailFormatter {
 
     private static String failureMessage(Stream<String> failedFiles,
                                          Stream<String> succeededFiles) {
-        String part1 = String.format(FailureMessagePart1, hostname());
+        String part1 = String.format(FailureMessagePart1, Hostname.lookup());
         return concat(Stream.of(part1),
                       Stream.of(FailureMessagePart2),
                       failedFiles,
                       Stream.of(FailureMessagePart3),
                       succeededFiles)
               .collect(joining(CRLF));
-    }
-
-    private static String hostname() {
-        try {
-            return InetAddress.getLocalHost().getHostName();
-        } catch (Exception e) {
-            return "[unknown host]";
-        }
     }
 
     private final ImportBatchStatus outcome;
@@ -116,8 +108,8 @@ public class ImportMailFormatter {
     public PlainTextMail buildMailMessage(boolean success, Email recipient) {
         requireNonNull(recipient, "recipient");
 
-        return (success) ? buildSuccessMail(recipient)
-                         : buildFailureMail(recipient);
+        return success ? buildSuccessMail(recipient)
+                       : buildFailureMail(recipient);
     }
 
 }
