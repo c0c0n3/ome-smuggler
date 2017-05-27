@@ -5,6 +5,7 @@ import static util.string.Strings.isNullOrEmpty;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 
@@ -20,10 +21,12 @@ import java.util.Optional;
  * {@code RB} is a file URI having host and path components, whereas {@code LB}
  * is a local path. Now take a file URI with a prefix of {@code RB}, {@code f
  * = RB + p} where {@code p} is the path following {@code RB} in the URI.
- * Then {@code f} correspond to the local path of {@code LB + p}. For example,
+ * Then {@code f} corresponds to the local path of {@code LB + p}. For example,
  * if {@code RB = file://host-1/data/} and {@code LB = /mnt/h1/data}, then
  * a URI of {@code file://host-1/data/some/file} gets translated to a local
- * path of {@code /mnt/h1/data/some/file}.
+ * path of {@code /mnt/h1/data/some/file}, but a URI of {@code
+ * file://host-1/dataxxx/some/file} doesn't get translated because it doesn't
+ * have a prefix of {@code RB}.
  */
 public class RemoteMount {
 
@@ -72,15 +75,34 @@ public class RemoteMount {
     }
 
     private Optional<String> extractRelativePath(String remotePath) {
-        String rb = remoteBasePath.toString();
-        if (!rb.endsWith("/")) {
-            rb = rb + "/";
+        String base = remoteBasePath.toString();
+        if (!base.endsWith("/")) {
+            base = base + "/";
         }
-        int ix = remotePath.indexOf(rb);
-
-        return ix == -1 ? Optional.empty()
-                        : Optional.of(remotePath.substring(ix));
+        if (remotePath.startsWith(base)) {
+            String relPath = remotePath.substring(base.length());
+            return Optional.of(relPath);
+        }
+        return Optional.empty();
     }
+
+    private URI rebase(String relRemotePath) {  // (1)
+        String base = localBasePath.toUri().getPath();
+        if (!base.endsWith("/")) {              // (1)
+            base = base + "/";
+        }
+        return URI.create("file://" + base + relRemotePath);
+    }
+    /* NOTES
+     * 1. Path manipulation. We only use URI paths, so we know the separator
+     * is '/'.
+     * 2. URI.resolve method. I thought I could implement rebase() with a
+     * simple one-liner:
+     *
+     *     return localBasePath.toUri().resolve(relRemotePath)
+     *
+     * but resolve() doesn't do what I thought I'd do!
+     */
 
     /**
      * Tries to translate a remote path into a local one using the remote and
@@ -92,8 +114,11 @@ public class RemoteMount {
     public Optional<Path> toLocalPath(URI remotePath) {
         return ensureRemote(remotePath)
               .flatMap(this::extractRelativePath)
-              .map(localBasePath::resolve)
-              .map(Path::toAbsolutePath);
+              .map(this::rebase)
+              .map(Paths::get);
     }
 
 }
+/* TODO all this can be improved big time!
+ * For example, consider an implementation that uses tries or radix sort.
+ */

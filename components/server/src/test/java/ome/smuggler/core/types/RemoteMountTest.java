@@ -2,6 +2,7 @@ package ome.smuggler.core.types;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 import static util.sequence.Arrayz.array;
 
 import org.junit.Test;
@@ -9,9 +10,9 @@ import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import util.object.Wrapper;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -19,31 +20,68 @@ import java.util.Optional;
 @RunWith(Theories.class)
 public class RemoteMountTest {
 
+    static class RemoteBase extends Wrapper<String> {
+        public RemoteBase(String wrappedValue) {
+            super(wrappedValue);
+        }
+    }
+
+    static class LocalBase extends Wrapper<String> {
+        public LocalBase(String wrappedValue) {
+            super(wrappedValue);
+        }
+    }
+
+    private static URI uri(String x) {
+        return URI.create(x);
+    }
+
+    private static URI uri(RemoteBase x) {
+        return URI.create(x.get());
+    }
+
+    private static Path path(String absPath) {
+        return Paths.get(uri("file://" + absPath));
+    }
+    // NB converting to URI to avoid being platform dependent with '/' in path.
+
+    private static Path path(LocalBase x) {
+        return path(x.get());
+    }
+
     @DataPoints
-    public static final URI[] remoteBaseSupply = array(
-        URI.create("file://h"), URI.create("file://h/"),
-        URI.create("file://h1/d"), URI.create("file://h1/d/")
+    public static final RemoteBase[] remoteBaseSupply = array(
+        new RemoteBase("file://h"), new RemoteBase("file://h/"),
+        new RemoteBase("file://h1/d"), new RemoteBase("file://h1/d/")
     );
 
     @DataPoints
-    public static final Path[] localBaseSupply = array(
-        Paths.get("/"), Paths.get("/mnt"),
-        Paths.get("/mnt/d"), Paths.get("/mnt/d/")
+    public static final LocalBase[] localBaseSupply = array(
+        new LocalBase("/"), new LocalBase("/mnt"),
+        new LocalBase("/mnt/d"), new LocalBase("/mnt/d/")
     );
 
     @DataPoints
-    public static final String[] pathSupply = array(
-        "", "/", "/x", "/x/y", "/x/y/");
+    public static final String[] relPathSupply = array("", "x", "x/y", "x/y/");
 
-    private static RemoteMount newTarget(String remotePrefix,
-                                         String localPrefix) {
-        return new RemoteMount(URI.create(remotePrefix),
-                               Paths.get(localPrefix));
+
+    private static String join(String base, String rest) {
+        return base.endsWith("/") ? base + rest
+                                  : base + "/" + rest;
+    }
+
+    private static Path join(LocalBase base, String rest) {
+        return path(join(base.get(), rest));
+    }
+
+    private static URI join(RemoteBase base, String rest) {
+        return uri(join(base.get(), rest));
     }
 
     @Theory
-    public void nullNeverTranslatesToLocalPath(URI remote, Path local) {
-        RemoteMount target = new RemoteMount(remote, local);
+    public void nullNeverTranslatesToLocalPath(
+            RemoteBase remote, LocalBase local) {
+        RemoteMount target = new RemoteMount(uri(remote), path(local));
 
         Optional<Path> actual = target.toLocalPath(null);
         assertFalse(actual.isPresent());
@@ -51,36 +89,35 @@ public class RemoteMountTest {
 
     @Theory
     public void localPathNeverTranslatesToLocalPath(
-            URI remote, Path local, String path) {
-        RemoteMount target = new RemoteMount(remote, local);
+            RemoteBase remote, LocalBase local, String path) {
+        RemoteMount target = new RemoteMount(uri(remote), path(local));
 
-        Optional<Path> actual = target.toLocalPath(URI.create(path));
+        Optional<Path> actual = target.toLocalPath(uri(path));
         assertFalse(actual.isPresent());
     }
 
     @Theory
     public void translateRemotePathIfSameRemotePrefix(
-            URI remote, Path local, String partialPath)
-            throws URISyntaxException {
-        RemoteMount target = new RemoteMount(remote, local);
-        String fullPath = Paths.get(remote.getPath(), partialPath).toString();
-        URI remotePath = new URI("file", remote.getHost(), fullPath, null);
+            RemoteBase remote, LocalBase local, String path) {
+        RemoteMount target = new RemoteMount(uri(remote), path(local));
+        URI input = join(remote, path);
+        Path expected = join(local, path);
 
-        Optional<Path> actual = target.toLocalPath(remotePath);
+        Optional<Path> actual = target.toLocalPath(input);
         assertTrue(actual.isPresent());
-        assertThat(actual.get(), is(local.resolve(partialPath)));
+        assertThat(actual.get(), is(expected));
     }
 
     @Theory
     public void neverTranslateRemotePathIfNotSameRemotePrefix(
-            URI remote, Path local, String partialPath)
-            throws URISyntaxException {
-        RemoteMount target = new RemoteMount(remote, local);
-        String fullPath = Paths.get(remote.getPath(), partialPath).toString();
-        URI remotePath = new URI(
-                "file", remote.getHost() + "x", fullPath, null);
+            RemoteBase remote, LocalBase local, String path) {
+        assumeThat(remote.get(), not(endsWith("/")));
 
-        Optional<Path> actual = target.toLocalPath(remotePath);
+        RemoteMount target = new RemoteMount(uri(remote), path(local));
+        RemoteBase otherRemote = new RemoteBase(remote.get() + "different");
+        URI input = join(otherRemote, path);
+
+        Optional<Path> actual = target.toLocalPath(input);
         assertFalse(actual.isPresent());
     }
 
