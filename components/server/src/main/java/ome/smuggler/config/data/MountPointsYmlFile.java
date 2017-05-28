@@ -19,11 +19,11 @@ public class MountPointsYmlFile implements ConfigProvider<MountPointsConfig> {
 
         // with translation off, Smuggler will ignore the example config below.
         RemoteToLocalMapping m1 = new RemoteToLocalMapping();
-        m1.setRemotePrefix("file://host1/data");
-        m1.setLocalMount("/mnt/d1");
+        m1.setRemoteBaseUri("file://host1/data");
+        m1.setLocalBasePath("/mnt/d1");
         RemoteToLocalMapping m2 = new RemoteToLocalMapping();
-        m2.setRemotePrefix("file://host2/data");
-        m2.setLocalMount("/mnt/d2");
+        m2.setRemoteBaseUri("file://host2/data");
+        m2.setLocalBasePath("/mnt/d2");
 
         cfg.setRemoteToLocalMap(new RemoteToLocalMapping[] { m1, m2 });
 

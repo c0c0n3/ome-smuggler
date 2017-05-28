@@ -4,33 +4,66 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * TODO
+ * Specifies how to configure remote-to-local translation file paths.
+ * For the details of how this works, refer to the documentation of
+ * {@link ome.smuggler.core.types.RemoteMount RemoteMount}.
+ * The available settings:
+ * <ul>
+ *  <li>{@link #setEnableTranslation(boolean) Enabling of path translation}.
+ *  If {@code true}, the {@link #setRemoteToLocalMap(RemoteToLocalMapping[])
+ *  given remote-to-local map} will be used to translate remote file paths.
+ *  If {@code false}, no translation takes place and any given
+ *  {@link #setRemoteToLocalMap(RemoteToLocalMapping[]) mapping} will be
+ *  ignored.
+ *  </li>
+ *  <li>{@link #setRemoteToLocalMap(RemoteToLocalMapping[]) Remote-to-local
+ *  map}.
+ *  Each {@link RemoteToLocalMapping entry} specifies how to translate a
+ *  remote path into a local one. If this array is {@code null} or empty,
+ *  no translation takes place.
+ *  </li>
+ * </ul>
  */
 public class MountPointsConfig {
     // NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
     // be (de-)serialized painlessly by SnakeYaml.
 
+    /**
+     * Specifies how to map a remote file path into a local one.
+     * The available settings:
+     * <ul>
+     *   <li>{@link #setRemoteBaseUri(String) Remote base path.}
+     *   A <a href="https://en.wikipedia.org/wiki/File_URI_scheme">file URI</a>
+     *   specifying a host and a directory path on that host.
+     *   </li>
+     *   <li>{@link #setLocalBasePath(String) Local base path.}
+     *   The local directory path to use to rebase remote paths having a
+     *   prefix equal to the {@link #setRemoteBaseUri(String) remote base
+     *   path.}
+     *   </li>
+     * </ul>
+     */
     public static class RemoteToLocalMapping {
         // NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
         // be (de-)serialized painlessly by SnakeYaml.
 
-        private String remotePrefix;
-        private String localMount;
+        private String remoteBaseUri;
+        private String localBasePath;
 
-        public String getRemotePrefix() {
-            return remotePrefix;
+        public String getRemoteBaseUri() {
+            return remoteBaseUri;
         }
 
-        public void setRemotePrefix(String remotePrefix) {
-            this.remotePrefix = remotePrefix;
+        public void setRemoteBaseUri(String remoteBaseUri) {
+            this.remoteBaseUri = remoteBaseUri;
         }
 
-        public String getLocalMount() {
-            return localMount;
+        public String getLocalBasePath() {
+            return localBasePath;
         }
 
-        public void setLocalMount(String localMount) {
-            this.localMount = localMount;
+        public void setLocalBasePath(String localBasePath) {
+            this.localBasePath = localBasePath;
         }
 
         @Override
@@ -51,7 +84,7 @@ public class MountPointsConfig {
 
         @Override
         public String toString() {
-            return String.format("%s | %s", remotePrefix, localMount);
+            return String.format("%s | %s", remoteBaseUri, localBasePath);
         }
     }
 
