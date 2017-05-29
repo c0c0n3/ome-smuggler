@@ -32,7 +32,7 @@ public class Importer implements ImportService {
     public boolean run(ImportInput data, Path importLog) {
         ImporterCommandBuilder cliOmeroImporter =
                 new ImporterCommandBuilder(env.config(),
-                        data, cfg.niceCommand());
+                        data, env.fileResolver(), cfg.niceCommand());
         OmeCliCommandRunner runner =
                 new OmeCliCommandRunner(env, cliOmeroImporter);
         return runner.run(importLog);

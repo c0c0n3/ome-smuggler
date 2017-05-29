@@ -23,6 +23,7 @@ public class ImporterCommandBuilderWithNiceTest {
         return new ImporterCommandBuilder(
                 OmeCliConfigBuilder.config(),
                 ImportInputTest.makeNew(),
+                ImporterCommandBuilderTest.fileResolver(),
                 new BaseProgramArgument<>(niceCommand));
     }
 

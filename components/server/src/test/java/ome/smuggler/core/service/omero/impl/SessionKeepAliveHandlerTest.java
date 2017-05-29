@@ -11,6 +11,7 @@ import java.util.Optional;
 import ome.smuggler.config.items.OmeCliConfig;
 import ome.smuggler.core.msg.ChannelSource;
 import ome.smuggler.core.msg.CountedSchedule;
+import ome.smuggler.core.service.file.RemotePathResolver;
 import ome.smuggler.core.service.omero.SessionService;
 import ome.smuggler.core.types.FutureTimepoint;
 import ome.smuggler.core.types.OmeCliConfigReader;
@@ -31,6 +32,7 @@ public class SessionKeepAliveHandlerTest {
 
         return new OmeroEnv(reader,
                             mock(SessionQ.class),
+                            mock(RemotePathResolver.class),
                             mock(OmeroLogger.class));
     }
 

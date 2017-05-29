@@ -6,7 +6,10 @@ import static ome.smuggler.core.service.omero.impl.OmeCliTestUtils.*;
 import static ome.smuggler.core.types.ImportInputTest.*;
 
 import java.nio.file.Paths;
+import java.util.Collections;
 
+import ome.smuggler.core.service.file.RemotePathResolver;
+import ome.smuggler.core.service.file.impl.RemotePathMapper;
 import ome.smuggler.core.types.ImportInput;
 
 import org.junit.Test;
@@ -14,9 +17,13 @@ import util.runtime.CommandBuilder;
 
 public class ImporterCommandBuilderTest {
 
+    public static RemotePathResolver fileResolver() {
+        return new RemotePathMapper(Collections.emptyList());
+    }
+
     private static ImporterCommandBuilder newBuilder(ImportInput args) {
         return new ImporterCommandBuilder(OmeCliConfigBuilder.config(),
-                args, CommandBuilder.empty());
+                args, fileResolver(), CommandBuilder.empty());
     }
 
     private static String[] tokenPgmArgs(ImportInput args) {
@@ -26,19 +33,26 @@ public class ImporterCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFirstArgNull() {
-        new ImporterCommandBuilder(null, makeNew(), CommandBuilder.empty());
+        new ImporterCommandBuilder(null, makeNew(), fileResolver(),
+                                   CommandBuilder.empty());
     }
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null,
-                CommandBuilder.empty());
+                                   fileResolver(), CommandBuilder.empty());
     }
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfThirdArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
-                null);
+                                   null, CommandBuilder.empty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ctorThrowsIfFourthArgNull() {
+        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
+                                   fileResolver(), null);
     }
 
     @Test

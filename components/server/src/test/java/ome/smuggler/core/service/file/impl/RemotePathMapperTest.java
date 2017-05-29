@@ -2,6 +2,7 @@ package ome.smuggler.core.service.file.impl;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 import static util.sequence.Arrayz.array;
 import static util.sequence.Arrayz.asList;
 
@@ -48,8 +49,8 @@ public class RemotePathMapperTest {
     }
 
     @Theory
-    public void neverMapLocalPath(String localPath,
-                                  RemoteMount[] remoteToLocalMap) {
+    public void toLocalPathReturnsEmptyWhenInputIsLocalPath(
+            String localPath, RemoteMount[] remoteToLocalMap) {
         RemotePathResolver target = resolver(remoteToLocalMap);
 
         URI input = URI.create(localPath);
@@ -59,8 +60,22 @@ public class RemotePathMapperTest {
         assertFalse(actual.isPresent());
     }
 
+    @Theory
+    public void forceLocalPathReturnsInputWhenInputIsLocalPath(
+            String localPath, RemoteMount[] remoteToLocalMap) {
+        assumeThat(localPath, startsWith("file://"));
+
+        RemotePathResolver target = resolver(remoteToLocalMap);
+        URI input = URI.create(localPath);
+        Path actual = target.forceLocalPath(input);
+        Path expected = Paths.get(input);
+
+        assertNotNull(actual);
+        assertThat(actual, is(expected));
+    }
+
     @Test
-    public void mapRemoteToLocal() {
+    public void toLocalPathMapsRemoteToLocal() {
         RemotePathResolver target = resolver(mountSupply[2]);
         URI remotePath = URI.create("file://h2/d2/x/my-file");
         Optional<Path> actual = target.toLocalPath(remotePath);
@@ -73,6 +88,16 @@ public class RemotePathMapperTest {
     @Test (expected = NullPointerException.class)
     public void toLocalPathThrowsIfNullArg() {
         resolver(mountSupply[2]).toLocalPath(null);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void forceLocalPathThrowsIfNullArg() {
+        resolver(mountSupply[0]).forceLocalPath(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void forceLocalPathThrowsWithNonFileUriArg() {
+        resolver(mountSupply[0]).forceLocalPath(URI.create("/x/y"));
     }
 
     @Test (expected = NullPointerException.class)

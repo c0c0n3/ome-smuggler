@@ -3,8 +3,9 @@ package ome.smuggler.core.service.omero.impl;
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
+import ome.smuggler.core.service.file.RemotePathResolver;
 import ome.smuggler.core.types.ImportInput;
 import ome.smuggler.core.types.OmeCliConfigSource;
 import util.runtime.BaseProgramArgument;
@@ -21,22 +22,28 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     private static final String SessionKeyOpt = "-k";
 
     private final ImportInput importArgs;
+    private final RemotePathResolver fileResolver;
     private final CommandBuilder niceCommand;
     
     /**
      * Creates a new instance to build a command line from the given data.
      * @param config configuration for the OMERO CLI commands.
      * @param importArgs details what to import.
+     * @param fileResolver remote-to-local file resolver.
+     * @param niceCommand "nice" command to set process priority.
      * @throws NullPointerException if any argument is {@code null}.
      */
     public ImporterCommandBuilder(OmeCliConfigSource config,
                                   ImportInput importArgs,
+                                  RemotePathResolver fileResolver,
                                   CommandBuilder niceCommand) {
         super(config);
         requireNonNull(importArgs, "importArgs");
+        requireNonNull(fileResolver, "fileResolver");
         requireNonNull(niceCommand, "niceCommand");
         
         this.importArgs = importArgs;
+        this.fileResolver = fileResolver;
         this.niceCommand = niceCommand;
     }
     
@@ -78,15 +85,15 @@ public class ImporterCommandBuilder extends OmeCliCommandBuilder {
     }
     
     private ProgramArgument<String> importTarget() {
-        String absPath = Paths.get(importArgs.getTarget()).toString();  // (*) 
-        return new BaseProgramArgument<>(absPath);
+        Path absPath =
+                fileResolver.forceLocalPath(importArgs.getTarget());  // (*)
+        return new BaseProgramArgument<>(absPath.toString());
     }
-    /* (*) URI resolution. We're assuming the file is local but going forward
-     * we might replace this with a more sophisticated URI to file resolution
-     * so that files may at least come from a network share visible to both
-     * client and smuggler. We could stretch it even further and cater for
-     * FTP and HTTP but the OMERO import library will have to be modified to
-     * read files from FTP or HTTP... 
+    /* (*) URI resolution. We're assuming the file is local or comes from a
+     * network share visible to both client and smuggler. Going forward we
+     * might replace this with a more sophisticated URI to file resolution
+     * that also caters for FTP, HTTP, and IPFS (?!) but the OMERO import
+     * library will have to be modified to read files from FTP or HTTP...
      */
 
     private JvmCmdBuilder buildJavaCommandLine(JvmCmdBuilder java) {

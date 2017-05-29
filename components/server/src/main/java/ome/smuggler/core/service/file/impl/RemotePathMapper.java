@@ -7,6 +7,7 @@ import ome.smuggler.core.types.RemoteMount;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,11 @@ public class RemotePathMapper implements RemotePathResolver {
               .filter(Optional::isPresent)
               .map(Optional::get)
               .findFirst();
+    }
+
+    @Override
+    public Path forceLocalPath(URI path) {
+        return toLocalPath(path).orElse(Paths.get(path));
     }
 
 }
