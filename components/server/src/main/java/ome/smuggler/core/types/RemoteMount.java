@@ -118,6 +118,11 @@ public class RemoteMount {
               .map(Paths::get);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s | %s ", remoteBasePath, localBasePath);
+    }
+
 }
 /* TODO all this can be improved big time!
  * For example, consider an implementation that uses tries or radix sort.
