@@ -5,25 +5,22 @@ import static org.junit.Assert.*;
 import static ome.smuggler.core.service.omero.impl.OmeCliTestUtils.*;
 import static ome.smuggler.core.types.ImportInputTest.*;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-
-import ome.smuggler.core.service.file.RemotePathResolver;
-import ome.smuggler.core.service.file.impl.RemotePathMapper;
-import ome.smuggler.core.types.ImportInput;
-
 import org.junit.Test;
+
+import ome.smuggler.core.types.ImportInput;
 import util.runtime.CommandBuilder;
 
 public class ImporterCommandBuilderTest {
 
-    public static RemotePathResolver fileResolver() {
-        return new RemotePathMapper(Collections.emptyList());
+    public static Path dummyImportPath() {
+        return Paths.get("dummy");
     }
 
     private static ImporterCommandBuilder newBuilder(ImportInput args) {
         return new ImporterCommandBuilder(OmeCliConfigBuilder.config(),
-                args, fileResolver(), CommandBuilder.empty());
+                args, dummyImportPath(), CommandBuilder.empty());
     }
 
     private static String[] tokenPgmArgs(ImportInput args) {
@@ -33,14 +30,14 @@ public class ImporterCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFirstArgNull() {
-        new ImporterCommandBuilder(null, makeNew(), fileResolver(),
+        new ImporterCommandBuilder(null, makeNew(), dummyImportPath(),
                                    CommandBuilder.empty());
     }
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null,
-                                   fileResolver(), CommandBuilder.empty());
+                                   dummyImportPath(), CommandBuilder.empty());
     }
 
     @Test(expected = NullPointerException.class)
@@ -52,7 +49,7 @@ public class ImporterCommandBuilderTest {
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFourthArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
-                                   fileResolver(), null);
+                                   dummyImportPath(), null);
     }
 
     @Test
@@ -72,8 +69,7 @@ public class ImporterCommandBuilderTest {
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
         
-        String targetUri = Paths.get(makeNew().getTarget()).toString();
-        assertThat(xs[6], is(targetUri));
+        assertThat(xs[6], is(dummyImportPath().toString()));
     }
     
     @Test

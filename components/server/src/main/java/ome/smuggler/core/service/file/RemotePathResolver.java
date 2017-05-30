@@ -37,7 +37,9 @@ public interface RemotePathResolver {
      * @return the mapped path.
      * @throws NullPointerException if the argument is {@code null}.
      * @throws IllegalArgumentException if the argument is not a file URI
-     * (i.e. doesn't have a "file" scheme)
+     * (i.e. doesn't have a "file" scheme) or it is a remote file URI (i.e.
+     * has a host component) but can't be resolved to a local file using
+     * remote-to-local mappings.
      */
     Path forceLocalPath(URI path);
 

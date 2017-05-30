@@ -43,7 +43,7 @@ public class RemotePathMapper implements RemotePathResolver {
 
     @Override
     public Path forceLocalPath(URI path) {
-        return toLocalPath(path).orElse(Paths.get(path));
+        return toLocalPath(path).orElseGet(() -> Paths.get(path));
     }
 
 }

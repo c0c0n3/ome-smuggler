@@ -44,6 +44,11 @@ public class RemotePathMapperTest {
         array(), array(m1), array(m1, m2)
     );
 
+    @DataPoints
+    public static final URI[] matchingRemotePathSupply = array(
+        URI.create("file://h1/d1/f"), URI.create("file://h1/d1/x/f")
+    );
+
     static RemotePathResolver resolver(RemoteMount[] remoteToLocalMap) {
         return new RemotePathMapper(asList(remoteToLocalMap));
     }
@@ -74,6 +79,21 @@ public class RemotePathMapperTest {
         assertThat(actual, is(expected));
     }
 
+    @Theory
+    public void forceLocalPathSameAsToLocalPathWhenInputIsMatchingRemotePath(
+            RemoteMount[] remoteToLocalMap, URI matchingRemotePath) {
+        assumeThat(remoteToLocalMap.length, greaterThan(0));
+
+        RemotePathResolver target = resolver(remoteToLocalMap);
+        Path p1 = target.forceLocalPath(matchingRemotePath);
+        Optional<Path> p2 = target.toLocalPath(matchingRemotePath);
+
+        assertNotNull(p1);
+        assertNotNull(p2);
+        assertTrue(p2.isPresent());
+        assertThat(p1, is(p2.get()));
+    }
+
     @Test
     public void toLocalPathMapsRemoteToLocal() {
         RemotePathResolver target = resolver(mountSupply[2]);
@@ -83,6 +103,13 @@ public class RemotePathMapperTest {
         assertNotNull(actual);
         assertTrue(actual.isPresent());
         assertThat(actual.get().toString(), containsString("my-file"));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void forceLocalPathThrowsIfUnmatchedRemotePath() {
+        RemotePathResolver target = resolver(mountSupply[2]);
+        URI remotePath = URI.create("file://not-in-map/x/my-file");
+        target.forceLocalPath(remotePath);
     }
 
     @Test (expected = NullPointerException.class)
