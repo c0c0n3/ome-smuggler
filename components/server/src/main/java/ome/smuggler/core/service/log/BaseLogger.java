@@ -45,7 +45,7 @@ public class BaseLogger implements LogService {
      * @throws NullPointerException if any argument is {@code null}.
      */
     @SafeVarargs
-    public static <T> Consumer<PrintWriter> fieldsWriter(String header,
+    public static Consumer<PrintWriter> fieldsWriter(String header,
             Stream<Pair<Object, Object>>...fields) {
         requireNonNull(header, "header");
 

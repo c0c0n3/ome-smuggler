@@ -20,8 +20,11 @@ public interface KeyValueStore<K extends Identifiable, V> {
      * @param key identifies the mapping.
      * @param value the value to store.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void put(K key, V value);
 
@@ -32,8 +35,11 @@ public interface KeyValueStore<K extends Identifiable, V> {
      * @throws NullPointerException if the argument is {@code null}.
      * @throws IllegalArgumentException if no value is associated to the given
      * key.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     default V get(K key) {
         AtomicReference<V> holder = new AtomicReference<>();  // (*)
@@ -54,8 +60,11 @@ public interface KeyValueStore<K extends Identifiable, V> {
      * @throws NullPointerException if any argument is {@code null}.
      * @throws IllegalArgumentException if no value is associated to the given
      * key.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void modify(K key, Function<V, V> operation);
 
@@ -64,8 +73,11 @@ public interface KeyValueStore<K extends Identifiable, V> {
      * Does nothing if no value is currently associated to the key.
      * @param key identifies the mapping.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void remove(K key);
 

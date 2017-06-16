@@ -35,9 +35,11 @@ public class CryptoKeyFactory {
      * @param key the key to serialise.
      * @param out the destination stream to write the data to.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an error occurs while writing to the stream;
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
      * the exception is masked as a runtime exception and thrown as is without
-     * wrapping.
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an error occurs while writing to the stream.
+     * </p>
      * @see #importKey(InputStream)
      */
     public static void exportKey(Key key, OutputStream out) {
@@ -78,12 +80,13 @@ public class CryptoKeyFactory {
      * #exportKey(Key, OutputStream) export} method.
      * @return the key object read from the stream.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an error occurs while reading from the stream;
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
      * the exception is masked as a runtime exception and thrown as is without
-     * wrapping.
-     * @throws ClassNotFoundException if an error occurs while instantiating
-     * the key object; the exception is masked as a runtime exception and thrown
-     * as is without wrapping.
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an error occurs while reading from the stream.
+     * <br>{@link ClassNotFoundException} if an error occurs while instantiating
+     * the key object.
+     * </p>
      * @see #exportKey(Key, OutputStream)
      */
     public static Key importKey(InputStream in) {
@@ -103,12 +106,13 @@ public class CryptoKeyFactory {
      * #exportKey(Key, OutputStream) export} method.
      * @return the key object read from the stream.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an error occurs while reading from the string;
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
      * the exception is masked as a runtime exception and thrown as is without
-     * wrapping.
-     * @throws ClassNotFoundException if an error occurs while instantiating
-     * the key object; the exception is masked as a runtime exception and thrown
-     * as is without wrapping.
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an error occurs while reading from the string.
+     * <br>{@link ClassNotFoundException} if an error occurs while instantiating
+     * the key object.
+     * </p>
      * @see #exportKey(Key, OutputStream)
      * @see #exportNewKey(CryptoAlgoSpec)
      */

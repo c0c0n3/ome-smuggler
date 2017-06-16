@@ -16,6 +16,7 @@ public class ReschedulableFactory {
      * This will be a {@link MessageRepeater} if the given list of repeat 
      * intervals is not empty; otherwise a {@link OnceOffSchedule} with a
      * {@link OnceOffRepeatConsumer} as a consumer.
+     * @param <T> the reschedulable type.
      * @param consumer consumes the message output from the channel and returns
      * an indication of whether the same message should be delivered again. 
      * @param repeatIntervals intervals at which to re-deliver the message. 
@@ -48,6 +49,7 @@ public class ReschedulableFactory {
      * specified {@link RepeatConsumer} exactly once. If the consumer asks to
      * deliver the message again, the message is given to the exceeded delivery
      * handler instead of being put back on the channel.
+     * @param <T> the reschedulable type.
      * @param consumer consumes the message output from the channel and returns
      * an indication of whether the same message should be delivered again. 
      * @param exceededRedeliveryHandler is given the message if the consumer

@@ -81,9 +81,11 @@ public class JsonResource<T> {
 
     /**
      * POST the resource and reads a response.
+     * @param <R> response type.
      * @param resource the resource to POST.
      * @param responseType the type of the JSON object; generics are not
      *                     supported.
+     * @return the response.
      * @throws IOException If a connection or protocol error occurs.
      * @throws RuntimeException if the resource could not be serialized to JSON.
      */

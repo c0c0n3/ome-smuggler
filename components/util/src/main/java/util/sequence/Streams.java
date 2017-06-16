@@ -36,6 +36,7 @@ public class Streams {
     /**
      * Repeats a <em>finite</em> stream the specified number of {@code times}.
      * This is a terminal operation on the input stream.
+     * @param <T> any type.
      * @param times how many times to repeat the input stream.
      * @param ts the input stream.
      * @return the stream {@code ts + ts + ... + ts}, the given number of 
@@ -56,7 +57,8 @@ public class Streams {
      * {@code ts}.
      * For example, if {@code ts = [1, 2, 3]} then {@code init(ts) = [[], [1], 
      * [1,2], [1,2,3]]}.
-     * This is a terminal operation. 
+     * This is a terminal operation.
+     * @param <T> any type.
      * @param ts the input stream.
      * @return the initial segments of {@code ts}.
      * @throws NullPointerException if any argument is {@code null}.
@@ -86,6 +88,9 @@ public class Streams {
      * For example (pseudo code): {@code zipWith((x,y) -> x + y, [a,b], [1,2,3])
      * = [a1, b2]}.
      * This is a terminal operation on the input streams.
+     * @param <X> any type.
+     * @param <Y> any type.
+     * @param <Z> any type.
      * @param f the function to map.
      * @param xs the list providing the left values.
      * @param ys the list providing the right values.
@@ -114,6 +119,8 @@ public class Streams {
      * the two.
      * For example (pseudo code): {@code zip([a,b], [1,2,3]) = [(a, 1), (b, 2)]}.
      * This is a terminal operation on the input streams.
+     * @param <X> any type.
+     * @param <Y> any type.
      * @param xs the list providing the left values.
      * @param ys the list providing the right values.
      * @return the "zipped" list.
@@ -127,7 +134,8 @@ public class Streams {
      * Indexes the elements of the given finite list, starting from {@code 0}.
      * For example (pseudo code): {@code zipIndex([a,b,c]) = [(a, 0), (b, 1),
      * (c, 2)]}.
-     * This is a terminal operation on the input streams. 
+     * This is a terminal operation on the input streams.
+     * @param <X> any type.
      * @param xs the list to index.
      * @return the indexed list.
      * @throws NullPointerException if any argument is {@code null}.
@@ -144,6 +152,8 @@ public class Streams {
      * argument). That is: {@code map(f,[v,w,...]) = [f(0,v),f(1,w),...]}.
      * For example (pseudo code) if {@code f(i,x) = i+x} then 
      * {@code map(f,[1,2,3]) = [1,3,5]}.
+     * @param <Y> any type.
+     * @param <Z> any type.
      * @param f turns an index and a {@code Y} into a {@code Z}.
      * @param ys the list to map.
      * @return a new list with the mapped elements.
@@ -172,6 +182,7 @@ public class Streams {
      * Interleaves the elements of the given stream with the specified 
      * separator.
      * For example (pseudo code) {@code intersperse(0,[1,2,3]) = [1,0,2,0,3]}.
+     * @param <X> any type.
      * @param sep the value to put in between stream elements; ideally this 
      * should be a new object for each slot.
      * @param xs the elements to interleave.
@@ -188,6 +199,7 @@ public class Streams {
     /**
      * Removes all {@code null}'s from the stream; if the stream itself is
      * {@code null}, then the empty stream is returned.
+     * @param <T> any type.
      * @param xs the stream to cleanse.
      * @return the cleansed stream.
      */
@@ -199,6 +211,7 @@ public class Streams {
     /**
      * Removes all {@code null}'s from the list; if the list itself is
      * {@code null}, then the empty stream is returned.
+     * @param <T> any type.
      * @param xs the list to cleanse.
      * @return the cleansed stream.
      */
@@ -210,6 +223,7 @@ public class Streams {
     /**
      * Removes all {@code null}'s from the array; if the array itself is
      * {@code null}, then the empty stream is returned.
+     * @param <T> any type.
      * @param xs the array to cleanse.
      * @return the cleansed stream.
      */
@@ -221,6 +235,7 @@ public class Streams {
     /**
      * Collects the given stream's elements into a list; if the stream is 
      * {@code null}, then the empty list is returned.
+     * @param <T> any type.
      * @param xs the stream to convert.
      * @return the stream's elements collected into a list.
      */
@@ -232,6 +247,7 @@ public class Streams {
     /**
      * Collects the given list's elements into a stream; if the list is {@code
      * null}, then the empty stream is returned.
+     * @param <T> any type.
      * @param xs the list to convert.
      * @return the list's elements collected into a stream.
      */
@@ -243,6 +259,7 @@ public class Streams {
      * Puts an optional value into a stream.
      * If the given value is {@code null} or an empty optional, then the empty
      * stream is returned; otherwise a stream containing the optional value.
+     * @param <T> any type.
      * @param maybeValue the value to convert, possibly {@code null}.
      * @return an empty stream or a stream with the optional value as the case
      * may be.
@@ -255,6 +272,7 @@ public class Streams {
     /**
      * Returns empty if the argument is {@code null}, otherwise the argument
      * itself.
+     * @param <T> any type.
      * @param xs a possibly {@code null} reference.
      * @return {@code xs} if not {@code null}, an empty stream otherwise. 
      */
@@ -266,6 +284,7 @@ public class Streams {
      * Joins the given streams in encounter order.
      * For example (pseudo code): {@code concat([1, 2], null, [3, 4]) = [1, 2, 
      * 3, 4]}. Any {@code null} stream is replaced with empty.
+     * @param <T> any type.
      * @param xs the streams to join.
      * @return the joined stream.
      * @throws NullPointerException if the argument array is {@code null}.
@@ -283,6 +302,7 @@ public class Streams {
      * For example (pseudo code): {@code pairUp [1, null, 3, 4, 5] = [
      * (1, null), (3, 4), (5, null)]}. (Note that any {@code null} input item
      * will be put in the right place, no exception is thrown.)
+     * @param <T> any type.
      * @param xs the input items.
      * @return the input items collected into pairs.
      * @throws NullPointerException if the argument is {@code null}.
@@ -310,6 +330,7 @@ public class Streams {
      * null} {@link Pair}, then an exception is thrown. However, any {@code
      * null} within a {@link Pair} will be put in the right place, no exception
      * is thrown.
+     * @param <T> any type.
      * @param xs the input pairs.
      * @return the flattened stream.
      * @throws NullPointerException if the argument or any of its pair objects

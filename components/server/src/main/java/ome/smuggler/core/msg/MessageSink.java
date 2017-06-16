@@ -14,6 +14,8 @@ public interface MessageSink<M, D> extends ChannelSink<ChannelMessage<M, D>> {
     /**
      * Builds a message sink that forwards message data to the given consumer,
      * while discarding any message metadata.
+     * @param <M> the metadata type.
+     * @param <D> the data type.
      * @param target consumes message data.
      * @return a message sink adapter.
      * @throws NullPointerException if the argument is {@code null}.

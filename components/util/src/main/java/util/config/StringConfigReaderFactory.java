@@ -37,7 +37,10 @@ public class StringConfigReaderFactory {
     }
     
     /**
-     * @return the parser used to create enum configuration readers.
+     * Returns the parser used to create enum configuration readers.
+     * @param <T> enum type.
+     * @param enumType the enum type.
+     * @return the parser.
      */
     public static 
     <T extends Enum<T>> Function<String, T> enumParser(Class<T> enumType) {
@@ -89,6 +92,7 @@ public class StringConfigReaderFactory {
      * Creates an enum configuration reader.
      * String values are read from the provided source configuration store 
      * using the enum's {@link Enum#valueOf(Class, String) valueOf} method.
+     * @param <T> enum type.
      * @param enumType the the enum type for which to create the reader.
      * @param configSource reads string items from configuration.
      * @return a configuration provider to read enum items.

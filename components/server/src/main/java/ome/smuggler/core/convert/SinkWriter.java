@@ -24,6 +24,8 @@ public interface SinkWriter<T, S> {
      * Calls the {@link #write(Object, Object)} write} method converting any
      * checked exception into an unchecked one that will bubble up without
      * requiring a {@code throws} clause on this method.
+     * @param sink where to write the value to.
+     * @param value the data to write.
      */
     default void uncheckedWrite(S sink, T value) {
         unchecked(this::write).accept(sink, value);

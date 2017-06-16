@@ -17,6 +17,11 @@ public class ChannelMessage<M, D> {
     /**
      * Syntactic sugar for the {@link #ChannelMessage(Optional, Object)  
      * two-argument constructor}.
+     * @param <M> the metadata type.
+     * @param <D> the data type.
+     * @param metadata the optional metadata.
+     * @param data the data.
+     * @return a new instance.
      */
     public static <M, D> ChannelMessage<M, D> message(Optional<M> metadata, D data) { 
         return new ChannelMessage<>(metadata, data);
@@ -25,6 +30,11 @@ public class ChannelMessage<M, D> {
     /**
      * Syntactic sugar for the {@link #ChannelMessage(Object, Object)  
      * two-argument constructor}.
+     * @param <M> the metadata type.
+     * @param <D> the data type.
+     * @param metadata the metadata.
+     * @param data the data.
+     * @return a new instance.
      */
     public static <M, D> ChannelMessage<M, D> message(M metadata, D data) { 
         return new ChannelMessage<>(metadata, data);
@@ -33,6 +43,10 @@ public class ChannelMessage<M, D> {
     /**
      * Syntactic sugar for the {@link #ChannelMessage(Object) one-argument 
      * constructor}.
+     * @param <M> the metadata type.
+     * @param <D> the data type.
+     * @param data the data.
+     * @return a new instance.
      */
     public static <M, D> ChannelMessage<M, D> message(D data) { 
         return new ChannelMessage<>(data);

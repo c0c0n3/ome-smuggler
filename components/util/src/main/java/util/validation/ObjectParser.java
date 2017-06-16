@@ -16,7 +16,9 @@ public interface ObjectParser<T> {
      * Same as {@link #parse(Stream)} but doesn't check if the argument is
      * {@code null}. This is the only method you need to implement as you can
      * rely on the default implementation of {@link #parse(Stream)} to do the
-     * check. 
+     * check.
+     * @param tokens the input tokens.
+     * @return the parse result.
      */
     Either<String, T> parseNonNull(Stream<String> tokens);
     
@@ -35,6 +37,8 @@ public interface ObjectParser<T> {
     
     /**
      * Convenience method, same as {@link #parse(Stream)}.
+     * @param tokens the input tokens.
+     * @return the parse result.
      */
     default Either<String, T> parse(String...tokens) {
         requireNonNull(tokens, "tokens");

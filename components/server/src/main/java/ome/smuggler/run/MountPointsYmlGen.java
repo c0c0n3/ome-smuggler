@@ -12,7 +12,8 @@ import util.config.YamlConverter;
  * to generate the file. This way we can keep all config data in Java and avoid
  * any deserialization issue.
  * <pre>
- * java -jar build/libs/ome-smuggler-*.jar ome.smuggler.run.MountPointsYmlGen > src/main/resources/config/mount-points.yml
+ * java -jar build/libs/ome-smuggler-*.jar ome.smuggler.run.MountPointsYmlGen \
+ * {@literal >} src/main/resources/config/mount-points.yml
  *</pre>
  */
 public class MountPointsYmlGen implements RunnableApp {

@@ -16,6 +16,7 @@ public class Monoids<T> {
      *   Monoids.with(someMonoid)
      *          .fold(streamOfStream)
      * </pre>
+     * @param <T> elements type.
      * @param monoid the monoid to use.
      * @return a new {@code Monoids} instance.
      * @throws NullPointerException if the argument is {@code null}.

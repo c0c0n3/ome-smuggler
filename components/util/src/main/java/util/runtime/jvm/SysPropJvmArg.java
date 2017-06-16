@@ -21,6 +21,8 @@ public class SysPropJvmArg extends BaseProgramArgument<Pair<String, String>> {
      * Converts the given properties into a stream of system property arguments,
      * filtering out properties having a {@code null} or empty key or having a
      * {@code null} value.
+     * @param <K> key type.
+     * @param <V> value type.
      * @param props the key-value pairs to convert.
      * @return the converted props.
      * @throws NullPointerException if the argument is {@code null}.

@@ -19,6 +19,7 @@ public class Importer implements ImportService {
     /**
      * Creates a new instance.
      * @param env the service environment.
+     * @param cfg the import configuration.
      */
     public Importer(OmeroEnv env, ImportConfigSource cfg) {
         requireNonNull(env, "env");

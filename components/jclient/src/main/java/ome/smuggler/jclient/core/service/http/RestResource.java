@@ -27,6 +27,7 @@ public interface RestResource<T> {
 
     /**
      * POST the resource.
+     * @param <R> the response type.
      * @param resource the resource to POST.
      * @param responseType the type of the object to deserialize the response
      *                     into; generics are not supported.

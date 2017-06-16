@@ -19,6 +19,7 @@ public class JarJvmArg extends BaseProgramArgument<Path> {
     
     /**
      * Creates a new instance to hold the specified argument.
+     * @param appJarPath the app jar path.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public JarJvmArg(Path appJarPath) {

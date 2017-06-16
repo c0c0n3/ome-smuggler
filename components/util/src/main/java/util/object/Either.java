@@ -19,6 +19,8 @@ public class Either<L, R> {
 
     /**
      * Creates a new holder for a left value.
+     * @param <L> left value type.
+     * @param <R> right value type.
      * @param leftValue the value to hold, may be {@code null}.
      * @return a left value holder.
      */
@@ -28,6 +30,8 @@ public class Either<L, R> {
     
     /**
      * Creates a new holder for a right value.
+     * @param <L> left value type.
+     * @param <R> right value type.
      * @param rightValue the value to hold, may be {@code null}.
      * @return a right value holder.
      */
@@ -88,6 +92,7 @@ public class Either<L, R> {
      * Does nothing if this is a {@link #isLeft() left} value holder, just 
      * returning a new left value holder containing this left value; this way a 
      * left value is propagated as is through map calls.
+     * @param <T> the mapped type.
      * @param f the transformation to apply to the right value.
      * @return a new right value holder with the mapped value if this is a
      * right value holder; otherwise a new left value holder with this object's
@@ -107,6 +112,11 @@ public class Either<L, R> {
     
     /**
      * Same as {@link #map(Function) map} but on left values.
+     * @param <T> the mapped type.
+     * @param f the left value mapper.
+     * @return a new left value holder with the mapped value if this is a
+     * left value holder; otherwise a new right value holder with this object's
+     * right value.
      */
     public <T> Either<T, R> mapLeft(Function<L, T> f) {
         if (isLeft()) {
@@ -123,7 +133,8 @@ public class Either<L, R> {
      * {@link #isRight() right} value holder to produce a new value holder.
      * Does nothing if this is a {@link #isLeft() left} value holder, just 
      * returning a new left value holder containing this left value; this way a 
-     * left value is propagated as is through map calls. 
+     * left value is propagated as is through map calls.
+     * @param <T> the mapped type.
      * @param f the new value holder producer to apply to the right value.
      * @return the result of applying {@code f} to the right value if this
      * is a right value holder; otherwise a new left value holder with this 
@@ -142,7 +153,8 @@ public class Either<L, R> {
     
     /**
      * Applies {@code left} to the left value if this is a {@link #isLeft() 
-     * left} value holder; otherwise applies {@code right} to the right value. 
+     * left} value holder; otherwise applies {@code right} to the right value.
+     * @param <T> the mapped type.
      * @param left the transformation to apply to the left value.
      * @param right the transformation to apply to the right value.
      * @return the result of applying either transformation.

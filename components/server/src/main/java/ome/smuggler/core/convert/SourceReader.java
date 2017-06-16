@@ -24,6 +24,8 @@ public interface SourceReader<S, T> {
      * Calls the {@link #read(Object) read} method converting any checked
      * exception into an unchecked one that will bubble up without requiring
      * a {@code throws} clause on this method.
+     * @param source the data source.
+     * @return the value read from the source.
      */
     default T uncheckedRead(S source) {
         return unchecked(this::read).apply(source);

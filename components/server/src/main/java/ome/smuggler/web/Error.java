@@ -13,6 +13,7 @@ public class Error {
     
     /**
      * Utility method to create a left {@link Either} with an {@link Error}.
+     * @param <R> any type.
      * @param reason the reason to set in the returned error.
      * @return a left {@link Either} with an {@link Error} having the specified
      * reason.

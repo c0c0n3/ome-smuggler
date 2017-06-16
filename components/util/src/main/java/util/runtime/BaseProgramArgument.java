@@ -25,6 +25,7 @@ public class BaseProgramArgument<T> implements ProgramArgument<T> {
     
     /**
      * Creates a new instance to hold the specified argument.
+     * @param arg the argument.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public BaseProgramArgument(T arg) {

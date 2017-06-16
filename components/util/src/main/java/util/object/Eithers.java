@@ -16,6 +16,7 @@ public class Eithers {
     /**
      * Collects all the left values in encounter order.
      * Any {@code null} or right value is filtered out.
+     * @param <L> left value type.
      * @param xs the values to collect.
      * @return all the left values in the input stream.
      */
@@ -28,6 +29,7 @@ public class Eithers {
     /**
      * Collects all the right values in encounter order.
      * Any {@code null} or left value is filtered out.
+     * @param <R> right value type.
      * @param xs the values to collect.
      * @return all the right values in the input stream.
      */
@@ -39,6 +41,8 @@ public class Eithers {
 
     /**
      * Collects left and right values in separate lists, in encounter order.
+     * @param <L> left value type.
+     * @param <R> right value type.
      * @param xs the values to collect.
      * @return a pair whose first element contains the input left values, in
      * encounter order, and second element contains the input right values,
