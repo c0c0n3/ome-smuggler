@@ -31,7 +31,13 @@
 
 code{ white-space: pre; }
 
-div.sourceCode { overflow-x: auto; }
+div.sourceCode {
+    overflow-x: auto;
+    /* My change: added margins to match pre and p style in the main CSS
+     * file (`style.css`).
+     */
+    margin: 0 0 1.421em 0;
+}
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
@@ -43,9 +49,10 @@ td.sourceCode { padding-left: 5px; }
  * My change: made CSS more specific so that it only applies to Pandoc-generated
  * code blocks. In fact, I'm using inline code tags all over the show and want
  * them to look pretty much like the surrounding text, except for the monospace
- * font. (See `style.css` for the code tag style.)
+ * font. (See `style.css` for the code tag style.) Also, I reset the margins
+ * to avoid inheriting the "pre" margins from the main CSS (`style.css`).
  */
-.sourceCode { color: #cccccc; background-color: #303030; }
+.sourceCode { color: #cccccc; background-color: #303030; margin: 0 0 0 0; }
 
 /* Original Pandoc output:
  * code > span... { ... }
