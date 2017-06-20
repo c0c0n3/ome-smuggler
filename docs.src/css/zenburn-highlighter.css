@@ -1,20 +1,100 @@
-code{white-space: pre;}
+/*
+ * Zenburn Pandoc CSS
+ * ==================
+ * > Zenburn CSS to style Pandoc-generated HTML code blocks.
+ *
+ * How it works
+ * ------------
+ * We use Hakyll's Pandoc compiler to output code blocks---see `Compilers.hs`.
+ * Pandoc parses each code block and then outputs HTML tags styled to reflect
+ * the parsed terms---e.g. a keyword is wrapped in a `span` having a `kw` CSS
+ * class. Hakyll's Pandoc compiler (rightly!) outputs HTML fragments without
+ * embedding a style-sheet, so we have to provide one.
+ * See:
+ * - https://jaspervdj.be/hakyll/tutorials/faq.html#does-hakyll-support-syntax-highlighting
+ *
+ * CSS how-to
+ * ----------
+ * I have generate the initial style-sheet with Pandoc 1.19.2.1, using:
+ *
+ *     $ pandoc --highlight-style zenburn -s -o t.html \
+ *              docs.src/content/examples/whirlwind-tour.md
+ *
+ * which outputs `t.html` as a standalone document (`-s`) with embedded CSS
+ * to style code blocks. The CSS colour scheme is Zenburn.
+ *
+ * Then I stripped the `style` tags out of `t.html` and tweaked the CSS just
+ * slightly as noted in the comments below.
+ *
+ */
 
+
+code{ white-space: pre; }
+
+div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #303030; color: #cccccc; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; }
 td.sourceCode { padding-left: 5px; }
-pre.sourceCode, pre.sourceCode code { color: #cccccc; background-color: #303030; }
-code > span.kw { color: #f0dfaf; }
-code > span.dt { color: #dfdfbf; }
-code > span.dv { color: #dcdccc; }
-code > span.bn { color: #dca3a3; }
-code > span.fl { color: #c0bed1; }
-code > span.ch { color: #dca3a3; }
-code > span.st { color: #cc9393; }
-code > span.co { color: #7f9f7f; }
-code > span.ot { color: #efef8f; }
-code > span.al { color: #ffcfaf; }
-code > span.fu { color: #efef8f; }
-code > span.er { color: #c3bf9f; }
+
+/* Original Pandoc output:
+ * pre, code { color: #cccccc; background-color: #303030; }
+ * My change: made CSS more specific so that it only applies to Pandoc-generated
+ * code blocks. In fact, I'm using inline code tags all over the show and want
+ * them to look pretty much like the surrounding text, except for the monospace
+ * font. (See `style.css` for the code tag style.)
+ */
+.sourceCode { color: #cccccc; background-color: #303030; }
+
+/* Original Pandoc output:
+ * code > span... { ... }
+ * My change: made CSS more specific
+ * .sourceCode > span... { ... }
+ */
+.sourceCode > span.kw { color: #f0dfaf; } /* Keyword */
+.sourceCode > span.dt { color: #dfdfbf; } /* DataType */
+.sourceCode > span.dv { color: #dcdccc; } /* DecVal */
+.sourceCode > span.bn { color: #dca3a3; } /* BaseN */
+.sourceCode > span.fl { color: #c0bed1; } /* Float */
+.sourceCode > span.ch { color: #dca3a3; } /* Char */
+.sourceCode > span.st { color: #cc9393; } /* String */
+.sourceCode > span.co { color: #7f9f7f; } /* Comment */
+.sourceCode > span.ot { color: #efef8f; } /* Other */
+.sourceCode > span.al { color: #ffcfaf; } /* Alert */
+.sourceCode > span.fu { color: #efef8f; } /* Function */
+.sourceCode > span.er { color: #c3bf9f; } /* Error */
+.sourceCode > span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+.sourceCode > span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+.sourceCode > span.sc { color: #dca3a3; } /* SpecialChar */
+.sourceCode > span.vs { color: #cc9393; } /* VerbatimString */
+.sourceCode > span.ss { color: #cc9393; } /* SpecialString */
+.sourceCode > span.im { } /* Import */
+.sourceCode > span.va { } /* Variable */
+.sourceCode > span.cf { color: #f0dfaf; } /* ControlFlow */
+.sourceCode > span.op { color: #f0efd0; } /* Operator */
+.sourceCode > span.bu { } /* BuiltIn */
+.sourceCode > span.ex { } /* Extension */
+.sourceCode > span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+.sourceCode > span.at { } /* Attribute */
+.sourceCode > span.do { color: #7f9f7f; } /* Documentation */
+.sourceCode > span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+.sourceCode > span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+.sourceCode > span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+
+/* The line below wasn't in the original Pandoc output.
+ * I've added it to make the empty class definitions up there (import,
+ * variable, etc.) use the default font colour declared in `.sourceCode`.
+ */
+.sourceCode > span { color: #cccccc; }
+
+/* My overrides to make Bash blocks look better.
+ * NOTE dunno why some commands like `ls` get parsed as functions, some
+ * others like `cd` as built-ins or extensions, etc. Possibly cos I'm
+ * not supposed to use Bash code blocks for command line snippets...
+ * Anyhoo, the CSS below is a cheap fix.
+ */
+.bash > span.bu { color: #f0dfaf; }  /* same as keyword */
+.bash > span.ex { color: #f0dfaf; }
+.bash > span.fu { color: #f0dfaf; }
+.bash > span.op { color: #f0dfaf; }
