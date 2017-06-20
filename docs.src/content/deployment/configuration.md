@@ -236,6 +236,29 @@ etc.
 * *Command*: `ome.smuggler.run.MailYmlGen`
 
 
+### Mount Points
+Mapping of remote file paths to local ones. This is useful when you want
+to have a single Smuggler instance import files from remote machines using
+a distributed file system such as NFS or Samba. In this scenario, a client
+program on a remote machine posts an import request with a target URI that
+has a host part too, e.g. `file://box/with/fat/file`. You'd have obviously
+set up a corresponding remote mount on the machine where Smuggler runs; 
+let's say you've mounted `box`'s `/with` remote directory locally on
+`/mnt/nfs/box/with` using NFS. But Smuggler still knows zilch about your
+set up. Using this configuration group, you tell Smuggler how to resolve
+a remote file URI such a `file://box/with/fat/file` to a local path where
+the remote file is available. Continuing with our example, you'd add a
+configuration entry to map a URI starting with `file://box/with` to the
+local base path of `/mnt/nfs/box/with` so that when Smuggler sees
+`file://box/with/fat/file` he knows the file is available locally as
+`/mnt/nfs/box/with/fat/file`.
+
+* *File*: `mount-points.yml`
+* *Bean*: [ome.smuggler.config.items.MountPointsConfig](../../../javadoc/server/ome/smuggler/config/items/MountPointsConfig.html)
+* *Defaults*: `ome.smuggler.config.data.MountPointsYmlFile`
+* *Command*: `ome.smuggler.run.MountPointsYmlGen`
+
+
 ### Spring
 Classic Java properties file for Spring and Spring Boot settings.
 Besides for the app name and log level, we use this file to enable

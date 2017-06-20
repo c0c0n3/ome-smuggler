@@ -277,6 +277,16 @@ scripts in this source directory:
 $ ls components/server/src/test/scripts/http-omero
 ~~~
 
+### Importing Remote Files
+The [import request spec][import-request-uri] says you can also import
+remote files. Uh?! Yip, that's right. A client can sit on a different box
+than Smuggler's and still POST an import request for a file on that box.
+In fact, this comes in handy when you want to have a single Smuggler instance
+pull image data from multiple acquisition workstations through a distributed
+file system such as NFS or Samba. If you want to go down that road, besides
+setting up mount points and permissions, you'll also have to tell Smuggler
+how to [map remote paths to local mount points][mount-points].
+
 
 
 
@@ -288,8 +298,12 @@ $ ls components/server/src/test/scripts/http-omero
     "ImportController Class"
 [import-request]: ../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html
     "ImportRequest Class"
+[import-request-uri]: ../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html#targetUri
+    "ImportRequest Class - target URI"
 [import-response]: ../../../javadoc/server/ome/smuggler/web/imports/ImportResponse.html
     "ImportResponse Class"
+[mount-points]: /content/deployment/configuration.html#mount-points
+    "Configuration - Mount Points"
 [session-controller]: ../../../javadoc/server/ome/smuggler/web/omero/SessionController.html
     "SessionController Class"
     
