@@ -135,6 +135,14 @@ $ <span class="ex">java</span> -jar components/server/build/libs/ome-smuggler-*.
 <li><em>Defaults</em>: <code>ome.smuggler.config.data.MailYmlFile</code></li>
 <li><em>Command</em>: <code>ome.smuggler.run.MailYmlGen</code></li>
 </ul>
+<h3 id="mount-points">Mount Points</h3>
+<p>Mapping of remote file paths to local ones. This is useful when you want to have a single Smuggler instance import files from remote machines using a distributed file system such as NFS or Samba. In this scenario, a client program on a remote machine posts an import request with a target URI that has a host part too, e.g. <code>file://box/with/fat/file</code>. You’d have obviously set up a corresponding remote mount on the machine where Smuggler runs; let’s say you’ve mounted <code>box</code>’s <code>/with</code> remote directory locally on <code>/mnt/nfs/box/with</code> using NFS. But Smuggler still knows zilch about your set up. Using this configuration group, you tell Smuggler how to resolve a remote file URI such a <code>file://box/with/fat/file</code> to a local path where the remote file is available. Continuing with our example, you’d add a configuration entry to map a URI starting with <code>file://box/with</code> to the local base path of <code>/mnt/nfs/box/with</code> so that when Smuggler sees <code>file://box/with/fat/file</code> he knows the file is available locally as <code>/mnt/nfs/box/with/fat/file</code>.</p>
+<ul>
+<li><em>File</em>: <code>mount-points.yml</code></li>
+<li><em>Bean</em>: <a href="../../../javadoc/server/ome/smuggler/config/items/MountPointsConfig.html">ome.smuggler.config.items.MountPointsConfig</a></li>
+<li><em>Defaults</em>: <code>ome.smuggler.config.data.MountPointsYmlFile</code></li>
+<li><em>Command</em>: <code>ome.smuggler.run.MountPointsYmlGen</code></li>
+</ul>
 <h3 id="spring">Spring</h3>
 <p>Classic Java properties file for Spring and Spring Boot settings. Besides for the app name and log level, we use this file to enable <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/production-ready.html" title="Spring Boot Actuator Reference">Spring Boot Actuator</a> features.</p>
 <ul>
