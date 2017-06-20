@@ -48,54 +48,54 @@ Meet <em>Smuggler</em> on the run! Build from scratch and then run the server to
 </p>
 <h2 id="setting-the-stage">Setting the Stage</h2>
 <p>Download or clone from <a href="https://github.com/c0c0n3/ome-smuggler">GitHub</a>. Then do a full build and package the distributions (requires the Java 8 JDK):</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> ome-smuggler/
-$ <span class="kw">./gradlew</span> build :packager:release</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">cd</span> ome-smuggler/
+$ <span class="ex">./gradlew</span> build :packager:release</code></pre></div>
 <p>Ya, that works for Unix-like OS’s (e.g. OS X, Linux); in the unfortunate event you’re on Windows, replace <code>./gradlew</code> with <code>gradlew.bat</code>. If the build was successful, you should see the distribution bundles in the <code>packager</code>’s own build directory</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> components/packager/build/distributions/
-<span class="kw">ome-smuggler-0.1.0-beta.tgz</span>  ome-smuggler-0.1.0-beta.zip
-<span class="kw">...</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">ls</span> components/packager/build/distributions/
+<span class="ex">ome-smuggler-0.1.0-beta.tgz</span>  ome-smuggler-0.1.0-beta.zip
+<span class="ex">...</span></code></pre></div>
 <p>The version numbers may be different by the time you read this, but you probably knew that already. Anyway, you’ll see there are several files in there. That’s because we have generic and platform-specific bundles. We’re going to use the generic bundle listed above; extract it somewhere</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tar</span> xzf com*/p*/b*/dist*/ome-smuggler-0.1.0-beta.tgz -C /tmp</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">tar</span> xzf com*/p*/b*/dist*/ome-smuggler-0.1.0-beta.tgz -C /tmp</code></pre></div>
 <p>On Windows you could use the zip file instead. The bundle’s contents will be extracted in an <code>ome-smuggler</code> directory. If you want to find out more about distros and deployment look over <a href="../../content/deployment/index.html" title="Deployment">here</a>. In the meantime, to make our life easier, we’re going to lift some test scripts from the source base and stash them into the extracted directory.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cp</span> -r components/server/src/test/scripts/http-import \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">cp</span> -r components/server/src/test/scripts/http-import \
         /tmp/ome-smuggler/
-$ <span class="kw">cd</span> /tmp/ome-smuggler/http-import/
-$ <span class="kw">ls</span>
-    <span class="kw">...</span>
-$ <span class="kw">chmod</span> +x get delete
-$ <span class="kw">chmod</span> +x request-import list-failed-imports
-$ <span class="kw">chmod</span> +x list-failed-mail</code></pre></div>
+$ <span class="bu">cd</span> /tmp/ome-smuggler/http-import/
+$ <span class="fu">ls</span>
+    <span class="ex">...</span>
+$ <span class="fu">chmod</span> +x get delete
+$ <span class="fu">chmod</span> +x request-import list-failed-imports
+$ <span class="fu">chmod</span> +x list-failed-mail</code></pre></div>
 <p>These are just convenience scripts using <code>curl</code> to interact with Smuggler over HTTP. You may have noticed an additional file, <code>min-import.json</code>: this is JSON to request an import; if you’re going to configure the mail service—see below—you should replace the nonsensical email address in there with yours to get love letters from Smuggler.</p>
 <h2 id="configuration">Configuration</h2>
 <p>We’re going to tweak Smuggler to delete import status updates after one minute and to not retry failed imports.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /tmp/ome-smuggler
-$ <span class="kw">java</span> -jar lib/ome-smuggler-*.jar \
-       ome.smuggler.run.ImportYmlGen <span class="kw">&gt;</span> config/import.yml
-$ <span class="kw">emacs</span> config/import.yml</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">cd</span> /tmp/ome-smuggler
+$ <span class="ex">java</span> -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.ImportYmlGen <span class="op">&gt;</span> config/import.yml
+$ <span class="ex">emacs</span> config/import.yml</code></pre></div>
 <p>Change as below, then save.</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">logRetentionMinutes:</span> 1
-<span class="fu">retryIntervals:</span> <span class="kw">[]</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">logRetentionMinutes:</span><span class="at"> 1</span>
+<span class="fu">retryIntervals:</span><span class="at"> </span><span class="kw">[]</span></code></pre></div>
 <p>If you want to play around with the import options or find out more about how to generate configuration files, read the <a href="../../content/deployment/configuration.html" title="Configuration">configuration</a> section. But you may want to configure the sending of email notifications. For that, you can also generate the configuration file and then tweak it as explained in the <a href="../../content/deployment/configuration.html" title="Configuration">configuration</a> section.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">java</span> -jar lib/ome-smuggler-*.jar \
-       ome.smuggler.run.MailYmlGen <span class="kw">&gt;</span> config/mail.yml
-$ <span class="kw">emacs</span> config/mail.yml</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">java</span> -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.MailYmlGen <span class="op">&gt;</span> config/mail.yml
+$ <span class="ex">emacs</span> config/mail.yml</code></pre></div>
 <p class="side-note">
 You can skip the configuration of the email service; in that case all email messages will fail to send which you don’t need to give two hoots about for the sake of this whirlwind tour. But Smuggler tracks mail failures too and allows you to recover, if that makes you feel better.
 </p>
 <p>Smuggler’s HTTP port is 8000 by default. If another server has taken that port already, you’ll have to change Smuggler’s. That’s easy too.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">java</span> -jar lib/ome-smuggler-*.jar \
-       ome.smuggler.run.UndertowYmlGen <span class="kw">&gt;</span> config/undertow.yml
-$ <span class="kw">emacs</span> config/undertow.yml</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">java</span> -jar lib/ome-smuggler-*.jar \
+       ome.smuggler.run.UndertowYmlGen <span class="op">&gt;</span> config/undertow.yml
+$ <span class="ex">emacs</span> config/undertow.yml</code></pre></div>
 <p>Just change the port number to something else than 8000, then save.</p>
 <h2 id="running-the-server">Running the Server</h2>
 <p>We’re ready to run the server. (Java 8 JRE required.) Open a terminal and go to the directory where you extracted the distribution bundle. You’ll find Unix and Windows start up scripts in the <code>bin</code> directory; run the one for your platform. For example on Linux or OS X:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /tmp/ome-smuggler
-$ <span class="kw">bin/run.sh</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">cd</span> /tmp/ome-smuggler
+$ <span class="ex">bin/run.sh</span></code></pre></div>
 <p>Keep it running in the foreground so you can see what’s going on. (Terminal output is also saved in <code>log/spring.log</code>.) At the end of this whirlwind tour you’ll want to shut the server down; just hit <code>Ctrl+c</code>.</p>
 <h2 id="making-an-import-fail">Making an Import fail</h2>
 <p>Why? Because this workflow touches most of the available functionality. So on to requesting an import that will fail! Open up another terminal and go to the directory where we saved the test scripts earlier so we can request an import:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /tmp/ome-smuggler/http-import/
-$ <span class="kw">./request-import</span> min-import.json </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">cd</span> /tmp/ome-smuggler/http-import/
+$ <span class="ex">./request-import</span> min-import.json </code></pre></div>
 <p>This simply POSTs a JSON-encoded import request to upload a non-existing image (<code>my/file</code>) to a non-existing OMERO sever. No wonder it should fail. The response should be a 200 (import request accepted and queued for execution) and its body should be something like</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="fu">{</span>
  <span class="dt">&quot;statusUri&quot;</span><span class="fu">:</span><span class="st">&quot;/ome/import/740f848c-7099-461e-a988-563eecaeccba&quot;</span><span class="fu">,</span>
@@ -106,30 +106,30 @@ $ <span class="kw">./request-import</span> min-import.json </code></pre></div>
 <p>Want to dig deeper? <a href="../../../javadoc/server/ome/smuggler/web/imports/ImportController.html" title="ImportController Class">This javadoc</a> explains how the REST import interface works. You’ll see that Smuggler lets you POST more than one one <a href="../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html" title="ImportRequest Class">import request</a> at the same time and gives you back an <a href="../../../javadoc/server/ome/smuggler/web/imports/ImportResponse.html" title="ImportResponse Class">import response</a> for each request you POST’ed. But here we’re keeping things simple: we only POST one import and so get back one import response.</p>
 </div>
 <p>The absolute path of the <code>statusUri</code> above specifies where to get status updates for the import you’ve just requested. Status updates will be available for at least one minute after the import has been executed—this is the import log retention period we configured earlier. Copy and paste the returned path and run the <code>get</code> script to fetch status updates</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./get</span> /ome/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./get</span> /ome/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
 <p>You can repeat to poll for updates. Now wait one minute, then try it again</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./get</span> /ome/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./get</span> /ome/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
 <p>You should get a fat 404 as we went past the retention period. Imports are retried at the intervals specified in the import configuration; but we specified no intervals so no retries will be attempted. As already mentioned this import should have failed. Smuggler keeps track of failed imports and can list them,</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./list-failed-imports</span> </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./list-failed-imports</span> </code></pre></div>
 <p>returns the absolute path to each failed import, i.e. where to access the log to see what went wrong so that the issue can hopefully be resolved. In our case the response body should look similar to</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/import/740f848c-7099-461e-a988-563eecaeccba&quot;</span><span class="ot">]</span></code></pre></div>
 <p>as we only have one failed import. (If we had more, they would be returned too.) Copy and paste to get the corresponding failure log:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./get</span> /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./get</span> /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
 <p>Once the issue has been resolved, you should tell Smuggler to stop tracking it:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./delete</span> /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./delete</span> /ome/failed/import/740f848c-7099-461e-a988-563eecaeccba</code></pre></div>
 <p>Now if you query the failed imports again,</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./list-failed-imports</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./list-failed-imports</span></code></pre></div>
 <p>you should get back an empty JSON array as there are no failed imports being tracked, so all you should see in the response body is</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[]</span></code></pre></div>
 <p>On failure, Smuggler sends a notification email to both the user who requested the import (see contents of <code>min-import.json</code>) and the system administrator— assuming you <a href="../../content/deployment/configuration.html" title="Configuration">configured one</a>. If you didn’t configure the mail service earlier, then the sending of emails will fail, after a couple of days of trying though—as per default configuration. On giving up sending, Smuggler stores the failed email messages and lets you manage them through its REST API just like we’ve done for failed imports. Use the <code>list-failed-mail</code> script to list them, and then the <code>get</code> and <code>delete</code> scripts; the messages are stored in MIME format so they can be piped directly into a program such as <code>sendmail</code> to send them off.</p>
 <h2 id="success-scenario">Success Scenario</h2>
 <p>All you need to make an image trek into OMERO is to POST a request for existing data to an existing OMERO server. (Uh, kinda obvious?) Create a new file <code>my-import.json</code> taking <code>min-import.json</code> as an example and fill out the required fields for an import request as documented by <a href="../../../javadoc/server/ome/smuggler/web/imports/ImportRequest.html" title="ImportRequest Class">this specification</a>. (Oh, if you’re looking for the Web method spec, it’s <a href="../../../javadoc/server/ome/smuggler/web/imports/ImportController.html" title="ImportController Class">here</a>.) You will need a valid session key to go in the file; to get one, you can use the OMERO CLI we all know and love (command: <code>omero login</code>) or, if you fancy more Smuggler action, use Smuggler’s very own <a href="../../../javadoc/server/ome/smuggler/web/omero/SessionController.html" title="SessionController Class">session service</a> as explained in the section below. Either way, once you have a session key, copy and paste it into <code>my-import.json</code>, then</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./request-import</span> my-import.json</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./request-import</span> my-import.json</code></pre></div>
 <p>Use the returned URL to poll Smuggler for status updates as we’ve done earlier. After Smuggler has shovelled your data into OMERO, you should log into OMERO (with the same account you’ve used above to create the session key) and check the images you’ve just imported are there.</p>
 <h3 id="omero-sessions">Omero Sessions</h3>
 <p>Smuggler has a Web method you can use to open OMERO sessions. (REST API documented <a href="../../../javadoc/server/ome/smuggler/web/omero/SessionController.html" title="SessionController Class">here</a>.) The functionality is similar to that of the OMERO CLI but Smuggler can keep your freshly minted session alive for a period of time you specify. Yup, you could also use Smuggler as a session keep-alive server! (Handy for running OMERO background tasks like, uh, well, you know, an import?)</p>
 <p>For an example of how to call this session Web method, look at the scripts in this source directory:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> components/server/src/test/scripts/http-omero</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">ls</span> components/server/src/test/scripts/http-omero</code></pre></div>
   </section>
 </main>  
 

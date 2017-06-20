@@ -57,34 +57,34 @@ Smuggler comes both with general-purpose and specialised monitoring interfaces.
 <p>If an import fails, Smuggler will retry it a few times (depending on your <a href="configuration.html" title="Configuration">configuration</a>) before giving up. If it’s a permanent failure, the sys admin should get a love letter from Smuggler: an email with the failed import ID so that someone can try to work out the cause of that failure. Once the issue has been resolved, the failed import log should be deleted. (Smuggler only deletes the logs of successful imports, but keeps around the ones of imports that failed permanently.) Speaking of emails. The sending of an email may obviously fail too—e.g. mail server’s down. When that happens, Smuggler will attempt to send it again for a <a href="configuration.html" title="Configuration">configurable</a> number of times before giving up and putting the message in the dead mail box. As for permanently failed imports, you can see what’s inside the dead mail box, resend yourself, and then delete messages. In fact Smuggler lets you monitor and manage both failed imports and dead mail over HTTP.</p>
 <h3 id="failed-imports">Failed Imports</h3>
 <p>To get a list of imports that failed permanently, do a <code>GET</code> on <code>/ome/failed/import</code> with an <code>Accept</code> header of <code>application/json</code>. For example, using <code>curl</code></p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> -H <span class="st">'Accept: application/json'</span> \
        http://localhost:8000/ome/failed/import</code></pre></div>
 <p>Smuggler will respond with a JSON array, for example</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/import/740f848c&quot;</span><span class="ot">,</span>
  <span class="st">&quot;/ome/failed/import/6ea82ae4&quot;</span><span class="ot">]</span></code></pre></div>
 <p>If you get back an empty array (<code>[]</code>), then all is well, no import failed. Otherwise, for each failed import, you’ll get a corresponding path in the returned array—the last element in the path is the import ID, if you’re wondering. Use that path to fetch the failed import’s log file and find out what went wrong with the import. You do this with a plain <code>GET</code>, for example using <code>curl</code></p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> \
   http://localhost:8000/ome/failed/import/6ea82ae4</code></pre></div>
 <p>What you get back in this case is not JSON, but plain text (specifically a <code>Content-Type</code> of <code>text/plain; charset=UTF-8</code>). After you’ve worked out the issue that caused the import to fail, there’s no reason to keep the log file around anymore. So you should tell Smuggler to get rid of it using the HTTP <code>DELETE</code> method as in the below <code>curl</code> command</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -X DELETE \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> -X DELETE \
   http://localhost:8000/ome/failed/import/6ea82ae4</code></pre></div>
 <p>If you now ask again Smuggler to list the failed imports,</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> -H <span class="st">'Accept: application/json'</span> \
        http://localhost:8000/ome/failed/import</code></pre></div>
 <p>you’ll see that the import log you’ve just <code>DELETE</code>d is not in the returned array anymore</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/import/740f848c&quot;</span><span class="ot">]</span></code></pre></div>
 <p>In fact, Smuggler deleted the file from its data directory. Note that if you don’t delete failed logs yourself (after working out the cause of failure though!), no one else will as Smuggler would happily keep them indefinitely and return them in the list of failed imports. Besides wasting disk space, this can be confusing as you may happen to look again at a log file of an old issue that you worked out ages ago…</p>
 <h3 id="failed-emails">Failed Emails</h3>
 <p>To get a list of emails that failed to send permanently, do a <code>GET</code> on <code>/ome/failed/mail</code> with an <code>Accept</code> header of <code>application/json</code>. For example, using <code>curl</code></p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -H <span class="st">'Accept: application/json'</span> \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> -H <span class="st">'Accept: application/json'</span> \
        http://localhost:8000/ome/failed/mail</code></pre></div>
 <p>Smuggler will respond with a JSON array, for example</p>
 <div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="ot">[</span><span class="st">&quot;/ome/failed/mail/6bb4995d&quot;</span><span class="ot">]</span></code></pre></div>
 <p>As you may have guessed already, the failed mail interface works exactly the same as that for failed imports. So an empty array (<code>[]</code>) means all is well. Otherwise, for each failed email, you’ll get a corresponding path you can use to <code>GET</code> the email message as in</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> \
   http://localhost:8000/ome/failed/mail/6bb4995d</code></pre></div>
 <p>What you get back in this case is a plain text email message you could pipe straight into a program like <code>sendmail</code> to send it again. As for the imports, after you’ve sent the message, there’s no reason to keep it around any longer. Tell Smuggler to <code>DELETE</code> it then, e.g.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">curl</span> -X DELETE \
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">curl</span> -X DELETE \
   http://localhost:8000/ome/failed/mail/6bb4995d</code></pre></div>
 <h2 id="smugglers-logs">Smuggler’s Logs</h2>
 <p>Smuggler uses the logging facility that comes with Spring Boot without any customisation. Pretty much the run of the mill logging you’d expect for a Java app. Read about it in the Spring Boot <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/html/boot-features-logging.html" title="Spring Boot Logging">docs</a>, if you need to. The log files go in the <a href="configuration.html" title="Configuration">configured</a> log directory and are rotated, so they sort of take care of themselves—i.e. the log directory won’t grow huge over time.</p>

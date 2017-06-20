@@ -49,11 +49,11 @@ No, not an evil spirit. Rather a wicked “fully executable” jar to run Smuggl
 <p>This distro comes with a Spring Boot “fully executable” jar you can use to run Smuggler either as a System V (<code>init</code>) daemon or <code>systemd</code> service. This executable jar is just the Smuggler self-contained jar prepended with a startup script. No black magic.</p>
 <h2 id="service-account">Service Account</h2>
 <p>Decide what account to use to run Smuggler. Ideally, you should use an unprivileged user with no shell access. For example the command below creates both a group named <code>smuggler</code> and a user with the same name inside this new group while making sure the user has no shell access.</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> useradd -r -s /usr/bin/nologin smuggler -U</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">sudo</span> useradd -r -s /usr/bin/nologin smuggler -U</code></pre></div>
 <p>Of course, YMMV.</p>
 <h2 id="unpacking">Unpacking</h2>
 <p>Now unpack the distro tarball. You could extract the contents to <code>/opt</code>, for example</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> tar xzf ome-smuggler-linux-daemon-*tgz -C /opt</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">sudo</span> tar xzf ome-smuggler-linux-daemon-*tgz -C /opt</code></pre></div>
 <p>or to any other directory as appropriate for your system. Either way, you should now see an <code>ome-smuggler</code> directory with the following in it</p>
 <ul>
 <li><code>ome-smuggler-*.exe.jar</code>: the Spring Boot executable jar.</li>
@@ -62,13 +62,13 @@ No, not an evil spirit. Rather a wicked “fully executable” jar to run Smuggl
 <li><code>LICENSE.md</code>, <code>README.md</code>: can you guess what these are yet?</li>
 </ul>
 <p>You need to make your service user/group own this <code>ome-smuggler</code> directory. For example, if you have a user and group both named <code>smuggler</code></p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">cd</span> /opt
-$ <span class="kw">sudo</span> chown smuggler:smuggler ome-smuggler</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">cd</span> /opt
+$ <span class="fu">sudo</span> chown smuggler:smuggler ome-smuggler</code></pre></div>
 <p>And as we’re at it, let’s raise the security bar even more:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">sudo</span> chmod 700 ome-smuggler
-$ <span class="kw">sudo</span> chmod 500 ome-smuggler/ome-smuggler-*.exe.jar
-$ <span class="kw">sudo</span> chmod 400 ome-smuggler/ome-cli-*.jar
-$ <span class="kw">sudo</span> chattr +i ome-smuggler/*.jar</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">sudo</span> chmod 700 ome-smuggler
+$ <span class="fu">sudo</span> chmod 500 ome-smuggler/ome-smuggler-*.exe.jar
+$ <span class="fu">sudo</span> chmod 400 ome-smuggler/ome-cli-*.jar
+$ <span class="fu">sudo</span> chattr +i ome-smuggler/*.jar</code></pre></div>
 <p>Over and above these basic things, you should also do whatever additional hardening advised by your system security guidelines.</p>
 <h2 id="minimal-configuration">Minimal Configuration</h2>
 <p>Smuggler uses three directories during his operation: one for configuration, one for data related to task processing, and one for logs. (Details in the <a href="configuration.html" title="Configuration">configuration</a> section.) The Linux daemon is pre-configured to create a data and log directory inside <code>ome-smuggler</code>—i.e. the directory you unpacked earlier—and to read your configuration from a <code>config</code> directory also inside <code>ome-smuggler</code>. The horror! But you can make the daemon follow Unix conventions in below a minute: just edit <code>ome-smuggler-*.exe.conf</code> to specify your directory layout. For example, a decent arrangement could be:</p>
@@ -78,7 +78,7 @@ $ <span class="kw">sudo</span> chattr +i ome-smuggler/*.jar</code></pre></div>
 <li><code>/var/log/ome-smuggler</code> for the logs.</li>
 </ul>
 <p>Smuggler will try to start an HTTP server on port <code>8000</code>. If that doesn’t suit you, stick an <code>undertow.yml</code> file in your configuration directory with this line in it:</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">port:</span> 8000</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">port:</span><span class="at"> 8000</span></code></pre></div>
 <p>but replace <code>8000</code> with the port number you want.</p>
 <div class="pull-quote">
 <h6 id="restart-required">Restart Required!</h6>

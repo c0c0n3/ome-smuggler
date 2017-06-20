@@ -1,1 +1,38 @@
-code{white-space:pre}table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode{margin:0;padding:0;vertical-align:baseline;border:none}table.sourceCode{width:100%;line-height:100%;background-color:#303030;color:#cccccc}td.lineNumbers{text-align:right;padding-right:4px;padding-left:4px}td.sourceCode{padding-left:5px}pre.sourceCode, pre.sourceCode code{color:#cccccc;background-color:#303030}code > span.kw{color:#f0dfaf}code > span.dt{color:#dfdfbf}code > span.dv{color:#dcdccc}code > span.bn{color:#dca3a3}code > span.fl{color:#c0bed1}code > span.ch{color:#dca3a3}code > span.st{color:#cc9393}code > span.co{color:#7f9f7f}code > span.ot{color:#efef8f}code > span.al{color:#ffcfaf}code > span.fu{color:#efef8f}code > span.er{color:#c3bf9f}
+ code{white-space:pre}div.sourceCode{overflow-x:auto}table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode{margin:0;padding:0;vertical-align:baseline;border:none}table.sourceCode{width:100%;line-height:100%;background-color:#303030;color:#cccccc}td.lineNumbers{text-align:right;padding-right:4px;padding-left:4px}td.sourceCode{padding-left:5px}
+.sourceCode{color:#cccccc;background-color:#303030}
+
+
+.sourceCode > span.kw{color:#f0dfaf}
+.sourceCode > span.dt{color:#dfdfbf}
+.sourceCode > span.dv{color:#dcdccc}
+.sourceCode > span.bn{color:#dca3a3}
+.sourceCode > span.fl{color:#c0bed1}
+.sourceCode > span.ch{color:#dca3a3}
+.sourceCode > span.st{color:#cc9393}
+.sourceCode > span.co{color:#7f9f7f}
+.sourceCode > span.ot{color:#efef8f}
+.sourceCode > span.al{color:#ffcfaf}
+.sourceCode > span.fu{color:#efef8f}
+.sourceCode > span.er{color:#c3bf9f}
+.sourceCode > span.wa{color:#7f9f7f;font-weight:bold}
+.sourceCode > span.cn{color:#dca3a3;font-weight:bold}
+.sourceCode > span.sc{color:#dca3a3}
+.sourceCode > span.vs{color:#cc9393}
+.sourceCode > span.ss{color:#cc9393}
+.sourceCode > span.im{}
+.sourceCode > span.va{}
+.sourceCode > span.cf{color:#f0dfaf}
+.sourceCode > span.op{color:#f0efd0}
+.sourceCode > span.bu{}
+.sourceCode > span.ex{}
+.sourceCode > span.pp{color:#ffcfaf;font-weight:bold}
+.sourceCode > span.at{}
+.sourceCode > span.do{color:#7f9f7f}
+.sourceCode > span.an{color:#7f9f7f;font-weight:bold}
+.sourceCode > span.cv{color:#7f9f7f;font-weight:bold}
+.sourceCode > span.in{color:#7f9f7f;font-weight:bold}
+
+
+.sourceCode > span{color:#cccccc}
+
+ .bash > span.bu{color:#f0dfaf}.bash > span.ex{color:#f0dfaf}.bash > span.fu{color:#f0dfaf}.bash > span.op{color:#f0dfaf}

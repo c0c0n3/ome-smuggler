@@ -82,7 +82,7 @@ There are configuration options you can tweak to make Smuggler suit your environ
 <p>You can easily embed your configuration into Smuggler’s jar file in two steps. First, edit any of the files in your local Git repo under</p>
 <pre><code>    components/server/src/main/resources/config/</code></pre>
 <p>For example <code>undertow.yml</code>. Then from the root directory of your local Git repo run</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./gradlew</span> assemble :packager:release</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./gradlew</span> assemble :packager:release</code></pre></div>
 <p>(Use <code>gradlew.bat</code> on Windows.) The files you’ve just edited are now embedded into the server jar file contained in each and every distribution bundle generated in</p>
 <pre><code>    components/packager/build/distributions/</code></pre>
 <p>Pick your bundle and deploy it; you won’t need to add separate configuration files to your deployment (e.g. an external <code>undertow.yml</code>) as the server will read your values from the embedded files. If sometime after deployment you need to tweak your configuration further, you can still add the files you need to your configuration directory and restart the server; these files will take precedence over the ones you’ve embedded, so the configuration the server will use is that of the files you’ve put in the configuration directory.</p>
@@ -90,9 +90,9 @@ There are configuration options you can tweak to make Smuggler suit your environ
 <p>While you can put together your own configuration files from scratch, it may be easier to tweak an existing file. You could pick one from</p>
 <pre><code>    components/server/src/main/resources/config/</code></pre>
 <p>in your local Git repo. Another option is to generate the file. In fact, all the files in the above directory were generated using commands similar to the below (run from the root of your local Git repo; use <code>gradlew.bat</code> on Windows)</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">./gradlew</span> assemble
-$ <span class="kw">java</span> -jar components/server/build/libs/ome-smuggler-*.jar \
-       ome.smuggler.run.UndertowYmlGen <span class="kw">&gt;</span> undertow.yml</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">./gradlew</span> assemble
+$ <span class="ex">java</span> -jar components/server/build/libs/ome-smuggler-*.jar \
+       ome.smuggler.run.UndertowYmlGen <span class="op">&gt;</span> undertow.yml</code></pre></div>
 <p>Each configuration group has its own file generation command: a class in the <code>ome.smuggler.run</code> package named after the configuration group and suffixed with <code>Gen</code>—<code>ome.smuggler.run.UndertowYmlGen</code> in the example above. In turn, each of these commands outputs the configuration items read from a corresponding class in <code>ome.smuggler.config.data</code>, e.g. <code>UndertowYmlFile</code>. (All follow the same naming convention, if you’re wondering: group name + <code>File</code>.) So you could actually edit the Java classes in <code>ome.smuggler.config.data</code> to generate your configuration in a more type-safe way. (The compiler should yell at you if you happen to specify rubbish values.)</p>
 <h2 id="configuration-groups">Configuration Groups</h2>
 <p>Here’s a summary of the various configuration groups. For each of them you’ll find below a short description and the following bullet-point info:</p>
@@ -144,18 +144,18 @@ $ <span class="kw">java</span> -jar components/server/build/libs/ome-smuggler-*.
 <li><em>Command</em>: <code>ome.smuggler.run.SpringBootPropsGen</code></li>
 </ul>
 <p>Other than the props you can generate with the above command, you can add any other Spring props to the file. For example, one way to make Undertow use HTTPS (HTTP + TLS) is to add these lines:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">server.ssl.key-store</span>=smuggler-keystore.jks
-<span class="kw">server.ssl.key-store-password</span>=changeit
-<span class="kw">server.ssl.key-password</span>=changeit
-<span class="kw">server.ssl.key-alias</span>=smuggler</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">server.ssl.key-store</span>=smuggler-keystore.jks
+<span class="ex">server.ssl.key-store-password</span>=changeit
+<span class="ex">server.ssl.key-password</span>=changeit
+<span class="ex">server.ssl.key-alias</span>=smuggler</code></pre></div>
 <p>In this example, you have a Java key store file named <code>smuggler-keystore.jks</code> containing a certificate for TLS ops that can be looked up using a key alias of <code>smuggler</code>. Both access to the store and to the key is password-protected. Because we specified no SSL port, the only port through which clients can talk to Smuggler is that specified in the <a href="#http">Undertow</a> configuration and communication through that port will be TLS-protected. You can find more about TLS Spring configuration <a href="http://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-configure-ssl" title="Spring Boot - How to configure SSL">over here</a>. If you want to generate a key store with a self-signed cert in it, look for the TLS test scripts in Smuggler’s code (<code>server</code> component). But, like, you know, self-signed certs are only good for testing…</p>
 <h2 id="other-settings">Other Settings</h2>
 <p>There are some other internal configuration settings that are not exposed as they’re mainly useful for development—e.g. using in-memory instead of persistent message queues. If you’re curious, have a look at the classes in the <code>ome.smuggler.config.items</code> package. Also, one thing you’ll need to do if you want to debug the server in your IDE is to specify the location of the <code>ome-cli</code> jar as it defaults to the same directory containing the server jar—see the <code>OmeCliConfig</code> class for the details. To do that, stick an <code>ome-cli.yml</code> file in <code>components/server/</code> (or whichever directory your IDE uses as the current working directory for debugging the server component) with the following content:</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">omeCliJarPath:</span> ../cli/build/libs/ome-cli-0.1.0.jar</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">omeCliJarPath:</span><span class="at"> ../cli/build/libs/ome-cli-0.1.0.jar</span></code></pre></div>
 <p>(You may have to adjust the <code>ome-cli</code> version number to match the current one in <code>build.gradle</code>.)</p>
 <h2 id="omero-session-timeout">Omero Session Timeout</h2>
 <p>Ah, we’ve saved the best until last! Smuggler needs an active session to run an import. The client that requests the import is in charge of creating it and passing it along in the import request. But here’s the issue. OMERO sessions last, by default, at most ten minutes. This would be plenty of time for Smuggler to fetch the import request from his work queue and service it as long as the queue were almost always empty and image files were small. But in practice it can happen that Smuggler’s so busy shovelling tons of data into OMERO that an import request could sit in the queue for more than ten minutes. So when it’s eventually picked up from the queue, its session has already expired and the import will fail. Too bad. But wait a minute! You can easily change the default OMERO session timeout</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">omero</span> config set omero.sessions.timeout 85000000</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">omero</span> config set omero.sessions.timeout 85000000</code></pre></div>
 <p>The above tells OMERO to up the session timeout to a bit more than a day. Also note that clients can create a session with a timeout up to ten times longer than the current value of <code>omero.sessions.timeout</code>. (You do this by specifying a time-to-idle to the <code>createUserSession</code> method.)</p>
 <p>But this setting results in long sessions for <em>every</em> OMERO client, not just Smuggler. If, as a sys admin, this doesn’t make you sleep tight at night (security anyone?), you could instead use a Smuggler instance as an OMERO session keep-alive server. In this kind of deployment, clients that want to import data first open a session using Smuggler’s session Web service, telling Smuggler to keep the session alive for a period of time that should be enough to make sure the session is still valid later on when Smuggler actually attempts the import. Then the client tells (possibly another instance of) Smuggler to queue an import using that session.</p>
 <div class="pull-quote">

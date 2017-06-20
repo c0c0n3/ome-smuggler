@@ -60,7 +60,7 @@ A native wrapper to run Smuggler as a Windows service. Makes it easier to instal
 <p>Note that this distribution packages Smuggler as a self-contained app with everything in the <code>ome-smuggler</code> directory: binaries, libraries, configuration, and any data that Smuggler will produce while running. You can easily change this though, just read on.</p>
 <h2 id="minimal-configuration">Minimal Configuration</h2>
 <p>Smuggler will try to start an HTTP server on port <code>8000</code>. If that doesn’t suit you, stick an <code>undertow.yml</code> file in the <code>config</code> directory with this line in it:</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">port:</span> 8000</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">port:</span><span class="at"> 8000</span></code></pre></div>
 <p>but replace <code>8000</code> with the port number you want.</p>
 <div class="pull-quote">
 <h6 id="restart-required">Restart Required!</h6>
@@ -76,20 +76,20 @@ A native wrapper to run Smuggler as a Windows service. Makes it easier to instal
 <h6 id="service-priority">Service Priority</h6>
 <p>The Smuggler service runs with a process priority class of “Normal”. To change that, put one of these values (case insensitive) in the <code>priority</code> tag: <code>Idle</code>, <code>BelowNormal</code>, <code>Normal</code>, <code>AboveNormal</code>, <code>High</code>, <code>RealTime</code>. But we don’t recommend using <code>Idle</code> or <code>BelowNormal</code> as they make the service unresponsive. More about priorities <a href="https://msdn.microsoft.com/en-us/library/system.diagnostics.processpriorityclass(v=vs.110).aspx" title="ProcessPriorityClass Enumeration">here</a> and over <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms685100(v=vs.85).aspx" title="Scheduling Priorities">here</a> too.</p>
 <p>And as we’re speaking of priorities, keep in mind you can fine-tune import runs. In fact, each import runs in a separate process that inherits the scheduling priority of its parent, the Smuggler service. But you can override this in the import configuration with your own command to set the priority. For your convenience, you’ll find a <code>nice.exe</code> in the <code>bin</code> directory that works pretty much like the Unix <code>nice</code>. Here’s an example line you could add to your import configuration file.</p>
-<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">niceCommand:</span> nice -n 10</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">niceCommand:</span><span class="at"> nice -n 10</span></code></pre></div>
 <p>Because the service automatically adds the <code>bin</code> directory to its <code>PATH</code>, you can call <code>nice.exe</code> without specifying the full path. If you use your own command, you may have to specify the full path though. (But ya, you knew that.)</p>
 <h2 id="windows-service-installation">Windows Service Installation</h2>
 <p>Now install Smuggler as a Windows service. Open a command prompt as a sys admin (right click on icon, then select “Run as administrator”) and go to the <code>ome-smuggler\bin</code> directory. From inside the <code>bin</code> directory run</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">&gt;</span> <span class="kw">ome-smuggler.exe</span> install</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="op">&gt;</span> <span class="ex">ome-smuggler.exe</span> install</code></pre></div>
 <p>Yip, this does exactly what you think: it sets up Smuggler as a service. Note that you <em>really</em> need to run this command inside <code>bin</code>. (Otherwise configuration, data, and log directories will point to the wrong place; have a look at the <code>APP_HOME</code> variable defined in <code>ome-smuggler.xml</code>.) The installer configures the service to start automatically at boot, if you want to start it immediately run</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">&gt;</span> <span class="kw">ome-smuggler.exe</span> start</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="op">&gt;</span> <span class="ex">ome-smuggler.exe</span> start</code></pre></div>
 <div class="pull-quote">
 <h6 id="security-considerations">Security Considerations</h6>
 <p>By default the service runs in the context of the <code>LocalSystem</code> account. You may want to consider using a less privileged account such as the <code>LocalService</code> account or a custom account. Pass the <code>install</code> command a <code>/p</code> option to specify the account details interactively at install time. Note that if you use a different account, that account will need to be able to access Smuggler’s configuration, data, and log directories and read/write files inside them.</p>
 </div>
 <p>Even though Smuggler is now going to have a life of its own as a service, you can still control it from the command line—have a look at the next section for the available commands. To uninstall the service, run</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">&gt;</span> <span class="kw">ome-smuggler.exe</span> stop
-<span class="kw">&gt;</span> <span class="kw">ome-smuggler.exe</span> uninstall</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="op">&gt;</span> <span class="ex">ome-smuggler.exe</span> stop
+<span class="op">&gt;</span> <span class="ex">ome-smuggler.exe</span> uninstall</code></pre></div>
 <p>And to wipe Smuggler out from the face of the earth, just delete the <code>ome-smuggler</code> directory. (If you changed the locations of Smuggler’s configuration, data and log directories to be outside of <code>ome-smuggler</code>, you’ll also have to delete those directories.)</p>
 <h2 id="command-line-usage">Command Line Usage</h2>
 <p>The <code>ome-smuggler.exe</code> wrapper can be used both to install and control the Smuggler service. As an installer, it takes these command arguments</p>
