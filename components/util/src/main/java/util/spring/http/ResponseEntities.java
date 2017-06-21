@@ -29,6 +29,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 400.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param body either the content of a 200 (right value) or an error to
      * output in the body of a 400.
      * @return the response entity.
@@ -41,6 +43,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 400.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param errorOrResult the response body producer. The produced body can
      * either be the content of a 200 (right value) or an error to output in 
      * the body of a 400.
@@ -59,6 +63,7 @@ public class ResponseEntities {
      * If called with no arguments as in {@code _400()}, the response will have
      * an empty body; if a {@code body} argument is given, it will be written
      * to the response body using the configured Spring MVC message converters.
+     * @param <T> response body type.
      * @param body optional response body.
      * @return a new 400 response.
      */
@@ -70,6 +75,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 404.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param body either the content of a 200 (right value) or an error to
      * output in the body of a 404.
      * @return the response entity.
@@ -82,6 +89,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 404.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param errorOrResult the response body producer. The produced body can
      * either be the content of a 200 (right value) or an error to output in 
      * the body of a 404.
@@ -100,6 +109,7 @@ public class ResponseEntities {
      * If called with no arguments as in {@code _404()}, the response will have
      * an empty body; if a {@code body} argument is given, it will be written
      * to the response body using the configured Spring MVC message converters.
+     * @param <T> response body type.
      * @param body optional response body.
      * @return a new 404 response.
      */
@@ -111,6 +121,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 406.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param body either the content of a 200 (right value) or an error to
      * output in the body of a 406.
      * @return the response entity.
@@ -123,6 +135,8 @@ public class ResponseEntities {
     /**
      * Creates a new response with the supplied body; if the body is a right 
      * value the response will be a 200, otherwise a 406.
+     * @param <E> error response body type.
+     * @param <R> response body type.
      * @param errorOrResult the response body producer. The produced body can
      * either be the content of a 200 (right value) or an error to output in 
      * the body of a 406.
@@ -141,6 +155,7 @@ public class ResponseEntities {
      * If called with no arguments as in {@code _406()}, the response will have
      * an empty body; if a {@code body} argument is given, it will be written
      * to the response body using the configured Spring MVC message converters.
+     * @param <T> response body type.
      * @param body optional response body.
      * @return a new 406 response.
      */

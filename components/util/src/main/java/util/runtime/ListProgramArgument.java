@@ -25,6 +25,7 @@ public class ListProgramArgument<T> extends BaseProgramArgument<List<T>> {
     
     /**
      * Creates a new instance to hold the specified argument.
+     * @param argToSet the argument.
      * @throws NullPointerException if the argument is {@code null}.
      * @throws IllegalArgumentException if the list contains any {@code null}.
      */

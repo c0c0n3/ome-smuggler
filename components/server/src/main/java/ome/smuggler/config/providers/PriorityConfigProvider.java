@@ -67,6 +67,9 @@ public abstract class PriorityConfigProvider<T>
      * Reads configuration from the first available out of the specified 
      * locations, falling back to hard-coded configuration if no file is 
      * available.
+     * @param loci configuration locations.
+     * @return all configured objects.
+     * @throws Exception if an error occurs.
      */
     public Stream<T> readConfig(ResourceLocation... loci)
             throws Exception {

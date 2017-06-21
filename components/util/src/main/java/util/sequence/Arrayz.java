@@ -22,6 +22,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
 
     /**
      * Convenience conversion from varargs to array.
+     * @param <T> any type.
      * @param ts the arguments.
      * @return the arguments array.
      */
@@ -32,6 +33,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Is the given array reference {@code null} or is the array length 0?
+     * @param <T> any type.
      * @param ts the array to test.
      * @return {@code true} for yes; {@code false} for no.
      */
@@ -41,6 +43,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Does the given array hold any {@code null} reference?
+     * @param <T> any type.
      * @param ts the array to test.
      * @return {@code true} if the array has at least length 1 and one of its
      * elements is {@code null}; {@code false} if the array is {@code null}, 
@@ -59,6 +62,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      * Collects the given array's elements into a list; if the array is 
      * {@code null}, then the empty list is returned. The returned list
      * is immutable.
+     * @param <T> any type.
      * @param ts the array to convert.
      * @return the array's elements collected into a list.
      * @see #asMutableList(Object...) asMutableList
@@ -72,6 +76,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      * Collects the given array's elements into a list; if the array is 
      * {@code null}, then the empty list is returned but any {@code null}
      * elements will be otherwise added to the list.
+     * @param <T> any type.
      * @param ts the array to convert.
      * @return the array's elements collected into a list.
      */
@@ -87,6 +92,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Collects the given array's elements into a stream; if the array is 
      * {@code null}, then the empty stream is returned.
+     * @param <T> any type.
      * @param ts the array to convert.
      * @return the array's elements collected into a stream.
      */
@@ -97,6 +103,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Creates a new array of generic {@link Pair}'s.
+     * @param <X> any type.
+     * @param <Y> any type.
      * @param size the size of the array.
      * @return the new array.
      */
@@ -109,6 +117,11 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#zip(java.util.stream.Stream, java.util.stream.Stream)
      * Streams.zip} but operating on arrays.
+     * @param <X> any type.
+     * @param <Y> any type.
+     * @param xs left list.
+     * @param ys right list.
+     * @return the zipped list.
      * @throws NullPointerException if either or both arguments are {@code null}.
      */
     public static <X, Y> Pair<X, Y>[] zip(X[] xs, Y[] ys) {
@@ -127,6 +140,9 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#zipIndex(java.util.stream.Stream) Streams.zipIndex} 
      * but operating on arrays.
+     * @param <X> any type.
+     * @param xs input list.
+     * @return the indexed list.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static <X> Pair<Integer, X>[] zipIndex(X[] xs) {
@@ -144,6 +160,9 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#pairUp(Stream)} Streams.pairUp} but operating on
      * arrays.
+     * @param <X> any type.
+     * @param xs input list.
+     * @return the list of pairs.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static <X> Pair<X, X>[] pairUp(X[] xs) {
@@ -164,6 +183,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Access to instance operations that require a way to instantiate arrays.
      * Example: {@code op(Long[]::new).cycle(2, arrayOfLongs)}.
+     * @param <T> any type.
      * @param generator function to create a new array of {@code T}'s given the
      * array size.
      * @return an {@code Aray} instance to call the desired method.
@@ -183,6 +203,9 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#cycle(int, java.util.stream.Stream) Streams.cycle}
      * but operating on arrays.
+     * @param times how many times.
+     * @param list input list.
+     * @return the cycled list.
      * @throws NullPointerException if {@code list} is {@code null}.
      */
     public A[] cycle(int times, A[] list) {
@@ -200,6 +223,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#inits(java.util.stream.Stream) Streams.inits}
      * but operating on arrays.
+     * @param list input list.
+     * @return the initial segments.
      * @throws NullPointerException if {@code list} is {@code null}.
      */
     public List<A[]> inits(A[] list) {
@@ -218,6 +243,10 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#map(BiFunction, java.util.stream.Stream) 
      * Streams.map} but operating on arrays.
+     * @param <X> any type.
+     * @param f the mapper.
+     * @param list input list.
+     * @return the mapped list.
      * @throws NullPointerException if any argument is {@code null}.
      */
     public <X> A[] map(BiFunction<Integer, X, A> f, X[] list) {
@@ -257,6 +286,9 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#intersperse(Supplier, Stream)} Streams.intersperse}
      * but operating on arrays.
+     * @param sep separator supplier.
+     * @param list the input list.
+     * @return the interspersed list.
      */
     public A[] intersperse(Supplier<A> sep, A[] list) {
         requireNonNull(sep, "sep");
@@ -281,6 +313,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#pruneNull(List) Streams.pruneNull} but operating
      * on arrays.
+     * @param list the input list.
+     * @return the pruned list.
      */
     public A[] pruneNull(A[] list) {
         if (list == null) return generator.apply(0);
@@ -290,6 +324,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#concat(Stream...) Streams.concat} but operating 
      * on arrays.
+     * @param lists the input lists.
+     * @return the concatenated list.
      */
     @SafeVarargs
     public final A[] concat(A[]...lists) {
@@ -317,6 +353,8 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     /**
      * Same as {@link Streams#unpair(Stream)} Streams.unpair} but operating on
      * arrays.
+     * @param list the input list.
+     * @return the unpaired list.
      * @throws NullPointerException if the argument or any of its elements is
      * {@code null}.
      */

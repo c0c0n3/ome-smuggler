@@ -28,6 +28,7 @@ public class JProps {
     /**
      * Uses the given getter to look up a property in the underlying Java
      * {@link Properties} store.
+     * @param <T> property type.
      * @param prop the property getter.
      * @return the property value if found; empty otherwise.
      * @throws NullPointerException if the argument is {@code null}.
@@ -40,6 +41,7 @@ public class JProps {
     /**
      * Uses the given setter to store a property in the underlying Java
      * {@link Properties} store.
+     * @param <T> property type.
      * @param prop the property setter.
      * @param value the value to set.
      * @return itself to facilitate fluent API style.
@@ -66,6 +68,7 @@ public class JProps {
     /**
      * Calls {@link #set(JPropSetter, Object) set} to store the same value in
      * all listed properties.
+     * @param <T> property type.
      * @param props the property setters.
      * @param value the value to set.
      * @return itself to facilitate fluent API style.

@@ -43,6 +43,7 @@ public class SerializationFactory {
 
     /**
      * Instantiates a serializer for {@code T-}values.
+     * @param <T> the value type.
      * @return the serializer.
      */
     public <T> SinkWriter<T, OutputStream> serializer() {
@@ -55,6 +56,7 @@ public class SerializationFactory {
 
     /**
      * Instantiates a de-serializer for {@code T-}values.
+     * @param <T> the value type.
      * @param type the class of {@code T-}values.
      * @return the de-serializer.
      * @throws NullPointerException if the argument is {@code null}.

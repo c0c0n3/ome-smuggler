@@ -20,6 +20,7 @@ public interface ChannelSource<T> {
     /**
      * Same as {@link #send(Object) send} but masks any exception as a runtime 
      * (unchecked) exception and throws it as such without any wrapping.
+     * @param data the message to send.
      */
     default void uncheckedSend(T data) {
         unchecked(this::send).accept(data);

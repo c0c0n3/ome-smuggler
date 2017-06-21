@@ -19,6 +19,7 @@ public class Importer implements ImportService {
     /**
      * Creates a new instance.
      * @param env the service environment.
+     * @param cfg the import configuration.
      */
     public Importer(OmeroEnv env, ImportConfigSource cfg) {
         requireNonNull(env, "env");
@@ -30,12 +31,19 @@ public class Importer implements ImportService {
 
     @Override
     public boolean run(ImportInput data, Path importLog) {
+        Path importTarget = env.fileResolver()
+                               .forceLocalPath(data.getTarget());  // (*)
         ImporterCommandBuilder cliOmeroImporter =
                 new ImporterCommandBuilder(env.config(),
-                        data, cfg.niceCommand());
+                        data, importTarget, cfg.niceCommand());
         OmeCliCommandRunner runner =
                 new OmeCliCommandRunner(env, cliOmeroImporter);
         return runner.run(importLog);
     }
-
+    /* (*) URI resolution. We're assuming the file is local or comes from a
+     * network share visible to both client and smuggler. Going forward we
+     * might replace this with a more sophisticated URI to file resolution
+     * that also caters for FTP, HTTP, and IPFS (?!) but the OMERO import
+     * library will have to be modified to read files from FTP or HTTP...
+     */
 }

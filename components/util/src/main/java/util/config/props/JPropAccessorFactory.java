@@ -19,6 +19,7 @@ public class JPropAccessorFactory {
      * Convenience factory method to create an accessor with object to string
      * conversion done using String's {@link String#valueOf(Object) valueOf}
      * method.
+     * @param <T> any type.
      * @param key the property key.
      * @param fromString converts the property raw string value in the Java 
      * {@link Properties} store to a {@code T}.
@@ -87,6 +88,7 @@ public class JPropAccessorFactory {
      * String values are read from the property store using the enum's {@link 
      * Enum#valueOf(Class, String) valueOf} method, whereas enum values are 
      * written using the enum's {@link Enum#name() name} method.
+     * @param <T> enum type.
      * @param enumType the the enum type for which to create the accessor.
      * @param key the property key.
      * @return a new accessor.

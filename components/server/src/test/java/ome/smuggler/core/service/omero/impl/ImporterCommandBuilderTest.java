@@ -5,18 +5,22 @@ import static org.junit.Assert.*;
 import static ome.smuggler.core.service.omero.impl.OmeCliTestUtils.*;
 import static ome.smuggler.core.types.ImportInputTest.*;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.Test;
 
 import ome.smuggler.core.types.ImportInput;
-
-import org.junit.Test;
 import util.runtime.CommandBuilder;
 
 public class ImporterCommandBuilderTest {
 
+    public static Path dummyImportPath() {
+        return Paths.get("dummy");
+    }
+
     private static ImporterCommandBuilder newBuilder(ImportInput args) {
         return new ImporterCommandBuilder(OmeCliConfigBuilder.config(),
-                args, CommandBuilder.empty());
+                args, dummyImportPath(), CommandBuilder.empty());
     }
 
     private static String[] tokenPgmArgs(ImportInput args) {
@@ -26,19 +30,26 @@ public class ImporterCommandBuilderTest {
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfFirstArgNull() {
-        new ImporterCommandBuilder(null, makeNew(), CommandBuilder.empty());
+        new ImporterCommandBuilder(null, makeNew(), dummyImportPath(),
+                                   CommandBuilder.empty());
     }
     
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfSecondArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), null,
-                CommandBuilder.empty());
+                                   dummyImportPath(), CommandBuilder.empty());
     }
 
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfThirdArgNull() {
         new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
-                null);
+                                   null, CommandBuilder.empty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ctorThrowsIfFourthArgNull() {
+        new ImporterCommandBuilder(OmeCliConfigBuilder.config(), makeNew(),
+                                   dummyImportPath(), null);
     }
 
     @Test
@@ -58,8 +69,7 @@ public class ImporterCommandBuilderTest {
         assertThat(xs[2], is("-p"));
         assertThat(xs[4], is("-k"));
         
-        String targetUri = Paths.get(makeNew().getTarget()).toString();
-        assertThat(xs[6], is(targetUri));
+        assertThat(xs[6], is(dummyImportPath().toString()));
     }
     
     @Test

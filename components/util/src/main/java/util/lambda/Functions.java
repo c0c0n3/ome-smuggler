@@ -12,6 +12,8 @@ public class Functions {
     /**
      * The constant function {@code X → K: x ↦ c }.
      * It discards its input and always returns the given constant {@code c}.
+     * @param <X> domain type.
+     * @param <K> codomain type.
      * @param c the constant value to return.
      * @return the constant function {@code x ↦ c }.
      */
@@ -21,6 +23,8 @@ public class Functions {
 
     /**
      * Applies a function to an argument to produce a result.
+     * @param <X> domain type.
+     * @param <Y> codomain type.
      * @param f the function.
      * @param x the argument.
      * @return {@code f} of {@code x}.

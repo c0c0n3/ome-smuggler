@@ -9,6 +9,11 @@ public class Pair<A, B> {
 
     /**
      * Syntactic sugar to use in place of the constructor.
+     * @param <A> first element type.
+     * @param <B> second element type.
+     * @param x the first element.
+     * @param y the second element.
+     * @return a new pair.
      */
     public static <A, B> Pair<A, B> pair(A x, B y) {
         return new Pair<>(x, y);

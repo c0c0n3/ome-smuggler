@@ -14,6 +14,7 @@ public class ProcessedImport {
     /**
      * Creates a new instance for an import that's completed successfully.
      * @param task the completed import.
+     * @return the new instance.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static ProcessedImport succeeded(QueuedImport task) {
@@ -23,6 +24,7 @@ public class ProcessedImport {
     /**
      * Creates a new instance for an import that's completed with a failure.
      * @param task the completed import.
+     * @return the new instance.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static ProcessedImport failed(QueuedImport task) {
@@ -33,6 +35,7 @@ public class ProcessedImport {
      * Creates a new instance to signal that the batch the specified import is
      * in has been completed.
      * @param task the completed import.
+     * @return the new instance.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static ProcessedImport batchCompleted(ProcessedImport task) {
@@ -44,6 +47,7 @@ public class ProcessedImport {
      * Creates a new instance to signal that the batch the specified import is
      * in has been completed and can be discarded.
      * @param task the completed import.
+     * @return the new instance.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public static ProcessedImport batchCanBeDiscarded(ProcessedImport task) {

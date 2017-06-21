@@ -69,6 +69,7 @@ public class CommandRunner {
     /**
      * Runs the process redirecting both its error and output streams to an
      * input stream that is given to a consumer to read.
+     * @param <T> any type.
      * @param outputReader reads the process's output.
      * @return the process's exit status and the output result as read by the
      * output reader.

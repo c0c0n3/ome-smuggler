@@ -12,7 +12,8 @@ import ome.smuggler.config.data.SpringBootAppPropsFile;
  * {@code config/application.properties} to generate the file. 
  * This way we can keep all config data in Java and avoid common issues.
  * <pre>
- * java -jar build/libs/ome-smuggler-0.1.0.jar ome.smuggler.run.SpringBootPropsGen > src/main/resources/config/application.properties
+ * java -jar build/libs/ome-smuggler-*.jar ome.smuggler.run.SpringBootPropsGen \
+ * {@literal >} src/main/resources/config/application.properties
  *</pre>
  */
 public class SpringBootPropsGen implements RunnableApp {
@@ -27,7 +28,6 @@ public class SpringBootPropsGen implements RunnableApp {
     
     /**
      * Dumps Java props to {@code stdout}.
-     * @throws IOException 
      */
     @Override
     public void run(List<String> appArgs) {

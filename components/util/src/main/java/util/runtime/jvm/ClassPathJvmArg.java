@@ -18,6 +18,7 @@ public class ClassPathJvmArg extends BaseProgramArgument<ClassPath> {
     
     /**
      * Creates a new instance to hold the specified argument.
+     * @param arg the classpath argument.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public ClassPathJvmArg(ClassPath arg) {

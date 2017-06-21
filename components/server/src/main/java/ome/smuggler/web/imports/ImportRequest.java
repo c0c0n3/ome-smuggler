@@ -25,9 +25,15 @@ public class ImportRequest {
      *  <li>if both client and server run on the same machine, a local path to
      *  the data to import.</li>
      * </ul>
-     * For now these are the only supported options, but, going forward, we will 
-     * implement the means to resolve file locations across a network so that an 
-     * import server may pull image data from multiple acquisition workstations.
+     * So the server can handle both local and remote imports. But in the case
+     * of a remote import, the client has to specify a file URI with a host part
+     * (e.g. {@code file://box/with/fat/file}), a suitable remote mount must
+     * exist locally (on the same machine where this server runs), and the
+     * server needs to be {@link ome.smuggler.config.items.MountPointsConfig
+     * configured} so that it can translate remote paths to local ones. This
+     * kind of set up can be quite involved, but has the advantage that a
+     * single import server can pull image data from multiple acquisition
+     * workstations.
      * @see <a href="https://en.wikipedia.org/wiki/File_URI_scheme">File URI
      * scheme</a>
      */

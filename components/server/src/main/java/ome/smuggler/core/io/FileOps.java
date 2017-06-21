@@ -27,9 +27,12 @@ public class FileOps {
     /**
      * Deletes the specified file if it exists; does nothing otherwise.
      * @param file path to the file to delete.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * unchecked.
      * @throws NullPointerException if the argument is {@code null}.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs.
+     * </p>
      */
     public static void delete(Path file) {
         requireNonNull(file, "file");
@@ -42,9 +45,12 @@ public class FileOps {
      * nothing.
      * @param source path to the file to copy.
      * @param destination path to the copied file.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * unchecked.
      * @throws NullPointerException if any argument is {@code null}.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs.
+     * </p>
      */
     public static void copy(Path source, Path destination) {
         requireNonNull(source, "source");
@@ -97,9 +103,12 @@ public class FileOps {
      * Queries the size of the given file.
      * @param file the file to query.
      * @return the number of bytes in the specified file.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * unchecked.
      * @throws NullPointerException if the argument is {@code null}.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs.
+     * </p>
      */
     public static Nat byteLength(Path file) {
         requireNonNull(file, "file");
@@ -117,9 +126,12 @@ public class FileOps {
      * Sub-directories are not recursed.
      * @param dir the target directory.
      * @return a list of the files found in the directory.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * unchecked.
      * @throws NullPointerException if the argument is {@code null}.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs.
+     * </p>
      */
     public static Stream<Path> listChildFiles(Path dir) {
         requireNonNull(dir, "dir");
@@ -149,8 +161,11 @@ public class FileOps {
      * @param file path to the file to create and write.
      * @param writer writes the file contents.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is caught and
-     * masked as unchecked.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs.
+     * </p>
      */
     public static void writeNew(Path file, ConsumerE<OutputStream> writer) {
         requireNonNull(file, "file");
@@ -176,8 +191,11 @@ public class FileOps {
      * @param target the file to rewrite.
      * @param f the filter to use.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws Exception if an I/O or any other kind of error occurs; the
-     * exception is caught and masked as unchecked.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link Exception} if an I/O or any other kind of error occurs.
+     * </p>
      */
     public static void rewrite(Path target, StreamFilter f) {
         Path output = null;
@@ -202,8 +220,11 @@ public class FileOps {
      * @param to the destination file.
      * @param f the filter to use.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws Exception if an I/O or any other kind of error occurs; the
-     * exception is caught and masked as unchecked.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link Exception} if an I/O or any other kind of error occurs.
+     * </p>
      */
     public static void filter(Path from, Path to, StreamFilter f) {
         requireNonNull(from, "from");

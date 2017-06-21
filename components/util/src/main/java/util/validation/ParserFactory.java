@@ -75,6 +75,8 @@ public class ParserFactory {
     /**
      * Combines two parsers into one that applies the fist parser to the first
      * token and the second parser to the second token to produce a parsed pair.
+     * @param <X> any type.
+     * @param <Y> any type.
      * @param fst parses the first token.
      * @param snd parses the second token.
      * @return the parser.

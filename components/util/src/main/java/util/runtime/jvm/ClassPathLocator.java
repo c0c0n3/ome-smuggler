@@ -50,11 +50,15 @@ public class ClassPathLocator {
      * class could be determined to be in a local directory or jar file; 
      * an empty optional otherwise.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an I/O error occurs when trying to locate the
-     * enclosing jar if this class is in a jar within a jar, e.g. Spring Boot
-     * self-contained jar.
      * @throws SecurityException if a security manager exists and its 
      * the application doesn't have the "getProtectionDomain" permission.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O error occurs when trying to locate
+     * the enclosing jar if this class is in a jar within a jar, e.g. Spring
+     * Boot self-contained jar.
+     * </p>
      */
     public static Optional<Path> findBase(Class<?> clazz) {
         requireNonNull(clazz, "clazz");

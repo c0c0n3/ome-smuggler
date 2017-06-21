@@ -30,8 +30,11 @@ public interface TaskFileStore<T extends Identifiable> {
 
     /**
      * @return the task ID's of all files currently stored in the directory.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     Stream<T> listTaskIds();
     
@@ -39,8 +42,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * Deletes the file associated to the specified task ID.
      * @param taskId the task ID.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void remove(T taskId);
 
@@ -50,8 +56,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * @param taskId identifies the task.
      * @param contentWriter writes the file contents into an output stream.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void add(T taskId, ConsumerE<OutputStream> contentWriter);
     
@@ -61,8 +70,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * @param taskId identifies the task.
      * @param content the file contents.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     default void add(T taskId, String content) {
         add(taskId, out -> write(out, content));
@@ -76,8 +88,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * @param taskId identifies the task.
      * @param contentSource the file contents to use.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     void add(T taskId, Path contentSource);
 
@@ -90,8 +105,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * @throws NullPointerException if any argument is {@code null}.
      * @throws IllegalArgumentException if there's no file associated to the
      * specified task.
-     * @throws Exception if an I/O or any other kind of error occurs; the
-     * exception is masked as runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link Exception} if any other kind of error occurs.
+     * </p>
      * @see #replace(Identifiable, FunctionE)
      */
     void replace(T taskId, StreamFilter filter);
@@ -109,8 +127,11 @@ public interface TaskFileStore<T extends Identifiable> {
      * @throws NullPointerException if any argument is {@code null}.
      * @throws IllegalArgumentException if there's no file associated to the
      * specified task.
-     * @throws Exception if an I/O or any other kind of error occurs; the
-     * exception is masked as runtime exception and re-thrown as is.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link Exception} if any other kind of error occurs.
+     * </p>
      * @see #replace(Identifiable, StreamFilter)
      */
     default void replace(T taskId, FunctionE<String, String> setter) {

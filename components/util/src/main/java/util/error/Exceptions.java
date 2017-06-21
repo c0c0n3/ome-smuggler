@@ -66,6 +66,7 @@ public class Exceptions {
     /**
      * Convenience up-cast so that an exception-throwing lambda can be used
      * in place of a normal one.
+     * @param <T> any type.
      * @param mayThrowChecked value to up-cast.
      * @return the up-cast input.
      */
@@ -76,6 +77,8 @@ public class Exceptions {
     /**
      * Convenience up-cast so that an exception-throwing lambda can be used
      * in place of a normal one.
+     * @param <T> any type.
+     * @param <U> any type.
      * @param mayThrowChecked value to up-cast.
      * @return the up-cast input.
      */
@@ -86,6 +89,7 @@ public class Exceptions {
     /**
      * Convenience up-cast so that an exception-throwing lambda can be used
      * in place of a normal one.
+     * @param <T> any type.
      * @param mayThrowChecked value to up-cast.
      * @return the up-cast input.
      */
@@ -96,6 +100,8 @@ public class Exceptions {
     /**
      * Convenience up-cast so that an exception-throwing lambda can be used
      * in place of a normal one.
+     * @param <T> any type.
+     * @param <R> any type.
      * @param mayThrowChecked value to up-cast.
      * @return the up-cast input.
      */
@@ -171,6 +177,7 @@ public class Exceptions {
     
     /**
      * Either gets the right value or throws the left exception.
+     * @param <T> any type.
      * @param errorOrValue an error or a value.
      * @return the value if the argument is a right; otherwise the given
      * exception will be thrown.

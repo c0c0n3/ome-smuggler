@@ -11,7 +11,8 @@ import java.util.List;
  * generate the file. This way we can keep all config data in Java and avoid
  * any deserialization issue.
  * <pre>
- * java -jar build/libs/ome-smuggler-0.1.0.jar ome.smuggler.run.CryptoYmlGen > src/main/resources/config/crypto.yml
+ * java -jar build/libs/ome-smuggler-*.jar ome.smuggler.run.CryptoYmlGen \
+ * {@literal >} src/main/resources/config/crypto.yml
  *</pre>
  */
 public class CryptoYmlGen implements RunnableApp {

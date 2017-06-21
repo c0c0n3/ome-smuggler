@@ -70,6 +70,7 @@ public class FileStreamer {
      * Streams the file to the client or sends back a 404 if the file does not
      * exist.
      * @param response the response to send to the client.
+     * @return a suitable entity to Spring.
      * @throws IOException if an I/O error occurs.
      * @throws NullPointerException if the argument is {@code null}.
      */

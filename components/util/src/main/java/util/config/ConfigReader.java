@@ -17,6 +17,8 @@ public abstract class ConfigReader<T, M> implements ConfigProvider<M> {
      * Creates a new configuration provider out of a source configuration
      * provider so that its source items of type {@code T} are transformed
      * into objects of type {@code M}.
+     * @param <T> source item type.
+     * @param <M> mapped item type.
      * @param configSource reads items of type {@code T} from configuration.
      * @param itemMapper the transformation to apply to each item read from 
      * {@code configSource} to produce objects of type {@code M}.

@@ -19,14 +19,18 @@ public class StreamOps {
     /**
      * Builds a stream of lines out of the input data and passes the stream on 
      * to the given reader to convert them into a value of type {@code T}.
+     * @param <T> the value type.
      * @param input the input data.
      * @param reader converts the stream of lines into a {@code T-}value.
      * @param encoding character encoding to use to read the input data; if not
      * given, then the default character encoding is used. 
      * @return the value returned by the reader.
      * @throws NullPointerException if any argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * a runtime exception and thrown as is without wrapping.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     public static <T> T readLines(InputStream input, 
                                   FunctionE<Stream<String>, T> reader,
@@ -53,8 +57,11 @@ public class StreamOps {
      * @param input the data to read.
      * @return the input as string.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * a runtime exception and thrown as is without wrapping.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     public static String readLinesIntoString(InputStream input) {
         String sep = System.lineSeparator();
@@ -66,8 +73,11 @@ public class StreamOps {
      * @param input the data to read.
      * @return all the bytes from the input stream.
      * @throws NullPointerException if the argument is {@code null}.
-     * @throws IOException if an I/O error occurs; the exception is masked as
-     * a runtime exception and thrown as is without wrapping.
+     * <p>The following checked exceptions are rethrown as unchecked (i.e.
+     * the exception is masked as a runtime exception and thrown as is without
+     * wrapping it in a {@code RuntimeException}):
+     * <br>{@link IOException} if an I/O occurs.
+     * </p>
      */
     public static byte[] readAll(InputStream input) {
         requireNonNull(input, "input");

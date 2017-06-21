@@ -11,7 +11,8 @@ import util.config.YamlConverter;
  * generate the file. This way we can keep all config data in Java and avoid 
  * any deserialization issue.
  * <pre>
- * java -jar build/libs/ome-smuggler-0.1.0.jar ome.smuggler.run.ImportYmlGen > src/main/resources/config/import.yml
+ * java -jar build/libs/ome-smuggler-*.jar ome.smuggler.run.ImportYmlGen \
+ * {@literal >} src/main/resources/config/import.yml
  *</pre>
  */
 public class ImportYmlGen implements RunnableApp {
