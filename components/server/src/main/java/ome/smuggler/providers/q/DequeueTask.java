@@ -94,10 +94,10 @@ public class DequeueTask<T> implements MessageHandler {
         }
     }
     /* NOTE. If the process dies here, the message is still in the queue as it
-     * hasn't been acknowledged yet. HornetQ will deliver it again on reboot.
+     * hasn't been acknowledged yet. Artemis will deliver it again on reboot.
+     * In fact, this works exactly the same as it used to in HornetQ.
      * See:
      * - http://stackoverflow.com/questions/15243991/what-happen-if-client-acknowledgment-not-done
-     * TODO confirm this hasn't changed in Artemis!
      */
     
     private void removeThenConsume(ClientMessage msg, T messageData) {
