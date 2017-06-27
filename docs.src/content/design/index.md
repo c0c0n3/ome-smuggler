@@ -42,7 +42,7 @@ understand the reasons behind the design and to put it into perspective.
 Technology Stack
 ----------------
 The bad news: Smuggler relies on lots of frameworks---[Spring][spring] and
-its offspring (love puns!) [Spring Boot][booty], [HornetQ][hornetq],
+its offspring (love puns!) [Spring Boot][booty], [Artemis][artemis],
 [Undertow][undertow], [Gson][gson], and [SLF4J][slf4j].
 The good news: its `core` package, where most of the functionality sits,
 has no dependencies on any of them. So we have the good and the bad, what
@@ -122,6 +122,8 @@ obviously up for debate...
   "The Answer to the Ultimate Question of Life, the Universe, and Everything"
 [abject-oriented]: http://typicalprogrammer.com/abject-oriented/
   "Introduction to Abject-Oriented Programming"
+[artemis]: https://activemq.apache.org/artemis/
+  "Artemis Home"
 [booty]: http://projects.spring.io/spring-boot/
   "Spring Boot Home"
 [gson]: https://github.com/google/gson
@@ -130,8 +132,6 @@ obviously up for debate...
   "High-level View"
 [hamcrest]: http://hamcrest.org/
   "Hamcrest Home"
-[hornetq]: http://hornetq.jboss.org/
-  "HornetQ Home"
 [junit]: http://junit.org/
   "JUnit Home"
 [mockito]: http://mockito.org/

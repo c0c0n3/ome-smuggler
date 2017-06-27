@@ -69,7 +69,7 @@ vulnerability we haven't thought of; if you do, please let us know!
 Smuggler needs to be able to access all the above directories as well as
 having read/write permissions for their contents. Besides the sys admin,
 only the user you run Smuggler with should have access to these directories.
-In fact, OMERO session keys are kept in the HornetQ queue; also, depending
+In fact, OMERO session keys are kept in the Artemis queue; also, depending
 on your set up, the mail configuration may contain an account password.
 
 If the data directory doesn't exist and you want Smuggler to create it for

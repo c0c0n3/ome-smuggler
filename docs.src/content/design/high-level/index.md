@@ -47,7 +47,7 @@ more work, and so on until you're done with the task.
 The asynchronous messaging channel is a service provided by yet another of
 Smuggler's components: *messaging*. This channel abstraction is loosely (very
 loosely!) based on Communicating Sequential Processes and is implemented using
-message queues, courtesy of [HornetQ][hornetq] and its neat Core API. 
+message queues, courtesy of [Artemis][artemis] and its neat Core API.
 Though the implementation is transparent to the *services* component, using
 message-oriented middleware brings a lot of added value into Smuggler as a
 whole. For starters, queues are persistent and so, after a crash, Smuggler
@@ -58,7 +58,7 @@ machines to cope with increased workloads; and so on. In short, we can use
 message queues as a foundation to build a [reactive system][reactive].
 
 The last piece of the puzzle is the *config* component. This is where we wire
-all the bits and pieces together. What we do is embed Undertow and HornetQ
+all the bits and pieces together. What we do is embed Undertow and Artemis
 into the app, configure MVC, and beanify our own services. All this is done
 through Spring Boot auto-configuration and the Spring's IoC container API.
 The reading and writing of configuration data we do ourselves though so as
@@ -108,14 +108,14 @@ conceptual modules we talked about earlier---map to actual Java code:
 A few more words about messaging. The split mentioned above is between the
 abstract definition of the messaging functionality we need---the content of
 `core.msg`---and the actual implementation in terms of a specific message
-oriented middleware, HornetQ at the moment, that sits in `q`. The idea is
+oriented middleware, Artemis at the moment, that sits in `q`. The idea is
 that Smuggler should play the messaging game only by the rules (interfaces)
 defined in `core.msg` without caring about the actual implementation in `q`.
 Accordingly, the only code that depends on `q` is that in `config` as it
 needs to tie the interfaces in `core.msg` to the actual implementations in
 `q` and make them available through the Spring's IoC container.
 To keep our sanity, we decided to do away with both JMS and Spring's own
-flavour of it: the code in `q` piggybacks directly on the HornetQ Core API
+flavour of it: the code in `q` piggybacks directly on the Artemis Core API
 to implement the various interfaces defined in `core.msg`. Besides these
 interfaces, `core.msg` is home to classes that carry out generic messaging
 tasks that only depend on the `core.msg` interfaces.
@@ -138,7 +138,7 @@ This way we can change the underlying frameworks we use without having to
 rewrite the whole app from scratch. For example, using a Web server other
 than Undertow requires just a few configuration tweaks---picture rubbing
 off Undertow from the diagram and follow the arrows to see what would be
-affected. Ditching HornetQ would take slightly more work as some of the
+affected. Ditching Artemis would take slightly more work as some of the
 code in `q` would need to change. Moving away from Spring? A bit more
 involved, but still doable.
 
@@ -154,10 +154,11 @@ files, then you should look at the launchers in `run`.
 
 
 
+
+[artemis]: https://activemq.apache.org/artemis/
+  "Artemis Home"
 [booty]: http://projects.spring.io/spring-boot/
   "Spring Boot Home"
-[hornetq]: http://hornetq.jboss.org/
-  "HornetQ Home"
 [reactive]: http://www.reactivemanifesto.org/
   "Reactive Manifesto"  
 [spring]: https://spring.io/

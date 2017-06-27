@@ -20,9 +20,9 @@ Within this process, Undertow manages its own thread pool and will run each
 HTTP request in a separate thread. Threading parameters, IO buffers, and
 other params that affect performance are all configurable. (The Undertow
 manual is the best place to find out more about it.)
-HornetQ has its own thread pool too. (Again, read the manual to find out how
-to configure HornetQ threading.) Each of our queues gets only one consumer
-thread---drawn from HornetQ's pool---to pick up messages from it.
+Artemis has its own thread pool too. (Again, read the manual to find out how
+to configure Artemis threading.) Each of our queues gets only one consumer
+thread---drawn from Artemis's pool---to pick up messages from it.
 This is the lay of the land for the Smuggler server process. Additionally,
 Smuggler spawns a separate process to run each OMERO import.
 
@@ -39,12 +39,12 @@ have to start sharing some items in the future.
 
 Distribution
 ------------
-We said already the HornetQ server is embedded into Smuggler. Anyway, in
+We said already the Artemis server is embedded into Smuggler. Anyway, in
 principle it doesn't need to be that way. Queues can be split across machines
 in many ways for e.g. performance, backup, or increased availability---have
-a look at the HornetQ manual Smuggler only relies on the abstract notion of
+a look at the Artemis manual. Smuggler only relies on the abstract notion of
 an asynchronous communication channel and the implementation makes no
-assumptions about the HornetQ consumer and producer being in the same
+assumptions about the Artemis consumer and producer being in the same
 process; also, message data is serialised to JSON. In fact, the design
 already caters for adding a distribution boundary some day: the *REST
 Controllers* would be in one process and the *services* in another, with

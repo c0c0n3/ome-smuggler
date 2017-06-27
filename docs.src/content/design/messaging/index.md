@@ -49,10 +49,10 @@ functionality needed in Smuggler abstractly in terms of interfaces and
 classes that only depend on those interfaces. This is what goes in the
 `core.msg` package and is the only thing all the other modules in
 Smuggler depend on.
-We implement these channel abstractions in the `q` package using HornetQ
+We implement these channel abstractions in the `q` package using Artemis
 queues. Here's an [annotated UML class diagram][key-q-classes] that shows
 the key implementation classes in `q` and their relationship to both the
-abstract specification in `core.msg` and the HornetQ Core API.
+abstract specification in `core.msg` and the Artemis Core API.
 
 We also have a couple of UML object diagrams to show examples of how the
 instances of the various classes are wired together to provide communication
