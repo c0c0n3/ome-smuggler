@@ -78,7 +78,7 @@ public class WebWiring extends WebMvcConfigurerAdapter {
 
         return props;
     }
-    /** (*) Handling of HTTP encoding.
+    /* (*) Handling of HTTP encoding.
      * With these settings:
      *   - if an HTTP request has no char encoding, we use UTF-8;
      *   - all HTTP responses will have a char encoding of UTF-8.
